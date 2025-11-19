@@ -1,0 +1,423 @@
+{% extends 'rmsebase.html' %} 
+{% load static %} 
+{% block content %} 
+{% csrf_token %}
+<style>
+  
+  .fs--2 {
+    font-size: .64rem !important;
+    font-weight: 600 !important;
+  }
+  .chat .chat-message .received-message-content {
+      position: relative;
+  }
+  .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):before {
+      content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: -12px;
+      right: auto;
+      top: -1px;
+      bottom: auto;
+      border: 11px solid;
+      border-color: #e3e6ed rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+  }
+  .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):after {
+      content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: -10px;
+      right: auto;
+      top: 0px;
+      bottom: auto;
+      border: 10px solid;
+      border-color: #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+  } 
+  .chat .chat-message_sent .sent-message-content {
+    position: relative;
+  }
+  .chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery):after {
+     
+    content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: auto;
+      right: -12px;
+      top: auto;
+      bottom: 0;
+      border: 12px solid;
+      border-color:transparent transparent #3874ff  transparent; 
+  }
+  
+  .flex-end-center {
+      -webkit-box-pack: end;
+      -ms-flex-pack: end;
+      justify-content: flex-end;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+  }
+  
+   
+  .flex-1 {
+    -webkit-box-flex: 1;
+  
+    -ms-flex: 1;
+  
+    flex: 1;
+  
+  }
+    .support-chat-container {
+    display: none;
+    &.show {
+      display: block;
+    }
+  }
+  .support-chat {
+    position: fixed;
+    bottom: map-get($spacers, 7);
+    right: 0;
+    max-width: 27.87rem;
+    width: 100%;
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: bottom right;
+    z-index: 1045;
+    transition: 0.3s ease-out;
+    padding-bottom: map-get($spacers, 7);
+    .support-chat-start & {
+      right: auto;
+      left: 0;
+      transform-origin: bottom left;
+    }
+    .support-chat-bottom-lg & {
+      bottom: map-get($spacers, 11);
+    }
+    @include media-breakpoint-up(sm) {
+      right: map-get($spacers, 3);
+      .support-chat-start & {
+        left: map-get($spacers, 3);
+      }
+    }
+    @include media-breakpoint-up(lg) {
+      right: map-get($spacers, 5);
+      .support-chat-start & {
+        left: map-get($spacers, 5);
+      }
+    }
+    .card {
+      box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+      .dark & {
+        box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+      }
+    }
+    .card-body {
+      height: 27rem;
+    }
+    &.show-chat {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .send-btn {
+      width: 37.06px;
+      height: 37.06px;
+      border-radius: 50%;
+      color: var(--#{$prefix}primary);
+      &:hover {
+        background-color: var(--#{$prefix}gray-100);
+        color: var(--#{$prefix}primary-500);
+      }
+      &:active {
+        background-color: var(--#{$prefix}gray-200);
+        color: var(--#{$prefix}primary-500);
+      }
+    }
+  }
+  .btn-chat-close {
+      border-radius: 50%;
+      width: 3rem;
+      .btn-text,
+      .fa-circle {
+        display: none;
+      }
+      .fa-chevron-down {
+        display: block;
+      }
+    }
+  .support-chat + .btn-support-chat {
+    position: fixed;
+    bottom: map-get($spacers, 6);
+    right: map-get($spacers, 3);
+    width: 9rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--#{$prefix}white) !important;
+    z-index: 1045;
+    border-radius: var(--#{$prefix}border-radius-pill);
+    box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+    transition: 0.3s ease;
+    .dark & {
+      box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+    }
+    .support-chat-start & {
+      right: auto;
+      left: map-get($spacers, 3);
+    }
+    .support-chat-bottom-lg & {
+      bottom: map-get($spacers, 10);
+    }
+    @include media-breakpoint-up(sm) {
+      right: map-get($spacers, 5);
+      .support-chat-start & {
+        left: map-get($spacers, 5);
+      }
+    }
+    @include media-breakpoint-up(lg) {
+      right: map-get($spacers, 7);
+      .support-chat-start & {
+        left: map-get($spacers, 7);
+      }
+    }
+    &:hover {
+      background-color: var(--#{$prefix}gray-100) !important;
+    }
+    .fa-chevron-down {
+      display: none;
+    }
+    .btn-chat-close {
+      border-radius: 50%;
+      width: 3rem;
+      .btn-text,
+      .fa-circle {
+        display: none;
+      }
+      .fa-chevron-down {
+        display: block;
+      }
+    }
+  }
+  
+  
+  
+  </style>
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+            
+               
+                
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row form-group" style="margin-bottom: 0px;">
+                              <div class="col col-md-10">
+                                <h4>Audit & Regulatory Compliance</h4>
+                              </div>
+                            
+                            <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">          
+                              <div style="border:solid 0px;border-radius: 4px; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;font-size: 16px;display: flex;flex-direction: row;align-items: center;">                  
+                                  <i class="bi bi-chat-right-quote"  style='cursor:pointer;' onclick="$('#divVT_Comm_Chat').modal('toggle')" ></i>
+                               </div> 
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-body card-block">                                 
+                                <div class="row form-group">                                     
+                                    <div class="col col-md-12">
+                                        <select id="selectSection"  style="margin-bottom: 15px;" class="form-control form-control-sm"  multiple>  
+                                           {% for index,data in obj.items %}
+                                                <option style=" color: {{data.color}};  background-color: {{data.bgColor}};" value="{{data.Compl_AID}}">{{data.Question_Text}}</option>
+                                            {% endfor %}                                            
+                                        </select>                                        
+                                    </div>                                     
+                                  </div>   
+                                <div class="row form-group">   
+                                  {% for question in questions %}                                  
+                                  <div class="accordion" id="accordionExample_{{question.compl_id}}" style="margin-bottom: 25px;">
+                                    <div class="accordion-item border-top border-300">
+                                      <h2 class="accordion-header" id="headingOne">
+                                        
+                       
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_{{question.compl_id}}" aria-expanded="true" aria-controls="collapseOne_{{question.compl_id}}">
+                                          {{question.question_text}}
+                                        </button>
+                                      </h2>
+                                      <div class="accordion-collapse collapse" id="collapseOne_{{question.compl_id}}" aria-labelledby="headingOne" data-bs-parent="#accordionExample_{{question.compl_id}}" style="">
+                                        <div class="accordion-body pt-0"> 
+                                             
+                                            
+                                            <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                                                <div class="col-12 col-md-12">
+                                                     <textarea id="txtComments_{{question.compl_id}}" readonly rows="5" style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;" >{{question.Question_Resp}}</textarea> 
+                                                </div>
+                                            </div>
+                                        
+                                       
+                      
+                                            
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                               
+                              </div> 
+                              {% endfor %}
+                                </div>
+                                 
+                        </div> 
+                        
+                        <div class="card-footer" style="border: 0px solid red;;">
+                            <div class="col-12 gy-6">
+                                <div class="row g-3 justify-content-end">
+                                  <div class="col-auto">
+                                       
+                                    <button type="button" class="btn btn-primary" id="btn_report" onclick="openmodal()">Add New</button> 
+                                    
+                                </div>
+                                    <div class="col-auto">
+                                       
+                                        <button type="button" class="btn btn-primary" id="btn_report" onclick="saveAllocation()">Save</button> 
+                                        
+                                    </div>
+                                   
+                                    <div class="col-auto">
+                                        <button type="button" class="btn btn-primary" onclick="goNext()">Next</button>
+                                    </div>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+
+                    </div> 
+                </div>
+<!-- Modal -->
+  <div id="staticBackdropLive" class="modal"  style="display: block;" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLiveLabel">Modal Selection</h5>
+        
+        </div>
+        <div class="modal-body"> 
+          <div class="row mb-3 position-relative"> 
+            <label class="col-sm-4 col-form-label" for="txtsection">Question</label>
+
+            <div class="col-sm-8">
+                <input class="form-control" id="txtqtn" type="text" required=""> 
+            </div>
+          </div>  
+          <div class="row mb-3 position-relative"> 
+            <label class="col-sm-4 col-form-label" for="txtsection">Description</label>
+
+            <div class="col-sm-8">
+                <textarea class="form-control" id="txtdesc" type="text"> </textarea>
+            </div>
+             
+          </div>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="goNext()">Cancel</button> 
+          <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="savequestion()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+                 
+            </div>
+            
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script src="{% static 'js/chatroom.js' %}"></script>
+<script type='text/javascript' >
+    var myTable;
+    var colDtTbl;
+    $(document).ready( function () { 
+
+      
+
+        $('#liDataV').click(function(){
+        $('#sub_sub_menu').hide();
+        $('#staticBackdropLive').hide();
+        });
+        $('#staticBackdropLive').hide();
+        if ( $('#selectSection').val() == 'addnew'){
+            $('#staticBackdropLive').show(); 
+        }
+        debugger
+        $("#txtSelUtil").val('Audit & Regulatory Compliance Response')
+        $("#txtSelSubUtil").val('')
+        $("#txtSelUtilType").val('table')
+        getVT_Comm_History('divresp_9','Audit & Regulatory Compliance Response', '','{{request.session.vt_mdl}}')
+    } ); 
+    function openmodal(){
+      
+            $('#staticBackdropLive').modal({backdrop:'static', keyboard:false},'toggle');
+            $('#staticBackdropLive').show(); 
+        
+    }
+    function savequestion(){
+        $.ajax({
+            url: '/savemodalauditquestion/', 
+            data:{qtn_txt: $("#txtqtn").val(),desc:$('#txtdesc').val() 
+            ,activests:1,isavailibility:0},
+            dataType: 'json', 
+            success: function (data) { 
+               if(data.isvalid=='true'){
+                alert('Audit Registration Compl added succcessfully.')
+                window.location.reload();
+                // alert(data.msg)
+               }
+               else
+               {
+                alert('Error while creating user category.')
+                // alert(data.msg)
+               }
+            }
+        });
+    }
+
+    function saveAllocation(){
+        debugger;
+        //alert('src is '+ $("#txt_src").val() + ', email is '+ $("#txt_email").val() +' , cols are '+ $("#selectCols").val() )
+        console.log('clicked '+ $('#selectSection').text() )
+        $.ajax({
+            url: '/saveauditallocation/', 
+            data:{response: $("#selectSection").val()},
+            dataType: 'json',
+            success: function (data) {
+               // alert(data)
+               if(data.isvalid == 'true'){
+                alert('Allocation saved successfully.'); 
+               }
+               else{
+                alert('Something Went Wrong')
+               }
+            }
+        });
+        
+    }
+
+    function enableBtn(id){ 
+        //alert($("#txt_email").val().length  +',' + $("#txt_src").val().length)
+        if($("#txt_email").val().trim().length ==0){
+            $("#btn_mail").prop('disabled', true);
+        }
+        else{
+            $("#btn_mail").prop('disabled', false);
+        }
+    }
+
+    function goNext(){
+        window.location="{% url 'valFindings' %}"
+} 
+</script>
+{% endblock script %}

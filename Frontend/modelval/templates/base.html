@@ -1,0 +1,831 @@
+{% load static %} 
+{% include 'lstOverdueTasks.html' %}
+{% url 'dashboard' as index %} 
+{% url 'addmodel' as addmodel %} 
+{% url 'addtool' as addtool %} 
+{% url 'projectsDetails' as projectsDetails %}
+{% url 'todolist' as todolist %}
+{% url 'activity' as activity %}
+{% url 'blankvalidationtool' as blankvalidationtool %}
+{% url 'blank' as blank %}
+{% url 'login' as login %}
+{% url 'addUser' as addUser %}
+{% url 'rmse_users' as rmse_users%}
+{% url 'rmse_usercat' as rmse_usercat %}
+{% url 'addnewusercatv' as addnewusercatv %}
+{% url 'addnewuser' as addnewuser %}  
+{% url 'newdept' as newdept %}
+{% url 'showdept' as showdept%}
+{%url 'criteriaSetting' as criteriaSetting %}
+{% url 'vara' as vara %}
+{% url 'getCriteria' as getCriteria %}
+{% url 'userAddedBy' as userAddedBy%}
+{% url 'deptaddnewuser' as deptaddnewuser %}
+{% url 'deptuseraccess' as deptuseraccess %}
+{% url 'task_registration' as task_registration %}
+{% url 'issue_registrartion'  as issue_registrartion%}
+{% url 'task_assignee' as task_assignee %}
+{% url 'get_task_ID_data' as get_task_ID_data %}
+{% url 'update_summery_data' as update_summery_data %}
+{% url 'task_approver' as task_approver %}
+{% url 'updateprofile' as updateprofile %}
+{% url 'issue_approver' as issue_approver %}
+{% url 'issue_assignee' as issue_assignee %}
+{% url 'ICQQtns' as ICQQtns %}
+{% url 'ICQQtnsFinal' as ICQQtnsFinal %}
+{% url 'allocate_icq' as allocate_icq %}
+{% url 'newquerybuilder'  as newquerybuilder%}
+{% url 'reqValidation' as reqValidation %}
+{% url 'PdfSummary' as PdfSummary %}
+{% url 'allocate_questions' as allocate_questions %}
+{% url 'QuestionsAllUsers' as Questions %}
+{% url 'addQtnsAllUsers' as addQtns %}
+{% url 'QtnsResp' as QtnsResp %}
+{% url 'getTasks' as getTasks %}
+{% url 'getIssues' as getIssues %}
+{% url 'newauditresponse' as newauditresponse %}
+{% url 'newquestionresponse' as newquestionresponse %}
+{% url 'logout' as logout %}
+{% url 'tempdetails' as tempdetails%}
+{% url 'mdlselectionscreen' as mdlselectionscreen %}
+{% url 'ReportSubmissionDiss' as ReportSubmissionDiss %}
+{% url 'vrsuballocationscreen' as vrsuballocationscreen %}
+{% url 'publishVRScreen' as publishVRScreen %}
+{% url 'PerfMontrSetupMRM' as PerfMontrSetupMRM %}
+{% url 'PerfMontrPrdnData' as PerfMontrPrdnData %}
+{% url 'PerfMontrMRM' as PerfMontrMRM %}
+{% url 'PerfMontr' as PerfMontr %}
+{% url 'PerfMontrSetup' as PerfMontrSetup %}
+{% url 'modelList'  as modelList%}
+{% url 'modelDetails'  as modelDetails%}
+{% url 'newtaskfun'  as newtaskfun%}
+{% url 'newtaskapprovalstatus' as newtaskapprovalstatus %}
+{% url 'newtaskpriority' as newtaskpriority %}
+{% url 'newtasktype' as newtasktype %}
+{% url 'showfindvalsubelement' as showfindvalsubelement %}
+{% url 'newfindvalsubelement' as newfindvalsubelement %}
+{% url 'addfindvalsubelement' as addfindvalsubelement %}
+{% url 'valFindings' as valFindings %}
+{% url 'validation_findings' as validation_findings %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>PROPE</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="./favicon.ico">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.css' %}">
+  {% comment %} <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}">
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}" > {% endcomment %}
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/fullcalendar/main.min.css' %}" >
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css'%}"> 
+  <!-- CSS Front Template -->
+
+  <link rel="preload" href="{% static 'Front/dist/assets/css/theme.min.css' %}" data-hs-appearance="default" as="style">
+  <link rel="preload" href="{% static 'Front/dist/assets/css/theme-dark.min.css' %}" data-hs-appearance="dark" as="style">
+ 
+
+  <style data-hs-appearance-onload-styles>
+    * {
+        transition: unset !important;
+    }
+
+    body {
+        opacity: 0;
+    }
+    .navbar-brand-logo{
+      max-width: 10rem!important;
+    }
+</style>
+<style>
+  
+  .blobTaskOverdue {
+    border-color:orange;
+    /* height: 10px;
+    width: 10px; */
+    color: black;
+    background-color: orange;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 0 orange;
+    transform: scale(1);
+    animation: pulse 1s infinite;
+  }
+
+  .blobTaskOverdue:hover {
+  background-color: orange; 
+  color: black;
+}
+
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(255, 17, 0, 0.938);
+    }
+  
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(255, 165,0, 0);
+    }
+  
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(255, 165,0, 0);
+    }
+  }
+  </style>
+
+  <script>
+            window.hs_config = {"autopath":"@@autopath","deleteLine":"hs-builder:delete","deleteLine:build":"hs-builder:build-delete","deleteLine:dist":"hs-builder:dist-delete","previewMode":false,"startPath":"/index.html","vars":{"themeFont":"https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap","version":"?v=1.0"},"layoutBuilder":{"extend":{"switcherSupport":true},"header":{"layoutMode":"default","containerMode":"container-fluid"},"sidebarLayout":"default"},"themeAppearance":{"layoutSkin":"default","sidebarSkin":"default","styles":{"colors":{"primary":"#377dff","transparent":"transparent","white":"#fff","dark":"132144","gray":{"100":"#f9fafc","900":"#1e2022"}},"font":"Inter"}},"languageDirection":{"lang":"en"},"skipFilesFromBundle":{"dist":["assets/js/hs.theme-appearance.js","assets/js/hs.theme-appearance-charts.js","assets/js/demo.js"],"build":["assets/css/theme.css","assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside-mini-cache.js","assets/js/demo.js","assets/css/theme-dark.css","assets/css/docs.css","assets/vendor/icon-set/style.css","assets/js/hs.theme-appearance.js","assets/js/hs.theme-appearance-charts.js","node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js","assets/js/demo.js"]},"minifyCSSFiles":["assets/css/theme.css","assets/css/theme-dark.css"],"copyDependencies":{"dist":{"*assets/js/theme-custom.js":""},"build":{"*assets/js/theme-custom.js":"","node_modules/bootstrap-icons/font/*fonts/**":"assets/css"}},"buildFolder":"","replacePathsToCDN":{},"directoryNames":{"src":"./src","dist":"./dist","build":"./build"},"fileNames":{"dist":{"js":"../../static/Front/dist/assets/js/theme.min.js","css":"theme.min.css"},"build":{"css":"theme.min.css","js":"../../static/Front/dist/assets/js/theme.min.js","vendorCSS":"vendor.min.css","vendorJS":"vendor.min.js"}},"fileTypes":"jpg|png|svg|mp4|webm|ogv|json"}
+            window.hs_config.gulpRGBA = (p1) => {
+  const options = p1.split(',')
+  const hex = options[0].toString()
+  const transparent = options[1].toString()
+
+  var c;
+  if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+    c= hex.substring(1).split('');
+    if(c.length== 3){
+      c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c= '0x'+c.join('');
+    return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',' + transparent + ')';
+  }
+  throw new Error('Bad Hex');
+}
+            window.hs_config.gulpDarken = (p1) => {
+  const options = p1.split(',')
+
+  let col = options[0].toString()
+  let amt = -parseInt(options[1])
+  var usePound = false
+
+  if (col[0] == "#") {
+    col = col.slice(1)
+    usePound = true
+  }
+  var num = parseInt(col, 16)
+  var r = (num >> 16) + amt
+  if (r > 255) {
+    r = 255
+  } else if (r < 0) {
+    r = 0
+  }
+  var b = ((num >> 8) & 0x00FF) + amt
+  if (b > 255) {
+    b = 255
+  } else if (b < 0) {
+    b = 0
+  }
+  var g = (num & 0x0000FF) + amt
+  if (g > 255) {
+    g = 255
+  } else if (g < 0) {
+    g = 0
+  }
+  return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16)
+}
+            window.hs_config.gulpLighten = (p1) => {
+  const options = p1.split(',')
+
+  let col = options[0].toString()
+  let amt = parseInt(options[1])
+  var usePound = false
+
+  if (col[0] == "#") {
+    col = col.slice(1)
+    usePound = true
+  }
+  var num = parseInt(col, 16)
+  var r = (num >> 16) + amt
+  if (r > 255) {
+    r = 255
+  } else if (r < 0) {
+    r = 0
+  }
+  var b = ((num >> 8) & 0x00FF) + amt
+  if (b > 255) {
+    b = 255
+  } else if (b < 0) {
+    b = 0
+  }
+  var g = (num & 0x0000FF) + amt
+  if (g > 255) {
+    g = 255
+  } else if (g < 0) {
+    g = 0
+  }
+  return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16)
+}
+            </script>
+</head>
+
+<body class="has-navbar-vertical-aside navbar-vertical-aside-show-xl   footer-offset">
+
+  <script src="{% static 'Front/dist/assets/js/hs.theme-appearance.js' %}"></script>
+
+  <!-- <script src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside-mini-cache.js' %}"></script> -->
+
+  <!-- ========== HEADER ========== -->
+
+  <header id="header" class="navbar navbar-expand-lg navbar-fixed navbar-height navbar-container navbar-bordered bg-white">
+    <div class="navbar-nav-wrap">
+      <!-- Logo -->
+      <a class="navbar-brand" href="./index.html" aria-label="Front">
+        <img class="navbar-brand-logo" src="{% static '/images/prope_logo_1.png' %}" alt="PROPE" title="PROPE"  style="max-width:10rem" data-hs-theme-appearance="default">
+        <img class="navbar-brand-logo-mini" src="{% static '/images/prope_logo_1_short.png' %}" alt="PROPE" title="PROPE"  data-hs-theme-appearance="default">
+           </a>
+      <!-- End Logo -->
+
+      <div class="navbar-nav-wrap-content-start">
+        <!-- Navbar Vertical Toggle -->
+        <button type="button" class="js-navbar-vertical-aside-toggle-invoker navbar-aside-toggler">
+          <i class="bi-arrow-bar-left navbar-toggler-short-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Collapse"></i>
+          <i class="bi-arrow-bar-right navbar-toggler-full-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Expand"></i>
+        </button>
+
+        <!-- End Navbar Vertical Toggle -->
+
+        <!-- Search Form -->
+        <div class="dropdown ms-2">
+          <!-- Input Group -->
+          <div class="d-none d-lg-block">
+            <div class="input-group input-group-merge input-group-borderless input-group-hover-light navbar-input-group">
+              <div class="input-group-prepend input-group-text">
+                <i class="bi-search"></i>
+              </div>
+
+              <input style="display: none;" type="search" class="js-form-search form-control" placeholder="Search in front" aria-label="Search in front" data-hs-form-search-options='{
+                       "clearIcon": "#clearSearchResultsIcon",
+                       "dropMenuElement": "#searchDropdownMenu",
+                       "dropMenuOffset": 20,
+                       "toggleIconOnFocus": true,
+                       "activeClass": "focus"
+                     }'>
+              <a class="input-group-append input-group-text" href="javascript:;">
+                <i id="clearSearchResultsIcon" class="bi-x-lg" style="display: none;"></i>
+              </a>
+            </div>
+          </div>
+
+          <button class="js-form-search js-form-search-mobile-toggle btn btn-ghost-secondary btn-icon rounded-circle d-lg-none" type="button" data-hs-form-search-options='{
+                       "clearIcon": "#clearSearchResultsIcon",
+                       "dropMenuElement": "#searchDropdownMenu",
+                       "dropMenuOffset": 20,
+                       "toggleIconOnFocus": true,
+                       "activeClass": "focus"
+                     }'>
+            <i class="bi-search"></i>
+          </button>
+          <!-- End Input Group -->
+
+          <!-- Card Search Content -->
+          <div id="searchDropdownMenu" class="hs-form-search-menu-content dropdown-menu dropdown-menu-form-search navbar-dropdown-menu-borderless">
+            <div class="card">
+              <!-- Body -->
+              <div class="card-body-height">
+                <div class="d-lg-none">
+                  <div class="input-group input-group-merge navbar-input-group mb-5">
+                    <div class="input-group-prepend input-group-text">
+                      <i class="bi-search"></i>
+                    </div>
+
+                    <input type="search" class="form-control" placeholder="Search in front" aria-label="Search in front">
+                    <a class="input-group-append input-group-text" href="javascript:;">
+                      <i class="bi-x-lg"></i>
+                    </a>
+                  </div>
+                </div>
+
+                <span class="dropdown-header">Recent searches</span>
+
+                <div class="dropdown-item bg-transparent text-wrap">
+                  <a class="btn btn-soft-dark btn-xs rounded-pill" href="./index.html">
+                    Gulp <i class="bi-search ms-1"></i>
+                  </a>
+                  <a class="btn btn-soft-dark btn-xs rounded-pill" href="./index.html">
+                    Notification panel <i class="bi-search ms-1"></i>
+                  </a>
+                </div>
+
+                <div class="dropdown-divider"></div>
+
+                <span class="dropdown-header">Tutorials</span>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <span class="icon icon-soft-dark icon-xs icon-circle">
+                        <i class="bi-sliders"></i>
+                      </span>
+                    </div>
+
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>How to set up Gulp?</span>
+                    </div>
+                  </div>
+                </a>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <span class="icon icon-soft-dark icon-xs icon-circle">
+                        <i class="bi-paint-bucket"></i>
+                      </span>
+                    </div>
+
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>How to change theme color?</span>
+                    </div>
+                  </div>
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <span class="dropdown-header">Members</span>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <img class="avatar avatar-xs avatar-circle" src="/static/Front/dist/assets/img/160x160/img10.jpg" alt="Image Description">
+                    </div>
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>Amanda Harvey <i class="tio-verified text-primary" data-toggle="tooltip" data-placement="top" title="Top endorsed"></i></span>
+                    </div>
+                  </div>
+                </a>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <img class="avatar avatar-xs avatar-circle" src="/static/Front/dist/assets/img/160x160/img3.jpg" alt="Image Description">
+                    </div>
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>David Harrison</span>
+                    </div>
+                  </div>
+                </a>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <div class="avatar avatar-xs avatar-soft-info avatar-circle">
+                        <span class="avatar-initials">A</span>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>Anne Richard</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <!-- End Body -->
+
+              <!-- Footer -->
+              <a class="card-footer text-center" href="./index.html">
+                See all results <i class="bi-chevron-right small"></i>
+              </a>
+              <!-- End Footer -->
+            </div>
+          </div>
+          <!-- End Card Search Content -->
+
+        </div>
+
+        <!-- End Search Form -->
+      </div>
+
+      <div class="navbar-nav-wrap-content-end">
+        <!-- Navbar -->
+        <ul class="navbar-nav"> 
+          <li class="nav-item" id="navbarOverdueTasks" style="display: none;">
+            <!-- Apps -->
+            <div class="dropdown"> 
+                <button type="button" class="btn btn-icon btn-ghost-secondary rounded-circle blobTaskOverdue"    onclick="showModalps()">
+                  <i class="bi-exclamation-circle"></i>
+                </button>           
+            </div>
+            <!-- End Apps -->
+          </li>
+          <li class="nav-item d-none d-sm-inline-block">
+            <!-- Activity -->
+            <button class="btn btn-ghost-secondary btn-icon rounded-circle" type="button" onclick="getNotifications()"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasActivityStream" aria-controls="offcanvasActivityStream">
+              <i class="bi-bell"></i>
+            </button>
+            <!-- Activity -->
+          </li>
+          
+
+          <li class="nav-item" onclick="$('#divProfile,#accountNavbarDropdown').toggleClass('show');">
+            <!-- Account -->
+            <div class="dropdown">
+              <a class="navbar-dropdown-account-wrapper" href="javascript:;" id="accountNavbarDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" data-bs-dropdown-animation>
+                <div class="avatar avatar-sm avatar-circle">
+                  <img class="avatar-img" src="/static/images/avatar-rounded.png" alt="Image Description">
+                  <span class="avatar-status avatar-sm-status avatar-status-success"></span>
+                </div>
+              </a>
+
+              <div id="divProfile" class="dropdown-menu dropdown-menu-end navbar-dropdown-menu navbar-dropdown-menu-borderless navbar-dropdown-account" aria-labelledby="accountNavbarDropdown" style="width: 16rem;left:-200px">
+                <div class="dropdown-item-text">
+                  <div class="d-flex align-items-center">
+                    
+                    <div class="flex-grow-1 ms-3">
+                      <h5 class="mb-0">{{request.session.ufirstname}} {{request.session.ulastname}} </h5>
+                      <p class="card-text text-body">{{request.session.uemail}} </p>
+                      <label id="lblcurruid" style="display: none;">{{ request.session.uid }}</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="dropdown-divider"></div> 
+
+                <a class="dropdown-item" href="{{logout}}">Sign out</a>
+              </div>
+            </div>
+            <!-- End Account -->
+          </li>
+        </ul>
+        <!-- End Navbar -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== END HEADER ========== -->
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <!-- Navbar Vertical -->
+
+  <aside class="js-navbar-vertical-aside navbar navbar-vertical-aside navbar-vertical navbar-vertical-fixed navbar-expand-xl navbar-bordered bg-white  ">
+    <div class="navbar-vertical-container">
+      <div class="navbar-vertical-footer-offset">
+        <!-- Logo -->
+
+        <a class="navbar-brand" href="#" aria-label="Front">
+          <img class="navbar-brand-logo" src="{% static 'images/prope_logo_1.png' %}" alt="PROPE"   title="PROPE"  style="height: 40px;max-width:10rem;"  data-hs-theme-appearance="default">
+          <img class="navbar-brand-logo-mini" src="{% static 'images/prope_logo_1_short.png' %}" alt="PROPE" title="PROPE"  data-hs-theme-appearance="default">
+        </a>
+
+        <!-- End Logo -->
+
+        <!-- Navbar Vertical Toggle -->
+        <button type="button" class="js-navbar-vertical-aside-toggle-invoker navbar-aside-toggler">
+          <i class="bi-arrow-bar-left navbar-toggler-short-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Collapse"></i>
+          <i class="bi-arrow-bar-right navbar-toggler-full-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Expand"></i>
+        </button>
+
+        <!-- End Navbar Vertical Toggle -->
+
+        <!-- Content -->
+        <div class="navbar-vertical-content">
+          <div id="navbarVerticalMenu" class="nav nav-pills nav-vertical card-navbar-nav">
+
+            <span class="dropdown-header mt-4">Model Risk Management</span>
+            <small class="bi-three-dots nav-subtitle-replacer"></small>
+
+            <!-- Collapse -->
+            <div class="navbar-nav nav-compact">
+
+            </div>
+            {% if request.session.li_qv == "block" %}
+            <div class="nav-item">
+              <a class="nav-link "  href="{{index}}" data-placement="left">
+                <i class="bi-speedometer2 nav-icon"></i>
+                <span class="nav-link-title">Dashboard</span>
+              </a>
+            </div>
+            {% endif %}
+            {% if request.session.li_modinv == "block" %}
+            <div class="nav-item">
+              <a class="nav-link " href="{{modelList}}" data-placement="left">
+                <i class="bi-clipboard-data  nav-icon"></i>
+                <span class="nav-link-title">Model Inventory</span>
+              </a>
+            </div> 
+            {% endif %}
+            {% if request.session.task_registration == "block" or  request.session.li_taskComplete == "block"  or   request.session.li_taskApprv == "block"  %}
+            <div class="nav-item">
+              <a class="nav-link " href="{{getTasks}}" data-placement="left">
+                <i class="bi-list-task nav-icon"></i>
+                <span class="nav-link-title">Tasks</span>
+              </a>
+            </div> 
+            {% endif %}
+            {% if request.session.li_issuesReg == "block" or  request.session.li_issueComplete == "block"  or   request.session.li_issueApprv == "block"  %}
+            <div class="nav-item">
+              <a class="nav-link " href="{{getIssues}}" data-placement="left">
+                <i class="bi-ticket-perforated nav-icon"></i>
+                <span class="nav-link-title">Issues</span>
+              </a>
+            </div> 
+            {% endif %} 
+            {% if request.session.li_icqqtn == "block" %}
+              <div class="nav-item">
+                <a class="nav-link" href="{{ICQQtns}}" data-placement="left">
+                  <i class="bi-binoculars nav-icon"></i>
+                  <span class="nav-link-title">ICQ Questionnaire</span>
+                </a>
+              </div> 
+              {% endif%} 
+              
+              {% if request.session.li_icqqtnfinal == "block" %}
+              <div id="navbarVerticalMenuPagesMenu">
+                <!-- Collapse -->
+                <div class="nav-item">
+                  <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuPagesICQMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuPagesICQMenu" aria-expanded="false" aria-controls="navbarVerticalMenuPagesICQMenu">
+                    <i class="bi-question-circle nav-icon"></i>
+                    <span class="nav-link-title">ICQ</span>
+                  </a>
+  
+                  <div id="navbarVerticalMenuPagesICQMenu" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuPagesMenu">
+                    <a class="nav-link "  href="{{ICQQtnsFinal}}" >ICQ Questionnaire</a>
+                    <a class="nav-link "  href="{{allocate_icq}}">ICQ Allocation</a> 
+                  </div>
+                </div>                     
+              {% endif%} 
+            
+            <div id="navbarVerticalMenuPagesMenu"> 
+                
+              <!-- Collapse -->
+              <div class="nav-item">
+                <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuPerformance Monitoring" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuPerformance" aria-expanded="false" aria-controls="navbarVerticalMenuVRSub">
+                  <i class="bi-display nav-icon"></i>
+                  <span class="nav-link-title">Performance Monitoring</span>
+                </a>
+                <div id="navbarVerticalMenuPerformance" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuVRSub1">
+                  {% if request.session.is_mrm == "Yes" %}
+                    <a class="nav-link"  href="{{PerfMontrSetupMRM}}">Setup</a> 
+                  {% else %}
+                    <a class="nav-link"  href="{{PerfMontrSetup}}">Setup</a> 
+                  {%endif%} 
+                  <a class="nav-link" href="{{PerfMontrPrdnData}}">Upload Data</a>
+                  {% if request.session.is_mrm == "Yes" %}
+                    <a class="nav-link" href="{{PerfMontrMRM}}"> Performance Monitoring</a> 
+                  {% else %}
+                  <a class="nav-link" href="{{PerfMontr}}"> Performance Monitoring</a> 
+                  {%endif%} 
+                </div>
+                <div class="nav-item">
+                  <a class="nav-link " href="{{PdfSummary}}" data-placement="left">
+                    <i class="bi-chat-right-text nav-icon"></i>
+                    <span class="nav-link-title">Chit-Chat With .pdf</span>
+                  </a>
+                </div>
+
+                <div class="nav-item">
+                  {% if request.session.is_mrm_user == "Yes" %}
+                  <a class="nav-link " href="{{valFindings}}" data-placement="left">
+                    <i class="bi-chat-right-text nav-icon"></i>
+                    <span class="nav-link-title">Validation Findings</span>
+                  </a>
+                  {% else %}
+                  <a class="nav-link " href="{{validation_findings}}" data-placement="left">
+                    <i class="bi-chat-right-text nav-icon"></i>
+                    <span class="nav-link-title">Validation Findings</span>
+                  </a>
+                  {%endif%} 
+                </div>
+
+                
+              </div>
+              <!-- End Collapse -->
+
+             
+
+              
+
+             
+            </div>
+            <!-- End Collapse -->  
+          </div>
+
+        </div>
+        <!-- End Content -->
+ 
+      </div>
+    </div>
+  </aside>
+   
+  <main id="content" role="main" class="main">
+    <div class="content container-fluid">
+  {% block style %}
+  {% endblock style %}
+  {% block content %}
+  {% endblock content %}
+  {% block script %} 
+      <!-- Jquery JS-->             
+  {% endblock script %}
+    </div>
+</main>
+  <!-- End Navbar Vertical --> 
+ 
+  <!-- Activity -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasActivityStream" aria-labelledby="offcanvasActivityStreamLabel">
+    <div class="offcanvas-header">
+      <h4 id="offcanvasActivityStreamLabel" class="mb-0">Notifications</h4>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"  aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="divNotificationLst">
+      
+    </div>
+  </div>
+  <!-- End Activity -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+      <h5 id="offcanvasRightLabel">Offcanvas right</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label" for="ddlSource">Model<span style="color: red;">*</span></label>
+        <div class="col-sm-8">    
+          <select class="js-select form-select" id="mdlid" name="mdlid" data-hs-tom-select-options='{
+            "placeholder": "Select model source...",
+            "hideSearch": true
+          }' required>
+            <!-- <option value="">Select model</option>                                  -->
+          </select>
+        </div>
+      </div> 
+    </div>
+  </div>
+
+<!-- JS Global Compulsory  -->
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- JS Implementing Plugins -->
+<script src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/hs-form-search/dist/hs-form-search.min.js' %}"></script>
+
+<script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>
+<script src="{% static 'Front/dist//assets/vendor/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+{% comment %} <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script> {% endcomment %}
+<script src="{% static 'Front/dist/assets/vendor/clipboard/dist/clipboard.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+<!-- JS Front -->
+
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script>
+<script src="{% static 'js/notification.js' %}"></script>  
+
+  <!-- JS Front -->
+  <!-- JS Plugins Init. -->
+  <script>
+    $(document).on('ready', function () { 
+     
+  var pending_tasks='{{request.session.pending_tasks|safe}}' 
+  if(pending_tasks==1){
+    $('#navbarOverdueTasks').show()
+  }
+      // INITIALIZATION OF FLATPICKR
+    // =======================================================
+    HSCore.components.HSFlatpickr.init('.js-flatpickr')
+    });
+
+    function getNotifications(){ 
+        $("#divNotificationLst").empty();
+        $.ajax({ 
+            type:'GET',
+            url: "{% url 'getnotifications' %}", 
+            dataType: 'json',
+            success: function (data) {   
+               
+              for(i in data.notification){ 
+             
+              var notificationdata='<div id="divNot_' + data.notification[i].Notification_Id +'" class="p-3 border-300 notification-card position-relative read border-bottom">';
+                notificationdata+='<div class="d-flex align-items-center justify-content-between position-relative">';
+                notificationdata+=' <div class="d-flex">';
+                  // notificationdata+=' <div class="avatar avatar-m status-online me-3"><img class="rounded-circle" src="../../assets/img/team/30.png" alt="" />';
+                  //   notificationdata+=' </div>';
+                    notificationdata+='  <div class="me-3 flex-1">';
+                      notificationdata+=' <h4 class="fs--1 text-black">'+ data.notification[i].sentfrom +'</h4>';
+                      notificationdata+=' <p class="fs--1 text-1000 mb-2 mb-sm-3 fw-normal">'+ data.notification[i].Utility +  ' '+ data.notification[i].Notification_Trigger.replace('-','is')  +'</p>';//<span class="ms-2 text-400 fw-bold fs--2">10m</span>
+                      notificationdata+=' <p class="text-800 fs--1 mb-0"><span class="me-1 fas fa-clock"></span>'+ data.notification[i].Create_Date + '</p>';
+                      notificationdata+=' </div>';
+                      notificationdata+=' </div>';
+                      notificationdata+=' <div class="font-sans-serif d-none d-sm-block">';
+                        notificationdata+='  <button class="btn fs--2 btn-sm dropdown-toggle dropdown-caret-none transition-none notification-dropdown-toggle" type="button" data-stop-propagation="data-stop-propagation" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2 text-900"></span></button>';
+                        notificationdata+=' <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!" onclick="markasRead(\'' + data.notification[i].Notification_Id +'\')">Mark as read</a></div>';
+                        notificationdata+=' </div>';
+                        notificationdata+=' </div>';
+                        notificationdata+=' </div>'
+                        $("#divNotificationLst").append(notificationdata)
+              };
+            }
+            });
+      }
+    
+      function getmdlid(){ 
+        debugger;
+        var $mySelect ;
+        $mySelect = $('#mdlid'); 
+        // $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option);
+        $.ajax({
+            url: '/GetModelIdFindVal/', 
+            // data:{ secid: selid},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log("value-----------",data)
+               $.each(data.Mdlids, function(key, value) { 
+                    console.log("key",key,"value",value)
+                    var $option = $("<option/>", {
+                        value: value,
+                        text: value
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    } 
+  </script>
+
+
+
+  <!-- JS Plugins Init. -->
+  <script>
+    (function() {
+      localStorage.removeItem('hs_theme')
+
+      window.onload = function () {
+        
+
+        // INITIALIZATION OF NAVBAR VERTICAL ASIDE
+        // =======================================================
+        new HSSideNav('.js-navbar-vertical-aside').init()
+
+
+        
+
+
+       
+
+       
+      }
+    })()
+  </script>
+
+  <!-- Style Switcher JS -->
+
+  <script>
+      (function () {
+        // STYLE SWITCHER
+        // =======================================================
+        const $dropdownBtn = document.getElementById('selectThemeDropdown') // Dropdowon trigger
+        const $variants = document.querySelectorAll(`[aria-labelledby="selectThemeDropdown"] [data-icon]`) // All items of the dropdown
+
+        // Function to set active style in the dorpdown menu and set icon for dropdown trigger
+        const setActiveStyle = function () {
+          $variants.forEach($item => {
+            if ($item.getAttribute('data-value') === HSThemeAppearance.getOriginalAppearance()) {
+              $dropdownBtn.innerHTML = `<i class="${$item.getAttribute('data-icon')}" />`
+              return $item.classList.add('active')
+            }
+
+            $item.classList.remove('active')
+          })
+        }
+
+        // Add a click event to all items of the dropdown to set the style
+        $variants.forEach(function ($item) {
+          $item.addEventListener('click', function () {
+            HSThemeAppearance.setAppearance($item.getAttribute('data-value'))
+          })
+        })
+
+        // Call the setActiveStyle on load page
+        setActiveStyle()
+
+        // Add event listener on change style to call the setActiveStyle function
+        window.addEventListener('on-hs-appearance-change', function () {
+          setActiveStyle()
+        })
+      })()
+    </script>
+
+  <!-- End Style Switcher JS -->
+</body>
+</html>

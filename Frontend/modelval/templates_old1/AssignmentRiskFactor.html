@@ -1,0 +1,466 @@
+{% extends 'base.html' %} 
+{% url 'exportReport' as exportReport %} 
+{% load static %} 
+{% block style %} 
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">  -->
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+<link  rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css'%}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css'%}">
+{% endblock style %}
+{% block content %}
+
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+    {% csrf_token %}
+  <div class="col-lg-10">
+    
+        
+      <div class="card">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                -webkit-border-top-right-radius: 6px;
+                -moz-border-radius-topleft: 6px;
+                -moz-border-radius-topright: 6px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Risk Factor Assignment</h4>
+        </div>  
+          <div class="card-body card-block">
+              <div class="mb-9">
+                <div class="row mb-3">
+                  <label class="col-sm-1 col-form-label" style="width: 10%;" for="ddlModel">Utility</label>
+                  <div class="col-sm-3">   
+                    <select  class="form-select" data-choices="data-choices" data-options='{"removeItemButton":false,"placeholder":true}' onchange="GetRiskFactor()" name="utility" id="utility"> 
+                      <option value="">Select</option> 
+                      {% for val in utility  %}                                                          
+                        <!-- <option selected value="{{val.Mdl_Id}}">{{val.Mdl_Id}}</option>                          -->
+                        <option value="{{val}}">{{val}}</option>   
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <label class="col-sm-1 col-form-label" style="width: 12%;" for="ddlUsers">Assign To </label>
+                  <div class="col-sm-6">   
+                    <select  class="js-select form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' name="ddlUsers" id="ddlUsers" data-hs-tom-select-options='{
+                      "placeholder": "Select...",
+                      "hideSearch": true
+                    }'> 
+                      <option value="">Select</option> 
+                      {% for key, val in mrmUsers.items  %}                                   
+                        <option value="{{val.u_aid}}">{{val.uname}}</option>   
+                      {% endfor %}
+                    </select>
+                    <!-- <select class="js-select form-select" autocomplete="off" data-hs-tom-select-options='{
+                      "placeholder": "Select a person...",
+                      "hideSearch": true
+                    }' multiple>
+                      <option value="">Select a person...</option>
+                      <option value="4">Thomas Edison</option>
+                      <option value="1">Nikola</option>
+                      <option value="3">Nikola Tesla</option>
+                      <option value="5">Arnold Schwarzenegger</option>
+                    </select> -->
+                  </div>
+                  
+                </div>
+              </div>  
+              <div class="mb-9">
+                <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                  
+                   
+                  <div class="table-responsive scrollbar"  style="max-height:300px;">
+                    <table id="tblModelMetric" class="table fs--1 mb-0 border-top border-200">
+                      <thead>
+                        <tr>
+                          
+                          <th class="sort white-space-nowrap align-middle ps-0" scope="col" style="width:5%;">
+                            <input type="checkbox" id="name1" onclick="selectall()"/> 
+                          </th>
+                          <th class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:30%;" >Request For</th>
+                          <th class="sort align-middle ps-3" scope="col"  style="width:30%;">Assign To</th> 
+                          <th class="sort align-middle ps-3" scope="col"  style="width:15%;">End Date</th>  
+                                        
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="project-list-table-body">
+                        <!-- {% for key, val in validationTYpes.items  %} 
+                          <tr class="position-static"> 
+                            <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">
+                              
+                              <input type="checkbox" name="chk" id="chk_{{val.Mdl_Val_Type_AID}}" onclick="registerclick('{{val.Mdl_Val_Type_AID}}')"/> 
+                            </td>                
+                            <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">
+                              {{val.Mdl_Val_Type_Label}}
+                            </td>
+                            <td class="align-middle white-space-nowrap ps-0  py-4"> 
+                              <label id='lbl_{{val.Mdl_Val_Type_AID}}'></label>
+                            </td>
+                            <td class="align-middle white-space-nowrap ps-0  py-4"> -->
+                                <!-- <input required  class="form-control datetimepicker" name="end_date" style="margin-bottom:15px;width:90%" id="txt_{{val.Mdl_Val_Type_AID}}"  type="text"
+                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/> -->
+                                <!-- Flatpickr -->
+                                <!-- <input type="text" class="js-flatpickr form-control flatpickr-custom" name="end_date" id="txt_{{val.Mdl_Val_Type_AID}}" placeholder="Select dates"
+                                data-hs-flatpickr-options='{
+                                  "dateFormat": "m/d/Y"
+                                }'> -->
+                                <!-- End Flatpickr -->
+                            <!-- </td>   -->
+                            <!-- <td class="align-middle white-space-nowrap ps-0  py-4">
+                              
+                              <label id='txt_task_{{val.Mdl_Val_Type_AID}}'></label>
+                          </td>                            -->
+                          <!-- </tr> -->
+                        <!-- {% endfor %}    -->
+                        {% for val in range_utility_max_cnt  %}
+                          
+                        <tr class="position-static"> 
+                            <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">                              
+                              <input type="checkbox" name="chk" id="chk_{{val}}" onclick="registerclick('{{val}}')" /> 
+                            </td>                
+                            <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">
+                                <label id='Risk_lbl_{{val}}'></label>
+                            </td>
+                            <td class="align-middle white-space-nowrap ps-0  py-4"> 
+                              <label id='user_1'></label>
+                              <input type="hidden" id="hdn_{{val}}"/>
+                            </td>
+                            <td class="align-middle white-space-nowrap ps-0  py-4">
+                                <!-- <input required  class="form-control datetimepicker" name="end_date" style="margin-bottom:15px;width:90%" id="txt_{{val.Mdl_Val_Type_AID}}"  type="text"
+                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/> -->
+                                <!-- Flatpickr -->
+                                <input type="text" class="js-flatpickr form-control flatpickr-custom" name="end_date" id="date_{{val}}" placeholder="Select dates"
+                                data-hs-flatpickr-options='{
+                                  "dateFormat": "m/d/Y"
+                                }'>
+                                <!-- End Flatpickr -->
+                            </td>  
+                            <!-- <td class="align-middle white-space-nowrap ps-0  py-4">
+                              
+                              <label id='txt_task_1'></label>
+                          </td>                            -->
+                          </tr>
+                          {% endfor %}  
+                      </tbody>
+                    </table>
+                  </div>
+                
+                </div>
+              </div> 
+          </div> 
+          <div  class="card-footer"> 
+            <div class="col-auto" style="display: flex; justify-content: flex-end;">
+              <button type="button" class="btn btn-outline-primary" style="margin-right: 10px;" onclick="gotoBlank()">Cancel</button>
+              <button type="button" class="btn btn-primary" style="margin-right: 10px;" onclick="AddRiskFactor()" >Add</button>
+              
+ 
+            </div> 
+          </div>
+
+  </div>
+   
+</div>
+
+{% endblock content %}
+{%  block script %}  
+<!-- <script src="{% static 'bootstrap_datepicker/js/bootstrap-datepicker.js' %}"></script> -->
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+
+<!-- JS Front -->
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+<script type="text/javascript">  
+  
+   var arrQtns=[] 
+   
+   $(document).ready(function () { 
+    HSCore.components.HSTomSelect.init('.js-select') 
+    HSCore.components.HSFlatpickr.init('.js-flatpickr')
+    $('#ddlModel').val('{{selMdl}}')   
+    // getassged();
+   });
+   
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       
+        if($('#chk_'+id).prop('checked')){ 
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          }
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name1').prop('checked', false); 
+        }
+    }
+
+    function selectall(){ 
+      var yes = document.getElementById("name1");  
+      console.log("yes",yes.checked)
+      // alert("select all")
+      // var check = false;
+      if (yes.checked == true){
+        var ele=document.getElementsByName('chk');
+        console.log("ele",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+            ele[i].click(); 
+          }
+      }
+      else{
+        var ele=document.getElementsByName('chk');
+        console.log("ele----------",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].checked=false;  
+          }
+      }
+      
+    }
+
+    function add(){ 
+      if($('#ddlModel').val()=="") {
+        alert('Please select model.');
+        return
+      }
+      else if($('#ddlUsers').val()==""){
+        alert('Please select user(s).')
+        return
+      }
+
+      else if(arrQtns.length<1){
+        alert('Please select request type(s).')
+        return
+      }
+
+      updatedata=[]
+      arrQtns.forEach(i => {
+        if($('#chk_'+i).prop('checked')) {
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["AID"] = i
+          item["End_date"] = $('#txt_'+i).val()
+          updatedata.push(item); 
+        }
+    
+      }); 
+      var users=$('#ddlUsers').val();
+      arrUsers=[]
+      users.forEach(i => {
+          item = {}  
+          item["UID"] = i
+          arrUsers.push(item);      
+    
+      }); 
+      if(updatedata.length>0){
+        $.ajax({
+          url: '/assignValidation/', 
+          data:{ datalist: JSON.stringify(updatedata),mdlId:$('#ddlModel').val(),ddlUsers:JSON.stringify(arrUsers)  },
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){ 
+                if(data.assignTaskLst.length>0){
+                $.each(data.assignTaskLst, function(i, obj) { 
+                  var select_users = $('#ddlUsers option:selected').toArray().map(item => item.text).join();
+                  $('#txt_task_'+obj.AID).text(obj.task_id)
+                  $('#lbl_'+obj.AID).text(select_users)
+                });
+                alert('Validation request assigned to selected users.')
+              }
+              else{
+                alert('Validation request already assigned.')
+              }
+              }
+          }
+        }); 
+      } 
+    }
+
+    // function updateResponse(){
+    //     id = $("#mdlid").val()
+    //     room_id = 'Perfm_'+id
+    //     $.ajax({
+    //           url: '/addperfromancediscussion/', 
+    //           data:{room_id: room_id,comment:$("#txtmsg").val()},
+    //          dataType: 'json',  
+    //          method:'POST', 
+    //           success: function (data) { 
+    //             // console.log("---------------data",data) 
+    //             sendPerfMonmsg($("#txtmsg").val(),$('#lblcurruid').text(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+    //             $("#txtmsg").val('')
+    //           }
+    //       });
+        
+    // }
+
+    var arrQtns=[]
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       debugger;
+        if($('#chk_'+id).prop('checked')){ 
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          }
+          console.log("arrQtns",arrQtns)
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name1').prop('checked', false);
+          console.log("arrQtns",arrQtns) 
+        }
+        
+    }
+
+    function GetRiskFactor(){
+        debugger
+      $('#projectSummary').find('input:checkbox').prop('checked', false);  
+  
+      jQuery('#projectSummary label').contents().filter(function () {
+              return this.nodeType === 3;
+          }).remove();
+      arrQtns=[]
+    //   count = {{range_utility_max_cnt|safe}}
+      $.ajax({
+                    url: '/FetchRiskFactorUtility/', 
+                    data:{ utility:$('#utility').val()  },
+                    dataType: 'json',
+                    success: function (data) { 
+                        debugger;
+                      console.log("Risk factor ----------",data)
+                      $.each(data.data, function(i, obj) {
+                        console.log("check obj",obj)
+                        $('#Risk_lbl_'+(i+1)).text(obj['label'])
+                        $('#hdn_'+(i+1)).val(obj['risk_aid'])
+                      })
+
+                        // if(data.istaken=="true"){ 
+                        //    $.each(data.assignedTo, function(i, obj) { 
+                        //       // arrQtns.push(obj.Validation_Task_Type);  
+                              
+                        //       // $('#chk_'+obj.Validation_Task_Type).prop('checked', true);
+                        //     //   $('#lbl_'+obj.Validation_Task_Type).text(obj.users)
+                        //     //   $('#txt_'+obj.Validation_Task_Type).val(obj.End_Date)
+                        //     //   $('#txt_'+obj.Validation_Task_Type).prop('disabled', true);
+                        //     //   $('#txt_task_'+obj.Validation_Task_Type).text(obj.Task_ID)
+                        //    });
+                        // }
+                    //     // strRows='';
+                    //     // $.each(data.data, function(i, item) {
+
+                    //     // strRows +=' <tr class="position-static"> ';
+                    //     // strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                    //     // strRows +='       <input type="checkbox" name="chk" id="chk_'+ item["risk_aid"] +'" onclick="registerclick('+ item["risk_aid"] +')"/> ';
+                    //     // strRows +='      </td>';
+                    //     // strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                    //     // strRows +='      <div class="row"> ';
+                    //     // strRows +='      <div id="txtrisklabel_'+ item["risk_aid"] +'" class="col-sm-7">  '+data.prefix+".        "+item['label'];
+                    //     // strRows +='        </div>';
+                    //     // strRows +='        </div>  ';                                          
+                    //     // strRows +='        </td> ';
+                    //     // strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+                    //     // strRows +='        <div class="row"> ';
+                    //     // strRows +='         <div class="col-sm-12"> ';
+                    //     // strRows +=          ''       
+                    //     // strRows +='        </div>';
+                    //     // strRows +='        </div>';
+                    //     // strRows +='        </td>';
+                    //     // strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                    //     // strRows +='        <div class="row"> ';
+                    //     // strRows +='        <div class="col-sm-12"> ';
+                    //     // strRows +=`        <input type="text" class="js-flatpickr form-control flatpickr-custom" name="send_date" id="date_'+ item["risk_aid"] +'"'; strRows +=' placeholder="Select dates" data-hs-flatpickr-options='{"dateFormat": "m/d/Y"}'/>`;
+                            
+                    //     // strRows +='        </div>';
+                    //     // strRows +='        </div>';
+                    //     // strRows +='        </td> '; 
+                    //     // // strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                    //     // // strRows +='        <div class="row"> ';
+                    //     // // strRows +='        <div class="col-sm-12"> ';
+                    //     // // strRows +=         data.prdxn_data[0][item['mm_details']['mm_label']]
+                    //     // // strRows +='        </div>';
+                    //     // // strRows +='        </div>';
+                    //     // // strRows +='        </td> ';
+                    //     // // strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                    //     // // strRows +='         <div class="row" > ';
+                    //     // // strRows +='                             <div class="col-sm-12">';
+                    //     // // strRows +='                             <select class="form-select" name="ddlFunction" id="ddlFunction">';
+                    //     // // strRows +='                             <option value="">Normal</option>';
+                    //     // // strRows +='                             <option value="">Warning</option>   ';
+                    //     // // strRows +='                             <option value="">Critical</option> ';                                                   
+                    //     // // strRows +='                             </select>';
+                    //     // // strRows +='                             </div>';
+                    //     // // strRows +='                             </div>    ';
+                    //     // // strRows +='        </td>  ';                        
+                    //     // strRows +='        </tr>  ';
+                    //     // $('#tblModelMetric tr:last').after(strRows);
+                    //     // strRows=''; 
+                    // // console.log("item",item['mm_details'])
+                    // // $("#mmlabel").text(item['mm_details']['mm_label'])
+                    // // $("#threshold").text(item['threshold'])
+                    // // $("#warning").text(item['warning'])
+                    //     });
+                    
+                    }
+                  }); 
+                  HSCore.components.HSFlatpickr.init('.js-flatpickr')
+    }
+
+
+    function AddRiskFactor(){ 
+        debugger;
+        utility = $("#utility").val() 
+        console.log("Users",$('#ddlUsers').val())
+
+        if($('#utility').val()=="") {
+        alert('Please select Utility.');
+        return
+        }
+        else if($('#ddlUsers').val()==""){
+        alert('Please select Users.')
+        return
+        }
+
+        else if(arrQtns.length<1){
+        alert('Please select Risk Factors.')
+        return
+        }
+
+        updatedata=[]
+        arrQtns.forEach(i => {
+        if($('#chk_'+i).prop('checked')) {
+            item = {}  
+            item["risk_aid"] = $('#hdn_'+i).val()
+            item["request_for_label"] = $('#Risk_lbl_'+i).text()
+            item["assign_to"] = $('#ddlUsers').val()
+            item["end_date"] = $('#date_'+i).val()
+            updatedata.push(item); 
+        }
+        console.log("updatedata",updatedata)
+        }); 
+         
+        if(updatedata.length>0){
+        debugger;
+        $.ajax({
+            url: '/Add_Risk_Factor_Assignment/', 
+            data:{ datalist: JSON.stringify(updatedata),utility:$('#utility').val()},
+            dataType: 'json',
+            success: function (data) { 
+                console.log("123------------data",data)
+                if(data.istaken=="true"){ 
+                    alert(data.msg)                
+                }
+                else{
+                    alert("Something went wrong")
+                }
+            }
+        }); 
+    
+        } 
+    }
+
+    function gotoBlank(){
+      window.location='{{blank}}'
+    }
+ </script>
+{% endblock script %} 

@@ -1,0 +1,54 @@
+{% extends 'adminbase.html' %}  
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+  
+  <div class="mb-9">
+    <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"]}'>
+       
+      <div class="row g-3 justify-content-between align-items-end mb-4">
+         
+        <div class="col-12 col-sm-auto">
+          <div class="d-flex align-items-center">
+            <div class="search-box me-3">
+              <div class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                <input class="form-control search-input search" type="search" placeholder="Search Type" aria-label="Search" />
+                <span class="fas fa-search search-box-icon"></span>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+        <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" href="{% url 'add_issue_type' %}"><i class="fa-solid fa-plus me-2"></i>Add New</a></div>
+
+      </div> 
+      <div class="table-responsive scrollbar" >
+        <table class="table fs--1 mb-0 border-top border-200">
+          <thead>
+            <tr>
+              <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:15%;">Label</th>
+             
+              <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:20%;">Description</th> 
+              <th class="sort align-middle ps-3" scope="col" style="width:20%;">Edit</th>
+            </tr>
+          </thead>
+          <tbody class="list" id="project-list-table-body">
+            {% for val in users %} 
+              <tr class="position-static"> 
+                <td class="align-middle white-space-nowrap ps-0 Model_ID py-4">
+                  
+                   {{val.issue_type_label}} 
+                </td>
+                <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                  {{val.issue_type_description}}
+                </td>   
+                <td><a href="{% url 'edit_issue_type' val.issue_type_aid %}"><span class="badge badge-phoenix fs--2 badge-phoenix-success"><span class="badge-label">Edit</span><span class="ms-1" data-feather="edit-3" style="height:12.8px;width:12.8px;"></span></span></a></td>
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div> 
+  </div>
+{% endblock content %}

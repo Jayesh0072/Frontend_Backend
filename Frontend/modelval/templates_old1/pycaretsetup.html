@@ -1,0 +1,731 @@
+{% extends 'rmsebase.html' %}  
+{% load static %} 
+
+{% block style %}
+<style>
+    table,
+    tr td {
+        border: 0px solid red
+    }
+
+    tbody {
+        display: block;
+        height: 150px;
+        overflow: auto;
+    }
+
+    thead,
+    tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+          
+    }
+
+    thead {
+        width: calc(100% - 1em)
+            /* scrollbar is average 1em/16px width, remove it from thead width */
+    }
+    .recent-report{
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock style %}
+{% block content %} 
+<div class="row"  style="margin: auto;display: flex; justify-content:center;">
+    <form method="POST">
+    {% csrf_token %}  
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                     Data Preparation
+                </div>
+                <div class="card-body card-block">
+                    <div class="table-responsive table--no-card m-b-40">
+                        <div style="height: 500px;overflow-y: auto;">
+                        <table id='csvData' class="table table-borderless table-striped table-earning" >  
+                            <tbody style="height:500px;"> 
+                                <tr> 
+                                    <td>Train Size</td>                                      
+                                    <td style="padding: 10px 0px;">
+                                        <input type="text" id="txt_train_size"  class="form-control-sm form-control" value="0.7">
+                                    </td> 
+                                    <td  style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('train')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Categorical Imputation
+                                    </td>   
+                                    <td style="padding: 10px 0px;">
+                                        <select id="ddlcategorical_imputation" class="form-control-sm form-control"> 
+                                            <option value="constant">constant</option>
+                                            <option value="mode">mode</option> 
+                                        </select>
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('categorical_imputation')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Numeric Imputation
+                                    </td>   
+                                    <td style="padding: 10px 0px;">
+                                        <select id="ddlnumeric_imputation" class="form-control-sm form-control"> 
+                                            <option value="mean">mean</option>
+                                            <option value="median">median</option> 
+                                            <option value="zero">zero</option> 
+                                        </select>
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('numeric_imputation')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Ignore Features
+                                    </td>   
+                                    <td style="padding: 10px 0px;">
+                                        <input type="text" id="txt_ignore_features" readonly  class="form-control-sm form-control" >
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('ignore_features')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Target Imbalance
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbfix_imbalance" /> Yes
+                                        <input type="radio"  value="False" name="rbfix_imbalance" checked="True"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('fix_imbalance')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Remove Outliers
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbremove_outliers" onclick="enableoutthresh()" /> Yes
+                                        <input type="radio"  value="False" name="rbremove_outliers" onclick="enableoutthresh()"  checked="true"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('remove_outliers')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Outliers Threshold
+                                    </td>  
+                                     
+                                    <td style="padding: 10px 0px;">
+                                        <input type="text" value="0.05" readonly id="txt_outliers_threshold" class="form-control-sm form-control"/>                      
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('remove_outliers')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Normalize
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbnormalize" /> Yes
+                                        <input type="radio"  value="False" name="rbnormalize" checked="True"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('normalize')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Normalize Method
+                                    </td>   
+                                    <td style="padding: 10px 0px;">
+                                        <select id="ddlnormalize_method" class="form-control-sm form-control"> 
+                                            <option value="zscore">z-score</option>
+                                            <option value="minmax">minmax</option>
+                                            <option value="maxabs">maxabs</option>
+                                            <option value="robust">robust</option>
+                                        </select>
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('normalize')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Transformation
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbtransformation" /> Yes
+                                        <input type="radio"  value="False" name="rbtransformation" checked="True"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('transformation')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Transformation Method
+                                    </td>    
+                                    <td style="padding: 10px 0px;">
+                                        <select id="ddltransformationmethod" class="form-control-sm form-control"> 
+                                            <option value="yeo-johnson">yeo-johnson</option>
+                                            <option value="quantile">quantile</option> 
+                                        </select>
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('transformation')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Transform Target
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbtransform_target" /> Yes
+                                        <input type="radio"  value="False" name="rbtransform_target" checked="True"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('transform_target')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Transform Target Method
+                                    </td>   
+                                    <td style="padding: 10px 0px;">
+                                        <select id="ddltransformtargetmethod" class="form-control-sm form-control"> 
+                                            <option value="box-cox">box-cox</option> 
+                                            <option value="yeo-johnson">yeo-johnson</option>                                            
+                                        </select>
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('transform_target')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <tr> 
+                                    <td>Remove Multicollinearity
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbremove_multicollinearity" onclick="enabletxtmulthresh()" /> Yes
+                                        <input type="radio"  value="False" name="rbremove_multicollinearity" onclick="enabletxtmulthresh()" checked="true"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('remove_multicollinearity')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Multicollinearity Threshold
+                                    </td>  
+                                     
+                                    <td style="padding: 10px 0px;">
+                                        <input type="text" value="0.9" readonly id="txt_multicollinearity_threshold" class="form-control-sm form-control"/>                      
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('remove_multicollinearity')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Feature Interaction
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbfeature_interaction" /> Yes
+                                        <input type="radio"  value="False" name="rbfeature_interaction" checked="true"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('feature_interaction')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Feature Ratio
+                                    </td>  
+                                     
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbfeature_ratio" /> Yes
+                                        <input type="radio"  value="False" name="rbfeature_ratio" checked="true"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('feature_ratio')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Polynomial Features
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbpolynomial_features" onclick="enablePolyDeg()" /> Yes
+                                        <input type="radio"  value="False" name="rbpolynomial_features" checked="true" onclick="enablePolyDeg()"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('polynomial_features')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Polynomial Degree
+                                    </td>  
+                                     
+                                    <td style="padding: 10px 0px;">
+                                        <input type="text"  id="txt_polynomial_degree" value="2"  readonly="readonly" class="form-control-sm form-control"/>                      
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('polynomial_degree')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr> 
+                                    <td>Trigonometry Features
+                                    </td>  
+                                       
+                                    <td style="padding: 10px 0px;">
+                                        <input type="radio" value="True" name="rbtrigonometry_features" /> Yes
+                                        <input type="radio"  value="False" name="rbtrigonometry_features" checked="true"/> No
+                                    </td> 
+                                    <td style="padding: 10px 10px;">
+                                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                                            <img src='\static\images\help.png' title="Help" onclick="showHelp('trigonometry_features')"  style='cursor:pointer;'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">     
+    
+                    <div class="col-auto" style="display: flex; justify-content: flex-end"> 
+                        <button type="button" class="btn btn-primary btn-sm" onclick="save();" >Save</button>
+                        <button  class="btn btn-primary btn-sm"    onclick="goNext()" style="margin-left: 10px;" type="button">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="divComment" title="Add comments" style="display: none;width:70%">
+            <!-- <div style="width:100%">
+                
+                <textarea id="txtcomment" rows="5" style="resize: none; border:1px solid black;width:100%;" ></textarea>
+           </div>  -->
+           <div class="card">  
+            <div class="card-body card-block">     
+                      <div class="card-body card-block">
+                        <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;"> 
+                            <div class="col col-md-3">
+                                <label class=" form-control-label">Comments </label>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <select id="optComments" onchange="getData()"  class="form-control-sm form-control">
+                                    <option value="0">Select</option> 
+                                    {% for data in List %}
+                                      <option value="{{data.val}}" style="color: {{data.color}};  background-color: {{data.bgColor}};">{{data.val}}</option>  
+                                    {% endfor %}
+                                    <option value="-1">Add New</option>  
+                                </select>
+                            </div> 
+                        </div>
+                        <div class="row form-group"  style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                          <div class="col col-md-3">
+                              <label class=" form-control-label">Date </label>
+                          </div>
+                          <div class="col-12 col-md-4">
+                            <input type="text"   readonly value="{{today}}" id="txtDate" name="text-input" class="form-control-sm form-control"> 
+                          </div> 
+                        </div>
+                        <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3">
+                                <label class=" form-control-label">Section</label>
+                            </div>
+                            <div class="col-12 col-md-7"> 
+                                <input type="text"  id="txtSection" name="text-input" class="form-control-sm form-control"> 
+                            </div>
+                            
+                        </div>  
+                        <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                          <div class="col col-md-2">
+                            <label class=" form-control-label">Description
+                            </label>
+                        </div>
+                        </div>
+                        <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                            <div class="col-12 col-md-12">
+                                 <textarea id="txtComments" rows="3" style="resize: none;width: 100%;font-size: 10pt;" class="form-control form-control-sm"></textarea>
+                            </div>
+                        </div>
+                        <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                          <div class="col col-md-2">
+                            <label class=" form-control-label">Response
+                            </label>
+                          </div>
+                        </div>
+                        <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                            <div class="col-12 col-md-12">
+                                 <textarea id="txtResp" rows="3" disabled style="resize: none;width: 100%;font-size: 10pt;" class="form-control form-control-sm"></textarea>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="card-footer">
+                          <div class="row" style="display: flex; justify-content: flex-end;"> 
+                            <div class="col-12 col-md-4">
+                              <select id="optEmail" onchange="getEmail()" class="form-control-sm form-control">
+                                <option value="0">Select Email</option>
+                                {% for emailids in emailLst %}
+                                    <option value="{{emailids.email}}">{{emailids.firstName}} {{emailids.lastName}} </option>
+                                {% endfor %}
+                                <option value="-1">Other</option>
+                            </select>
+                              <input type="text" style="display:none;" id="txtemail" name="text-input" class="form-control-sm form-control">
+                            </div>  
+                            <input type="text" id="txtDocSel" class="form-control-sm form-control" style="display: none;"/>  
+                              <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="sendMail()" >Email</button>
+                              {% if request.session.Data_Preparation == "Yes" %}
+                              <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="saveFindings()" >Save</button>.
+                               {%endif%}
+                              <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="closeDiv()" >Cancel</button>
+                              
+                          </div>
+                      </div> 
+                  <div class="row form-group">
+                    <div class="col col-md-4">
+                       
+                    </div>
+                  </div>  
+               
+            </div> 
+        </div>
+          </div>
+          <div class="modal fade bd-example-modal-xl" id="divHelp" tabindex="-1" aria-labelledby="divHelp" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-scrollable modal-xl"> 
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="scrollingLongModalLabel2">Help</h5>
+                  <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+                </div>
+                <div class="modal-body p-5 px-md-6">
+                    <div style="height: 500px;overflow:auto" id="divHelpData"> 
+                        <div><input type="text" id="txttrain" readonly="readonly" style="font-weight: bold;" value="Train Size " /><br>
+                            default = 0.7. The proportion of the dataset to be used for training and validation. <br>
+                        </div>
+                        <div id="divcategorical_imputation"><input type="text" id="txtcategorical_imputation" readonly="readonly" style="font-weight: bold;" value="Categorical Imputation " /><br> 
+                            default = 'constant'. Missing values in categorical features are imputed with a constant not_available value. The other available option is mode. <br>
+                        </div>
+                        <div id="divnumeric_imputation"><input type="text" id="txtnumeric_imputation" readonly="readonly" style="font-weight: bold;" value="Numeric Imputation " /><br>
+                            default = ‘mean’. Missing values in numeric features are imputed with the mean value of the feature in the training dataset. The other available option is median or zero. <br>
+                        </div> 
+                        <div id="divignore_features"><input type="text" id="txtignore_features" readonly="readonly" style="font-weight: bold;" value="Ignore Features " /><br>
+                            default = None. Ignore Features can be used to ignore features during model training. It takes a list of strings with column names that are to be ignored.  <a   style="color:black;width:100%;cursor: pointer;" onclick="showFreq()"> View Frequency of Categorical Features</a>                    
+                        </div>
+                        <div><input type="text" id="txtfix_imbalance" readonly="readonly" style="font-weight: bold;" value="Target Imbalance" /><br>
+                            default = False. When the training dataset has an unequal distribution of target class it can be fixed using the fix_imbalance parameter in the setup. When set to True, SMOTE (Synthetic Minority Over-sampling Technique) is used as a default method for resampling.
+                        </div>
+                        <div>
+                            <input type="text" id="txtremove_outliers" value="Remove Outliers" readonly="readonly" style="font-weight: bold;"  /><br>
+                            The remove_outliers function in PyCaret allows you to identify and remove outliers from the dataset before training the model. Outliers are identified through PCA linear dimensionality reduction using the Singular Value Decomposition technique. It can be achieved using remove_outliers parameter within 
+                        </div>
+                        <div><input type="text" id="txtnormalize" value="Normalize"  readonly="readonly" style="font-weight: bold; " /><br>
+                            Normalization is a technique often applied as part of data preparation for machine learning. The goal of normalization is to rescale the values of numeric columns in the dataset without distorting differences in the ranges of values or losing information. There are several methods available for normalization, by default, PyCaret uses zscore.
+                        </div>
+                        <div>
+                            <input type="text" id="txttransformation" value="Feature Transform" readonly="readonly" style="font-weight: bold;"  /><br>
+                            While normalize rescales the data within new limits to reduce the impact of magnitude in the variance, Feature transformation is a more radical technique. Transformation changes the shape of the distribution such that the transformed data can be represented by a normal or approximate normal distribution. There are two methods available for transformation yeo-johnson and quantile.
+                        </div>
+                        <div>
+                            <input type="text" id="txttransform_target" value="Target Transform" readonly="readonly" style="font-weight: bold;"  /><br>
+                            Target Transformation is similar to Feature Transform as it will change the shape of the distribution of the target variable instead of Features. There are two methods supported for the target transformation box-cox and yeo-johnson.
+                            default = False. When set to True, outliers from the training data are removed using PCA linear dimensionality reduction using the Singular Value Decomposition technique.
+                        </div>
+                        <div>
+                            <input type="text" id="txtremove_multicollinearity" value="Remove Multicollinearity" readonly="readonly" style="font-weight: bold;"  /><br>
+                            Multicollinearity (also called collinearity) is a phenomenon in which one feature variable in the dataset is highly linearly correlated with another feature variable in the same dataset. Multicollinearity increases the variance of the coefficients, thus making them unstable and noisy for linear models. One such way to deal with Multicollinearity is to drop one of the two features that are highly correlated with each other. This can be achieved in PyCaret using remove_multicollinearity parameter.
+                            default = False. When set to True, the variables with inter-correlations higher than the threshold defined under the multicollinearity_threshold param are dropped. When two features are highly correlated with each other, the feature that is less correlated with the target variable is dropped.<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<b>Multicollinearity Threshold:</b> default = 0.9. Threshold used for dropping the correlated features. 
+                        </div>
+                        <div>
+                            <input type="text" id="txtfeature_interaction" value="Feature Interaction" readonly="readonly" style="font-weight: bold;"  /><br>
+                            default = False. When set to True, it will create new features by interacting (a * b) for all numeric variables in the dataset including polynomial and trigonometric features (if created). This feature is not scalable and may not work as expected on datasets with large feature space.
+                        </div>
+                        <div>
+                            <input type="text" id="txtfeature_ratio" value="Feature Ratio" readonly="readonly" style="font-weight: bold;"  /><br>
+                            default = False. When set to True, it will create new features by calculating the ratios (a / b) of all numeric variables in the dataset. This feature is not scalable and may not work as expected on datasets with large feature space.
+                        </div>
+                        <div>
+                            <input type="text" id="txtpolynomial_features" value="Polynomial Features" readonly="readonly" style="font-weight: bold;"  /><br>
+                            default = False. When set to True, new features are created based on all polynomial combinations that exist within the numeric features in a dataset to the degree defined in polynomial_degree param.
+                        </div>
+                        <div>
+                            <input type="text" id="txtpolynomial_degree" value="Polynomial Degree" readonly="readonly" style="font-weight: bold;"  /><br>
+                            default = 2. Degree of polynomial features. For example, if an input sample is two dimensional and of the form [a, b], the polynomial features with degree = 2 are: [1, a, b, a^2, ab, b^2].
+                        </div>
+                        <div>
+                            <input type="text" id="txttrigonometry_features" value="Trigonometry Features" readonly="readonly" style="font-weight: bold;"  /><br>
+                            default = False. When set to True, new features are created based on all trigonometric combinations that exist within the numeric features in a dataset to the degree defined in the polynomial_degree par.
+                        </div>
+                   </div> 
+                </div>
+                <div class="modal-footer">  
+                  <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade bd-example-modal-xl" id="divIgnoreFeatures" tabindex="-1" aria-labelledby="divIgnoreFeatures" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-scrollable modal-xl"> 
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="scrollingLongModalLabel2">Ignore Features</h5>
+                  <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+                </div>
+                <div class="modal-body p-5 px-md-6">
+        <div id=""  title="" style="width:70%;height: 500px;"> 
+            <div style="height: 500px;overflow:auto;margin-bottom: 25px;"> 
+                {% for data in dataTypes %}
+                <div>
+                    <div class="col-lg-12">
+                        <div class="au-card recent-report">
+                            The Frequency for <strong>{{data.colName}} </strong> 
+                                <div class="au-card-inner">
+                                    <table class="table table-borderless table-striped table-earning">
+
+                                        <tbody>
+                                            {% for key,val in data.freqVal.items %}
+                                            <tr>
+                                                <td>
+                                                    {{ key }}
+                                                </td>
+                                                <td>
+                                                    {{ val }}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div>Total :{{ data.total_rows }}</div>
+                                <div>Missing Values :{{ data.missing_rows }}</div>
+                                <div><input type="checkbox" id="chk_{{ data.colName}}" value="{{ data.colName}}" /> Mark to ignore</div>
+                                <div style="height: 5;"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %} 
+            </div> 
+        </div>
+    </div>
+    <div class="modal-footer">  
+      <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+      <button class="btn btn-outline-primary" type="button" onclick="updateIgnoreFeatures()">Ok</button>
+    </div>
+  </div>
+</div>
+        </div>
+    </form> 
+</div>
+                        {% endblock content %}
+                        {%  block script %}
+                        <script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script><script type='text/javascript' > 
+    window.onload=function(){   
+      }; 
+ 
+     
+
+    function showHelp(type)
+    {  
+        // $("#divHelp").dialog({   
+        //     width: "70%",   
+        //    // modal: true,
+        //     buttons: [
+                
+        //         {
+        //             text: "Cancel",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {
+        //                 // Save code here
+        //                 $(this).dialog("close");
+        //             }
+        //         }
+        //     ],  
+        // }); 
+        $("#divHelp").modal('toggle')
+        $('#txt'+type).select(); 
+        var container = $('#divHelpData');
+        var scrollTo = $("#txt"+type);
+        var position = scrollTo.offset().top-container.offset().top+ container.scrollTop();
+         // Animating scrolling effect
+        container.animate({
+        scrollTop: position
+        });
+    }
+   
+    function showFreq(id)
+    {   
+        $("#divHelp").modal("toggle");
+        $('#divIgnoreFeatures').modal("toggle");
+        // $("#divIgnoreFeatures").dialog({   
+        //     width: "70%",  
+        //     modal: true,
+        //     buttons:         [
+        //     {
+        //             text: "Ok",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {
+        //                 // Save code here
+        //                 var updatedData = []
+        //                 var ignoreCols="";
+        //                 $("input:checkbox:checked").each(function() { 
+        //                     item = {}
+        //                     item ["column"] =$(this).val(); 
+        //                     updatedData.push(item); 
+        //                     ignoreCols +=$(this).val() + ",";
+        //                 });
+        //                 if(ignoreCols.length>0){
+        //                     ignoreCols = ignoreCols.substring(0, ignoreCols.length -1);
+        //                 }
+        //                 $('#txt_ignore_features').val(ignoreCols);
+        //                 console.log('updatedData ',updatedData)
+        //                 $(this).dialog("close");
+        //             }
+        //         },
+                
+        //         {
+        //             text: "Cancel",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {
+        //                 // Save code here
+        //                 $(this).dialog("close");
+        //             }
+        //         }
+        //     ],
+        // }); 
+    }
+
+    function updateIgnoreFeatures(){
+        // Save code here
+        var updatedData = []
+        var ignoreCols="";
+        $("input:checkbox:checked").each(function() { 
+            item = {}
+            item ["column"] =$(this).val(); 
+            updatedData.push(item); 
+            ignoreCols +=$(this).val() + ",";
+        });
+        if(ignoreCols.length>0){
+            ignoreCols = ignoreCols.substring(0, ignoreCols.length -1);
+        }
+        $('#txt_ignore_features').val(ignoreCols);
+        console.log('updatedData ',updatedData)
+        $(this).dialog("close");
+    }
+
+
+    function closeDiv()
+    {
+        $("#divComment").dialog("close");
+    }
+
+    function save(){ 
+      
+       var params={
+        train_size: $('#txt_train_size').val(), 
+       categorical_imputation:$('#ddlcategorical_imputation').val(), 
+       numeric_imputation : $('#ddlnumeric_imputation').val(), 
+       ignore_features : $('#txt_ignore_features').val(), 
+       normalize_method:$('#ddlnormalize_method').val(), 
+       transformationmethod:$('#ddltransformationmethod').val(),
+       transformtargetmethod:$('#ddltransformtargetmethod').val(), 
+       multicollinearity_threshold:$('#txt_multicollinearity_threshold').val(), 
+       outliers_threshold:$("#txt_outliers_threshold").val(), 
+       polynomial_degree:$("#txt_polynomial_degree").val() ,
+       fix_imbalance: $('input[name="rbfix_imbalance"]:checked').val(),
+       remove_outliers : $('input[name="rbremove_outliers"]:checked').val(),
+       normalize:$('input[name="rbnormalize"]:checked').val(),
+       transformation: $('input[name="rbtransformation"]:checked').val(),
+       transform_target:$('input[name="rbtransform_target"]:checked').val(),
+       remove_multicollinearity:$('input[name="rbremove_multicollinearity"]:checked').val(),
+       feature_interaction:$('input[name="rbfeature_interaction"]:checked').val(),
+       feature_ratio:$('input[name="rbfeature_ratio"]:checked').val(),
+       polynomial_features:$('input[name="rbpolynomial_features"]:checked').val(),
+       trigonometry_features:$('input[name="rbtrigonometry_features"]:checked').val()
+    }
+    $.ajax({ 
+            url: '/saveConfig/',
+            data:params,
+            dataType: 'json',
+            success: function (data) {
+              if(data.is_taken=='True')  {
+                alert('Configuration saved.')
+              }      
+            }
+        }); 
+    console.log('params are ',params);
+    }
+
+    function enablePolyDeg(){ 
+        if($('input[name="rbpolynomial_features"]:checked').val()=='False')
+            $("#txt_polynomial_degree").attr('readonly', true);
+        else 
+            $("#txt_polynomial_degree").attr('readonly', false);
+    }
+
+    function enabletxtmulthresh(){ 
+        if($('input[name="rbremove_multicollinearity"]:checked').val()=='False')
+            $("#txt_multicollinearity_threshold").attr('readonly', true);
+        else 
+            $("#txt_multicollinearity_threshold").attr('readonly', false);
+    }
+
+    function enableoutthresh(){ 
+        if($('input[name="rbremove_outliers"]:checked').val()=='False')
+            $("#txt_outliers_threshold").attr('readonly', true);
+        else 
+            $("#txt_outliers_threshold").attr('readonly', false);
+    }
+
+    function goNext(){
+        window.location="{% url 'cmpmodels' %}"
+}
+    </script>
+{% endblock script %}

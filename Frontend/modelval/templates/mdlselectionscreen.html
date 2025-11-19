@@ -1,0 +1,273 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+{% block style %}
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+<link  rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css'%}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css'%}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+{% endblock style %}
+<form id="formuser" class="row g-3">
+    {% csrf_token %}
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Draft Assignment</h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">Model </label>
+                    
+                    <div class="col-sm-8"> 
+                    <select class="form-select" id="mdlsel" onchange="checkUtype()"  aria-label="Default select example" >     
+                        <option value="null">Select Model</option>
+                        {% for val in  data  %}                             
+                                <option value="{{val.refference_id}}">{{val.refference_id}}</option>
+                      
+                        {% endfor %} 
+                    </select>
+                    <div class="invalid-tooltip">Please choose a department.</div>
+                    </div>
+                </div>
+
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">Users</label>
+                    <div class="col-sm-8">
+                    <select class="js-select form-select" id="ddlusers"  aria-label="Default select example"  multiple data-hs-tom-select-options='{
+                        "placeholder": "Select ..."
+                      }' multiple>     
+                         
+                    </select>
+                    <div class="invalid-tooltip">Please choose a department.</div>
+                    </div>
+                </div>
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="enddate">End Date:</label>
+                    <div class="col-sm-8">
+                    <!-- <input type="date" id="enddate" name="birthday"> -->
+                    <!-- <input required  class="form-control datetimepicker" name="end_date" style="margin-bottom:15px;width:30%" id="enddate" type="text"
+                                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/>
+                    </div> -->
+                    <!-- <input required  class="form-control datetimepicker" name="end_date" style="margin-bottom:15px;width:100%" id="enddate" type="text"
+                                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/> -->
+
+                    <!-- Flatpickr -->
+                    <input type="text" class="js-flatpickr form-control flatpickr-custom" name="end_date" id="enddate" placeholder="mm/dd/yyyy"
+                    data-hs-flatpickr-options='{
+                      "dateFormat": "m/d/Y"
+                    }'>
+                    <!-- End Flatpickr -->
+                    </div>
+                </div>
+
+                                <!-- <div class="row mb-3">
+
+                    <label class="col-form-label col-sm-4 pt-0">Profile Image</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="file" id="profilepic" formnovalidate="formnovalidate" />
+                    </div>
+                </div>  -->
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto">
+                        <button class="btn btn-phoenix-primary px-5" type="button" onclick="gotolist()">Cancel</button>
+                      </div>
+                      <div class="col-auto">                       
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" id="btnPublish" disabled hidden onclick="PublishVr()" value="Publish" />                        
+                      </div>
+                     
+                      <div class="col-auto">                       
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" />                        
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<!-- JS Front -->
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+ 
+<script type='text/javascript' >
+    $(document).ready(function(){
+        // $('#SelectBackUpUserFor').css('visibility','hidden');
+        HSCore.components.HSFlatpickr.init('.js-flatpickr')
+        HSCore.components.HSTomSelect.init('.js-select')
+    });
+
+    
+    function validateform(){
+     //   var strv=$("#formuser").validate();
+     mdl_id = $("#mdlsel").val();
+     u_type = $("#ddlusers").val();
+     enddate = $("#enddate").val()
+     console.log('mdl_id',mdl_id,'u type',u_type,'enddate',enddate)
+ 
+        // $.ajax({
+        //     url: '/vrsuballocationsave/', 
+        //     data:{mdl_id:mdl_id,u_type:u_type,enddate:enddate},
+        //    dataType: 'json',   
+        //    method:'POST',
+        //     success: function (data) { 
+        //         alert(data.msg)
+        //     //    if(data.isvalid=='true'){
+        //     //     alert('User Created Succcessfully.')
+        //     //    }
+        //     //    else if(data.isvalid=='update'){
+        //     //     alert('User updated successfully.')
+        //     //    }
+        //     //    else
+        //     //    {
+        //     //     alert('Error while creating user.')
+        //     //    }
+        //     }
+        // });
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val(); 
+        var x = new XMLHttpRequest();
+        x.open("POST","/vrsuballocationsave/",true); 
+        x.setRequestHeader( "X-CSRFToken",csrftoken); 
+        var fd = new FormData();    
+        fd.append("mdl_id", $("#mdlsel").val());
+        fd.append("u_type", $("#ddlusers").val());
+        fd.append("enddate", $("#enddate").val());
+
+        x.send(fd);
+        x.onreadystatechange = function () { 
+            console.log("readyState",x.readyState,"status",x.status)
+            if (x.readyState == 4 && x.status == 200) {
+                debugger;
+                var json = JSON.parse(x.responseText);
+                console.log(json)
+                alert(json.msg)
+                    
+            }
+            
+        }
+    }
+
+    function checkUtype(){ 
+        mdl_id=$("#mdlsel").val() 
+        var $mySelect=$("#ddlusers");
+        $mySelect.empty(); 
+        $("#btnPublish").prop('disabled', true);
+        $.ajax({
+            url: '/checkutype/', 
+            data:{mdl_id: $("#mdlsel").val()},
+           dataType: 'json',   
+            success: function (data) { 
+              console.log(data)
+              $.each(data.users, function(key, value) {  
+                    var $option = $("<option/>", {
+                        value: value.u_aid,
+                        text: value.u_fname +' '+value.u_lname + ' - '+value.uc_details.uc_label
+                    });
+                    $mySelect.append($option);
+                });
+                owner=[];
+                $.each(data.owner, function(key, value) {  
+                    owner.push(value.u_aid) 
+                                     
+                });
+                $.each(data.validator, function(key, value) { 
+                    owner.push(value.u_aid)                    
+                });
+                $mySelect.val(owner) 
+                    date = data.enddate
+                    $('#enddate').val(date) 
+                   if(data.canpublish ==true) 
+                    $("#btnPublish").prop('disabled', false);
+            }
+        });
+    }
+    // var reportsto='{{reportsto| safe }}';
+    // console.log("reports_to",reports_to)
+
+    var reports_to= $('#reports_to_data').val() 
+    function getReportsto(){ 
+        var $mySelect = $('#ddlreportsto'); 
+        // var reports_to= $('#reports_to_data')
+        // console.log("reports_to",reports_to)
+
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "null",
+                        text: "Select"
+                    });
+        $mySelect.append($option);
+        $.ajax({
+            url: '/getReportsTo/', 
+            data:{uc_aid: $("#ddlutype").val(),'dept_aid': $("#ddldept").val()},
+           dataType: 'json',   
+            success: function (data) { 
+                // if(reports_to){
+
+                // }
+                console.log("data",data)
+                $.each(data.reportsto, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.u_aid,
+                        text: value.u_name
+                    });
+                    $mySelect.append($option);
+                });
+               
+            }
+        }); 
+    }
+
+    function gotolist(){
+        window.location='{{blank}}';
+    }
+
+    function validateEmail(){
+        $.ajax({
+            url: '/checkValue/', 
+            data:{val: $("#txtemail").val(),dept: $("#ddldept").val(),utype: $("#ddlutype").val(),'tbl':'email' },
+           dataType: 'json',   
+            success: function (data) { 
+                console.log(data)
+               if(data.cnt!='0'){
+                $("#txtemail").val('')
+                alert('Email already exists.')
+               }
+               
+            }
+        });
+    }
+
+    function PublishVr(){ 
+        
+        $.ajax({
+            url: '/publishVR/', 
+            data:{mdl_id: $("#mdlsel").val()},
+           dataType: 'json',   
+            success: function (data) { 
+              alert(data.msg)
+            }
+        });
+    }
+
+
+</script>
+{% endblock script %}

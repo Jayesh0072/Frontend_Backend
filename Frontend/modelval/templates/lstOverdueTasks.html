@@ -1,0 +1,697 @@
+ 
+{% load static %}  
+
+<style>
+
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+.row-cols-md-8 > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
+  .btn-primary-panes{
+   /* border-radius: 50%;*/
+  width: 3rem; 
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f2f3f6!important;
+  z-index: 1045;
+  /* border-radius: 1px; */
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  font-size:1.4rem;
+  }
+
+  
+  .btn-primary-panes:active {
+  background-color:  #f2f3f6!important;
+  color: red;
+}
+
+</style> 
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" style="display: none;" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="myLargeModalLabel">Tasks Overdue/Tasks Due Today</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end mb-5">
+          <!-- Nav -->
+          <ul class="nav nav-segment" id="expensesTabEg1" role="tablist">
+            <li class="nav-item" data-toggle="chart-bar" data-datasets="thisWeek" data-trigger="click" onclick="$('#div__finsingsbyCategory').hide();$('#div_finsingsbyElemets').show()" data-action="toggle">
+              <a class="nav-link active" href="javascript:;" data-bs-toggle="tab">Tasks</a>
+            </li>
+            <li class="nav-item" data-toggle="chart-bar" data-datasets="lastWeek" data-trigger="click"  onclick="$('#div_finsingsbyElemets').hide();$('#div__finsingsbyCategory').show()"  data-action="toggle">
+              <a class="nav-link" href="javascript:;" data-bs-toggle="tab">Issues</a>
+            </li>
+          </ul>
+          <!-- End Nav -->
+        </div>
+        <div class="collapse code-collapse collapse show"> 
+            <div class="bg-white border-300">
+              <div class="row">   
+                <div id="div_finsingsbyElemets"> 
+                  <!-- Header -->
+                  <div class="card-header">
+                    <div class="row justify-content-between align-items-center flex-grow-1">
+                    <div class="col-md">
+                      <div class="d-flex justify-content-between align-items-center"> 
+                        <!-- Datatable Info -->
+                        <div id="datatableCounterInfo" style="display: none;">
+                          <div class="d-flex align-items-center">
+                            <span class="fs-6 me-3">
+                              <span id="datatableCounter">0</span>
+                              Selected
+                            </span>
+                            <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                              <i class="tio-delete-outlined"></i> Delete
+                            </a>
+                          </div>
+                        </div>
+                        <!-- End Datatable Info -->
+                      </div>
+                    </div>
+                    <!-- End Col -->
+                    <div class="col-auto">
+                      <!-- Filter -->
+                      <div class="row align-items-sm-center">
+                        <div class="col-sm-auto">
+                          <div class="row align-items-center gx-0">
+                            <div class="col">
+                              <span class="text-secondary me-2">Approval Status:</span>
+                            </div>
+                            <!-- End Col -->
+        
+                            <div class="col-auto">
+                              <!-- Select -->
+                              <div class="tom-select-custom tom-select-custom-end">
+                                <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_TaskOverdue" autocomplete="off" data-hs-tom-select-options='{
+                                          "searchInDropdown": false,
+                                          "hideSearch": true,
+                                          "dropdownWidth": "10rem"
+                                        }'>
+                                  <option value="null" selected>All</option>
+                                  <option value="Pending">Pending</option>
+                                  <option value="Approved">Approved</option>
+                                  <option value="Provisional Approval">Provisional Approval</option>
+                                  <option value="Not Approved">Not Approved</option>
+                                </select>
+                              </div>
+                              <!-- End Select -->
+                            </div>
+                            <!-- End Col -->
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                        <!-- End Col -->
+        
+                        <div class="col-sm-auto">
+                          <div class="row align-items-center gx-0">
+                            <div class="col">
+                              <span class="text-secondary me-2">Priority :</span>
+                            </div>
+                            <!-- End Col -->
+        
+                            <div class="col-auto">
+                              <!-- Select -->
+                              <div class="tom-select-custom tom-select-custom-end">
+                                <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="2" data-target-table="datatable_TaskOverdue" autocomplete="off" data-hs-tom-select-options='{
+                                          "searchInDropdown": false,
+                                          "hideSearch": true,
+                                          "dropdownWidth": "10rem"
+                                        }'>
+                                  <option value="null" selected>All</option>
+                                  <option value="Low">Low</option>
+                                  <option value="Medium">Medium</option>
+                                  <option value="High">High</option>
+                                </select>
+                              </div>
+                              <!-- End Select -->
+                            </div>
+                            <!-- End Col -->
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                        <!-- End Col -->
+        
+                        <div class="col-md">
+                          <form>
+                            <!-- Search -->
+                            <div class="input-group input-group-merge input-group-flush">
+                              <div class="input-group-prepend input-group-text">
+                                <i class="bi-search"></i>
+                              </div>
+                              <input id="datatableSearch_TaskOverdue" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                            </div>
+                            <!-- End Search -->
+                          </form>
+                        </div> 
+        
+                  
+                      </div>
+                      <!-- End Filter -->
+                    </div>
+                    <!-- End Col -->
+                    </div>
+                    <!-- End Row -->
+                  </div>
+                  <!-- End Header -->
+      
+                  <!-- Table -->
+                  <div class="table-responsive datatable-custom">
+                  <table id="datatable_TaskOverdue" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                          "columnDefs": [{
+                            "targets": [0],
+                            "orderable": false
+                          }],
+                          "order": [],
+                          "info": {
+                            "totalQty": "#datatableWithPaginationInfoTotalQty_TaskOverdue"
+                          },
+                          "search": "#datatableSearch_TaskOverdue",
+                          "entries": "#datatableEntries_TaskOverdue",
+                          "pageLength": 5,
+                          "isResponsive": false,
+                          "isShowPaging": false,
+                          "pagination": "datatablePagination_TaskOverdue"
+                        }'>
+                  <thead class="thead-light">
+                    <tr>
+                      <th></th>
+                      <th>Task ID</th>                         
+                      <th>Priority</th>
+                      <th>Approval Status</th>
+                      <th>Completion Status</th>
+                      <th>End Date</th>    
+                      <th>Task Function</th>
+                      <th>Task Type</th>           
+                      <th>Originator</th>
+                      <th>Assignee</th>
+                      <th>Approver</th>      
+                    </tr>
+                  </thead>  
+                  <tbody class="list" id="project-list-table-body">
+                    {% for key, val in request.session.overdueTasks.items  %}       
+                      <tr class="position-static">
+                        <td >
+                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                          <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                        </td>
+                        <td >
+                          
+                          <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectTasks('{{val.Task_ID}}','{{val.U_Role}}')" >{{val.Task_ID}}</a>
+                        </td>            
+                        <td>                          
+                          {%if val.Task_Priority_Label == "High" %}
+                            <h5><span class="badge bg-soft-danger text-danger  fs-5">High</span></h5>
+                          {%elif val.Task_Priority_Label == "Medium" %}
+                              <h5><span class="badge bg-soft-warning text-warning  fs-5">Medium</span></h5>
+                          {%elif val.Task_Priority_Label == "Low" %}
+                              <h5><span class="badge bg-soft-success text-success  fs-5">Low</span></h5>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {{val.Task_ApprovalStatus_Label}} 
+                        </td>
+                        <td> 
+                          {{val.Completion_Status}} 
+                          </td>
+                          <td>   
+                            {%if val.dateColor == "OverDue" %}
+                              <h5><span class="badge bg-soft-danger text-danger fs-5">{{val.end_dt}}</span></h5>
+                            {%elif val.dateColor == "Today" %}
+                                <h5><span class="badge bg-soft-warning text-warning  fs-5"  >{{val.end_dt}}</span></h5>
+                            {%else %}
+                                <h5><span class="badge bg-soft-success text-success  fs-5">{{val.end_dt}}</span></h5>
+                            {% endif %}                             
+                            
+                          </td> 
+                        <td >
+                          {{val.Task_Function_Label}}
+                        </td>
+                        <td>
+                          {{val.Task_Type_label}}
+                        </td>
+                      
+                        <td style="text-wrap: wrap;">                      
+                          {{val.originators}}</a>
+                        </td>
+                        <td style="text-wrap: wrap;">                      
+                          {{val.Assignees}}</a>
+                        </td>
+                        <td style="text-wrap: wrap;">                      
+                          {{val.Approvers}}</a>
+                        </td>
+                      </tr>
+                    {% endfor %}   
+                  </tbody>
+                  </table>
+                  </div>
+                  <!-- End Table -->
+      
+                  <!-- Footer -->
+                  <div class="card-footer">
+                  <!-- Pagination -->
+                  <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+                  <div class="col-sm mb-2 mb-sm-0">
+                    <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+                      <span class="me-2">Showing:</span>
+      
+                      <!-- Select -->
+                      <div class="tom-select-custom">
+                        <select id="datatableEntries_TaskOverdue" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                                  "searchInDropdown": false,
+                                  "hideSearch": true
+                                }'>
+                          <option value="5" selected>5</option>
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50" >50</option>
+                          <option value="100">100</option>
+                        </select>
+                      </div>
+                      <!-- End Select -->
+      
+                      <span class="text-secondary me-2">of</span>
+      
+                      <!-- Pagination Quantity -->
+                      <span id="datatableWithPaginationInfoTotalQty_TaskOverdue"></span>
+                    </div>
+                  </div>
+                  <!-- End Col -->
+      
+                  <div class="col-sm-auto">
+                    <div class="d-flex justify-content-center justify-content-sm-end">
+                      <!-- Pagination -->
+                      <nav id="datatablePagination_TaskOverdue" aria-label="Activity pagination"></nav>
+                    </div>
+                  </div>
+                  <!-- End Col -->
+                  </div>
+                  <!-- End Pagination -->
+                  </div>
+                  <!-- End Footer -->
+                </div>
+                <div id="div__finsingsbyCategory" style="display: None;" >
+                  <!-- Header -->
+                  <div class="card-header">
+                    <div class="row justify-content-between align-items-center flex-grow-1">
+                    <div class="col-md">
+                      <div class="d-flex justify-content-between align-items-center"> 
+                        <!-- Datatable Info -->
+                        <div id="Issue_datatableCounterInfo" style="display: none;">
+                          <div class="d-flex align-items-center">
+                            <span class="fs-6 me-3">
+                              <span id="Issue_datatableCounter">0</span>
+                              Selected
+                            </span>
+                            <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                              <i class="tio-delete-outlined"></i> Delete
+                            </a>
+                          </div>
+                        </div>
+                        <!-- End Datatable Info -->
+                      </div>
+                    </div>
+                    <!-- End Col -->
+                    <div class="col-auto">
+                      <!-- Filter -->
+                      <div class="row align-items-sm-center">
+                        <div class="col-sm-auto">
+                          <div class="row align-items-center gx-0">
+                            <div class="col">
+                              <span class="text-secondary me-2">Approval Status:</span>
+                            </div>
+                            <!-- End Col -->
+        
+                            <div class="col-auto">
+                              <!-- Select -->
+                              <div class="tom-select-custom tom-select-custom-end">
+                                <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="4" data-target-table="datatable_IssueOverdue" autocomplete="off" data-hs-tom-select-options='{
+                                          "searchInDropdown": false,
+                                          "hideSearch": true,
+                                          "dropdownWidth": "10rem"
+                                        }'>
+                                  <option value="null" selected>All</option>
+                                  <option value="Pending">Pending</option>
+                                  <option value="Approved">Approved</option>
+                                  <option value="Provisional Approval">Provisional Approval</option>
+                                  <option value="Not Approved">Not Approved</option>
+                                </select>
+                              </div>
+                              <!-- End Select -->
+                            </div>
+                            <!-- End Col -->
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                        <!-- End Col -->
+        
+                        <div class="col-sm-auto">
+                          <div class="row align-items-center gx-0">
+                            <div class="col">
+                              <span class="text-secondary me-2">Priority :</span>
+                            </div>
+                            <!-- End Col -->
+        
+                            <div class="col-auto">
+                              <!-- Select -->
+                              <div class="tom-select-custom tom-select-custom-end">
+                                <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_IssueOverdue" autocomplete="off" data-hs-tom-select-options='{
+                                          "searchInDropdown": false,
+                                          "hideSearch": true,
+                                          "dropdownWidth": "10rem"
+                                        }'>
+                                  <option value="null" selected>All</option>
+                                  <option value="Low">Low</option>
+                                  <option value="Medium">Medium</option>
+                                  <option value="High">High</option>
+                                </select>
+                              </div>
+                              <!-- End Select -->
+                            </div>
+                            <!-- End Col -->
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                        <!-- End Col -->
+        
+                        <div class="col-md">
+                          <form>
+                            <!-- Search -->
+                            <div class="input-group input-group-merge input-group-flush">
+                              <div class="input-group-prepend input-group-text">
+                                <i class="bi-search"></i>
+                              </div>
+                              <input id="datatableSearch_IssueOverdue" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                            </div>
+                            <!-- End Search -->
+                          </form>
+                        </div> 
+        
+                  
+                      </div>
+                      <!-- End Filter -->
+                    </div>
+                    <!-- End Col -->
+                    </div>
+                    <!-- End Row -->
+                  </div>
+                  <!-- End Header -->
+      
+                  <!-- Table -->
+                  <div class="table-responsive datatable-custom">
+                  <table id="datatable_IssueOverdue" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                          "columnDefs": [{
+                            "targets": [0],
+                            "orderable": false
+                          }],
+                          "order": [],
+                          "info": {
+                            "totalQty": "#datatableWithPaginationInfoTotalQty_IssueOverdue"
+                          },
+                          "search": "#datatableSearch_IssueOverdue",
+                          "entries": "#datatableEntries_IssueOverdue",
+                          "pageLength": 5,
+                          "isResponsive": false,
+                          "isShowPaging": false,
+                          "pagination": "datatablePagination_IssueOverdue"
+                        }'>
+                  <thead class="thead-light">
+                    <tr>
+                      <th></th>
+                      <th>Issue ID</th>                         
+                      <th>Priority</th>
+                      <th>Approval Status</th>
+                      <th>Completion Status</th>
+                      <th>End Date</th>    
+                      <th>Issue Function</th>
+                      <th>Issue Type</th>           
+                      <th>Originator</th>
+                      <th>Assignee</th>
+                      <th>Approver</th>      
+                    </tr>
+                  </thead>  
+                  <tbody class="list" id="project-list-table-body">
+                    {% for key, val in request.session.overdueIssues.items  %}             
+                      <tr class="position-static">
+                        <td >
+                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                          <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                        </td>
+                        <td >
+                          
+                          <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectTasks('{{val.Issue_ID}}','{{val.U_Role}}')" >{{val.Issue_ID}}</a>
+                        </td>            
+                        <td>
+                          
+                          {%if val.Issue_Priority_Label == "High" %}
+                            <h5><span class="badge bg-soft-danger text-danger  fs-5">High</span></h5>
+                          {%elif val.Issue_Priority_Label == "Medium" %}
+                              <h5><span class="badge bg-soft-warning text-warning  fs-5">Medium</span></h5>
+                          {%elif val.Issue_Priority_Label == "Low" %}
+                              <h5><span class="badge bg-soft-success text-success  fs-5">Low</span></h5>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {{val.Issue_ApprovalStatus_Label}} 
+                        </td>
+                        <td> 
+                          {{val.Completion_Status}}
+                          </td>
+                          <td>   
+                            {%if val.dateColor == "OverDue" %}
+                              <h5><span class="badge bg-soft-danger text-danger fs-5">{{val.end_dt}}</span></h5>
+                            {%elif val.dateColor == "Today" %}
+                                <h5><span class="badge bg-soft-warning text-warning fs-5">{{val.end_dt}}</span></h5>
+                            {%else %}
+                                <h5><span class="badge bg-soft-success text-success fs-5">{{val.end_dt}}</span></h5>
+                            {% endif %}                             
+                            
+                          </td> 
+                        <td >
+                          {{val.Issue_Function_Label}}
+                        </td>
+                        <td>
+                          {{val.Issue_Type_label}}
+                        </td>
+                      
+                        <td style="text-wrap: wrap;">                      
+                          {{val.originators}}</a>
+                        </td>
+                        <td style="text-wrap: wrap;">                      
+                          {{val.Assignees}}</a>
+                        </td>
+                        <td style="text-wrap: wrap;">                      
+                          {{val.Approvers}}</a>
+                        </td>
+                      </tr>
+                    {% endfor %}   
+                  </tbody>
+                  </table>
+                  </div>
+                  <!-- End Table -->
+      
+                  <!-- Footer -->
+                  <div class="card-footer">
+                  <!-- Pagination -->
+                  <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+                  <div class="col-sm mb-2 mb-sm-0">
+                    <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+                      <span class="me-2">Showing:</span>
+      
+                      <!-- Select -->
+                      <div class="tom-select-custom">
+                        <select id="datatableEntries_IssueOverdue" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                                  "searchInDropdown": false,
+                                  "hideSearch": true
+                                }'>
+                          <option value="5" selected>5</option>
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50" >50</option>
+                          <option value="100">100</option>
+                        </select>
+                      </div>
+                      <!-- End Select -->
+      
+                      <span class="text-secondary me-2">of</span>
+      
+                      <!-- Pagination Quantity -->
+                      <span id="datatableWithPaginationInfoTotalQty_IssueOverdue"></span>
+                    </div>
+                  </div>
+                  <!-- End Col -->
+      
+                  <div class="col-sm-auto">
+                    <div class="d-flex justify-content-center justify-content-sm-end">
+                      <!-- Pagination -->
+                      <nav id="datatablePagination_IssueOverdue" aria-label="Activity pagination"></nav>
+                    </div>
+                  </div>
+                  <!-- End Col -->
+                  </div>
+                  <!-- End Pagination -->
+                  </div>
+                  <!-- End Footer -->
+                </div>
+              </div>
+            </div> 
+            
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> 
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal --> 
+
+<!-- Modal -->
+<div class="modal fade" id="divAlert" style="display: none;" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="divAlertLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="z-index: 10000;">
+
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="divAlertTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <span class="text-wrap" id="divAlertMsg">  </span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> 
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Alert --> 
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script> 
+
+
+
+<script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>  
+
+<script> 
+ $(document).on('ready', function () { 
+  
+ 
+// showModalps()
+ });
+  function redirectTasks(id,role){ 
+      $.ajax({
+          url: '/checkUserRole/', 
+          data:{mdl_id:id},
+          dataType: 'json',   
+          success: function (data) { 
+              console.log(data)
+              if(data.role=="Assignee")
+                  window.location= "/task_assignee?id="+id;                                   
+              else if(data.role=="Approver"){
+                  document.location.href = "/task_approver?id=" +id;
+              }
+              else if(data.role=="Originator"){
+                  document.location.href = "/edit_task/" +id;
+              }
+              else{
+                  document.location.href = "/task_approver_data?id=" +id;
+              }
+              
+              
+          }
+      });  
+    }
+
+
+  function showModalps()
+  { 
+    $("#staticBackdrop").modal({
+            backdrop: "static",
+            keyboard: false,
+        });
+        $("#staticBackdrop").modal('toggle')
+  }
+
+  function alert(msg,title){
+    $("#divAlertTitle").text('PROPE'); 
+    $('#divAlertMsg').text(msg)
+    $("#divAlert").modal({
+            backdrop: "static",
+            keyboard: false,
+        });
+        $("#divAlert").modal('toggle')
+  }
+</script>
+<!--<script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script> -->
+ 
+  <script> 
+
+    // INITIALIZATION OF DATATABLES
+    // =======================================================
+  
+    HSCore.components.HSDatatables.init($('#datatable_TaskOverdue'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+ 
+    HSCore.components.HSDatatables.init($('#datatable_IssueOverdue'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#Issue_datatableCounter',
+          counterInfo: '#Issue_datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+ 
+    </script> 

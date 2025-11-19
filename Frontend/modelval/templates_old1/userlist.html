@@ -1,0 +1,335 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="content container-fluid">
+    <!-- Page Header -->
+  
+    <!-- End Page Header -->
+
+
+    <!-- Card -->
+    <div class="card mb-3 mb-lg-5">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title">Add / Edit User</h4>
+
+              
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <!-- Filter -->
+            <div class="row align-items-sm-center">
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">Username:</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        {% for val in users  %}
+                          <option value="{{val.u_name}}">{{val.u_name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">User Type:</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="1" data-target-table="datatable" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        {% for val in users  %}
+                          <option value="{{val.uc_details.uc_label}}">{{val.uc_details.uc_label}}</option>
+                        {% endfor %}
+                        
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              
+              <div class="col-md">
+                <form>
+                  <!-- Search -->
+                  <div class="input-group input-group-merge input-group-flush">
+                    <div class="input-group-prepend input-group-text">
+                      <i class="bi-search"></i>
+                    </div>
+                    <input id="datatableSearch" type="search" class="form-control" placeholder="Search users" aria-label="Search users">
+                  </div>
+                  <!-- End Search -->
+                </form>
+              </div>
+              <!-- End Col -->
+              <!--Add New-->
+              <div class="col-sm-auto">
+                <a class="btn btn-primary" href="{{addnewuser}}">
+                  <i class="bi-plus-lg me-1"></i> Add New
+                </a>
+              </div>
+              <!--End Add New-->
+            </div>
+            <!-- End Filter -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                 "columnDefs": [{
+                    "targets": [0, 1],
+                    "orderable": false
+                  }],
+                 "order": [],
+                 "info": {
+                   "totalQty": "#datatableWithPaginationInfoTotalQty"
+                 },
+                 "search": "#datatableSearch",
+                 "entries": "#datatableEntries",
+                 "pageLength": 10,
+                 "isResponsive": false,
+                 "isShowPaging": false,
+                 "pagination": "datatablePagination"
+               }'>
+          <thead class="thead-light">
+            <tr>
+              
+              <th>Username</th>
+              <th>UserType</th>
+              <th>Reports To</th>
+              <th>First Name</th>
+              <th>Second Name</th>
+              <th>Email Address</th>
+              <th>Active Status</th>
+              <th>Edit</th>
+            
+             
+            </tr>
+          </thead>
+
+          <tbody class="list" id="project-list-table-body" >
+            {% for val in users  %} 
+              <tr class="position-static"> 
+                <td>
+                  
+                  {{val.u_name}}
+                </td>                
+                <td>
+                  {{val.uc_details.uc_label}}
+                </td>
+                <td>
+                  
+                 {{val.u_reportto_u_name}}
+                </td>
+                <td>
+                  {{val.u_fname}}
+                </td>
+                <td>
+                  {{val.u_lname}}
+                </td>
+                <td>
+                  {{val.u_email}}
+                </td>
+                <td>
+                  {{val.is_active}}
+                </td>
+                <td><a href="{% url 'edit_user' val.u_aid %}"><i class="bi-pencil-fill me-1"></i><span><span>Edit</span><span class="ms-1" data-feather="edit-3" style="height:12.8px;width:12.8px;"></span></span></a></td>
+ 
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <!-- Pagination -->
+        <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="me-2">Showing:</span>
+
+              <!-- Select -->
+              <div class="tom-select-custom">
+                <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                          "searchInDropdown": false,
+                          "hideSearch": true
+                        }'>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50" >50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <!-- End Select -->
+
+              <span class="text-secondary me-2">of</span>
+
+              <!-- Pagination Quantity -->
+              <span id="datatableWithPaginationInfoTotalQty"></span>
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-auto">
+            <div class="d-flex justify-content-center justify-content-sm-end">
+              <!-- Pagination -->
+              <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Footer -->
+    </div>
+    <!-- End Card -->
+
+  </div>
+</div>
+
+
+
+
+<div class="content" style="padding-top:0px;"> 
+<div class="card h-100">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Add / Edit User</h4>
+        </div>
+  <div class="card-body">
+  <div id="tableExample" class="mb-9">
+    <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"]}'>
+       
+      <div class="row g-3 justify-content-between align-items-end mb-4">
+         
+        <div class="col-12 col-sm-auto">
+          
+          <div class="d-flex align-items-center">
+            
+            <div class="search-box me-3">
+              <div class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                <input class="form-control search-input search" type="search" placeholder="Search user" aria-label="Search" />
+                <span class="fas fa-search search-box-icon"></span>
+
+              </div>
+            </div> 
+          </div> 
+        </div>
+        <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" href="{{addnewuser}}"><i class="fa-solid fa-plus me-2"></i>Add New</a></div>
+      </div> 
+      <div class="table-responsive"  style="max-height:450px;">
+        <table  class="table table-sm fs--1 mb-0"> <!--  class="table fs--1 mb-0 border-top border-200"> -->
+          <thead >
+            <tr style="background-color: #eff2f6;">
+              
+              <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:10%;">Username</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Area" style="width:15%;">User Type</th>
+              <th class="sort align-middle ps-3" scope="col"  style="width:10%;">Reports To</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:20%;">First Name</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Type" style="width:20%;">Last Name</th>              
+              <th class="sort align-middle ps-3" scope="col" data-sort="Internal_Vendor" style="width:12%;">Email Address</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Status" style="width:5%;">Active Status</th>
+              <th class="sort align-middle ps-3" scope="col"  style="width:5%;">Edit</th>
+            </tr>
+          </thead>
+          <tbody class="list" id="project-list-table-body" >
+            {% for val in users  %} 
+              <tr class="position-static"> 
+                <td class="align-middle time white-space-nowrap ps-0 Model_ID py-2">
+                  
+                  {{val.u_name}}
+                </td>                
+                <td class="align-middle white-space-nowrap Process_Name ps-3 py-2">
+                  {{val.uc_details.uc_label}}
+                </td>
+                <td class="align-middle white-space-nowrap ps-0  py-2">
+                  
+                 {{val.u_reportto_u_name}}
+                </td>
+                <td class="align-middle white-space-nowrap Type ps-3 py-2">
+                  {{val.u_fname}}
+                </td>
+                <td class="align-middle white-space-nowrap Area ps-3 py-2">
+                  {{val.u_lname}}
+                </td>
+                <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-2">
+                  {{val.u_email}}
+                </td>
+                <td class="align-middle white-space-nowrap ps-3 Status">
+                  {{val.is_active}}
+                </td>
+                <td><a href="{% url 'edit_user' val.u_aid %}"><i class="bi-pencil-fill me-1"></i><span class="badge badge-phoenix fs--2 badge-phoenix-success"><span class="badge-label">Edit</span><span class="ms-1" data-feather="edit-3" style="height:12.8px;width:12.8px;"></span></span></a></td>
+ 
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+     
+    </div>
+  </div> 
+  </div> </div></div>
+{% endblock content %}

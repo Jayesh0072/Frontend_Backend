@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    #mytextarea {
+  height: 00px;
+  /*edit this*/
+}
+    .accordion-button::after {
+        display: none;
+    }
+
+    #datepicker,#datepicker_end_date{
+        width: 180px;
+    }
+
+    #datepicker,#datepicker_end_date>span:hover {
+        cursor: pointer;
+    }
+</style> 
+<link href="vendors/flatpickr/flatpickr.min.css" rel="stylesheet" />
+
+<div>
+    <form onsubmit="submit_function()" id="target" method="post" enctype="multipart/form-data" class="form-horizontal"
+        >
+        {% csrf_token %}
+
+        <div class="content" data-bs-target="#v-pills"  data-bs-spy="scroll" style="padding-top:0px;">
+            <div class="mt-4">
+              <div class="row g-4">
+                <div class="col-12 col-xl-12 order-1 order-xl-0">
+                  <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+                    
+                    <div class="card-body p-0">
+                      
+                      <div class="p-4 code-to-copy">
+                        <div class="row">
+                          <div class="col-sm-auto">
+                            <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                              <div class="nav flex-column nav-pills" id="v-pills">
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Task Overview</a>
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedmodels">Task Summary</a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm">
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-home">Overview</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row g-3 mb-6" style="margin-top:5px">
+                                    
+                                    <div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Task IDS <span style="color: red;">*</span>
+                                            </div>
+                                            <select name="select_task" id="select_task" onclick="get_task_ID_data()" style="margin-bottom:15px;width:50%;margin-left: 15px" class="form-select" aria-label="Default select example" required> 
+                                                <option selected>Select Task ID</option>
+                                                {% for i in task_relevant_obj %}
+                                                <option class="dropdown-item" value="{{i.task_id}}">{{i.task_id}}</option>
+                                                {% endfor %}  
+                                            </select>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Name <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="txt_Task_Name" name="txt_Task_Name"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Department <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="department" name="department"
+                                                    class="form-control-sm form-control" value="{{department_obj.dept_label}}"
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Originator <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly type="text" id="originator" name="originator"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Task Function <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="task_function_label" name="task_function_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Registration Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+        
+                                                <input readonly class="form-control" name="reg_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="reg_date" type="datetime"
+                                                 placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}' required/>
+        
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Task Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="task_type_label" name="task_type_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Sub Task Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="sub_task_type_label" name="sub_task_type_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Priority <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="task_priority_label" name="task_priority_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                End Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly class="form-control" name="end_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="end_date" type="text"
+                                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'required/>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Completion Status <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input type="number" id="completion_status" name="completion_status"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required/>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Approval Status<span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="approval_status" name="approval_status"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div> 
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Task Summary</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row form-group">
+                                        <input type="hidden" id="task_summery_check" name="task_summery_check" value="True">
+                                        <div class="col col-md-4">
+                                            Task Summary
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="mb-3">
+                                                <textarea readonly name="task_summery" id="task_summery" class="tinymce" name="content" data-tinymce="{}" required></textarea>
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Task Requirements 
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="mb-3">
+                                                <textarea readonly name="task_req" id ="task_req" class="tinymce" name="content" data-tinymce="{}" required></textarea>
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Assignee comments <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="mb-3">
+                                                <textarea name="assignee_comments" id= "assi_comments" class="tinymce" data-tinymce="{}" required></textarea>
+                                              </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-12 gy-6" style="margin-top: 15px;">
+                              <div class="row g-3 justify-content-end">
+                                <div class="col-auto">
+                                  <button class="btn btn-phoenix-primary px-5" type="button" onclick="gotoTaks()">Cancel</button>
+                                </div>
+                                <div class="col-auto">
+                                  <button class="btn btn-primary px-5 px-sm-15" type="button" onclick="saveChanges()">Save</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+                </div> 
+              </div>
+            </div> 
+          </div>
+          
+            </div>
+    </form>
+</div>
+{% block script %} 
+
+<script>
+   function gotoTaks(){ 
+        var url = "{% url 'getTasks' %}";
+        document.location.href = url;
+     
+}
+    $(document).ready(function(){
+
+        console.log('taskid is {{taskid}}')
+        $('#select_task').val('{{taskid}}')
+        get_task_ID_data();
+    })
+function saveChanges() { 
+        $.ajax({ 
+        type:'POST',
+        url: "{% url 'update_summery_data' %}",
+        data:{'task_id':$('#select_task option:selected').text(),'assignee_comments':tinymce.get("assi_comments").getContent(),
+        completion_status:$('#completion_status').val(),
+                'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: 'JSON',
+        success: function (data) {  
+            console.log('data',data)  
+            
+          //notification code
+            console.log("assignee data",data.task_assignee_lst)
+            originatorid=data.originatorid
+            task_id=data.task_id  
+            console.log('task_id',task_id)
+            task_assignee_thread_lst=JSON.parse(data.task_assignee_thread_lst)
+            task_assignee_thread_lst.forEach(i => {
+                sendNotification('Task Updated|Task id is updated.'.replace('id', task_id),i.from,i.to,i.thread_id);
+            
+            });
+            
+            alert("Task updated successfully.")
+            
+             
+        }
+        });
+
+    
+};
+
+function submit_function()
+{
+    alert("Data Updated Successfully")
+
+}
+     function get_task_ID_data()
+    {  
+      $.ajax({ 
+        type:'GET',
+        url: "{% url 'get_task_ID_data' %}",
+        data:{'id':$('#select_task option:selected').text()},
+        dataType: 'json',
+        success: function (data) {  
+          console.log('data',data)  
+          console.log('data',typeof(data))
+          document.getElementById("department").value=data.department
+          document.getElementById("originator").value=data.originator
+          document.getElementById("task_function_label").value=data.task_function_label
+          document.getElementById("reg_date").value=data.reg_date
+          document.getElementById("task_type_label").value=data.task_type_label
+          document.getElementById("sub_task_type_label").value=data.sub_task_type_label
+          document.getElementById("task_priority_label").value=data.task_priority_label
+          document.getElementById("end_date").value=data.end_date
+          document.getElementById("completion_status").value=data.completion_status
+          document.getElementById("approval_status").value=data.task_approvalstatus_label
+        $('#txt_Task_Name').val(data.task_name)
+          console.log("task summery",data.task_summery)
+          var str2 = data.task_summery.replace(/\n|\r/g, "");
+          var editor = tinymce.get('task_summery'); // id equals your textarea id
+          editor.setContent(str2);
+          editor.mode.set("readonly");
+          var str3 = data.task_req.replace(/\n|\r/g, "");
+          var editor = tinymce.get('task_req'); // id equals your textarea id
+          editor.setContent(str3);
+          editor.mode.set("readonly");
+
+          console.log("task_assignee",data.task_assignee)
+
+          var str4 = data.task_assignee.replace(/\n|\r/g, "");
+          var editor = tinymce.get('assi_comments'); // id equals your textarea id
+          editor.setContent(str4);
+
+    
+        //   console.log("str2",str2)
+        //   console.log("req",data.task_req)
+        }
+        });
+    }
+    
+</script>
+{% endblock script %}
+{% endblock content %}

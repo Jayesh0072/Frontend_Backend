@@ -1,0 +1,738 @@
+{% extends 'rmsebase.html' %}
+{% load static %}
+{% block content %}
+<style>
+  
+    .fs--2 {
+      font-size: .64rem !important;
+      font-weight: 600 !important;
+    }
+    .chat .chat-message .received-message-content {
+        position: relative;
+    }
+    .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):before {
+        content: " ";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: -12px;
+        right: auto;
+        top: -1px;
+        bottom: auto;
+        border: 11px solid;
+        border-color: #e3e6ed rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    }
+    .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):after {
+        content: " ";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: -10px;
+        right: auto;
+        top: 0px;
+        bottom: auto;
+        border: 10px solid;
+        border-color: #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    } 
+    .chat .chat-message_sent .sent-message-content {
+      position: relative;
+    }
+    .chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery):after {
+       
+      content: " ";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: auto;
+        right: -12px;
+        top: auto;
+        bottom: 0;
+        border: 12px solid;
+        border-color:transparent transparent #3874ff  transparent; 
+    }
+    
+    .flex-end-center {
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    
+     
+    .flex-1 {
+      -webkit-box-flex: 1;
+    
+      -ms-flex: 1;
+    
+      flex: 1;
+    
+    }
+      .support-chat-container {
+      display: none;
+      &.show {
+        display: block;
+      }
+    }
+    .support-chat {
+      position: fixed;
+      bottom: map-get($spacers, 7);
+      right: 0;
+      max-width: 27.87rem;
+      width: 100%;
+      transform: scale(0);
+      opacity: 0;
+      transform-origin: bottom right;
+      z-index: 1045;
+      transition: 0.3s ease-out;
+      padding-bottom: map-get($spacers, 7);
+      .support-chat-start & {
+        right: auto;
+        left: 0;
+        transform-origin: bottom left;
+      }
+      .support-chat-bottom-lg & {
+        bottom: map-get($spacers, 11);
+      }
+      @include media-breakpoint-up(sm) {
+        right: map-get($spacers, 3);
+        .support-chat-start & {
+          left: map-get($spacers, 3);
+        }
+      }
+      @include media-breakpoint-up(lg) {
+        right: map-get($spacers, 5);
+        .support-chat-start & {
+          left: map-get($spacers, 5);
+        }
+      }
+      .card {
+        box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+        .dark & {
+          box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+        }
+      }
+      .card-body {
+        height: 27rem;
+      }
+      &.show-chat {
+        transform: scale(1);
+        opacity: 1;
+      }
+      .send-btn {
+        width: 37.06px;
+        height: 37.06px;
+        border-radius: 50%;
+        color: var(--#{$prefix}primary);
+        &:hover {
+          background-color: var(--#{$prefix}gray-100);
+          color: var(--#{$prefix}primary-500);
+        }
+        &:active {
+          background-color: var(--#{$prefix}gray-200);
+          color: var(--#{$prefix}primary-500);
+        }
+      }
+    }
+    .btn-chat-close {
+        border-radius: 50%;
+        width: 3rem;
+        .btn-text,
+        .fa-circle {
+          display: none;
+        }
+        .fa-chevron-down {
+          display: block;
+        }
+      }
+    .support-chat + .btn-support-chat {
+      position: fixed;
+      bottom: map-get($spacers, 6);
+      right: map-get($spacers, 3);
+      width: 9rem;
+      height: 3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-color: var(--#{$prefix}white) !important;
+      z-index: 1045;
+      border-radius: var(--#{$prefix}border-radius-pill);
+      box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+      transition: 0.3s ease;
+      .dark & {
+        box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+      }
+      .support-chat-start & {
+        right: auto;
+        left: map-get($spacers, 3);
+      }
+      .support-chat-bottom-lg & {
+        bottom: map-get($spacers, 10);
+      }
+      @include media-breakpoint-up(sm) {
+        right: map-get($spacers, 5);
+        .support-chat-start & {
+          left: map-get($spacers, 5);
+        }
+      }
+      @include media-breakpoint-up(lg) {
+        right: map-get($spacers, 7);
+        .support-chat-start & {
+          left: map-get($spacers, 7);
+        }
+      }
+      &:hover {
+        background-color: var(--#{$prefix}gray-100) !important;
+      }
+      .fa-chevron-down {
+        display: none;
+      }
+      .btn-chat-close {
+        border-radius: 50%;
+        width: 3rem;
+        .btn-text,
+        .fa-circle {
+          display: none;
+        }
+        .fa-chevron-down {
+          display: block;
+        }
+      }
+    }
+    
+    
+    
+    </style>
+<form method="post" action="{{ dist_numevari_catvar }}" onsubmit="submitForm(event)">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row form-group" style="margin-bottom: 0px;">
+                        <div class="col col-md-11"> {{ divHeader}}
+                        </div>
+                        <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">
+                            <div
+                                style="border:solid 0px #009bd9;border-radius: 4px; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                                <img src='\static\images\save.png' onclick="showFilename()" title="Save"
+                                    style='cursor:pointer;' />
+                            </div>
+                            <div
+                                style="border:solid 0px;border-radius: 4px; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;font-size: 15px;display: flex;flex-direction: row;align-items: center;">
+                                <i class="bi bi-chat-right-quote" style='cursor:pointer;' onclick="shoeTune()"></i>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body card-block">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <select name="var2" id="var2" style="width: 100%;">
+                            {% for numcol in numCols %}
+                            {% if num_var == numcol %}
+                            <option value="{{ numcol }}" selected="selected"> {{ numcol }}</option>
+                            {% else %}
+                            <option value="{{ numcol }}">{{ numcol }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <select name="var1" id="var1" style="width: 100%;">
+                            {% for catcol in catCols %}
+                            {% if cat_var == catcol %}
+                            <option value="{{ catcol }}" selected="selected"> {{ catcol }}</option>
+                            {% else %}
+                            <option value="{{ catcol }}">{{ catcol }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        <button class="btn btn-primary btn-sm" onclick="goNext()" style="margin-left: 10px;"
+                            type="button">Next</button>
+                    </div>
+                </div>
+                <div class="row" style="height: 15;margin-top: 15px;"></div>
+                <!-- <div class="table-responsive table--no-card m-b-40">
+                        <table id='csvData' class="table table-borderless table-striped table-earning"> -->
+                <div class="table-responsive" style="height: 400px;overflow: scroll;">
+                    <table class="table table-sm fs--1 mb-0">
+                        <thead>
+                            <tr>
+                                <th class="sort align-middle" scope="col">
+
+                                </th>
+                                {% for val in colNames %}
+                                <th style="border: 1px solid black;text-align: center;" class="sort align-middle" scope="col">
+                                    {{val}}
+                                </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, val in df.items %}
+                            <tr>
+                                <td style="border: 1px solid black;text-align: center;" class="align-middle time white-space">{{ key }}</td>
+                                {% for key1, val1 in val.items %}
+                                <td style="border: 1px solid black;text-align: center;" class="align-middle time white-space">{{ val1 }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- <div class="modal fade" id="divTune" tabindex="-1" aria-labelledby="divTune" aria-hidden="true">
+
+                <div class="modal-dialog modal-md modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="scrollingLongModalLabel2">Comments </h5>
+                            <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span
+                                    class="fas fa-times fs--1"></span></button>
+                        </div>
+                        <div class="modal-body p-5 px-md-6">
+                            <div class="row form-group"
+                                style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;">
+                                <div class="col col-md-2">
+                                    <label class=" form-control-label">Comments
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row form-group"
+                                style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;">
+                                <div class="col-12 col-md-12">
+                                    <textarea id="txtReportComments" rows="10"
+                                        style="resize: none;width: 100%;font-size: 10pt;"
+                                        class="form-control form-control-sm"></textarea>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-auto" style="display: flex; justify-content: flex-end;">
+                                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;"
+                                    onclick="saveReportComment()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="modal fade" id="divTune" tabindex="-1" aria-labelledby="divTune" aria-hidden="true">
+                <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+                 <div class="modal-content">
+                   <div class="modal-header">
+                     <h5 class="modal-title" id="scrollingLongModalLabel2">Comments </h5>
+                     <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+                     <div class="d-flex">
+                       <button class="btn btn-icon btn-primary btn-circle btn-xl" id="btnchat" onclick="toogleChat('chat')"><i class="bi bi-chat-text"></i></button>
+                       <button class="btn btn-icon btn-primary btn-circle btn-xl" style="display: none;" id="btncomment" onclick="toogleChat('comment')"><i class="bi bi-chat-quote"></i></button>
+                      
+                     </div>
+                   </div>
+                   <div class="modal-body p-5 px-md-6">  
+                       <div class="chat-content tab-content flex-1" style="flex: 1;">
+                           <div class="tab-pane h-100 fade active show" id="tab-thread-1" role="tabpanel" aria-labelledby="tab-thread-1">
+                             <div class="card flex-1 h-100"> 
+                               <div id="divChatHeader" style="display: none!important;;overflow: auto !important;" class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                                   <div class="row mb-3 position-relative">
+                                       <div  class="col-sm-12">
+                                           <div class="d-flex flex-column h-100 p-3" id="divresp_6" style="overflow-y: scroll;;height: 100px !important;">
+                                               
+                                             
+                                             
+                                           </div>
+                                       </div>
+                                   </div>                           
+                               </div>
+                               <div id="divChatfooter" style="display: none;"  class="card-footer">                    
+                                 <div class="row mb-3 position-relative">
+                                   <div  class="col-sm-11">
+                                     <textarea id ="txtcomment" rows="2" style="width: 100%;resize: none;"></textarea>
+                                   </div> 
+                                   <div class="col-sm-1">                   
+                                     <div class="d-flex justify-content-end align-items-end">
+                                      
+                                       <div>
+                                         <button class="btn btn-icon btn-primary btn-circle btn-xl" type="button" onclick="updateResponse()">
+                                           <i class="bi bi-send"></i></button>
+                                       </div>
+                                     </div>
+                                   </div>
+                                 </div> 
+                               </div>      
+                               
+                               <div id="divRespHeader" style="display: none;" class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                                 <div class="row mb-3 position-relative">
+                                   <div  class="col-sm-12">
+                                     <textarea id ="txtReportComments" onkeyup="enableSave()" rows="12"  style="width: 100%;resize: none;"></textarea>
+                                   </div>                        
+                                 </div>
+                                  
+                                                   
+                                 <div class="row mb-3 position-relative">
+                                 
+                                   <div class="col-sm-12">                   
+                                     <div class="d-flex justify-content-end align-items-end">
+                                      
+                                       <div>
+                                         <button class="btn btn-primary" disabled type="button" id="btnSave" onclick="saveReportComment()">Save
+                                           </button>
+                                       </div>
+                                     </div>
+                                   </div>
+                                 </div> 
+                               </div> 
+                             </div>
+                           </div> 
+                         </div>
+          
+                        
+                   </div>
+               
+            <div class="card-footer">
+                <div class="row" style="display: flex; justify-content: flex-start;">
+                    <div class="row" style="width :94%;display: flex;margin-left:1%; justify-content: flex-start;">
+                        <span style="color: red;font-weight: bold;"> {{noData}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="modal fade" id="divFilename" tabindex="-1" aria-labelledby="divFilename" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scrollingLongModalLabel2">Save Table</h5>
+                    <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span
+                            class="fas fa-times fs--1"></span></button>
+                </div>
+                <div class="modal-body p-5 px-md-6">
+                    <div class="row form-group">
+
+                        <div class="col-12 col-md-3">
+                            Table Name :
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" style="border:1px solid black;width:100%;" id="txtFile" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-auto" style="display: flex; justify-content: flex-end;">
+                        <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;"
+                            onclick="saveTbl()">Save</button>
+                        <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;"
+                            onclick=" $('#divFilename').modal('toggle')">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- <div id="divFilename" title="Save table" style="display: none;width:70%">
+        <div style="width:100%">
+            
+            <div class="row form-group"> 
+
+                <div class="col-12 col-md-2"> 
+                    Table Name : 
+                </div>
+                <div class="col-12 col-md-9"> 
+                    <input type="text" style="border:1px solid black;width:100%;"  id="txtFile"/>
+                </div>
+            </div>
+       </div> 
+    </div> -->
+</form>
+
+{% endblock content %}
+{% block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<!-- JS Global Compulsory  -->
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- JS Implementing Plugins -->
+<script
+    src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/hs-form-search/dist/hs-form-search.min.js' %}"></script>
+
+<script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+<script
+    src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/clipboard/dist/clipboard.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+
+<!-- JS Front -->
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script>
+<script src="{% static 'js/chatroom.js' %}"></script>
+
+<script type='text/javascript'>
+    
+    var myTable;
+    $(document).ready(function () {
+
+        connectWS('{{request.session.vt_mdl}}')
+        debugger
+        $('#divresp_6').empty()
+        $("#txtSelUtil").val('View Distribution of Numeric for Categorical Variable')
+        $("#txtSelSubUtil").val('')
+        $("#txtSelUtilType").val('table')
+        getVT_Comm_History('divresp_6','View Distribution of Numeric for Categorical Variable','','{{request.session.vt_mdl}}') 
+        // $.ajax({ 
+        // url: '/ValidationCommentHistory/',
+        // data:{'utility':'View Distribution of Numeric for Categorical Variable','subutility': '','chat_data':$('#var2').val()+' '+'|'+' '+$('#var1').val(),'mdl_id':'{{request.session.vt_mdl}}'},
+        // dataType: 'json',
+        // success: function (data) {
+        //   debugger
+        //   console.log("comment",data)
+        //   $('#txtReportComments').val(data.comment)         
+        //   alert('Comment Fetch sucessfully.') 
+        //   qtnArr = '';
+        //   $.each(data.data, function(key, val) {
+        //     console.log("key------",key,"val----------",val)
+        //     // qtnArr +=' <div class="d-flex chat-message">';
+        //     // qtnArr +='         <div class="d-flex mb-2 flex-1">';
+        //     // qtnArr +='           <div class="w-100 w-xxl-75">';
+        //     // qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+        //     // qtnArr +='               <div class="chat-message-content received me-2">';
+        //     // qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+        //     // qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+        //     // qtnArr +='                 </div>';
+        //     // qtnArr +='     </div>';                  
+                  
+        //     // qtnArr +='  </div>';
+        //     // qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+        //     // qtnArr +=' </div>';
+        //     // qtnArr +=' </div>';
+        //     // qtnArr +='  </div>';
+        //     if(val.msgcss=='R')
+        //     {
+        //       qtnArr +=' <div class="d-flex chat-message">';
+        //       qtnArr +='         <div class="d-flex mb-2 flex-1">';
+        //         qtnArr +='           <div class="w-100 w-xxl-75">';
+        //           qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+        //             qtnArr +='               <div class="chat-message-content received me-2">';
+        //               qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+        //                 qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+        //                 qtnArr +='                 </div>';
+        //                 qtnArr +='     </div>         ';                  
+                             
+        //                 qtnArr +='  </div>';
+        //                 qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+        //                 qtnArr +=' </div>';
+        //                 qtnArr +=' </div>';
+        //                 qtnArr +='  </div>';
+        //     }
+        //     else if(val.msgcss=='S')
+        //     {
+
+        //       qtnArr +=' <div class="d-flex chat-message">';
+        //         qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+        //         qtnArr +=' <div class="w-100 w-xxl-75">';
+        //           qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+        //           qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+        //             qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+        //               // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+        //               qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+        //               // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+        //               // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+        //               // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+        //               qtnArr +='</div>';
+        //               qtnArr +='</div>';
+        //           qtnArr +='   <div class="d-none d-sm-flex">';
+        //             qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+        //               // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+        //               qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+        //               // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+        //               // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+        //               // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+        //               qtnArr +='  </div>';
+        //               qtnArr +=' </div>';
+        //             qtnArr +=' <div class="chat-message-content me-2">';
+        //               qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+        //                 qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+        //                 qtnArr +=' </div>';
+        //                 qtnArr +='  </div>';
+        //                 qtnArr +=' </div>';
+        //                 qtnArr +=' <div class="text-end">';
+        //                   qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+        //                   qtnArr +=' </div>';
+        //                   qtnArr +=' </div>';
+        //                   qtnArr +=' </div>';
+        //                   qtnArr +=' </div> ';
+        //     } 
+        //   }) 
+        //   $('#divresp_6').append(qtnArr)       
+        //   }
+        // });
+
+        $('#liDataV').click(function () {
+            $('#sub_sub_menu').hide();
+        });
+        myTable = $('#csvData').DataTable({
+            sDom: 'lrtip',
+            "ordering": false,
+            fixedColumns: {
+                leftColumns: 1
+            },
+            scrollY: 400,
+            scroller: true,
+            scrollX: true,
+            paging: false,
+            info: false
+        });
+        
+    });
+
+    function submitForm(event){
+        event.preventDefault();
+    }
+
+    function shoeTune() {
+
+        $("#divVT_Comm_Chat").modal('toggle')
+    }
+
+    function enableSave(){ 
+        if($("#txtReportComments").val().length>0){
+            $("#btnSave").prop("disabled",false)
+        }
+        else{
+            $("#btnSave").prop("disabled",true)
+        }
+    }
+    function saveReportComment() {
+        $.ajax({
+            url: '/save_desc_comments/',
+            data: { 'utility': 'View Distribution of Numeric for Categorical Variable','type':'table', 'comment': $("#txtReportComments").val() },
+            dataType: 'json',
+            success: function (data) {
+                if (data.is_taken) {
+                    alert('Comment saved sucessfully.')
+                }
+            }
+        });
+    }
+
+    function saveTbl() {
+        $.ajax({
+            url: '/saveTableInfo/',
+            data: { tableType: 'NumVarDIst', tableName: $("#txtFile").val(), comments: '', var1: $("#var1").val(), var2: $("#var2").val() },
+            dataType: 'json',
+            success: function (data) {
+                if (data.is_taken) {
+                    alert('Table saved.')
+                }
+            }
+        });
+        // $("#divFilename").modal('toggle')
+    }
+
+    function showFilename() {
+        //$("#divFilename").modal('toggle')
+        $("#txtFile").val($("#var1").val() + '_Vs_' + $("#var2").val())
+        saveTbl()
+        // $("#divFilename").dialog({   
+        //     width: "50%",   
+        //     modal: true,
+        //     buttons:             /* Save: function() {
+        //         $(this).dialog("close");
+        //         } */ [
+        //         {
+        //             text: "Save",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {  
+        //                 $.ajax({ 
+        //                     url: '/saveTableInfo/',
+        //                     data:{tableType:'NumVarDIst',tableName:$("#txtFile").val(), comments:'',var1:$("#var1").val(),var2:$("#var2").val()}, 
+        //                     dataType: 'json',
+        //                     success: function (data) {
+        //                             if(data.is_taken)
+        //                             {
+        //                                 alert('Table saved.')
+        //                             }            
+        //                     }
+        //                 }); 
+        //                 $(this).dialog("close");
+        //             }
+        //         },
+        //         {
+        //             text: "Cancel",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {
+        //                 // Save code here
+        //                 $(this).dialog("close");
+        //             }
+        //         }
+        //     ],  
+        // }); 
+    }
+
+    function goNext() {
+        window.location = "{% url 'selCols' %}"
+    } 
+
+    function toogleChat(id){
+        debugger;
+      var myClass = $("#iconmsg").attr("class"); 
+      if(id=='chat'){       
+        $("#btncomment").show();
+        $("#btnchat").hide();
+        $("#divChatHeader").show();
+        $("#divChatfooter").show();
+        $("#divRespHeader").attr('style','display:none !important'); 
+      }
+      else{
+        $("#btncomment").hide();
+        $("#btnchat").show();
+        $("#divChatHeader").attr('style','display:none !important');
+        $("#divChatfooter").attr('style','display:none !important');
+        $("#divRespHeader").show(); 
+      }
+    }
+
+    function updateResponse(){
+        
+        $.ajax({ 
+        url: '/insert_VT_Discussion_Comments/',
+        data:{'utility':'View Distribution of Numeric for Categorical Variable','sub_utility':'','comment':  $("#txtcomment").val(),'chat_data':$('#var2').val()+' '+'|'+' '+$('#var1').val(),'mdl_id':'{{request.session.vt_mdl}}'},
+        dataType: 'json',
+        success: function (data) {  
+                    
+                if(data.is_taken)
+                { 
+                    // sendPerfMonmsg($("#txtcomment").val(),'{{ request.session.uid }}',9,5,'vt_discussion','{{request.session.vt_mdl}}',JSON.parse(data.data)[0].uinitials+' commented on '+ JSON.parse(data.data)[0].createdt)
+                    
+                    sendPerfMonmsg($("#txtcomment").val(),'{{ request.session.uid }}',9,5,'vt_discussion','{{request.session.vt_mdl}}',JSON.parse(data.data)[0].uinitials+' commented on '+ JSON.parse(data.data)[0].createdt,'View Distribution of Numeric for Categorical Variable','','table')   
+                  
+                }   
+        }
+        });
+    }
+
+</script>
+{% endblock script %}

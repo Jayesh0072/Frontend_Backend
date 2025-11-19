@@ -1,0 +1,1189 @@
+{% extends 'adminbase.html' %} 
+{% load static %} 
+{% block content %} 
+    {% csrf_token %}
+
+    <div class="card h-100">
+      <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+          -webkit-border-top-right-radius: 6px;
+          -moz-border-radius-topleft: 6px;
+          -moz-border-radius-topright: 6px;
+          border-top-left-radius: 6px;
+          border-top-right-radius: 6px;">
+            <h4 style="color:#3e465b; padding:10px 20px">Reports</h4>
+          </div>
+    <div class="card-body" id="divTabs">
+        <ul class="nav nav-underline" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation "><a class="nav-link active" id="Rpt-tab" data-bs-toggle="tab" href="#tab-Qtn" role="tab" aria-controls="tab-Qtn" aria-selected="false" tabindex="-1">Reports</a></li>
+            <li class="nav-item" role="presentation "><a class="nav-link" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="false" tabindex="-1">Section</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab-profile" role="tab" aria-controls="tab-profile" aria-selected="false" tabindex="-1">Sub-Section</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#tab-contact" role="tab" aria-controls="tab-contact" aria-selected="true">Sub-Sub-Section</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link" id="section4-tab" data-bs-toggle="tab" href="#tab-section4" role="tab" aria-controls="tab-section4" aria-selected="true">Sub-Sub-Sub-Section</a></li>
+          </ul>
+          
+          <div class="tab-content mt-3" id="myTabContent">
+            <!-- //100 Questions// -->
+            <div class="tab-pane fade active show" id="tab-Qtn" role="tabpanel" aria-labelledby="Rpt-tab">
+              <div class="p-4 code-to-copy"> 
+                <div class="col-xl-12">                     
+                    <div class="row g-3" style="margin-top:5px">
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="txtutype">Template Name</label> 
+                            <div class="col-sm-8">
+                                <input class="form-control" id="tmpltName" type="text" > 
+                            </div>
+                        </div>
+                    </div>           
+                     
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Department</label> 
+                      <div class="col-sm-8">
+                        <!-- <select class="form-select" onchange="getSection('ddlQtnSection','ddlQType')"  id="ddlQType" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>                             
+                          <option value="1">Vendor</option>
+                          <option value="2">Internal</option>
+                          <option value="3">Legacy</option>
+                      </select> -->
+                      <select class="form-select" id="deptname" aria-label="Default select example" required>                      
+                        <option value="">Choose</option>   
+                        {% for val in departments %} 
+                        <option value="{{val.dept_aid}}">{{val.dept_label}}</option>
+                        {% endfor %}  
+                    </select>
+                      </div>
+                    </div>
+                  </div>  
+                                    
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="getSubSectionInReport('3')"  id="ddlQtnSection" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>   
+                          {% for val in sections  %} 
+                          <option value="{{val.rpt_section_aid}}">{{val.rpt_section_text}}</option>
+                          {% endfor %} 
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Sub Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select"id="ddlQtnSub_Section" onchange="getSubSubSection('2')" aria-label="Default select example" required disabled>                      
+                         
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+                
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Sub Sub Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="get_Sub_Sub_sub_Section()"  id="ddlQtnSub_Sub_Section" aria-label="Default select example" required disabled>                      
+                         
+                        </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+
+                <!-- <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Sub Sub Sub Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" id="ddlQtn_Sub_Sub_Sub_Section" aria-label="Default select example" required>                      
+                         
+                        </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div>   -->
+                <!-- <div class="col-xl-12">
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtSub_Sub_Sectiondesc">Question</label>
+                      <div class="col-sm-8">
+                        <textarea class="form-control" id="txt_Qtn" type="text"> </textarea>
+                      </div>
+                    </div>           
+                  </div>
+                </div>
+                  -->
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-primary px-5" onclick="Title_Label_Data()"   value="Show Title Label"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="showTtls()" value="Titles" /> 
+                      </div>
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-primary px-5" onclick="Reportdata()"   value="View"/>
+                      </div>
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="addReports()" value="Add" /> 
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="SubmitReports()" value="Submit" /> 
+                      </div>
+                     
+                    </div>
+                </div>
+              </div>
+            </div>
+            <!-- //101 Section// -->
+            <div class="tab-pane fade" id="tab-home" role="tabpanel" aria-labelledby="home-tab">
+              <div class="p-4 code-to-copy"> 
+                <!-- <div class="col-xl-12"> 
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Type</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" id="ddlType" aria-label="Default select example" required>  
+                          <option value="1">Vendor</option>
+                          <option value="2">Internal</option>
+                          <option value="3">Legacy</option>
+                      </select>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Text</label> 
+                      <div class="col-sm-8">
+                          <input class="form-control" id="txtSection" type="text" onblur="checkSection()"> 
+                      </div>
+                    </div>
+                  </div>           
+                </div>  
+                <div class="col-xl-12">
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtSectiondesc">Description</label>
+                      <div class="col-sm-8">
+                        <textarea class="form-control" id="txtSectiondesc" type="text"> </textarea>
+                      </div>
+                    </div>           
+                  </div>
+                </div>
+                <fieldset>
+                  <div class="col-xl-12">                   
+                    <div class="row g-3" style="margin-top:5px">
+                      <div class="row mb-3">
+
+                          <label class="col-form-label col-sm-2 pt-0">Active Status</label>
+
+                          <div class="col-sm-2">
+
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="rbactive" type="radio" value="1" name="rbactivests" checked="">
+
+                              <label class="form-check-label" for="rbactive">Active</label>
+                              </div>  
+                          </div>
+                          <div class="col-sm-1"> 
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="rbinactive" type="radio" value="0"  name="rbactivests" >
+
+                              <label class="form-check-label" for="rbinactive">Inactive</label>
+                              </div> 
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="addSection()" value="Add" /> 
+                      </div>
+                     
+                    </div>
+                </div> 
+              </div>
+            </div>
+            <!-- //102 Sub-Section// -->
+            <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
+              <div class="p-4 code-to-copy"> 
+                <div class="col-xl-12">  
+                  <!-- <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Type</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="getSection('ddlSection','ddlType')"  id="ddlType" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>                             
+                          <option value="1">Vendor</option>
+                          <option value="2">Internal</option>
+                          <option value="3">Legacy</option>
+                      </select>
+                      </div>
+                    </div>
+                  </div>                    -->
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select"  name="ddlSection" id="ddlSection" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>   
+                          {% for val in sections  %} 
+                          <option value="{{val.rpt_section_aid}}">{{val.rpt_section_text}}</option>
+                          {% endfor %}  
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Text</label> 
+                      <div class="col-sm-8">
+                          <input class="form-control" id="txtSub_Section" type="text" onblur="checkSection()"> 
+                      </div>
+                    </div>
+                  </div>           
+                </div>  
+                <div class="col-xl-12">
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtSub_Sectiondesc">Description</label>
+                      <div class="col-sm-8">
+                        <textarea class="form-control" id="txtSub_Sectiondesc" type="text"> </textarea>
+                      </div>
+                    </div>           
+                  </div>
+                </div>
+                <fieldset>
+                  <div class="col-xl-12">                   
+                    <div class="row g-3" style="margin-top:5px">
+                      <div class="row mb-3">
+
+                          <label class="col-form-label col-sm-2 pt-0">Active Status</label>
+
+                          <div class="col-sm-2">
+
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="Sub_rbactive" type="radio" value="1" name="Sub_rbactivests" checked="">
+
+                              <label class="form-check-label" for="Sub_rbactive">Active</label>
+                              </div>  
+                          </div>
+                          <div class="col-sm-1"> 
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="Sub_rbinactive" type="radio" value="0"  name="Sub_rbactivests" >
+
+                              <label class="form-check-label" for="Sub_rbinactive">Inactive</label>
+                              </div> 
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="addSub_Section()" value="Add" /> 
+                      </div>
+                     
+                    </div>
+                </div> 
+              </div>
+            </div>
+            <!-- //103 Sub-Sub-Section// -->
+            <div class="tab-pane fade" id="tab-contact" role="tabpanel" aria-labelledby="contact-tab">
+              <div class="p-4 code-to-copy"> 
+                <div class="col-xl-12">  
+                  <!-- <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Type</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="getSection('ddlSSSection','ddlSSType')"  id="ddlSSType" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>                             
+                          <option value="1">Vendor</option>
+                          <option value="2">Internal</option>
+                          <option value="3">Legacy</option>
+                      </select>
+                      </div>
+                    </div>
+                  </div>                    -->
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="getSubSection('1')"  name="ddlSSSection" id="ddlSSSection" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>   
+                          {% for val in sections  %} 
+                          <option value="{{val.rpt_section_aid}}">{{val.rpt_section_text}}</option>
+                          {% endfor %}  
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Sub Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select"  name="ddlSSSub_Section" id="ddlSSSub_Section" aria-label="Default select example" required>                      
+                         
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Text</label> 
+                      <div class="col-sm-8">
+                          <input class="form-control" id="txtSub_Sub_Section" type="text" onblur="checkSection()"> 
+                      </div>
+                    </div>
+                  </div>           
+                </div>  
+                <div class="col-xl-12">
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtSub_Sectiondesc">Description</label>
+                      <div class="col-sm-8">
+                        <textarea class="form-control" id="txtSub_Sub_Sectiondesc" type="text"> </textarea>
+                      </div>
+                    </div>           
+                  </div>
+                </div>
+                <fieldset>
+                  <div class="col-xl-12">                   
+                    <div class="row g-3" style="margin-top:5px">
+                      <div class="row mb-3">
+
+                          <label class="col-form-label col-sm-2 pt-0">Active Status</label>
+
+                          <div class="col-sm-2">
+
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="Sub_Sub_rbactive" type="radio" value="1" name="Sub_Sub_rbactivests" checked="">
+
+                              <label class="form-check-label" for="Sub_Sub_rbactive">Active</label>
+                              </div>  
+                          </div>
+                          <div class="col-sm-1"> 
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="Sub_Sub_rbinactive" type="radio" value="0"  name="Sub_Sub_rbactivests" >
+
+                              <label class="form-check-label" for="Sub_rbinactive">Inactive</label>
+                              </div> 
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="addSub_Sub_Section()" value="Add" /> 
+                      </div>
+                     
+                    </div>
+                </div> 
+              </div>
+
+            </div>
+            <!-- //104 Sub-Sub-Sub-Section// -->
+            <div class="tab-pane fade" id="tab-section4" role="tabpanel" aria-labelledby="section4-tab">
+              <div class="p-4 code-to-copy"> 
+                <div class="col-xl-12">  
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Type</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="getSection('ddlSSSSection','ddlTypeSSS')"  id="ddlTypeSSS" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>                             
+                          <option value="1">Vendor</option>
+                          <option value="2">Internal</option>
+                          <option value="3">Legacy</option>
+                      </select>
+                      </div>
+                    </div>
+                  </div>                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="getSubSection('2')"  name="ddlSSSSection" id="ddlSSSSection" aria-label="Default select example" required>                      
+                          <option value="">Choose</option>   
+                          {% for key, val in sections.items  %} 
+                          <option value="{{val.Section_AID}}">{{val.Section_Label}}</option>
+                          {% endfor %}  
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Sub Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" onchange="getSubSubSection('1')"   name="ddlSSSSub_Section" id="ddlSSSSub_Section" aria-label="Default select example" required>                      
+                         
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+                
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Sub Sub Section</label> 
+                      <div class="col-sm-8">
+                        <select class="form-select" name="ddlSSSSub_Sub_Section" id="ddlSSSSub_Sub_Section" aria-label="Default select example" required>                      
+                         
+                      </select>
+                      </div>
+                    </div>
+                  </div>           
+                </div> 
+
+                <div class="col-xl-12">                   
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtutype">Text</label> 
+                      <div class="col-sm-8">
+                          <input class="form-control" id="txtSub_Sub_Sub_Section" type="text" onblur="checkSection()"> 
+                      </div>
+                    </div>
+                  </div>           
+                </div>  
+                <div class="col-xl-12">
+                  <div class="row g-3" style="margin-top:5px">
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label" for="txtSub_Sub_Sectiondesc">Description</label>
+                      <div class="col-sm-8">
+                        <textarea class="form-control" id="txtSub_Sub_Sub_Sectiondesc" type="text"> </textarea>
+                      </div>
+                    </div>           
+                  </div>
+                </div>
+                <fieldset>
+                  <div class="col-xl-12">                   
+                    <div class="row g-3" style="margin-top:5px">
+                      <div class="row mb-3">
+
+                          <label class="col-form-label col-sm-2 pt-0">Active Status</label>
+
+                          <div class="col-sm-2">
+
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="Sub_Sub_Sub_rbactive" type="radio" value="1" name="Sub_Sub_Sub_rbactivests" checked="">
+
+                              <label class="form-check-label" for="Sub_Sub_Sub_rbactive">Active</label>
+                              </div>  
+                          </div>
+                          <div class="col-sm-1"> 
+                              <div class="form-check">
+
+                              <input class="form-check-input" id="Sub_Sub_Sub_rbinactive" type="radio" value="0"  name="Sub_Sub_Sub_rbactivests" >
+
+                              <label class="form-check-label" for="Sub_Sub_rbinactive">Inactive</label>
+                              </div> 
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"  value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="addSub_Sub_Sub_Section()" value="Add" /> 
+                      </div>
+                     
+                    </div>
+                </div> 
+              </div>
+
+            </div>
+          </div>
+    </div>
+    </div>
+    <div class="modal fade bd-example-modal-xl" id="exampleModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-md modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Sections Data</h5>
+            
+            <!-- <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button> -->
+          </div>
+          <div class="modal-body">
+            <!-- <p class="text-700 lh-lg mb-0">Show added sections data </p> -->
+            <div id="divComments" style="overflow: auto;"> Please view Model Validation Template <img src='\static\images\previewcomment.png'  title="Preview Report Template" style='cursor:pointer;'/> for help in writing validation report.</div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button class="btn btn-primary" type="button" onclick="submitRatings()">Yes</button>
+            <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">No</button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="modal fade bd-example-modal-xl" id="titleLabel" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-md modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Sections Data</h5>
+            
+            <!-- <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button> -->
+          </div>
+          <div class="modal-body">
+            <!-- <p class="text-700 lh-lg mb-0">Show added sections data </p> -->
+            <!-- <div id="divComments" style="overflow: auto;"> Please view Model Validation Template <img src='\static\images\previewcomment.png'  title="Preview Report Template" style='cursor:pointer;'/> for help in writing validation report.</div> -->
+            <div class="row g-3" style="margin-top:5px">
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="txtutype">Section</label> 
+                <div class="col-sm-8">
+                  <select class="form-select" onchange="Get_Title_Label('0')"  name="titlelabel" id="titlelabel" aria-label="Default select example" required>                      
+                    <option value="">Choose</option>   
+                    {% for val in template_names.data  %} 
+                    <option value="{{val}}">{{val}}</option>
+                    {% endfor %}  
+                </select>
+                </div>
+                <!-- <div class="col-sm-8" id="titles">
+
+                </div> -->
+                <div class="modal-body">
+                  <!-- <p class="text-700 lh-lg mb-0">Show added sections data </p> -->
+                  <div id="divTitles" style="margin: 0px 10px;overflow: auto;">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button class="btn btn-primary" type="button" onclick="submitRatings()">Yes</button>
+            <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">No</button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="modal fade bd-example-modal-lg" id="divselTempName" tabindex="-1" aria-labelledby="divselTempName" aria-hidden="true">
+      <div class="modal-dialog modal-md modal-dialog-scrollable modal-lg"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="scrollingLongModalLabel2">Report Titles</h5>
+            <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+          </div>
+          <div class="row mb-3 position-relative" style="margin: 0px 5px;"> 
+            <div id="divTtls" class="row row-cols-1 row-cols-md-2">
+            </div>
+          </div> 
+  
+  <div class="modal-footer"> 
+  <button class="btn btn-outline-primary" type="button" id="btnOk" data-bs-dismiss="modal">Ok</button>
+  
+  
+  </div>
+  </div>
+  </div>
+  </div> 
+     
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script type='text/javascript' >
+  var selectedOPt='';
+  function addSection(){ 
+    debugger
+    var ref_this =  $("li.tab.ui-tabs-selected");
+        console.log(ref_this);
+
+      if($("#txtSection").val().trim().length<1)
+      {
+          alert('Please enter option value.')
+          return false
+      } 
+      $.ajax({
+          url: '/Save_Report_Section/', 
+          data:{ section: $("#txtSection").val(),sectiondesc:$('#txtSectiondesc').val(),activests:$('input[name="rbactivests"]:checked').val()},
+         dataType: 'json',   
+          success: function (data) { 
+            console.log("data",data)
+             alert(data.msg)
+          }
+      });
+  }
+  function Title_Label_Data(){    
+    $("#titleLabel").modal('toggle')
+  }
+  
+  function Reportdata(){
+    debugger
+    $("#exampleModal").modal('toggle')
+    template_name = $('#tmpltName').val()
+    console.log('template_name',template_name)
+    $.ajax({
+        url: '/ShowReportdata/', 
+        data:{ template_name: template_name},
+        dataType: 'json',
+        success: function (data) {
+            debugger
+            console.log("data",data)
+            $('#divComments').empty()
+            $('#divComments').append(data.df)
+        }
+    });
+  }
+
+  function Get_Title_Label(a){
+    debugger
+    console.log("a",a)
+    if(a == 0){
+      debugger;
+      console.log("if")
+      header_name = $("#titlelabel").val()
+
+      $.ajax({
+            url: '/Get_Title_Label/', 
+            data:{header_name:header_name,template_name:$("#tmpltName").val()},
+          dataType: 'json',   
+            success: function (data) { 
+              debugger;
+              console.log("data",data)
+              //alert(data.msg) 
+              $('#divTitles').empty() 
+              $.each(data.data, function(i, item) {
+                  console.log('i',i,'item',item.title_label)
+                  $('#divTitles').append(item.title_label+"</br>")                
+              })           
+            }
+        });
+    }
+    else{
+      console.log("else")
+      $('#divselTempName').modal('toggle')
+      $("#titleLabel").modal('toggle')
+      header_name = a
+      $.ajax({
+          url: '/Get_Title_Label/', 
+          data:{header_name:header_name},
+          dataType: 'json',   
+            success: function (data) { 
+              debugger;
+              console.log("data",data)
+              //alert(data.msg) 
+              $('#titlelabel').val(header_name) 
+              $('#divTitles').empty()
+              $.each(data.data, function(i, item) {
+                  console.log('i',i,'item',item.title_label)
+                  // $('#divTitles').empty()
+                  $('#divTitles').append(item.title_label+"</br>")                
+              })           
+            }
+        });
+
+    }
+  }
+
+
+  function addSub_Section(){  
+    debugger; 
+      if($("#txtSub_Section").val().trim().length<1)
+      {
+          alert('Please enter option value.')
+          return false
+      } 
+      $.ajax({
+          url: '/Save_Report_Sub_Section/', 
+          data:{secid:$("#ddlSection").val(),section: $("#txtSub_Section").val(),sectiondesc:$('#txtSub_Sectiondesc').val(),activests:$('input[name="Sub_rbactivests"]:checked').val()},
+         dataType: 'json',   
+          success: function (data) { 
+            console.log("data",data)
+            alert(data.msg)             
+          }
+      });
+  }
+
+
+  function addSub_Sub_Section(){  
+    debugger; 
+    //   if($("#txtSub_Sub_Section").val().trim().length<1)
+    //   {
+    //       alert('Please enter option value.')
+    //       return false
+    //   } 
+    $.ajax({
+        url: '/Save_Report_Sub_Sub_Section/', 
+        data:{section_id:$("#ddlSSSection").val(),sub_secid:$("#ddlSSSub_Section").val(),sectiontext: $("#txtSub_Sub_Section").val(),sectiondesc:$('#txtSub_Sub_Sectiondesc').val(),activests:$('input[name="Sub_Sub_rbactivests"]:checked').val()},
+        dataType: 'json',   
+        success: function (data) { 
+        console.log("sub sub section",data)
+        alert(data.msg)    
+        }
+    });
+  }
+
+  
+  function addSub_Sub_Sub_Section(){   
+      if($("#txtSub_Sub_Sub_Section").val().trim().length<1)
+      {
+          alert('Please enter option value.')
+          return false
+      } 
+      $.ajax({
+          url: '/addQuesSub_Sub_Sub_Section/', 
+          data:{sub_secid:$("#ddlSSSSub_Sub_Section").val(),section: $("#txtSub_Sub_Sub_Section").val(),sectiondesc:$('#txtSub_Sub_Sub_Sectiondesc').val(),activests:$('input[name="Sub_Sub_Sub_rbactivests"]:checked').val()},
+         dataType: 'json',   
+          success: function (data) { 
+            console.log(data,data.is_taken==true,data.is_taken=='true')
+             if(data.is_taken==true){
+             // $('#tblMaster tr:last').after('<tr><td>'+$("#txtSection").val()+'</td><td>'+$("#txtSectiondesc").val()+'</td></tr>');
+              alert('Sub section added successfully.')
+              $("#txtSection").val('');
+              $("#txtSectiondesc").val('')
+              $('form').submit();
+             }
+             else
+             {
+              alert('Error while creating user.')
+             }
+          }
+      });
+  }
+
+
+
+  function addReports(){  
+    debugger; 
+    if($("#tmpltName").val().trim().length<1)
+      {
+          alert('Please enter option value.')
+          return false
+      } 
+      console.log("addReports") 
+      $.ajax({
+          url: '/Save_Report/', 
+          data:{template_name:$('#tmpltName').val(),department:$('#deptname').val(),section:$("#ddlQtnSection").val(),sub_section: $("#ddlQtnSub_Section").val(),sub_sub_section:$('#ddlQtnSub_Sub_Section').val()},
+         dataType: 'json',   
+          success: function (data) { 
+            console.log('Reports',data)
+            alert(data.msg)
+          }
+      });
+  }
+
+  function SubmitReports(){
+    debugger; 
+    
+    console.log("SubmitReports") 
+    $.ajax({
+        url: '/Submit_Report/', 
+        data:{template_name:$('#tmpltName').val(),header_name:$("#titlelabel").val()},
+        // data:{template_name:'testing template 3'},
+        dataType: 'json',   
+        success: function (data) { 
+        console.log('Submitted Reports',data)
+        alert(data.msg)
+        }
+    });
+  }
+
+  function getSection(SelectId,OptionId){ 
+        var $mySelect,selid ;
+        console.log('Dropdown ID to append',SelectId)       
+        $mySelect = $('#'+SelectId); 
+        selid=$('#'+OptionId).val();
+       
+        console.log('selid',selid)
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                      value: "",
+                      text: "Choose"
+                  });
+        $mySelect.append($option); 
+        $.ajax({
+            url: '/getQues_Sections/', 
+            data:{ secid: selid},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log(data.sections)
+               $.each(data.sections, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.Section_AID,
+                        text: value.Section_Label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    } 
+
+    function getSubSectionInReport(idx){ 
+    debugger;
+    console.log("check 1")
+        var $mySelect,selid ;
+        console.log(idx)
+        if(idx=='1')
+        {
+          $mySelect = $('#ddlSSSub_Section'); 
+          selid=$('#ddlSSSection').val();
+        }
+        else if(idx=='2')
+        {
+          $mySelect = $('#ddlSSSSub_Section'); 
+          selid=$('#ddlSSSSection').val();
+        }
+        else if(idx=='3')
+        {
+          $mySelect = $('#ddlQtnSub_Section'); 
+          selid=$('#ddlQtnSection').val();
+        }
+        var template_name = $('#tmpltName').val()
+        console.log('selid',selid)
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option); 
+        $.ajax({
+            url: '/getRptSub_Sections/', 
+            data:{ secid: selid,template_name:template_name},
+           dataType: 'json',   
+            success: function (data) { 
+            debugger;
+               console.log("subsections data",data.subsections.data)
+               console.log("subsections data2",data.subsections.data2,data.subsections.data[0].rpt_section_aid)
+            //    if (data.subsections.data2.rpt_section_aid == null && data.subsections.data.rpt_section_aid == null)
+            if (data.subsections.data2.rpt_section_aid == null ){
+                console.log('inside if')
+                        $("#ddlQtnSub_Section").prop('disabled',true)
+                }
+                else{
+                    console.log("else 1")
+                    $("#ddlQtnSub_Section").prop('disabled',false)
+                    console.log("else 2")
+                    $.each(data.subsections.data, function(key, value) { 
+                        console.log("key",key,"value",value)
+                        var $option = $("<option/>", {
+                            value: value.rpt_sub_section_aid,
+                            text: value.rpt_sub_section_text
+                        });
+                        $mySelect.append($option);
+                    })
+                }
+                
+            //    $.each(data.subsections, function(key, value) { 
+            //         console.log("value",value)
+                    // if (value.rpt_section_aid == null){
+                    //     $("#ddlQtnSub_Section").prop('disabled',true)
+                    // }
+                    // else{
+                    //     $("#ddlQtnSub_Section").prop('disabled',false)
+                    //     var $option = $("<option/>", {
+                    //         value: value.rpt_sub_section_aid,
+                    //         text: value.rpt_sub_section_text
+                    //     });
+                    //     $mySelect.append($option);
+                    // }
+                    
+            //     });
+            }
+        });
+    }
+
+  function getSubSection(idx){ 
+    debugger;
+    console.log("check 1")
+        var $mySelect,selid ;
+        console.log(idx)
+        if(idx=='1')
+        {
+          $mySelect = $('#ddlSSSub_Section'); 
+          selid=$('#ddlSSSection').val();
+        }
+        else if(idx=='2')
+        {
+          $mySelect = $('#ddlSSSSub_Section'); 
+          selid=$('#ddlSSSSection').val();
+        }
+        else if(idx=='3')
+        {
+          $mySelect = $('#ddlQtnSub_Section'); 
+          selid=$('#ddlQtnSection').val();
+        }
+        var template_name = $('#tmpltName').val()
+        console.log('selid',selid)
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option); 
+        $.ajax({
+            url: '/getRptSub_Sections/', 
+            data:{ secid: selid,template_name:template_name},
+           dataType: 'json',   
+            success: function (data) { 
+            debugger;
+               console.log("subsections data",data.subsections.data)
+               console.log("subsections data2",data.subsections.data2,data.subsections.data[0].rpt_section_aid)
+            //    if (data.subsections.data2.rpt_section_aid == null && data.subsections.data.rpt_section_aid == null)
+            if (data.subsections.data2.rpt_section_aid != null ){
+                console.log('inside if')
+                        $("#ddlQtnSub_Section").prop('disabled',true)
+                }
+                else{
+                    console.log("else 1")
+                    $("#ddlQtnSub_Section").prop('disabled',false)
+                    console.log("else 2")
+                    $.each(data.subsections.data, function(key, value) { 
+                        console.log("key",key,"value",value)
+                        var $option = $("<option/>", {
+                            value: value.rpt_sub_section_aid,
+                            text: value.rpt_sub_section_text
+                        });
+                        $mySelect.append($option);
+                    })
+                }
+                
+            //    $.each(data.subsections, function(key, value) { 
+            //         console.log("value",value)
+                    // if (value.rpt_section_aid == null){
+                    //     $("#ddlQtnSub_Section").prop('disabled',true)
+                    // }
+                    // else{
+                    //     $("#ddlQtnSub_Section").prop('disabled',false)
+                    //     var $option = $("<option/>", {
+                    //         value: value.rpt_sub_section_aid,
+                    //         text: value.rpt_sub_section_text
+                    //     });
+                    //     $mySelect.append($option);
+                    // }
+                    
+            //     });
+            }
+        });
+    } 
+
+    function getSubSubSection(idx){ 
+        debugger;
+        var $mySelect,selid ; 
+        console.log(idx)
+        if (idx=='1'){
+          $mySelect = $('#ddlSSSSub_Sub_Section'); 
+          selid=$('#ddlSSSSub_Section').val();
+        }
+        else if(idx=='2'){
+          $mySelect = $('#ddlQtnSub_Sub_Section'); 
+          selid=$('#ddlQtnSub_Section').val();
+        }
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option); 
+        var template_name = $('#tmpltName').val()
+        $.ajax({
+            url: '/getRptSub_Sub_Sections/', 
+            data:{ secid: selid,template_name:template_name},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log("sub sub sections------------",data.subsections)
+               //$.each(data.subsections, function(key, value) { 
+                // if (value.rpt_sub_section_aid == null){
+                //         $("#ddlQtnSub_Sub_Section").prop('disabled',true)
+                //     }
+                //     else{
+                //         $("#ddlQtnSub_Sub_Section").prop('disabled',false)
+                //         var $option = $("<option/>", {
+                //             value: value.rpt_sub_sub_section_aid,
+                //             text: value.rpt_sub_sub_section_text
+                //         });
+                //         $mySelect.append($option);
+                //     }
+            //});
+                if (data.subsections.data2.rpt_sub_section_aid == null){
+                    $("#ddlQtnSub_Sub_Section").prop('disabled',true)
+                }
+                else{
+                    $("#ddlQtnSub_Sub_Section").prop('disabled',false)
+                    $.each(data.subsections.data, function(key, value) { 
+                        var $option = $("<option/>", {
+                            value: value.rpt_sub_sub_section_aid,
+                            text: value.rpt_sub_sub_section_text
+                        });
+                        $mySelect.append($option);
+                    })
+                }
+                
+            }
+        });
+    } 
+
+    function get_Sub_Sub_sub_Section(){ 
+        var $mySelect,selid ; 
+        
+        $mySelect = $('#ddlQtn_Sub_Sub_Sub_Section'); 
+        selid=$('#ddlQtnSub_Sub_Section').val();
+  
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option); 
+        $.ajax({
+            url: '/getQuesSub_Sub_Sub_Sections/', 
+            data:{ secid: selid},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log(data.subsections)
+               $.each(data.subsections, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.Sub_Sub_Sub_Section_AID,
+                        text: value.Sub_Sub_Sub_Section_Label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    } 
+
+  function checkSection1(){ 
+      $.ajax({
+          url: '/checkValue/', 
+          data:{val: $("#txtSection").val(),'tbl':$('#hdnTbl').val()},
+         dataType: 'json',   
+          success: function (data) { 
+             if(data.cnt!='0'){
+              $("#txtSection").val('')
+              alert('Option already exists.')
+              $("#txtSection").focus()
+             }
+             
+          }
+      });
+  }
+
+  function getvalues(id){ 
+      $.ajax({
+          url: '/getMasterTblbyId/', 
+          data:{val: id,'tbl':$('#hdnTbl').val()},
+         dataType: 'json',   
+          success: function (data) {              
+             $.each(data.tblata, function(i, obj) {
+                  //use obj.id and obj.name here, for example:                  
+                  if(obj.AID==id){
+                      $("#txtSection").val(obj.opt);
+                      $("#txtSection").prop('disabled',true)
+                      selectedOPt =obj.AID;
+                      $('#txtSectiondesc').val(obj.desc)
+                      if(obj.sts=='Active'){
+                          $('#rbactive').prop('checked',true)
+                      }
+                      else{
+                          $('#rbinactive').prop('checked',true)
+                      }
+                  }
+              });
+             
+          }
+      });
+  }
+
+  function gotolist()
+  {
+      window.location='{{blankadmin}}'
+      
+  }
+
+  function showTtls(){
+    $('#divTtls').empty()
+    $.ajax({
+          url: '/getReportTtlHdr/', 
+          data:{},
+         dataType: 'json',   
+          success: function (data) { 
+            $.each(data.ttlnheadrs, function(key, value) { 
+            ttlsarr=value.ttls.split(',');
+            strq='<div class="col mb-3 mb-lg-5" style="height: 200px;/*! background-color: aqua; */">';          
+            strq+='<div class="card card-hover-shadow text-center h-100">     ';       
+            strq+='<div class="card-progress-wrap">        ';    
+            strq+='<div class="progress card-progress">               '; 
+            strq+='<div class="progress-bar bg-success"  role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>';
+                       
+                
+            strq+='</div> ';
+            strq+='</div>';            
+            strq+='<div style="height: 180px ;overflow:scroll">';
+            strq+='<div style="display: flex;" class="text-start mb-4" >';
+            strq+='<div class="col-auto" style="margin: 0px 10px;">';
+            strq+='<span class="d-block" onclick="Get_Title_Label(\''+value.template_name+'\')">'+value.template_name+' </span>';
+            strq+='</div>'; 
+            strq+='</div>  '; 
+            $.each(ttlsarr, function(i, e) {
+                // do something with `item`
+                console.log('item ',e)
+                strq+='<div class="mb-4" style="cursor: default;" > <small class="card-subtitle">'+ e +'</small>';
+                
+                
+                strq+='</div>  ';
+            });
+            
+            strq+='</div>   ';
+            strq+='</div> ';
+            strq+='</div>'; 
+            $('#divTtls').append(strq)
+            });
+           
+          }
+      });
+    $('#divselTempName').modal('toggle')
+  }
+
+</script>
+{% endblock script %}

@@ -1,0 +1,2 @@
+train_size,categorical_imputation,numeric_imputation,ignore_features,normalize,normalize_method,fix_imbalance,transformation,transformation_method,transform_target,transform_target_method,remove_outliers,outliers_threshold,remove_multicollinearity,multicollinearity_threshold,feature_interaction,feature_ratio,polynomial_features,polynomial_degree,trigonometry_features
+0.7,constant,mean,None,False,zscore,False,False,yeo-johnson,False,box-cox,False,0.05,False,0.9,False,False,False,2,False

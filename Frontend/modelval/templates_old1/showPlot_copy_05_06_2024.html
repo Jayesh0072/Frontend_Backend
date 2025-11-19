@@ -1,0 +1,265 @@
+{% extends 'rmsebase.html' %} 
+{% load static %} 
+{% block content %} 
+<form method="POST" action="{{postAct}}">
+    {% csrf_token %} 
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                {{chartType}}
+            </div>
+            <div class="card-body card-block" style="padding-bottom: 0;">
+                <div class="row">
+                    <div class="col-lg-3"> 
+                        <select  name="ddlvar1" id="ddlvar1" class="form-control" style="display:{{ hideddl1 }};">
+                            {% for numcol in ddlvar1 %}
+                                {% if  var1  == numcol %}
+                                    <option value="{{ numcol }}" selected="selected"> {{ numcol }}</option>                                                    
+                                {% else %}
+                                    <option value="{{ numcol }}">{{ numcol }}</option>                                                    
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3"> 
+                        <select name="ddlvar2"  id="ddlvar2" class="form-control" style="display:{{ hideddl2 }};">
+                            {% for catcol in ddlvar2 %}
+                                {% if  var2  == catcol %}
+                                    <option value="{{ catcol }}" selected="selected"> {{ catcol }}</option>                                                    
+                                {% else %}
+                                    <option value="{{ catcol }}">{{ catcol }}</option>                                                    
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3">     
+                        <button type="submit" class="btn btn-primary btn-sm" >Update</button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="goBack();" >Back</button>
+                        
+                    </div>
+                    <div class="col-lg-3"  style="display: flex; justify-content: flex-end;">
+                        <a style="margin-right: 5px;" href="{{ pdfFile }}" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i> </a>
+                        <a style="margin-right: 5px;" href="#" onclick="showComment()"> <i class="fa fa-comment" style="font-size: 12px;" title="Add comments"></i></a>
+                        <a style="margin-right:5;" href="#" onclick="showFilename()"> <i class="fa fa-save" style="font-size: 12px;" title="Save chart image"></i></a>
+                    </div> 
+                </div>
+                <div class="row" style=" height:15px ;">  </div>
+                <div style="height: 100%;overflow:scroll"> 
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <img id="imgGraph" style="cursor: zoom-in;height: 100%;width:100%" src="{{ graphpath }}">
+                        </div>
+
+                    </div> 
+                </div> 
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+   
+<div id="divFilename" class="modal fade"    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLiveLabel">Save Image</h5>        
+        </div>
+        <div class="modal-body"> 
+            <div style="width:100%">
+                
+                <div class="row form-group"> 
+
+                    <div class="col-12 col-md-2"> 
+                        File Name : 
+                    </div>
+                    <div class="col-12 col-md-9"> 
+                        <input type="text" style="border:1px solid black;width:100%;"  id="txtchartFile"/>
+                    </div>
+                </div>
+            </div> 
+    </div>
+    <div class="modal-footer"> 
+      <button  type="button" class="btn btn-primary parse-json" onclick="saveimage()">Save</button>
+      <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="$('#divFilename').modal('toggle');">Close</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="divComment" class="modal fade"    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLiveLabel">Save Comment</h5>        
+        </div>
+        <div class="modal-body"> 
+            <div style="width:100%">
+                <input type="text" value="{{chartType}}" id="txtchartType" style="display: none;"/>
+                <textarea id="txtcomment" rows="5" style="resize: none; border:1px solid black;width:100%;" ></textarea>
+           </div> 
+        </div>
+    <div class="modal-footer"> 
+        <button type="button"  class="btn btn-primary parse-json" onclick="savecomment()">Save</button>
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="$('#divComment').modal('toggle');">Close</button>
+    </div>
+  </div>
+</div>
+</div>
+
+</form>
+
+
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script type='text/javascript'> 
+    $(document).ready(function () {
+        $('#liDataV').click(function(){
+            $('#sub_sub_menu').hide();
+        });
+        var zoomin=0;  
+        $('#imgGraph').click(function(){  
+            if(zoomin==0)
+            { 
+                zoomin=1; 
+                $('#imgGraph').css("transform", "scale(2.5)");
+                $('#imgGraph').css('transform-origin','0px 0px'),
+                $('#imgGraph').css({'cursor':'zoom-out'});
+            }
+            else if(zoomin==1)
+            {
+                zoomin=0; 
+               $('#imgGraph').css("transform", "scale(1)");
+               $('#imgGraph').css('transform-origin','0px 0px'),
+                $('#imgGraph').css({'cursor':'zoom-in'});
+            } 
+        }); 
+    });
+
+    function  goBack()
+    {
+        window.location="{% url 'showChartTypes' %}"
+    }
+
+    function savecomment(){
+        $.ajax({ 
+            url: '/saveChartComments/',
+            data:{ comments: $('#txtcomment').val(),'chartType':$("#txtchartType").val(),'xaxisval':$("#ddlvar1").val(),'yaxisval':$("#ddlvar2").val()}, 
+            dataType: 'json',
+            success: function (data) {
+                    if(data.is_taken)
+                    {
+                        alert('Comments saved successfully.')
+                        $('#divComment').modal('toggle');
+                    }            
+            }
+        }); 
+        $(this).dialog("close");
+    }
+
+    function showComment()
+    {  
+        
+         $("#divComment").modal('toggle')
+    //     $("#divComment").dialog({   
+    //         width: "70%",   
+    //         modal: true,
+    //         buttons:             /* Save: function() {
+    //             $(this).dialog("close");
+    //             } */ [
+    //             {
+    //                 text: "Save",
+    //                 "class": 'btn btn-primary btn-sm',
+    //                 click: function() {  
+    //                     $.ajax({ 
+    //                         url: '/saveChartComments/',
+    //                         data:{ comments: $('#txtcomment').val(),'chartType':$("#txtchartType").val()}, 
+    //                         dataType: 'json',
+    //                         success: function (data) {
+    //                                 if(data.is_taken)
+    //                                 {
+    //                                     alert('Comments added to pdf file.')
+    //                                 }            
+    //                         }
+    //                     }); 
+    //                     $(this).dialog("close");
+    //                 }
+    //             },
+    //             {
+    //                 text: "Cancel",
+    //                 "class": 'btn btn-primary btn-sm',
+    //                 click: function() {
+    //                     // Save code here
+    //                     $(this).dialog("close");
+    //                 }
+    //             }
+    //         ],  
+    //     }); 
+    }
+
+    function saveimage() {  
+        console.log('$("#ddlvar1").val() ',$("#ddlvar1").val())
+        $.ajax({ 
+            url: '/saveChartImage/',
+            data:{ 'chartImg': $('#txtchartFile').val(),'chartType':$("#txtchartType").val(),'xaxisval':$("#ddlvar1").val(),'yaxisval':$("#ddlvar2").val()}, 
+            dataType: 'json',
+            success: function (data) {
+                    if(data.is_taken)
+                    {
+                        alert('Image saved successfully.')
+                       //S $('#divFilename').modal('toggle');
+                    }            
+            }
+        }); 
+        $(this).dialog("close");
+    }
+
+    function showFilename()
+    {  
+        saveimage();
+       // $("#divFilename").modal('toggle')
+        // $("#divFilename").dialog({   
+        //     width: "50%",   
+        //     modal: true,
+        //     buttons:             /* Save: function() {
+        //         $(this).dialog("close");
+        //         } */ [
+        //         {
+        //             text: "Save",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {  
+        //                 $.ajax({ 
+        //                     url: '/saveChartImage/',
+        //                     data:{ 'chartImg': $('#txtchartFile').val(),'chartType':$("#txtchartType").val()}, 
+        //                     dataType: 'json',
+        //                     success: function (data) {
+        //                             if(data.is_taken)
+        //                             {
+        //                                 alert('Image saved successfully.')
+        //                             }            
+        //                     }
+        //                 }); 
+        //                 $(this).dialog("close");
+        //             }
+        //         },
+        //         {
+        //             text: "Cancel",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {
+        //                 // Save code here
+        //                 $(this).dialog("close");
+        //             }
+        //         }
+        //     ],  
+        // }); 
+    }
+ 
+</script>
+{% endblock script %}

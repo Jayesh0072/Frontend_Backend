@@ -1,0 +1,271 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %} 
+<form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal">   
+  {% csrf_token %}  
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+            
+    
+                
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Audit & Regulatory Compliance Response</h4>
+                        </div>
+                        <div class="card-body card-block">                               
+                          <div class="row form-group">                                     
+                            <div class="col col-md-12">
+                                <select id="mdl_id" name="mdl_id" onchange="$('#target').submit()"  style="margin-bottom: 15px;" class="form-control form-control-sm" > 
+                                  <option   value="">Select</option> 
+                                   {% for  data in mdl_id %}
+                                        <option value="{{data}}">{{data}}</option>
+                                    {% endfor %}                                            
+                                </select>                                        
+                            </div>                                     
+                          </div>   
+                                    {% for question in questions %}
+                                    <!-- <div class="accordion" id="accordionExample_{{question.compl_id}}">
+                                    
+                                      <div class="accordion-item border-top border-300">
+                                        
+                                        <h2 class="accordion-header" id="headingOne">
+                                          
+                                        
+                                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_{{question.compl_id}}" aria-expanded="true" aria-controls="collapseOne_{{question.compl_id}}">
+                                            {{question.question_text}}
+                                          </button>
+                                        
+                                        </h2>
+                                        
+                                        <div class="accordion-collapse collapse" id="collapseOne_{{question.compl_id}}" aria-labelledby="headingOne" data-bs-parent="#accordionExample_{{question.compl_id}}" style="">
+                                          <div class="accordion-body pt-0">
+                                            <div class="card-body card-block">
+                                              
+                                              
+                                              <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                                                <div class="col col-md-2">
+                                                  <label class=" form-control-label">
+                                                  </label>
+                                              </div>
+                                              </div>
+                                              <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                                                  <div class="col-12 col-md-12">
+                                                       <textarea id="txtComments_{{question.compl_id}}" rows="5" 
+                                                       style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;"  >{{question.Question_Resp}}</textarea>
+                                                  </div>
+                                              </div>
+                                            </div>  
+                                            <input type="text" id="txtid_{{question.compl_id}}" value="{{question.compl_id}}" hidden>
+                        
+                                              
+                                          </div>
+                                        </div>
+                                        
+                                      </div>
+                                      
+                                       
+                              </div>  -->
+                              <div class="accordion" id="accordionExample_{{question.compl_id}}" style="margin-bottom: 25px;">
+                                <div class="accordion-item border-top border-300">
+                                  <h2 class="accordion-header" id="headingOne">
+                                    
+                   
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_{{question.compl_id}}" aria-expanded="true" aria-controls="collapseOne_{{question.compl_id}}">
+                                      {{question.question_text}}
+                                    </button>
+                                  </h2>
+                                  <div class="accordion-collapse collapse" id="collapseOne_{{question.compl_id}}" aria-labelledby="headingOne" data-bs-parent="#accordionExample_{{question.compl_id}}" style="">
+                                    <div class="accordion-body pt-0"> 
+                                         
+                                        
+                                        <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                                            <div class="col-12 col-md-12">
+                                                 <textarea id="txtComments_{{question.compl_id}}"   rows="5" style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;" >{{question.Question_Resp}}</textarea> 
+                                            </div>
+                                        </div>
+                                        <input type="text" id="txtid_{{question.compl_id}}" value="{{question.compl_id}}" hidden>
+                                   
+                  
+                                        
+                                    </div>
+                                  </div>
+                                </div>
+                               
+                           
+                          </div> 
+                          {% endfor %}
+                            </div> 
+                        
+                                <div class="card-footer">
+                                    <div class="col-12 gy-6">
+                                        <div class="row g-3 justify-content-end">
+                                            <div class="col-auto">
+                                                
+                                                <button type="button" class="btn btn-primary" id="btn_report" onclick="saveResponse()">Save</button> 
+                                                
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="button" class="btn btn-primary" onclick="goNext()">Next</button>
+                                            </div>
+                                            
+                                        </div>  
+                                    </div>
+                                </div>
+                        </div>
+
+                    </div> 
+                </div>
+            
+           
+          </form>           
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script type='text/javascript' >
+    var myTable;
+    var colDtTbl;
+    $(document).ready( function () { 
+        $('#liDataV').click(function(){
+        $('#sub_sub_menu').hide();
+        });
+        $('#mdl_id').val('{{selected_id}}');
+        if($('#mdl_id > option').length==1)
+        {
+          alert('No models allocated.')
+        }
+        
+    } ); 
+    var questions ={{questions| safe}} 
+    $.each(questions, function(i, obj) {
+        // alert(i,obj)
+      //use obj.id and obj.name here, for example:
+    //   item = {}  
+    //   item['value'] = obj.cnt;
+    //   item['name'] = obj.Mdl_Type_Label;
+    //   mdlType.push(item)
+    });
+    // var arrQtns=[]
+    // function registerclick(id){
+    //     //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       
+    //     if($('#txtComments_'+id).val()){ 
+    //       if(arrQtns.indexOf(id)<0){
+    //           arrQtns.push(id);  
+    //       }
+    //     }
+    //     else{ // only splice array when item is found
+           
+    //       arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+    //       $('#name1').prop('checked', false); 
+    //     }
+    // }
+    function saveResponse(){ 
+        var questions ={{questions| safe}} 
+        console.log(questions)
+        try {
+        $.each(questions, function(i, obj) {
+            console.log(obj.compl_id)
+        console.log("compl id",$('#txtid_'+obj.compl_id).val())
+        console.log("response",$('#txtComments_'+obj.compl_id).val())
+      //use obj.id and obj.name here, for example:
+    //   item = {}  
+    //   item['value'] = obj.cnt;
+    //   item['name'] = obj.Mdl_Type_Label;
+    //   mdlType.push(item)
+        if ($('#txtComments_'+obj.compl_id).val() == '')
+        {
+            // alert("please add comment")
+            return;
+        }
+        console.log('mdl_id '+$('#mdl_id').val())
+        $.ajax({
+            url: '/saveauditresponse/', 
+            data:{mdl_id:$('#mdl_id').val(),response: $('#txtComments_'+obj.compl_id).val(),compl_id:$('#txtid_'+obj.compl_id).val()},
+            dataType: 'json',
+            success: function (data) {
+               // alert(data)
+               if(data.isvalid == 'true'){
+                // alert('Response saved successfully.'); 
+               }
+               else{
+                // alert('Something Went Wrong')
+               }
+            }
+        });
+        
+      });
+      alert('Response saved successfully.');
+    }
+    catch(err) {
+        alert('Something Went Wrong',err)
+    }
+        //alert('src is '+ $("#txt_src").val() + ', email is '+ $("#txt_email").val() +' , cols are '+ $("#selectCols").val() )
+        // console.log('clicked '+ $('#txtComments').val() )
+        // alert($('#txtid').val() )
+        // alert($('#txtComments').val())
+        // $.ajax({
+        //     url: '/saveauditresponse/', 
+        //     data:{response: $('#txtComments').val(),compl_id:$('#txtid').val()},
+        //     dataType: 'json',
+        //     success: function (data) {
+        //        // alert(data)
+        //        if(data.isvalid == 'true'){
+        //         alert('Response saved successfully.'); 
+        //        }
+        //        else{
+        //         alert('Something Went Wrong')
+        //        }
+        //     }
+        // });
+        
+    }
+
+    function enableBtn(id){ 
+        //alert($("#txt_email").val().length  +',' + $("#txt_src").val().length)
+        if($("#txt_email").val().trim().length ==0){
+            $("#btn_mail").prop('disabled', true);
+        }
+        else{
+            $("#btn_mail").prop('disabled', false);
+        }
+    }
+
+    function getEmail(){ 
+        $('#txt_email').val(''); 
+        if($('#optEmail').val()!='-1' & $('#optEmail').val()!='0'){
+           $('#txt_email').val($('#optEmail').val());
+        }
+        else{
+            $('#txt_email').show();
+            $('#optEmail').hide();
+        }
+        enableBtn();
+    }
+
+    function showDocs(){
+        $("#divDocs").dialog({   
+          width: "50%", 
+          modal: true,
+          buttons: [
+              {
+                  text: "Cancel",
+                  "class": 'btn btn-primary btn-sm',
+                  click: function() {
+                      // Save code here
+                      $('#divDocComments').hide() 
+                      $(this).dialog("close");
+                  }
+              }
+          ],  
+      });   
+    }
+
+    function goNext(){
+        window.location="{% url 'valFindings' %}"
+} 
+</script>
+{% endblock script %}

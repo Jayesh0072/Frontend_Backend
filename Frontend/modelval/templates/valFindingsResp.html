@@ -1,0 +1,615 @@
+{% extends 'rmsebase.html' %} 
+{% url 'exportReport' as exportReport %} 
+{% load static %} 
+{% block style %} 
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">  -->
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+
+<style>
+  .support-chat-container {
+  display: none;
+  &.show {
+    display: block;
+  }
+}
+.support-chat {
+  position: fixed;
+  bottom: map-get($spacers, 7);
+  right: 0;
+  max-width: 27.87rem;
+  width: 100%;
+  transform: scale(0);
+  opacity: 0;
+  transform-origin: bottom right;
+  z-index: 1045;
+  transition: 0.3s ease-out;
+  padding-bottom: map-get($spacers, 7);
+  .support-chat-start & {
+    right: auto;
+    left: 0;
+    transform-origin: bottom left;
+  }
+  .support-chat-bottom-lg & {
+    bottom: map-get($spacers, 11);
+  }
+  @include media-breakpoint-up(sm) {
+    right: map-get($spacers, 3);
+    .support-chat-start & {
+      left: map-get($spacers, 3);
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    right: map-get($spacers, 5);
+    .support-chat-start & {
+      left: map-get($spacers, 5);
+    }
+  }
+  .card {
+    box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+    .dark & {
+      box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+    }
+  }
+  .card-body {
+    height: 27rem;
+  }
+  &.show-chat {
+    transform: scale(1);
+    opacity: 1;
+  }
+  .send-btn {
+    width: 37.06px;
+    height: 37.06px;
+    border-radius: 50%;
+    color: var(--#{$prefix}primary);
+    &:hover {
+      background-color: var(--#{$prefix}gray-100);
+      color: var(--#{$prefix}primary-500);
+    }
+    &:active {
+      background-color: var(--#{$prefix}gray-200);
+      color: var(--#{$prefix}primary-500);
+    }
+  }
+}
+.support-chat + .btn-support-chat {
+  position: fixed;
+  bottom: map-get($spacers, 6);
+  right: map-get($spacers, 3);
+  width: 9rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--#{$prefix}white) !important;
+  z-index: 1045;
+  border-radius: var(--#{$prefix}border-radius-pill);
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  .dark & {
+    box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+  }
+  .support-chat-start & {
+    right: auto;
+    left: map-get($spacers, 3);
+  }
+  .support-chat-bottom-lg & {
+    bottom: map-get($spacers, 10);
+  }
+  @include media-breakpoint-up(sm) {
+    right: map-get($spacers, 5);
+    .support-chat-start & {
+      left: map-get($spacers, 5);
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    right: map-get($spacers, 7);
+    .support-chat-start & {
+      left: map-get($spacers, 7);
+    }
+  }
+  &:hover {
+    background-color: var(--#{$prefix}gray-100) !important;
+  }
+  .fa-chevron-down {
+    display: none;
+  }
+  &.btn-chat-close {
+    border-radius: 50%;
+    width: 3rem;
+    .btn-text,
+    .fa-circle {
+      display: none;
+    }
+    .fa-chevron-down {
+      display: block;
+    }
+  }
+}
+
+
+.fs--2 {
+  font-size: .64rem !important;
+  font-weight: 600 !important;
+}
+
+.chat .chat-message .received-message-content {
+    position: relative;
+}
+.chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):before {
+    content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -12px;
+    right: auto;
+    top: -1px;
+    bottom: auto;
+    border: 11px solid;
+    border-color: #e3e6ed rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+}
+.chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):after {
+    content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -10px;
+    right: auto;
+    top: 0px;
+    bottom: auto;
+    border: 10px solid;
+    border-color: #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+} 
+.chat .chat-message_sent .sent-message-content {
+  position: relative;
+}
+
+.chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery)::before {
+   
+   content: " ";
+     position: absolute;
+     width: 0;
+     height: 0;
+     left: auto;
+     right: -12px;
+     top: auto;
+     bottom: 0;
+     border: 12px solid;
+     border-color:transparent transparent #3874ff  transparent; 
+ }
+ 
+.chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery):after {
+   
+  content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: -12px;
+    top: auto;
+    bottom: 0;
+    border: 12px solid;
+    border-color:transparent transparent #3874ff  transparent; 
+}
+
+
+.flex-end-center {
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.flex-1 {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+</style>
+{% endblock style %}
+{% block content %}
+
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+     
+  <div class="col-lg-10">
+    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+      {% csrf_token %}  
+      <div class="card">
+          <div class="card-header">
+              Validation Findings Response
+          </div>  
+          <div class="card-body card-block">
+                      <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;"> 
+                          <div class="col col-md-3">
+                              <label class=" form-control-label">Findings </label>
+                          </div>
+                          <div class="col-12 col-md-4">
+                              <select id="optFindings" onchange="getData()" class="form-control-sm form-control">
+                                  <option value="0">Select</option> 
+                                  {% for data in List %}
+                                    <option value="{{data}}">{{data}}</option>  
+                                  {% endfor %} 
+                              </select>
+                          </div> 
+                      </div>
+                      <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px"> 
+                        <div class="col col-md-3">
+                            <label class=" form-control-label">Findings ID</label>
+                        </div>
+                        <div class="col-12 col-md-4"> 
+                            <select id="findingsid"  class="form-control-sm form-control" onchange="gethistorymsg()">
+                              <option value="Select">Select</option>
+                                <option value="C1">C1</option> 
+                                <option value="C2" style="color: {{data.color}};  background-color: {{data.bgColor}};">C2</option>  
+                                
+                                <option value="C3">C3</option>  
+                            </select>
+                            
+                        </div> 
+                        
+                        <input type="text" id="mdlid" hidden value="{{model_id}}"  />
+                      </div>
+                      <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;"> 
+                        <div class="col col-md-3">
+                            <label class=" form-control-label">Date </label>
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <input type="text" class="form-control-sm form-control" disabled style="border-color: black; height:31px;" id="txtDate" name="text-input" class="form-control-sm form-control"> 
+                        </div> 
+                    </div>
+                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                          <div class="col col-md-3">
+                              <label class=" form-control-label">Assessment Area</label>
+                          </div>
+                          <div class="col-12 col-md-7"> 
+                              <input type="text"class="form-control-sm form-control" disabled style="border-color: black; height:31px;" id="txtAssessment" name="text-input" class="form-control-sm form-control"> 
+                          </div>
+                          
+                      </div> 
+                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                        <div class="col col-md-3"> 
+                          Severity
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <select disabled name="optRisk_Level" id="optRisk_Level" class="form-control-sm form-control"> 
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                      </div> 
+                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                        <div class="col col-md-3"> 
+                         Level 
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <select disabled name="optLevel" id="optLevel" class="form-control-sm form-control"> 
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                      </div>
+                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                        <div class="col col-md-2">
+                          <label class=" form-control-label">Description
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                          <div class="col-12 col-md-12">
+                               <textarea id="txtComments" rows="5" disabled style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;" ></textarea>
+                          </div>
+                      </div>
+                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                        <div class="col col-md-2">
+                          <label class=" form-control-label">Response
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                          <div class="col-12 col-md-12">
+                               <textarea id="txtResp" rows="5" style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;" ></textarea>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="card-footer">
+                      <div class="col-auto" style="display: flex; justify-content: flex-end;"> 
+                        &nbsp;&nbsp;<button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="saveFindings()" >Save</button>
+                           
+                      </div>
+                  </div> 
+              
+      </div> 
+    </form>
+  </div>
+
+  <button class="btn p-0 border border-200 btn-support-chat btn-chat-close" style="  border-radius: 50%;
+  width: 3rem;position: fixed;
+  bottom:5px; 
+  right: 50px;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--#{$prefix}white) !important;
+  z-index: 1045;
+  border-radius: var(--#{$prefix}border-radius-pill);
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;">
+    <!-- <span class="fs-0 btn-text text-primary text-nowrap">Chat demo</span> -->
+    <span class="text-danger " style="height: 20px; width: 70px; float: right;"><i class="bi bi-chat-right-text"></i></span> 
+    <!-- <span class="fa-solid fa-circle text-success fs--1 ms-2"></span>
+    <span class="fa-solid fa-chevron-down text-primary fs-1"></span> -->
+  </button>
+    <div class="support-chat-container">
+      <div class="container-fluid support-chat" style="top:100px">
+        <div class="card bg-white">
+          <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom">
+            <h5 class="mb-0 d-flex align-items-center gap-2">Discussion Room <span class="fa-solid fa-circle text-success fs--3"></span></h5>
+            <div class="btn-reveal-trigger">
+              <button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex" type="button" id="support-chat-dropdown" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h text-900"></span></button>
+              <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a class="dropdown-item btn-support-chat" href="#!">Close</a> </div>
+            </div>
+          </div>
+          <div class="card-body chat p-0">
+            <div class="d-flex flex-column h-100 p-3" id="divMdlPerfMontresp" style="overflow: auto !important;
+            scrollbar-color: rgba(0,0,0,0);
+            scrollbar-width: thin;" >
+              
+            </div>
+          </div>
+          <div class="card-footer d-flex align-items-center gap-2 border-top ps-3 pe-4 py-3">
+            <div class="d-flex align-items-center flex-1 gap-3 border rounded-pill px-4">
+              <input class="form-control outline-none border-0 flex-1 fs--1 px-0" style="width:275px;background-color: white;" type="text" id="txtmsg" onkeyup="enableBtn()" placeholder="Write message" />
+              
+            </div>
+            <button id="btnSend" class="btn p-0 border-0 send-btn" onclick="updateResponse()"><i class="bi bi-send"></i><span class="fa-solid fa-paper-plane fs--1"></span></button>
+          </div>
+        </div>
+      </div>
+      
+    </div> 
+   
+   
+</div>
+
+{% endblock content %}
+{%  block script %}  
+<!-- <script src="{% static 'bootstrap_datepicker/js/bootstrap-datepicker.js' %}"></script> -->
+ 
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+<script src="{% static 'js/chatroom.js' %}"></script>
+<script type="text/javascript">  
+
+function supportChatInit(){    
+      const supportChat = document.querySelector('.support-chat');
+      const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+      const supportChatcontainer = document.querySelector(
+        '.support-chat-container'
+      );
+        supportChatcontainer.classList.add('show');     
+      supportChatBtn.forEach(item => {    
+      
+        item.addEventListener('click', () => {
+          
+          supportChat.classList.toggle('show-chat');
+  
+          // supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+          //   'btn-chat-close'
+          // );
+  
+          supportChatcontainer.classList.add('show');
+           
+        });
+      });
+    };
+
+    $(document).ready(function(){
+        debugger
+          // $('#SelectBackUpUserFor').css('visibility','hidden');
+        supportChatInit(); 
+        // gethistorymsg();
+      }); 
+
+    window.onload=function(){
+      $( "#accordion" ).accordion({
+        collapsible: true
+      });  
+     
+    };
+ 
+    function getData()
+    {
+      $("#txtComments").val('');
+      $("#optRisk_Level").val('High');
+      $("#optLevel").val('1');
+      $('#txtAssessment').val('') ;  
+      $("#txtDate").val('');
+      if($('#optFindings').val()!="-1" && $('#optFindings').val()!="0")
+      {
+        $('#txtAssessment').attr('disabled',true);
+      }
+      else{
+        $('#txtAssessment').attr('disabled',false);
+      }
+      $.ajax({ 
+        url: '/getvalFindings/',
+        data:{'findingsId':$('#optFindings').val()},
+        dataType: 'json',
+        success: function (data) {   
+                  console.log(data)
+                  $("#txtComments").val(data.findingData[0].Description);
+                  $("#txtResp").val(data.findingData[0].Response);
+                  $("#optRisk_Level").val(data.findingData[0].Risk);
+                  $('#txtAssessment').val(data.findingData[0].Assessment) ;     
+                  $("#txtDate").val(data.findingData[0].Date);  
+                  $("#optLevel").val(data.findingData[0].Risk_Level);    
+                }
+        });
+    }
+
+    function sendMail()
+    { 
+      console.log('email '+$('#txtemail').val())
+      $.ajax({ 
+        url: '/sendDevloperMail/',
+        data:{'emailId':$('#txtemail').val()},
+        dataType: 'json',
+        success: function (data) {  
+                           
+                  
+        }
+        });
+    }
+
+    function saveFindings()
+    { 
+      $.ajax({ 
+        url: '/savevalFindingsResp/',
+        data:{'findingsId':$('#optFindings').val(),'Resp': $("#txtResp").val()},
+        dataType: 'json',
+        success: function (data) {
+               if(data.is_taken)
+                alert('Response saved.')
+        }
+        });
+    } 
+
+    function gethistorymsg(){ 
+      debugger
+      id = $("#mdlid").val()
+      findings_id = $('#findingsid').val()
+      $('#divMdlPerfMontresp').empty()
+      $.ajax({
+              url: '/ValFindgethistorymsg/', 
+              data:{room_id: 'Val_Finding_'+id,mdl_id:id,findings_id:findings_id},
+             dataType: 'json',  
+              success: function (data) { 
+                debugger;
+                // arr=data.mmdata
+                // console.log("---------------data new",data.mmdata)
+                // // alert(data.Qtns)
+                // if(data.mmdata.length == 0){
+                //   // alert("empty")
+                //   $('#button1').prop('disabled', true);
+                // }
+                // else{
+                //   // alert("full")
+                //   $.each(data.mmdata, function(i, item) {
+                //   $('#txtper_'+item['metric']).val(item['metric_value_type'])
+                //   $('#txtthreshold_'+item['metric']).val(item['threshold'])
+                //   $('#txtWaring_'+item['metric']).val(item['warning'])
+                //   })
+                  
+                //   $('#button1').prop('disabled', false);
+                // }
+                // //************
+                qtnArr='';
+           $.each(data.data, function(key, val) { 
+            console.log("key",key,"val",val.Comment,"msgcss",val.msgcss)
+            if(val.msgcss=='R')
+            {
+              qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold " style="font-size: .64rem !important;font-size: .64rem !important">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+            }
+            else if(val.msgcss=='S')
+            {
+
+              qtnArr +=' <div class="d-flex chat-message">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+                    qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='</div>';
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+                        qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold" style="font-size: .64rem !important;font-size: .64rem !important">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';   
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+            } 
+            
+          });
+           $('#divMdlPerfMontresp').append(qtnArr)
+           //$("#divRespHeader").attr('style','display:none !important');
+          }
+                //************
+                // sendPerfMonmsg($("#txtmsg").val(),$('#txtuid').val(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+              // }
+          });
+          connectWS(id)
+        }
+        
+    
+
+  function updateResponse(){
+    debugger
+    id = $("#mdlid").val()
+    finding_id = $("#findingsid").val()
+    room_id = 'Val_Finding_'+id
+    console.log("id and room id",id , room_id,finding_id)
+    $.ajax({
+          url: '/addvalFindingdiscussion/', 
+          data:{room_id: room_id,comment:$("#txtmsg").val(),finding_id:finding_id},
+          dataType: 'json',  
+          method:'POST', 
+          success: function (data) { 
+            // console.log("---------------data",data) 
+            // sendPerfMonmsg($("#txtmsg").val(),$('#lblcurruid').text(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+            $("#txtmsg").val('')
+          }
+      });
+        
+  }
+     
+ </script>
+{% endblock script %} 

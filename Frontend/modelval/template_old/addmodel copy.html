@@ -1,0 +1,522 @@
+{% extends 'base2.html' %} 
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;">
+  <div class="mt-4">
+    <div class="row g-4">
+      <div class="col-12 col-xl-10 order-1 order-xl-0">
+        <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+          
+          <div class="card-body p-0">
+            
+            <div class="p-4 code-to-copy">
+              <div class="row">
+                <div class="col-sm-auto">
+                  <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                    <div class="nav flex-column nav-pills" id="v-pills">
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Overview</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-design">Design</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-attributes">Attributes</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedmodels">Related Models</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-tables">Tables(s)</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-data">Model Data</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-testing">Testing & Optimization</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-impl">Implementaion</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-monitoring">Ongoing Monitoring</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-addinfo">Additional Information</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-home" style="margin-bottom: 15px;">Overview</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6">
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <select class="form-select" id="floatingSelectTask">
+                                <option selected="selected">Select task view</option>
+                                <option value="1">technical</option>
+                                <option value="2">external</option>
+                                <option value="3">organizational</option>
+                              </select>
+                              <label for="floatingSelectTask">Process Type</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <select class="form-select" id="floatingSelectTask">
+                                <option selected="selected">Select task view</option>
+                                <option value="1">technical</option>
+                                <option value="2">external</option>
+                                <option value="3">organizational</option>
+                              </select>
+                              <label for="floatingSelectTask">Use</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Summary</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Scope and Purpose</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Risk Coverage</label>
+                            </div>
+                          </div>   
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-design" style="margin-bottom: 15px;">Design</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Description</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Platform</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Development Process Overview</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Selection Criteria</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Selection Process</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Selection Justification</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Assumption</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Exception</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Model Overrides</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Model Exclusions</label>
+                            </div>
+                          </div>  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-attributes" style="margin-bottom: 15px;">Attributes</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Frequency</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Lookback Period</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <select class="form-select" id="floatingSelectTask">
+                                <option selected="selected">Select task view</option>
+                                <option value="1">technical</option>
+                                <option value="2">external</option>
+                                <option value="3">organizational</option>
+                              </select>
+                              <label for="floatingSelectTask">Products Applicable</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Logic Type</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Logic Description</label>
+                            </div>
+                          </div>                                    
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Related Models</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6">
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <div class="col-lg-3 col-md-4 col-sm-6">                                     
+
+                                <span class="fas fa-plus-square text-danger fs-2"></span>Link another model
+                              </div>                                       
+                            </div>
+                          </div>                                     
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-tables" style="margin-bottom: 15px;">Table</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6">
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <div class="col-lg-3 col-md-4 col-sm-6">                                     
+
+                                <span class="fas fa-plus-square text-danger fs-2"></span>Link another model
+                              </div>                                       
+                            </div>
+                          </div>                                     
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-data" style="margin-bottom: 15px;">Model Data</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Data Source(s) and Source System(s)</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Data Governance Policies</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Data Limitations</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Data Quality Testing - methodology </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Data Quality Testing - procedures </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Data Quality Testing - Results </label>
+                            </div>
+                          </div>                                    
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-testing" style="margin-bottom: 15px;">Testing & Optimization</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Logic Testing - methodology </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Logic Testing - procedures </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Logic Testing - Results </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Optimization & Tuning - methodology </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Optimization & Tuning - procedures </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Optimization & Tuning - Results </label>
+                            </div>
+                          </div>                                    
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-impl" style="margin-bottom: 15px;">Implementaion</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Production Implementaion</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">User Training overview</label>
+                            </div>
+                          </div>  
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">User Acceptance Testing - methodology </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">User Acceptance Testing - procedures </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">User Acceptance Testing - Results </label>
+                            </div>
+                          </div>   
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Production Testing - methodology </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Production Testing - procedures </label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Production Testing - Results </label>
+                            </div>
+                          </div>                                  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-monitoring" style="margin-bottom: 15px;">Ongoing Monitoring</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Ongoing Monitoring - Methodology</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Ongoing Monitoring - Frequency</label>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">MOdel Tuning -Triger Event Criteria</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">MOdel Tuning - Freaquenct and shedule</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Model Tuning - Approval Methodology</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Inputs Monitoring - Approach</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Inputs Monitoring - Frequency</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Inputs Monitoring - in-scope inputs</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Inputs Monitoring - perfomance metrics</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Inputs Monitoring - triggers and escalation process</label>
+                            </div>
+                          </div>  
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - Approach</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - Frequency</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - in-scope Outputs</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - perfomance metrics</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - triggers and escalation process</label>
+                            </div>
+                          </div>  
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - external event based monitoring</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - change management</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Outputs Monitoring - related policies</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-addinfo" style="margin-bottom: 15px;">Attributes</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <input class="form-control" id="floatingInputGrid" type="text" placeholder="Project title" />
+                              <label for="floatingInputGrid">Field Name</label>
+                            </div>
+                          </div> 
+                          <div class="col-sm-6 col-md-12">
+                            <div class="form-floating">
+                              <textarea class="form-control" id="floatingProjectOverview" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                              <label for="floatingProjectOverview">Field Value</label>
+                            </div>
+                          </div>                                                             
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div> 
+</div>
+
+  </div>
+                        {% endblock content %}

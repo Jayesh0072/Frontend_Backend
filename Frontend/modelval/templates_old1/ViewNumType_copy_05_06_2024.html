@@ -1,0 +1,235 @@
+{% extends 'rmsebase.html' %} 
+{% load static %} 
+{% block style%}
+<style>
+    .fixTableHead {
+        overflow-y: auto;
+        height: 550px;
+      }
+      .fixTableHead thead th {
+        position: sticky;
+        top: 0;
+      }
+      .fixTableHead table {
+        border-collapse: collapse;        
+        width: 100%;
+      }
+      /* .fixTableHead th,
+      td {
+        padding: 8px 15px;
+        border: 2px solid black;
+      } */
+      /* .fixTableHead th {
+        background: black; 
+      } */
+</style>
+{% endblock style %}
+{% block content %}  
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row form-group" style="margin-bottom: 0px;">
+                <div class="col col-md-11">
+                    Data Statistics of Numerical Variables
+                </div>
+                <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">         
+                    <div style="border:solid 0px #009bd9;border-radius: 4px;width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;"> 
+                       <img src='\static\images\save.png' onclick="saveTbl()" title="Save" style='cursor:pointer;'/>
+                                       
+                    </div>  
+               </div> 
+            </div>                  
+        </div>
+        <div class="card-body card-block">                             
+            <ul class="nav nav-underline" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-item nav-link active" id="custom-nav-numtype-tab" onclick="setType('DataDesc')" data-bs-toggle="tab" href="#custom-nav-numtype" role="tab" aria-controls="custom-nav-numtype"
+                        aria-selected="false">Describe All the Numeric Variables</a>
+                </li>
+                <li class="nav-item"> 
+                    <a class="nav-item nav-link" id="custom-nav-mean_ad-tab" onclick="setType('DataMean')" data-bs-toggle="tab" href="#custom-nav-mean_ad" role="tab" aria-controls="custom-nav-mean_ad"
+                        aria-selected="true">Mean Absolute Deviation</a>
+                    </li>
+                <li class="nav-item"> 
+                    <a class="nav-item nav-link" id="custom-nav-median_ad-tab" onclick="setType('DataMedian')" data-bs-toggle="tab" href="#custom-nav-median_ad" role="tab" aria-controls="custom-nav-median_ad"
+                        aria-selected="true">Median Absolute Deviation</a> 
+                        
+                </li> 
+            </ul>
+            <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="custom-nav-numtype" role="tabpanel" aria-labelledby="custom-nav-numtype-tab">
+                    <!-- <div class="table-responsive table--no-card m-b-40">
+                        <table id='descData' class="table table-borderless table-striped table-earning"> -->
+                        <div class="table-responsive" style="height: 400px; overflow: scroll;">
+                            <table class="table table-sm fs--1 mb-0">
+                            <thead>
+                                <tr>                
+                                    <th class="sort align-middle" scope="col" ></th> 
+                                    <th class="sort align-middle" scope="col" >count</th> 
+                                    <th class="sort align-middle" scope="col" >min</th> 
+                                    <th class="sort align-middle" scope="col" >max</th> 
+                                    <th class="sort align-middle" scope="col" >mean</th> 
+                                    <th class="sort align-middle" scope="col" >std</th>  
+                                    <th class="sort align-middle" scope="col" >25%</th>
+                                    <th class="sort align-middle" scope="col" >50%</th>
+                                    <th class="sort align-middle" scope="col" >75%</th>
+                                </tr>
+                            </thead>
+                            <tbody>           
+                                {% for val in desc %}  
+                                <tr>           
+                                    <td class="align-middle time white-space" >{{ val.colName }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.count_val }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.min_val }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.max_val }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.mean_val }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.std_val }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.per25_val }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.per50_val }}</td> 
+                                    <td class="align-middle time white-space" >{{ val.per75_val }}</td> 
+                                </tr>            
+                                {% endfor %}           
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="custom-nav-mean_ad" role="tabpanel" aria-labelledby="custom-nav-mean_ad-tab">
+                    <!-- <div class="table-responsive table--no-card m-b-40">
+                        <table id='mean_adData' class="table table-borderless table-striped table-earning"> -->
+                    <div class="table-responsive" style="height: 400px; overflow: scroll;width:100%">
+                        <table class="table table-sm fs--1 mb-0">
+                            <thead>
+                                <tr> 
+                                    <th width="50%" class="sort align-middle" scope="col" >
+                                            Column
+                                    </th class="sort align-middle" scope="col" >
+                                    <th width="50%">
+                                            Value
+                                    </th> 
+                                </tr>                                           
+                            </thead>
+                            <tbody>
+                                {% for key, val in mean_adresult.items  %}
+                                <tr> 
+                                    <td class="align-middle time white-space">{{ key }}</td>  
+                                    <td class="align-middle time white-space">{{ val }}</td>  
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                                  
+                <div class="tab-pane fade" id="custom-nav-median_ad" role="tabpanel" aria-labelledby="custom-nav-median_ad-tab">
+                    <!-- <div class="table-responsive table--no-card m-b-40">
+                        <table id='median_adData' class="table table-borderless table-striped table-earning"> -->
+                    <div class="table-responsive" style="height: 400px; overflow: scroll;">
+                        <table class="table table-sm fs--1 mb-0">
+                            <thead>
+                                <tr> 
+                                    <th class="sort align-middle" scope="col" >
+                                            Column
+                                    </th>
+                                    <th class="sort align-middle" scope="col" >
+                                            Value
+                                    </th> 
+                                </tr>                                           
+                            </thead>
+                            <tbody>
+                                {% for key, val in median_adresult.items  %}
+                                <tr> 
+                                    <td class="align-middle time white-space">{{ key }}</td>  
+                                    <td class="align-middle time white-space">{{ val }}</td>  
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="col-12 gy-6">
+                <div class="row g-3 justify-content-end">
+                    <div class="col-auto">
+                        <button class="btn btn-primary px-5" onclick="goNext()">Next</button>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>    
+</div>
+              
+                
+                        {% endblock content %}
+{%  block script %}
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'jquery-3.5.1.js' %}"></script>
+    <!-- Jquery JS-->
+    <script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'dataTables.min.js' %}"></script><script type='text/javascript' >
+        let tabSel='DataDesc'
+        $(document).ready( function () {  
+            $('#descData').DataTable({
+                sDom: 'lrtip',
+                "ordering": false,
+                fixedColumns: {
+                    leftColumns: 1
+                    },
+                scrollY: 400,
+                scrollX: true,
+                scroller: true,
+                paging:false,
+                info:false
+                }); 
+
+            
+            $('#mean_adData11').DataTable({
+                sDom: 'lrtip',
+                "ordering": false,
+                fixedColumns: {
+                    leftColumns: 1
+                    },
+                scrollY: 500,
+                scrollX: true,
+                scroller: true,
+                paging:false,
+                info:false
+                }); 
+
+                
+                $('#median_adData11').DataTable({
+                    sDom: 'lrtip',
+                    "ordering": false,
+                    fixedColumns: {
+                        leftColumns: 1
+                        },
+                    scrollY: 500,
+                    scrollX: true,
+                    scroller: true,
+                    paging:false,
+                    info:false
+                    });
+        } );
+    
+        function setType(tab){
+            tabSel=tab
+        }
+        function saveTbl(){
+            $.ajax({ 
+                url: '/saveTableInfo/',
+                data:{tableType:tabSel,tableName:'Data types and cnt', comments:'',var1:'',var2:''}, 
+                dataType: 'json',
+                success: function (data) {
+                        if(data.is_taken)
+                        {
+                            alert('Table saved.')
+                        }            
+                }
+            }); 
+        }
+
+        function goNext(){
+            window.location="{% url 'showcorrelation' %}"
+         } 
+    </script>
+{% endblock script %} 

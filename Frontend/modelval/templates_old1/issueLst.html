@@ -1,0 +1,335 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block content %} 
+    
+<!-- <div class="col-12">
+    <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+    er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+      <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+        <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+          <div class="row g-3 justify-content-between align-items-center">
+            <div class="col-2 col-md">
+              <h4 data-anchor="data-anchor"> Issues <span style="font-size: medium;">(Brief summary of all Issues)</span></h4>
+             </div>
+             
+            <div class="col col-md-auto">
+              <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+               
+                <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-issueSummary" role="button" 
+                aria-controls="pnl-issueSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" style="padding-bottom: 0px;">
+            <div class="collapse code-collapse collapse show" id="pnl-issueSummary">
+              <div id="projectSummary" data-list='{"valueNames":["U_Role","Issue_ID","Department","Originator","Task_Function_Label","Registration_Date","Task_Type_label","Sub_Task_Type","Task_Priority_Label","end_dt","Completion_Status","Task_ApprovalStatus_Label"],"page":5,"pagination":true}'>
+                <div class="table-responsive scrollbar" >
+                  <table class="table fs--1 mb-0 border-top border-200">
+                    <thead>
+                      <tr>
+                        <th class="white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;"></th>
+                        <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;">Issue ID</th>
+                        <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="U_Role" style="width:8%;">Role</th>                            
+                        <th class="sort align-middle ps-3" scope="col" data-sort="Task_Priority_Label" style="width:30%;">Priority</th>
+                        <th class="sort align-middle ps-3" scope="col" data-sort="Task_ApprovalStatus_Label" style="width:10%;">Approval Status</th>
+                        <th class="sort align-middle ps-3" scope="col" data-sort="Task_Function_Label" style="width:15%;">Task Function</th>
+                        <th class="sort align-middle ps-3" scope="col" data-sort="Task_Type_label" style="width:12%;">Task Type</th>
+                        <th class="sort align-middle ps-3" scope="col" data-sort="Completion_Status" style="width:9%;">Completion Status</th>
+                        <th class="sort align-middle text-end" scope="col" data-sort="end_dt" style="width:10%;">End Date</th>
+                      </tr>
+                    </thead>  
+                    <tbody class="list" id="project-list-table-body">
+                      {% for key, val in issueList.items  %}             
+                        <tr class="position-static">
+                          <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                            <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                            <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                            <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                          </td>
+                          <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                            
+                            <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectIssues('{{val.Issue_ID}}','{{val.U_Role}}')" >{{val.Issue_ID}}</a>
+                          </td>
+                          <td class="align-middle time white-space-nowrap ps-0 U_Role py-4">
+                            
+                            {{val.U_Role}}</a>
+                          </td>
+                          <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                            
+                            {%if val.Issue_Priority_Label == "High" %}
+                              <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                            {%elif val.Issue_Priority_Label == "Medium" %}
+                                <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                            {%elif val.Issue_Priority_Label == "Low" %}
+                                <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                            {% endif %}
+                          </td>
+                          <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                            {{val.Issue_ApprovalStatus_Label}} 
+                          </td>
+                          <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                            {{val.Issue_Function_Label}}
+                          </td>
+                          <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                           {{val.Issue_Type_label}}
+                          </td>
+                          <td class="align-middle white-space-nowrap ps-3 Status"> 
+                          {{val.Completion_Status}}
+                          </td>
+                          <td class="align-middle white-space-nowrap text-end Approval_Status">                                
+                           {{val.end_dt}}
+                          </td> 
+                        </tr>
+                      {% endfor %}   
+                    </tbody>
+                  </table>
+                </div>
+                <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+                  <div class="d-flex">
+                    <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                  </div>
+                  <div class="d-flex">
+                    <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                    <ul class="mb-0 pagination"></ul>
+                    <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                  </div>
+                </div>
+              </div>
+              </div>
+        </div>  
+          </div>  
+    </div>
+  </div> -->
+
+  <div class="content" style="padding-top:0px;"> 
+    <div class="content container-fluid">
+      <!-- Page Header -->
+    
+      <!-- End Page Header -->
+  
+  
+      <!-- Card -->
+      <div class="card mb-3 mb-lg-5">
+        <!-- Header -->
+        <div class="card-header">
+          <div class="row justify-content-between align-items-center flex-grow-1">
+            <div class="col-md">
+              <div class="d-flex justify-content-between align-items-center">
+                <h4 class="card-header-title">Issues(Brief summary of all Issues)</h4>
+  
+                
+              </div>
+            </div>
+            <!-- End Col -->
+  
+            <div class="col-auto">
+              <!-- Filter -->
+              <div class="row align-items-sm-center">
+                <div class="col-sm-auto">
+                  <div class="row align-items-center gx-0">
+                    <div class="col">
+                      <span class="text-secondary me-2">Role:</span>
+                    </div>
+                    <!-- End Col -->
+  
+                    <div class="col-auto">
+                      <!-- Select -->
+                      <div class="tom-select-custom tom-select-custom-end">
+                        <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" autocomplete="off" data-hs-tom-select-options='{
+                                  "searchInDropdown": false,
+                                  "hideSearch": true,
+                                  "dropdownWidth": "10rem"
+                                }'>
+                          <option value="null" selected>All</option>
+                          {% for key, val in issueList.items  %}
+                            <option value="{{val.U_Role}}">{{val.U_Role}}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <!-- End Select -->
+                    </div>
+                    <!-- End Col -->
+                  </div>
+                  <!-- End Row -->
+                </div>
+                <!-- End Col -->
+  
+                
+                <div class="col-md">
+                  <form>
+                    <!-- Search -->
+                    <div class="input-group input-group-merge input-group-flush">
+                      <div class="input-group-prepend input-group-text">
+                        <i class="bi-search"></i>
+                      </div>
+                      <input id="datatableSearch" type="search" class="form-control" placeholder="Search users" aria-label="Search users">
+                    </div>
+                    <!-- End Search -->
+                  
+                  </form>
+                </div>
+                <!-- End Col -->
+  
+                  <!--Add New-->
+                  <!-- <div class="col-sm-auto">
+                    <a class="btn btn-primary" href="{{newdept}}">
+                      <i class="bi-plus-lg me-1"></i> Add New
+                    </a>
+                  </div> -->
+                  <!--End Add New-->
+              </div>
+              <!-- End Filter -->
+            </div>
+            <!-- End Col -->
+          </div>
+          <!-- End Row -->
+        </div>
+        <!-- End Header -->
+  
+        <!-- Table -->
+        <div class="table-responsive datatable-custom">
+          <table id="datatable" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                   "columnDefs": [{
+                      "targets": [0],
+                      "orderable": false
+                    }],
+                   "order": [],
+                   "info": {
+                     "totalQty": "#datatableWithPaginationInfoTotalQty"
+                   },
+                   "search": "#datatableSearch",
+                   "entries": "#datatableEntries",
+                   "pageLength": 10,
+                   "isResponsive": false,
+                   "isShowPaging": false,
+                   "pagination": "datatablePagination"
+                 }'>
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th>Issue ID</th>
+                <th>Role</th>
+                <th>Priority</th>
+                <th>Approval Status</th>
+                <th>Task Function</th>
+                <th>Task Type</th>
+                <th>Completion Status</th>
+                <th>End Date</th>
+              
+               
+              </tr>
+            </thead>
+  
+            <tbody>
+              {% for key, val in issueList.items  %}             
+                  <tr class="position-static">
+                    <td >
+                      <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                      <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                      <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                    </td>
+                    <td>
+                      
+                      <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectIssues('{{val.Issue_ID}}','{{val.U_Role}}')" >{{val.Issue_ID}}</a>
+                    </td>
+                    <td>
+                      
+                      {{val.U_Role}}</a>
+                    </td>
+                    <td>
+                      
+                      {%if val.Issue_Priority_Label == "High" %}
+                        <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                      {%elif val.Issue_Priority_Label == "Medium" %}
+                          <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                      {%elif val.Issue_Priority_Label == "Low" %}
+                          <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{val.Issue_ApprovalStatus_Label}} 
+                    </td>
+                    <td>
+                      {{val.Issue_Function_Label}}
+                    </td>
+                    <td>
+                    {{val.Issue_Type_label}}
+                    </td>
+                    <td> 
+                    {{val.Completion_Status}}
+                    </td>
+                    <td>                                
+                    {{val.end_dt}}
+                    </td> 
+                  </tr>
+              {% endfor %}   
+            </tbody>
+          </table>
+        </div>
+        <!-- End Table -->
+  
+        <!-- Footer -->
+        <div class="card-footer">
+          <!-- Pagination -->
+          <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+            <div class="col-sm mb-2 mb-sm-0">
+              <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+                <span class="me-2">Showing:</span>
+  
+                <!-- Select -->
+                <div class="tom-select-custom">
+                  <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                            "searchInDropdown": false,
+                            "hideSearch": true
+                          }'>
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50" >50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+                <!-- End Select -->
+  
+                <span class="text-secondary me-2">of</span>
+  
+                <!-- Pagination Quantity -->
+                <span id="datatableWithPaginationInfoTotalQty"></span>
+              </div>
+            </div>
+            <!-- End Col -->
+  
+            <div class="col-sm-auto">
+              <div class="d-flex justify-content-center justify-content-sm-end">
+                <!-- Pagination -->
+                <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+              </div>
+            </div>
+            <!-- End Col -->
+          </div>
+          <!-- End Pagination -->
+        </div>
+        <!-- End Footer -->
+      </div>
+      <!-- End Card --  >
+  
+    </div>
+  </div>-->
+  
+
+  {%endblock content %}
+  {% block script %} 
+<script type='text/javascript' >
+
+  function redirectIssues(id,role){
+        debugger
+        console.log(id,',',role,(role=='Assigned'))
+        if(role=='Assigned'){ 
+          console.log('inside if')
+          document.location.href = "/issue_assignee?id=" +id;
+          
+        }
+  }
+</script>
+{%endblock script %}

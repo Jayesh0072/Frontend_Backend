@@ -1,0 +1,423 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %} 
+<form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="submitForm(event)">   
+  {% csrf_token %}  
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+           
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row form-group" style="margin-bottom: 0px;">
+                              <div class="col col-md-11">
+                                <h4>Roles Responsibility Question Response</h4>
+                              </div>
+                            </div>
+                            <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">          
+                              <div style="border:solid 0px;border-radius: 4px; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;font-size: 16px;display: flex;flex-direction: row;align-items: center;">                  
+                                  <i class="bi bi-chat-right-quote"  style='cursor:pointer;' onclick="$('#divVT_Comm_Chat').modal('toggle')" ></i>
+                               </div> 
+                            </div>
+                        </div>
+                        <div class="card-body   card-block">   
+                          <div class="row form-group">                                     
+                            <div class="col col-md-12">
+                                <select id="mdl_id" name="mdl_id" onchange="$('#target').submit()"  style="margin-bottom: 15px;" class="form-control form-control-sm" > 
+                                  <option   value="">Select</option> 
+                                   {% for  data in mdl_id %}
+                                        <option value="{{data}}">{{data}}</option>
+                                    {% endfor %}                                            
+                                </select>                                        
+                            </div>                                     
+                          </div>   
+                          <div class="row form-group">   
+                            {% for question in questions %}                                  
+                            <div class="accordion" id="accordionExample_{{question.qtn_id}}" style="margin-bottom: 25px;">
+                              <div class="accordion-item border-top border-300">
+                                <h2 class="accordion-header" id="headingOne">
+                                  
+                 
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_{{question.qtn_id}}" aria-expanded="true" aria-controls="collapseOne_{{question.qtn_id}}">
+                                    {{question.question_text}}
+                                  </button>
+                                </h2>
+                                <div class="accordion-collapse collapse" id="collapseOne_{{question.qtn_id}}" aria-labelledby="headingOne" data-bs-parent="#accordionExample_{{question.qtn_id}}" style="">
+                                  <div class="accordion-body pt-0"> 
+                                       
+                                      
+                                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                                          <div class="col-12 col-md-12">
+                                               <textarea id="txtComments_{{question.qtn_id}}"   rows="5" style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;" >{{question.Question_Resp}}</textarea> 
+                                          </div>
+                                          <input type="text" id="txtid_{{question.qtn_id}}" value="{{question.qtn_id}}" hidden>
+                                      </div>
+                                  
+                                 
+                
+                                      
+                                  </div>
+                                </div>
+                              </div>
+                              
+                         
+                        </div> 
+                        {% endfor %}
+                          </div>
+                           
+                  </div> 
+                  
+                  <div class="card-footer" style="border: 0px solid red;;">
+                      <div class="col-12 gy-6">
+                          <div class="row g-3 justify-content-end">
+                           
+                              <div class="col-auto">
+                                 
+                                  <button type="button" class="btn btn-primary" id="btn_report" onclick="saveResponse()">Save</button> 
+                                  
+                              </div>
+                             
+                              <div class="col-auto">
+                                  <button type="button" class="btn btn-primary" onclick="goNext()">Next</button>
+                              </div>
+                          </div>  
+                      </div>
+                  </div>
+                        </div>
+
+                    </div> 
+                </div>
+                 
+            </div>
+            <div class="modal fade" id="divTune" tabindex="-1" aria-labelledby="divTune" aria-hidden="true">
+              <div class="modal-dialog modal-md modal-dialog-scrollable modal-lg"> 
+               <div class="modal-content">
+                 <div class="modal-header">
+                   <h5 class="modal-title" id="scrollingLongModalLabel2">Comments </h5>
+                   <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+                   <div class="d-flex">
+                     <button class="btn btn-icon btn-primary btn-circle btn-xl" id="btnchat" onclick="toogleChat('chat')"><i class="bi bi-chat-text"></i></button>
+                     <button class="btn btn-icon btn-primary btn-circle btn-xl" style="display: none;" id="btncomment" onclick="toogleChat('comment')"><i class="bi bi-chat-quote"></i></button>
+                    
+                   </div>
+                 </div>
+                 <div class="modal-body p-5 px-md-6">  
+                     <div class="chat-content tab-content flex-1" style="flex: 1;">
+                         <div class="tab-pane h-100 fade active show" id="tab-thread-1" role="tabpanel" aria-labelledby="tab-thread-1">
+                           <div class="card flex-1 h-100"> 
+                             <div id="divChatHeader" style="display: none!important;;" class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                                 <div class="row mb-3 position-relative">
+                                     <div  class="col-sm-12">
+                                         <div id="divresp_10" style="overflow-y: scroll;;height: 210px !important;">
+                                             
+                                         
+                                         </div>
+                                     </div>
+                                 </div>                           
+                             </div>
+                             <div id="divChatfooter" style="display: none;"  class="card-footer">                    
+                               <div class="row mb-3 position-relative">
+                                 <div  class="col-sm-11">
+                                   <textarea id ="txtcomment" rows="2" style="width: 100%;resize: none;"></textarea>
+                                 </div> 
+                                 <div class="col-sm-1">                   
+                                   <div class="d-flex justify-content-end align-items-end">
+                                    
+                                     <div>
+                                       <button class="btn btn-icon btn-primary btn-circle btn-xl" type="button" onclick="updateResponse()">
+                                         <i class="bi bi-send"></i></button>
+                                     </div>
+                                   </div>
+                                 </div>
+                               </div> 
+                             </div>      
+                             
+                             <div id="divRespHeader"  class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                               <div class="row mb-3 position-relative">
+                                 <div  class="col-sm-12">
+                                   <textarea id ="txtReportComments" onkeyup="enableSave()" rows="12"  style="width: 100%;resize: none;"></textarea>
+                                 </div>                        
+                               </div>
+                                
+                                                 
+                               <div class="row mb-3 position-relative">
+                               
+                                 <div class="col-sm-12">                   
+                                   <div class="d-flex justify-content-end align-items-end">
+                                    
+                                     <div>
+                                       <button class="btn btn-primary" disabled type="button" id="btnSave" onclick="saveReportComment()">Save
+                                         </button>
+                                     </div>
+                                   </div>
+                                 </div>
+                               </div> 
+                             </div> 
+                           </div>
+                         </div> 
+                       </div>
+          
+                      
+                 </div>
+                 <!-- <div class="modal-footer">
+                     <div class="col-auto" style="display: flex; justify-content: flex-end;">
+                         <button type="button" class="btn btn-sm" style="margin-right: 10px;" onclick="$('#divTune').modal('toggle')" >Cancel</button> 
+                     <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="saveReportComment()" >Save</button>
+                     </div>
+                 </div> -->
+               </div>
+             </div> 
+          
+          </div>
+      </form>       
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script src="{% static 'js/chatroom.js' %}"></script>
+<script type='text/javascript' >
+    var myTable;
+    var colDtTbl;
+    $(document).ready( function () {
+      
+      connectWS('{{request.session.vt_mdl}}');
+            $('#divresp_10').empty()
+
+            $("#txtSelUtil").val('Roles Responsibility Question Response')
+            $("#txtSelSubUtil").val('')
+            $("#txtSelUtilType").val('table')
+            getVT_Comm_History('divresp_10','Roles Responsibility Question Response', '','{{request.session.vt_mdl}}')
+            // $.ajax({ 
+            // url: '/ValidationCommentHistory/',
+            // data:{'utility':'Roles Responsibility Question Response','subutility': '','mdl_id':'{{request.session.vt_mdl}}'},
+            // dataType: 'json',
+            // success: function (data) {
+            //   $('#txtReportComments').val(data.comment)
+            // qtnArr = '';
+            // $.each(data.data, function(key, val) { 
+            //     if(val.msgcss=='R')
+            //     {
+            //     qtnArr +=' <div class="d-flex chat-message">';
+            //     qtnArr +='         <div class="d-flex mb-2 flex-1">';
+            //         qtnArr +='           <div class="w-100 w-xxl-75">';
+            //         qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+            //             qtnArr +='               <div class="chat-message-content received me-2">';
+            //             qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+            //                 qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+            //                 qtnArr +='                 </div>';
+            //                 qtnArr +='     </div>         ';                  
+                                
+            //                 qtnArr +='  </div>';
+            //                 qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +='  </div>';
+            //     }
+            //     else if(val.msgcss=='S')
+            //     {
+
+            //     qtnArr +=' <div class="d-flex chat-message">';
+            //         qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+            //         qtnArr +=' <div class="w-100 w-xxl-75">';
+            //         qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+            //         qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                    
+            //             qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+            //             qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+            //             qtnArr +='</div>';
+            //             qtnArr +='</div>';
+            //         qtnArr +='   <div class="d-none d-sm-flex">';
+            //             qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+            //             qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+            //             qtnArr +='  </div>';
+            //             qtnArr +=' </div>';
+            //             qtnArr +=' <div class="chat-message-content me-2">';
+            //             qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+            //                 qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +='  </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' <div class="text-end">';
+            //                 qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div> ';
+            //     } 
+            // }) 
+            // $('#divresp_10').append(qtnArr)       
+            // }
+            // });
+           
+      $('#mdl_id').val('{{selected_id}}');
+      if($('#mdl_id > option').length==1)
+        {
+          alert('No models allocated.')
+        }
+    } ); 
+    var questions ={{questions| safe}} 
+    $.each(questions, function(i, obj) {
+        // alert(i,obj)
+      //use obj.id and obj.name here, for example:
+    //   item = {}  
+    //   item['value'] = obj.cnt;
+    //   item['name'] = obj.Mdl_Type_Label;
+    //   mdlType.push(item)
+    });
+    // var arrQtns=[]
+    // function registerclick(id){
+    //     //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       
+    //     if($('#txtComments_'+id).val()){ 
+    //       if(arrQtns.indexOf(id)<0){
+    //           arrQtns.push(id);  
+    //       }
+    //     }
+    //     else{ // only splice array when item is found
+           
+    //       arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+    //       $('#name1').prop('checked', false); 
+    //     }
+    // }
+    function saveResponse(){
+       
+        var questions ={{questions| safe}} 
+        console.log(questions)
+        try {
+        $.each(questions, function(i, obj) {
+         
+        console.log("compl id",$('#txtid_'+obj.qtn_id).val())
+        console.log("response",$('#txtComments_'+obj.qtn_id).val())
+      //use obj.id and obj.name here, for example:
+    //   item = {}  
+    //   item['value'] = obj.cnt;
+    //   item['name'] = obj.Mdl_Type_Label;
+    //   mdlType.push(item)
+        if ($('#txtComments_'+obj.qtn_id).val() == '')
+        {
+            // alert("please add comment")
+            
+        }
+        else{
+        $.ajax({
+            url: '/savequestionresponse/', 
+            data:{mdl_id:$('#mdl_id').val(),response: $('#txtComments_'+obj.qtn_id).val(),qtn_id:$('#txtid_'+obj.qtn_id).val()},
+            dataType: 'json',
+            success: function (data) {
+               // alert(data)
+               if(data.isvalid == 'true'){
+                // alert('Response saved successfully.'); 
+               }
+               else{
+                // alert('Something Went Wrong')
+               }
+            }
+        });
+      }
+        
+      });
+      alert('Response saved successfully.');
+    }
+    catch(err) {
+        alert('Something Went Wrong',err)
+    }
+        //alert('src is '+ $("#txt_src").val() + ', email is '+ $("#txt_email").val() +' , cols are '+ $("#selectCols").val() )
+        // console.log('clicked '+ $('#txtComments').val() )
+        // alert($('#txtid').val() )
+        // alert($('#txtComments').val())
+        // $.ajax({
+        //     url: '/saveauditresponse/', 
+        //     data:{response: $('#txtComments').val(),compl_id:$('#txtid').val()},
+        //     dataType: 'json',
+        //     success: function (data) {
+        //        // alert(data)
+        //        if(data.isvalid == 'true'){
+        //         alert('Response saved successfully.'); 
+        //        }
+        //        else{
+        //         alert('Something Went Wrong')
+        //        }
+        //     }
+        // });
+        
+    }
+
+    function toogleChat(id){
+      var myClass = $("#iconmsg").attr("class"); 
+      if(id=='chat'){       
+        $("#btncomment").show();
+        $("#btnchat").hide();
+        $("#divChatHeader").show();
+        $("#divChatfooter").show();
+        $("#divRespHeader").attr('style','display:none !important'); 
+      }
+      else{
+        $("#btncomment").hide();
+        $("#btnchat").show();
+        $("#divChatHeader").attr('style','display:none !important');
+        $("#divChatfooter").attr('style','display:none !important');
+        $("#divRespHeader").show(); 
+      }
+    }
+
+    function updateResponse(){
+        
+        $.ajax({ 
+        url: '/insert_VT_Discussion_Comments/',
+        data:{'utility':'Data Statistics of Numerical Variables','comment':  $("#txtcomment").val(),'sub_utility':'','mdl_id':'{{request.session.vt_mdl}}'},
+        dataType: 'json',
+        success: function (data) {  
+                    
+            if(data.is_taken)
+            { 
+                sendPerfMonmsg($("#txtcomment").val(),'{{ request.session.uid }}',9,5,'vt_discussion','{{request.session.vt_mdl}}',JSON.parse(data.data)[0].uinitials+' commented on '+ JSON.parse(data.data)[0].createdt,'Roles Responsibility Question Response','','table')   
+                
+                
+            }   
+        }
+        });
+    }
+
+    function enableSave(){ 
+    if($("#txtReportComments").val().length>0){
+      $("#btnSave").prop("disabled",false)
+    }
+    else{
+      $("#btnSave").prop("disabled",true)
+    }
+  }
+
+  function saveReportComment()
+        { 
+        $.ajax({ 
+            url: '/save_desc_comments/',
+            data:{'utility':'Roles Responsibility Question Response','comment':  $("#txtReportComments").val(),'type':'table','tableType':''},
+            dataType: 'json',
+            success: function (data) {
+                    if(data.is_taken)
+                    { 
+                    alert('Comment saved sucessfully.')             
+                    }   
+            }
+            });
+        } 
+
+        function submitForm(event){
+        event.preventDefault();
+    }
+
+    function goNext(){
+        window.location="{% url 'valFindings' %}"
+} 
+</script>
+{% endblock script %}

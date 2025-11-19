@@ -1,0 +1,9 @@
+paramName,paramValue
+n_neighbors,"[max(2, knn_search.best_params_['n_neighbors'] - 4), 
+                              max(2, knn_search.best_params_['n_neighbors'] - 2), 
+                              knn_search.best_params_['n_neighbors'], 
+                              knn_search.best_params_['n_neighbors'] + 2,
+                              knn_search.best_params_['n_neighbors'] + 4]"
+weights,[knn_search.best_params_['weights']]
+algorithm,[knn_search.best_params_['algorithm']]
+p,[knn_search.best_params_['p']]

@@ -1,0 +1,12 @@
+Process,Idx,Status,IsSkipped,File id
+Request For Model Validation,1,Not done,Yes,
+Import,2,Not done,Yes,
+Set Target Variable,3,Not done,Yes,
+Data Correction (Optional),4,Not done,Yes,
+Handle Missing Values,5,Not done,Yes,
+Drop Features,6,Not done,Yes,
+Create Dummy Variables,7,Not done,Yes,
+Standardize Features,8,Not done,Yes,
+Test Multi Collinearity And Remove Highly Corelated Features,9,Not done,Yes,
+Rename Columns (Optional),10,Not done,Yes,
+Resample Data,11,Not done,Yes,

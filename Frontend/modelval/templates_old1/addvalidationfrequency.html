@@ -1,0 +1,141 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+    
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">{{actPage}}</h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtutype">Model Risk <span style="color: red;">*</span></label>
+
+                    <div class="col-sm-4">
+
+                        <!-- <input class="form-control" value="{{label}}" id="txtdept" type="text" onblur="checkUsername()" maxlength="100" required="">  -->
+                        <select class="form-select" id="mdlrisk" onchange="checkUtype()"  aria-label="Default select example" >
+                            
+                            {% if modelrisk %}
+                                <option value="{{modelrisk}}">{{modelrisk}}</option> 
+                            {%else%}
+                                <option value="">Select Model Risk</option>                                                       
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            {%endif%}
+                            
+                        </select>
+
+                    </div>
+                </div> 
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-form-label col-sm-4 pt-0">Annual Review Frequency <span style="color: red;">*</span></label>
+                        
+                        <div class="col-sm-4"> 
+                            <!-- <input class="form-control" value="{{label}}" id="txtdept" type="text" onblur="checkUsername()" maxlength="100" required="">  -->
+                            <select class="form-select" id="annualrevfreq" onchange="checkUtype()" required aria-label="Default select example" >     
+                                
+                                {% if annual_review_frequency %}
+                                    <option value="{{annual_review_frequency}}">{{annual_review_frequency}}</option> 
+                                {% endif %}
+                                {% for lvl in Freq  %} 
+                                    {% if annual_review_frequency != lvl %}
+                                        <option value="{{lvl}}">{{lvl}}</option>
+                                    {% endif %}
+                                {% endfor %} 
+                            </select>
+    
+                        </div>
+                        <div class="col-sm-2">Years</div>
+                         
+
+                        
+                    </div>
+                </fieldset>  
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        {% if modelrisk %}
+                        <input type="hidden" id="update_id" value="{{id}}" >
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                        {% else %}
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" />
+                        {% endif %} 
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    function validateform(){ 
+        // if($("#txtdept").val().trim().length<1){
+        //     alert('Plese enter Frequency');
+        //     return false;
+        // }
+        $.ajax({
+            url: '/addfrequency/', 
+            data:{update_id:$("#update_id").val(),ModelRisk: $("#mdlrisk").val(),annulrevfreq:$('#annualrevfreq').val()},
+           dataType: 'json',   
+           method:'POST',
+            success: function (data) { 
+                alert(data.msg)
+            //    if(data.isvalid=='true'){
+            //     alert('Department added successfully.')
+            //    }
+            //    else if(data.isvalid=='update'){
+            //     alert('Department updated successfully.')
+            //    }
+            //    else
+            //    {
+            //     alert('Error while adding department.')
+            //    }
+            }
+        });
+    }
+
+    function checkUsername(){ 
+        $.ajax({
+            url: '/checkValue/', 
+            data:{val: $("#txtdept").val(),'tbl':'dept' },
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.cnt!='0'){
+                $("#txtdept").val('')
+                alert('Department already exists.')
+                $("#txtdept").focus()
+               }
+               
+            }
+        });
+    }
+
+    function gotolist()
+    {
+        window.location='{{showfrequency}}'
+        
+    }
+</script>
+{% endblock script %}

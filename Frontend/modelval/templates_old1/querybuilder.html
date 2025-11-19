@@ -1,0 +1,782 @@
+{% extends 'rmsebase_setvar.html' %} 
+{% load static %} 
+{% block style %} 
+
+ <!-- <link rel="stylesheet" href="https://s3.eu-central-1.amazonaws.com/ac-webassets/whitney/stylesheet.css" > -->
+ <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >  -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.query-builder/2.3.3/css/query-builder.default.min.css" > -->
+<link rel="stylesheet" href="{% static 'node_modules\dist\css\query-builder.default.min.css' %}">
+ <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
+ <!-- <script src="https://cdn.jsdelivr.net/jquery.query-builder/2.3.3/js/query-builder.standalone.min.js"></script> -->
+ <script src="{% static 'node_modules/dist/js/query-builder.standalone.min.js' %}" ></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
+<!-- <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>  -->
+  <link href="{% static 'node_modules/datepicker/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+  <!-- <link href="https://querybuilder.js.org/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet"> -->
+  <link href="{% static 'node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css' %}"  rel="stylesheet"></script>
+<!-- <link href="https://querybuilder.js.org/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+ 
+<link href="https://querybuilder.js.org/node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet">
+<link href="https://querybuilder.js.org/node_modules/selectize/dist/css/selectize.bootstrap3.css" rel="stylesheet">
+<link href="https://querybuilder.js.org/node_modules/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+<link href="https://querybuilder.js.org/node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<link href="https://querybuilder.js.org/node_modules/jQuery-QueryBuilder/dist/css/query-builder.default.css" rel="stylesheet"> -->
+
+<!-- 
+<link href="https://querybuilder.js.org/assets/css/docs.min.css" rel="stylesheet">
+<link href="https://querybuilder.js.org/assets/css/style.css" rel="stylesheet"> -->
+<!-- <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"> -->
+   <style> 
+   
+   .glyphicon {
+  position: relative!important;
+  top: 1px!important;
+  display: inline-block!important;
+  font-family: 'Glyphicons Halflings'!important;
+  font-style: normal!important;
+  font-weight: 400!important;
+  line-height: 1!important;
+  -webkit-font-smoothing: antialiased!important;
+  -moz-osx-font-smoothing: grayscale!important;
+}
+.glyphicon-plus-sign:before{content:"\e081"}
+.glyphicon-sort:before {
+ content:"\e150"
+} 
+.glyphicon-remove:before{content:"\e014"}
+.glyphicon-remove-sign:before
+{content:"\e083"}
+
+.glyphicon-sort-by-alphabet:before {
+ content:"\e151"
+}
+.glyphicon-sort-by-alphabet-alt:before {
+ content:"\e152"
+}
+.glyphicon-sort-by-order:before {
+ content:"\e153"
+}
+.glyphicon-sort-by-order-alt:before {
+ content:"\e154"
+}
+.glyphicon-sort-by-attributes:before {
+ content:"\e155"
+}
+.glyphicon-sort-by-attributes-alt:before {
+ content:"\e156"
+}
+ .form-inline .form-control {
+  display: inline-block  ; 
+  width: auto !important; 
+  vertical-align: middle !important; 
+}
+.form-control {
+  display: block ;
+  width: 100%!important; 
+  height: 34px  !important; 
+  padding: 6px 12px !important; 
+  font-size: 14px !important; 
+  font-weight: normal;
+  line-height: 1.42857143 !important; 
+  color: #555!important;
+  background-color: #fff!important;
+  background-image: none!important;
+  border: 1px solid #ccc!important;
+  border-radius: 4px!important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s!important;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+}
+#builder{
+  /* width:80%; */
+  display:block;
+  margin: 0 auto;
+}
+#buttons{
+text-align:center
+}
+h1,#query{
+  text-align:center;
+  font-family:'Whitney SSM', sans-serif;
+}
+p{
+  font-family:'Whitney SSM', sans-serif;
+  color:white !important; 
+  font-size:20px; 
+}
+
+#query{
+  font-size:18px
+}
+
+.query-builder .rules-group-container{
+  /* background-color:#19A7C1; */
+background-color:transparent;
+}
+
+.query-builder .rules-group-header {
+  margin-bottom: 10px;
+}
+
+/* .query-builder .rules-group-container {
+  padding: 10px;
+    padding-bottom: 10px;
+  padding-bottom: 6px;
+  border: 1px solid #DCC896;
+  background: rgba(250, 240, 210, 0.5);
+} */
+
+.pull-right {
+  float: right !important;
+}
+.btn-group, .btn-group-vertical {
+  position: relative !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.rule
+.query-builder form-inline{
+    /* background-color:#19A7C1;
+     */
+     background-color:transparent;
+
+}
+.rules-list{
+    /* background-color:#19A7C1; */
+    background-color:transparent;
+
+}
+
+/* .btn-primary{
+  background-color:silver
+} */
+
+.btn{
+  font-size:13px;
+  font-family:'Whitney SSM', sans-serif;
+
+
+}
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary{
+    background-color:olvie
+}
+
+.rule-container{
+  background-color:AntiqueWhite
+}
+
+.form-control{
+    font-family:'Whitney SSM', sans-serif;
+}
+
+.btn-xs {
+  padding: 1px 5px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px!important;
+}
+
+.btn btn-xs btn-success{
+  background-color:var(--phoenix-primary) !important
+}
+
+.btn-success,.btn-danger {
+  background-color:var(--phoenix-primary) !important
+}
+
+.btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+  pointer-events: none;
+  cursor: not-allowed;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  opacity: .65;
+}
+
+#btn-set{
+    background-color:#19A7C1;
+    font-size:20px;
+    border: none;
+  padding: 1px 50px;
+  text-decoration: none;
+      -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+  border-radius: 0 !important;
+}
+
+/* #btn-set:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#btn-reset:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#btn-get-sql:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+} */
+
+hr {
+    border: none;
+    height: 1px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #333; /* Modern Browsers */
+    width:50%
+}
+
+input{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family:'Whitney SSM', sans-serif;
+  
+}
+
+#selectDiv{
+  display:inline-block;
+}
+.tooltip {
+ position:absolute;
+ z-index:1070;
+ display:block;
+ font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ font-size:12px;
+ font-weight:400;
+ line-height:1.4;
+ visibility:visible;
+ filter:alpha(opacity=0);
+ opacity:0
+}
+.tooltip.in {
+ filter:alpha(opacity=90);
+ opacity:.9
+}
+.tooltip.top {
+ padding:5px 0;
+ margin-top:-3px
+}
+.tooltip.right {
+ padding:0 5px;
+ margin-left:3px
+}
+.tooltip.bottom {
+ padding:5px 0;
+ margin-top:3px
+}
+.tooltip.left {
+ padding:0 5px;
+ margin-left:-3px
+}
+.tooltip-inner {
+ max-width:200px!important;
+ padding:3px 8px !important;
+ color:#fff !important;
+ text-align:center!important;
+ text-decoration:none!important;
+ background-color:#000!important;
+ border-radius:4px!important;
+}
+.tooltip-arrow {
+ position:absolute !important;
+ width:0 !important;
+ height:0 !important;
+ border-color:transparent !important;
+ border-style:solid
+}
+.tooltip.top .tooltip-arrow {
+ bottom:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-left .tooltip-arrow {
+ right:5px !important;
+ bottom:0 !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-right .tooltip-arrow {
+ bottom:0 !important;
+ left:5px !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.right .tooltip-arrow {
+ top:50% !important;
+ left:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 5px 5px 0 !important;
+ border-right-color:#000
+}
+.tooltip.left .tooltip-arrow {
+ top:50% !important;
+ right:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 0 5px 5px !important;
+ border-left-color:#000
+}
+.tooltip.bottom .tooltip-arrow {
+ top:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-left .tooltip-arrow {
+ top:0 !important;
+ right:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-right .tooltip-arrow {
+ top:0 !important;
+ left:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+</style>
+<style>
+  @font-face {
+ font-family:'Glyphicons Halflings';
+ src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot" %}');
+  src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix" %}') format("embedded-opentype") ,  
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.woff" %}') format("woff") ,
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.ttf" %}') format("truetype"),
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular" %}') format("svg") 
+}
+</style>
+  
+{% endblock style %}
+{% block content %} 
+<div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+  <div class="card h-100">
+      <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                  -webkit-border-top-right-radius: 6px;
+                  -moz-border-radius-topleft: 6px;
+                  -moz-border-radius-topright: 6px;
+                  border-top-left-radius: 6px;
+                  border-top-right-radius: 6px;">
+            <h4 style="color:#3e465b; padding:10px 20px">Query builder</h4>
+          </div>  
+  <div class="card-body p-0">
+    <div class="row mb-3 position-relative"  >
+      
+      <div class="col-sm-1" style="margin-left: 10px; ">
+        <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-get-mongo" value="Show"/>
+      </div> 
+      <div class="col-sm-1" style="margin-left: 10px;  ">
+        <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-get-sql" value="Query"/>
+      </div>
+      <div class="col-sm-1" style="margin-left: 10px;  ">
+        <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-reset" value="Clear"/>
+      </div>   
+      <div class="col-sm-3" style="margin-left: 10px;  ">
+        <input type="text" id="txtlabel" value="" class="form-control"/>
+      </div>   
+      <div class="col-sm-1" style="margin-left: 10px;  ">
+        <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-save" value="Save"/>
+      </div>   
+    </div>
+    <div class="row mb-3 position-relative"  >
+      
+      <div class="col-sm-8" style="margin-left: 10px;width: 65%;">
+        <div id="builder" ></div> 
+        <!-- <button id ='btn-save' class="btn btn-primary parse-json">Save</button>
+        <input  id="txtlabel" type="text" maxlength="100" required="">  -->
+        
+      </div>
+      <div class="col-sm-4">
+        <div class="position-relative mb-sm-4 mb-xl-0">
+          <div id="charttest" style="min-height:390px;width:100%"></div>
+        </div>
+      </div>
+  </div> 
+      
+      
+    </div>
+  </div>
+</div>
+<div id="staticBackdropLive" class="modal fade"    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLiveLabel">Sql query</h5>
+      
+      </div>
+      <div class="modal-body"> 
+        <div class="row mb-3 position-relative"> 
+          
+          <!-- <label class="col-sm-4 col-form-label" for="txtdesc">Add query</label> -->
+          <input  id="divquery" type="text" maxlength="100" required=""> 
+          <ul id="results"></ul>
+          <!-- <button id ='btn-set-sql' class="btn btn-primary parse-json">Set SQL</button> -->
+
+          <!-- <div class="col-sm-12" id="divquery"> -->
+            <!-- <textarea rows="10" readonly id="txtquery" style="width: 100%;border: 0px;" disabled></textarea> -->
+           
+          <!-- </div> -->
+           
+      </div>  
+      </div>
+      <div class="modal-footer"> 
+        <button id ='btn-set-sql' class="btn btn-primary parse-json">Set SQL</button>
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="hidemodal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+<script src="{% static 'js/jquery-ui-1.13.3/jquery-3.7.1.js' %}"></script> 
+<script src="{% static 'js/jquery-ui-1.13.3/jquery-ui.js' %}"></script> 
+
+<script src="{% static 'node_modules/chosenjs/chosen.jquery.js' %}"></script> 
+ <script src="{% static 'node_modules/bootstrap-select-1.13.14/dist/js/bootstrap-select.js' %}"></script>  
+<script src="{% static 'node_modules/bootbox/bootbox.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-slider/dist/bootstrap-slider.min.js' %}"></script>
+<script src="{% static 'node_modules/selectize/dist/js/standalone/selectize.js' %}"></script>
+
+<script src="{% static 'node_modules/sql-parser-mistic/browser/sql-parser.js' %}"></script>
+<script src="{% static 'node_modules/interactjs/dist/interact.min.js' %}"></script> 
+<!-- <script src="https://querybuilder.js.org/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js"></script> -->
+<!-- 
+
+
+<script src="https://querybuilder.js.org/assets/demo-basic.js"></script>
+<script src="https://querybuilder.js.org/assets/demo-widgets.js"></script>
+<script src="https://querybuilder.js.org/assets/demo-import-export.js"></script>
+-->
+<!-- <script src="https://querybuilder.js.org/node_modules/moment/min/moment.min.js"></script> -->
+<!-- <script src="https://querybuilder.js.org/node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script> -->
+<!-- <script src="https://querybuilder.js.org/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+<script src="https://querybuilder.js.org/node_modules/selectize/dist/js/standalone/selectize.min.js"></script>
+<script src="https://querybuilder.js.org/node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"></script> -->
+<!--  -->
+<!-- <script src="https://querybuilder.js.org/node_modules/sql-parser-mistic/browser/sql-parser.min.js"></script> -->
+<!-- <script src="https://querybuilder.js.org/node_modules/interactjs/dist/interact.min.js"></script> -->
+<!-- <script src="https://querybuilder.js.org/assets/demo.js"></script> 
+
+<script src="https://querybuilder.js.org/assets/demo-plugins.js"></script> -->
+ <script src="{% static 'node_modules/dist/js/newQB.js' %}" ></script> 
+<script src="{% static 'node_modules/datepicker/bootstrap-datepicker.min.js' %}" ></script>
+
+<!-- <script src="https://querybuilder.js.org/node_modules/jQuery-QueryBuilder/dist/js/query-builder.standalone.js"></script> -->
+<script src="{% static 'phoenix-v1.8.0/public/vendors/echarts/echarts.min.js' %}"></script>
+<script>
+ var colum = {{columns|safe}};
+
+ $(document).ready(function(){
+    console.log("column list",columns)
+    
+    // $( "#txtautocolm" ).autocomplete({
+    //   source: columns
+    // }); 
+    // const data = ["red", "blue", "green", "yellow", "purple", "orange", "black", "white", "brown"];
+    
+  })
+      console.log("Srcdata columns",colum)
+      columnsArr=[] 
+      var columns = []
+      $.each(colum, function(key, value) {
+         
+          item={};
+          item['id']=value.colName;
+          item['label']=value.colName;
+          item['type']=value.dataType;
+          if(value.valueLst.length>0){
+            item['values'] = value.valueLst;
+            item['input']='select'; 
+          }
+          // if(value.dataType=='integer'){
+          //   item['plugin']='slider';
+          //   item['plugin_config']={
+          //     min: value.minmax[0],
+          //     max: value.minmax[1],
+          //     value: 0
+          //   };
+          //   item['validation']={
+          //                       min: value.minmax[0],
+          //                       max: value.minmax[1],
+          //                     }
+          // }
+          columnsArr.push(item)
+        })
+
+      
+// Fix for Bootstrap Datepicker
+$('#builder').on('afterUpdateRuleValue.queryBuilder', function(e, rule) {
+  if (rule.filter.plugin === 'datepicker') {
+    rule.$el.find('.rule-value-container input').datepicker('update');
+  }
+});
+ 
+	$('#builder').queryBuilder({
+	 
+	  plugins: [
+    'sortable',
+  ],
+
+	filters:columnsArr
+});
+
+
+
+//$( '<div id=selectDiv"><p>SELECT</p><input id="rowsselect" type="text" name="LastName" placeholder="Number of rows (Max 50 mln)"></div><br>' ).insertBefore( $( ".rules-group-header" ).first())
+
+
+
+	/****************************************************************
+							Triggers and Changers QueryBuilder
+*****************************************************************/
+ 
+
+//When rules changed :
+$('#builder').on('getRules.queryBuilder.filter', function(e) {
+	//console.log(e.value);
+});
+
+ 
+    $('#btn-get-mongo').on('click', function() { 
+        var result = $('#builder').queryBuilder('getMongo');
+
+        if (!$.isEmptyObject(result)) {
+          // console.log("result",result.values())
+          // console.log(JSON.stringify(result, null, 2)) 
+          // var objectDataString = JSON.stringify(result, null, 2);
+          // objectDataString='{"$and": [ {"file_id":{{file_id}}},'+objectDataString+']}';
+          // console.log("objectDataString keys",objectDataString)
+          //new
+          var objectDataString = JSON.stringify(result, null, 2);
+          console.log("objectDataString keys",objectDataString)
+          objectDataString='{"$and": [ {"file_id":{{file_id}}},'+objectDataString+']}';
+          $.ajax({
+            url: '/query_filter/', 
+            // data:objectDataString,
+            data:{'objectDataString':JSON.stringify(objectDataString)},
+            dataType: 'json',   
+            success: function (data) { 
+               if(data.isvalid=='true'){ 
+                charttest(parseInt(data.all_count)-parseInt(data.filter_cnt),data.filter_cnt);
+               }
+               else
+               {
+                alert('Error while adding Function.')
+               }
+            }
+        });
+        }
+      });
+
+      $('#btn-reset').on('click', function() {
+        $('#builder').queryBuilder('reset');
+      });
+
+
+      $('#btn-get-sql').on('click', function() {       
+        var result = $('#builder').queryBuilder('getSQL')
+
+        if (!$.isEmptyObject(result)) {
+           console.log("result",result.sql)
+          // console.log(JSON.stringify(result, null, 2))  
+          $("#divquery").val(result.sql)
+          $('#staticBackdropLive').modal('toggle');
+          
+        }
+        var colum = '{{col_list|safe}}';
+        var strQuery='';
+        const data = colum;
+        // const data = ["red", "blue", "green", "yellow", "purple", "orange", "black", "white", "brown"];
+        const autocomplete = document.getElementById("divquery");
+        const resultsHTML = document.getElementById("results");
+
+        autocomplete.oninput = function () {
+          let results = [];
+          const userInput = this.value;
+          resultsHTML.innerHTML = "";
+          if (userInput.length > 0) {
+            results = getResults(userInput);
+            resultsHTML.style.display = "block";
+            for (i = 0; i < results.length; i++) {
+              resultsHTML.innerHTML += "<li>" + results[i] + "</li>";
+            }
+          }
+        };
+
+        function getResults(input) {    
+          console.log('input ', input.toUpperCase())  
+          input = input.toUpperCase()
+          inputarr=input.split(' ') 
+          input=inputarr[inputarr.length-1]
+          const results = [];
+          for (i = 0; i < data.length; i++) {
+            if (input === data[i].slice(0, input.length).toUpperCase()) {
+              console.log("check upper ",data[i])
+
+              results.push(data[i]);
+            }
+          } 
+          console.log("results",results)
+          return results;
+        }
+
+        resultsHTML.onclick = function (event) {
+          console.log('autocomplete.value ',autocomplete.value)
+          $("#divquery").focus();
+          inputarr=autocomplete.value.split(' ') 
+          inputarr[inputarr.length-1]= '';
+          console.log(autocomplete.value,',',inputarr)
+          const setValue = event.target.innerText;
+          
+          autocomplete.value =inputarr.join(' ')+ " '"+setValue+"'";
+          this.innerHTML = "";
+        };
+
+
+
+      });
+
+      function hidemodal(){
+      $('#staticBackdropLive').modal('toggle');
+     }
+
+      $('#btn-save').on('click', function() {
+        debugger;
+        var result = $('#builder').queryBuilder('getMongo'); 
+        // var result = {'file_id':3,'rule':'or','addedby':'2023-07-06','addon':'2023-07-06'}
+        if (!$.isEmptyObject(result)) {
+          console.log("result",result)
+          alert(JSON.stringify(result, null, 2));
+          var objectDataString = JSON.stringify(result, null, 2);
+          console.log("objectDataString keys",objectDataString)
+          objectDataString='{"$and": [ {"file_id":{{file_id}}},'+objectDataString+']}';
+          $.ajax({
+            url: '/Query_builder_filter/', 
+            data:{'objectDataString':JSON.stringify(objectDataString),label: $("#txtlabel").val()},
+            // data:objectDataString,
+            dataType: 'json',   
+            success: function (data) {  
+               if(data.isvalid=='true'){
+                alert("successfully save")
+               }
+               else
+               {
+                alert('Error while adding Function.')
+               }
+            }
+          });
+        }
+      
+      })
+
+      $('#btn-set-sql').on('click', function() { 
+        try {
+          input_val = $( "#divquery" ).val() 
+          $('#builder').queryBuilder('setRulesFromSQL', input_val);
+          $('#btn-get-mongo').click()
+        }
+        catch(err) {
+          alert("Invalid statement")
+        }
+        
+      });
+
+      function charttest(x,y){
+      var chartDom = document.getElementById('charttest');
+  var myChart = echarts.init(chartDom);
+  var option;
+ 
+          var option;
+
+option = {
+  title: {
+    text: 'Total Records '+(parseInt(x)+parseInt(y)),
+     
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    show:false
+  },
+  series: [
+    { 
+      type: 'pie',
+      radius: '50%',
+      label: {
+        show: true,
+        formatter(param) {
+          // correct the percentage
+          return param.name + '  (' + param.data.value + ')';
+        }
+      },
+      data: [
+        { value: y, name: 'Matching' },
+        { value: x, name: 'Not Macthing' }, 
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+    option && myChart.setOption(option);
+    myChart.on('click', params => {  
+        console.log(params.seriesType + ',' + params.seriesName + ','+params.name)
+        var result = $('#builder').queryBuilder('getMongo'); 
+        var objectDataString = JSON.stringify(result, null, 2);
+        objectDataString='{"$and": [ {"file_id":{{file_id}}},'+objectDataString+']}';
+        //document.location.href = "/viewFiltredDataType?objectDataString=" +JSON.stringify(objectDataString);
+        $.ajax({
+            url: '/viewFiltredDataType/', 
+            data:{'objectDataString':JSON.stringify(objectDataString),segment: params.name},
+            // data:objectDataString,
+            dataType: 'json',   
+            success: function (data) {  
+               if(data.isvalid=='true'){
+                alert("successfully save")
+               }
+               else
+               {
+                alert('Error while adding Function.')
+               }
+            }
+          });
+      })
+
+    }
+
+</script> 
+{% endblock script %}

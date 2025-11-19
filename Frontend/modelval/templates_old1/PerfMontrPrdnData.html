@@ -1,0 +1,1187 @@
+{% extends 'base_dashbFL.html' %} 
+{% load static %}
+{% block style %}
+<style>
+  .support-chat-container {
+  display: none;
+  &.show {
+    display: block;
+  }
+}
+.support-chat {
+  position: fixed;
+  bottom: map-get($spacers, 7);
+  right: 0;
+  max-width: 27.87rem;
+  width: 100%;
+  transform: scale(0);
+  opacity: 0;
+  transform-origin: bottom right;
+  z-index: 1045;
+  transition: 0.3s ease-out;
+  padding-bottom: map-get($spacers, 7);
+  .support-chat-start & {
+    right: auto;
+    left: 0;
+    transform-origin: bottom left;
+  }
+  .support-chat-bottom-lg & {
+    bottom: map-get($spacers, 11);
+  }
+  @include media-breakpoint-up(sm) {
+    right: map-get($spacers, 3);
+    .support-chat-start & {
+      left: map-get($spacers, 3);
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    right: map-get($spacers, 5);
+    .support-chat-start & {
+      left: map-get($spacers, 5);
+    }
+  }
+  .card {
+    box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+    .dark & {
+      box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+    }
+  }
+  .card-body {
+    height: 27rem;
+  }
+  &.show-chat {
+    transform: scale(1);
+    opacity: 1;
+  }
+  .send-btn {
+    width: 37.06px;
+    height: 37.06px;
+    border-radius: 50%;
+    color: var(--#{$prefix}primary);
+    &:hover {
+      background-color: var(--#{$prefix}gray-100);
+      color: var(--#{$prefix}primary-500);
+    }
+    &:active {
+      background-color: var(--#{$prefix}gray-200);
+      color: var(--#{$prefix}primary-500);
+    }
+  }
+}
+.support-chat + .btn-support-chat {
+  position: fixed;
+  bottom: map-get($spacers, 6);
+  right: map-get($spacers, 3);
+  width: 9rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--#{$prefix}white) !important;
+  z-index: 1045;
+  border-radius: var(--#{$prefix}border-radius-pill);
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  .dark & {
+    box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+  }
+  .support-chat-start & {
+    right: auto;
+    left: map-get($spacers, 3);
+  }
+  .support-chat-bottom-lg & {
+    bottom: map-get($spacers, 10);
+  }
+  @include media-breakpoint-up(sm) {
+    right: map-get($spacers, 5);
+    .support-chat-start & {
+      left: map-get($spacers, 5);
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    right: map-get($spacers, 7);
+    .support-chat-start & {
+      left: map-get($spacers, 7);
+    }
+  }
+  &:hover {
+    background-color: var(--#{$prefix}gray-100) !important;
+  }
+  .fa-chevron-down {
+    display: none;
+  }
+  &.btn-chat-close {
+    border-radius: 50%;
+    width: 3rem;
+    .btn-text,
+    .fa-circle {
+      display: none;
+    }
+    .fa-chevron-down {
+      display: block;
+    }
+  }
+}
+
+
+
+</style>
+{% endblock style %}
+
+{% block content %} 
+
+
+<div class="content" style="padding-top:0px;width:80%;margin-left: 10%">
+  {% csrf_token %}     
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Update Production Output</h4>
+              {{file}}
+            </div>
+        <div class="card-body p-0">
+          
+        
+            <div class="p-4 code-to-copy"> 
+                
+                <ul class="nav nav-underline" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true">Model</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab-profile" role="tab" aria-controls="tab-profile" aria-selected="false" tabindex="-1">Data</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#tab-contact" role="tab" aria-controls="tab-contact" aria-selected="false" tabindex="-1">Business</a></li>
+                    <!-- <li class="nav-item" role="presentation"><a class="nav-link" id="historical" ><input type="checkbox" id="historical" />  Historical</li> -->
+                      
+                  </ul>
+                  <div class="tab-content mt-3" id="myTabContent">
+                    <!--Model-->
+                    <div class="tab-pane fade show active" id="tab-home" role="tabpanel" aria-labelledby="home-tab">
+                      
+                        <div class="row mb-3">
+                          <!-- <label class="col-sm-3 col-form-label" style="margin: 1px;width: auto;" for="ddlFunction">Model Matrics </label>
+                          <div class="col-sm-3">    
+                            <select class="form-select" name="modelmatrics" id="modelmatrics" >
+                              
+                            </select>
+                          </div> -->
+                            
+                            
+                            <label class="col-sm-2 col-form-label" style="margin: 1px;width: auto;" for="ddlFunction">Model </label>
+                            <div class="col-sm-3">    
+                              <select class="form-select" name="ddlmodel" id="ddlmodel" onchange="gethistorymsg()"  >
+                                <option value="">Select Model</option>
+                                {% for val in data  %}                                  
+                                  <option value="{{val}}">{{val}}</option>                                     
+                                {% endfor %} 
+                              </select>                              
+                            </div>                             
+                            <div class="col-sm-3" style="margin: 10px;"> 
+                              <a style="margin-right: 5px;" id="filepath" href="" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i>Download Template </a>   
+                              <!-- <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="ExcelDataDwnld()" value="Download Template" /> -->
+                            </div>
+                            
+                        </div> 
+                        <div class="row mb-2">
+                          <label class="col-sm-2 col-form-label" style="margin: 1px;width: auto;" for="ddlFunction">Production Output </label>
+                          <div class="col-sm-3">    
+                           <input type="file" id="fileprdxn" name="fileprdxn" style="margin: 10px;"/>
+                          </div>
+                          <div class="col-sm-2">    
+                            <input type="checkbox" name="historical" id="historical" />
+                            <label style="margin:10px" id="historical_lbl">Historical</label>  
+                                                        
+                          </div>
+                           
+                          <div class="col-sm-2">    
+                            <input type="button" id="uploddata"  class="btn btn-primary px-5 px-sm-5" onclick="gotoupload()" value="Upload Data" />
+                          </div>
+
+                          <div class="col-sm-2" > 
+                            <!-- <a style="margin-right: 5px; " id="filepath" href="" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i>Download Template </a>    -->
+                            <input type="button" id="controlchart" onclick="showChartModal(0,'Model','ddlmodel','modelmatrics_1')"  class="btn btn-primary px-3 px-sm-3" value="Control chart" />
+                          </div>
+                      </div> 
+                       
+                       
+                        
+                        <div class="col-12 gy-6">
+                            <div class="row g-3 justify-content-end">
+                              <div class="col-auto"> 
+                                <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                              </div>
+                          
+                             
+                            </div>
+                        </div>
+                    </div>
+                    <!--#### Data #####-->
+                    <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
+                      <div class="container">
+                        <form method="post" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            <div class="row mb-3">
+                              <div class="col-sm-4">    
+                                <input type="checkbox" name="historical" id="historical" />
+                                <label style="margin:10px">Historical</label>  
+                                <input type="text" hidden value="Data" id="utility_type_data">                            
+                              </div>
+                              <label class="col-sm-3 col-form-label" for="ddlFunction">Model </label>
+                              <div class="col-sm-4">    
+                                <select class="form-select" name="ddlmodel" id="ddlmodeldata" onchange="ExcelDataDwnldfordata()"  >
+                                  <option value="">Select Model</option>
+                                  {% for val in data  %}
+                                    
+                                    <option value="{{val}}">{{val}}</option> 
+                                      
+                                  {% endfor %} 
+                                </select>
+                                
+                              </div> 
+                          </div> 
+
+                            <div class="row">
+                              <label class="col-sm-3 col-form-label" for="ddlFunction">Production Output </label>
+                                <div class="col-lg-4">
+                                    <input type="file" name="myfile" id="myfiledata" required>            </div>
+                                <div class="col-lg-4">
+                                    <button class="btn btn-primary btn-sm" onclick="gotouploadfordata()">Upload</button>
+                                </div>
+                                <!-- <div class="col-2">
+                                    <button class="btn btn-primary btn-sm"  {{isDisabled}} onclick="goNextData()" style="margin-left: 4px;"
+                                    type="button">Next</button>
+                                </div> -->
+                              </div>
+                            
+                            <div style="height: 15px;"></div>
+                            <div style="height: 25px;"></div>
+                            <div class="row">
+                                
+                            </div>
+                            <div style="height: 25px;"></div>
+                    
+                        </form>
+                    </div>
+                    </div>
+                    <!--End-->
+                    <!--Business-->
+                    <div class="tab-pane fade" id="tab-contact" role="tabpanel" aria-labelledby="contact-tab">
+                      <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" style="margin: 1px;width: auto;" for="ddlFunction">Model </label>
+                        <div class="col-sm-4">  
+                          <select class="form-select" name="ddlmodel" id="ddlmodelbus" onchange="ExcelDataDwnldforbus()"  >
+                            <option value="">Select Model</option>
+                            {% for val in buss_data  %}
+                              
+                              <option value="{{val}}">{{val}}</option> 
+                                
+                            {% endfor %} 
+                          </select>
+                          
+                        </div>                         
+                        <div class="col-sm-3" style="margin: 10px;"> 
+                          <a style="margin-right: 5px;" id="filepathbus" href="" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i>Download Template </a>   
+                          <!-- <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="ExcelDataDwnld()" value="Download Template" /> -->
+                        </div>
+                    </div> 
+                    <div class="row mb-2">
+                      <label class="col-sm-2 col-form-label" for="ddlFunction">Production Output </label>
+                      <div class="col-sm-3">    
+                       <input type="file" id="fileprdxnbus" name="fileprdxn" style="margin: 10px;"/>
+                      </div>
+                      
+                      <div class="col-sm-2">    
+                        <input type="checkbox" name="historical" id="historical_bus" />
+                        <label style="margin:10px" id="historical_lblbus">Historical</label>  
+                                                  
+                      </div>
+                       
+                      <div class="col-sm-2">    
+                        <input type="button" id="uploddatabus"   class="btn btn-primary px-5 px-sm-5" onclick="gotouploadforbus()" value="Upload Data" />
+                      </div>
+
+                      <div class="col-sm-2" > 
+                        <!-- <a style="margin-right: 5px; " id="filepath" href="" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i>Download Template </a>    -->
+                        <input type="button" id="controlchartbus" onclick="showChartModal(0,'Business','ddlmodelbus','modelmatrics_2')"  class="btn btn-primary px-3 px-sm-3" value="Control chart" />
+                      </div>
+                  </div> 
+                   
+                   
+                    
+                    <div class="col-12 gy-6">
+                        <div class="row g-3 justify-content-end">
+                          <div class="col-auto"> 
+                            <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                          </div>
+                      
+                         
+                        </div>
+                    </div>
+                    </div>
+                        
+                  </div>
+                
+
+                
+            </div>
+        </div>
+    </div>    
+    
+</div>
+<button class="btn p-0 border border-200 btn-support-chat btn-chat-close" style="  border-radius: 50%;
+  width: 3rem;position: fixed;
+  bottom:5px; 
+  right: 50px;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--#{$prefix}white) !important;
+  z-index: 1045;
+  border-radius: var(--#{$prefix}border-radius-pill);
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;">
+    <!-- <span class="fs-0 btn-text text-primary text-nowrap">Chat demo</span> -->
+    <span class="text-danger " style="height: 20px; width: 70px; float: right;"><i class="bi bi-chat-right-text"></i></span> 
+    <!-- <span class="fa-solid fa-circle text-success fs--1 ms-2"></span>
+    <span class="fa-solid fa-chevron-down text-primary fs-1"></span> -->
+  </button> 
+<div class="support-chat-container">
+  <div class="container-fluid support-chat" style="top:100px">
+    <div class="card bg-white">
+      <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom">
+        <h5 class="mb-0 d-flex align-items-center gap-2">Discussion Room <span class="fa-solid fa-circle text-success fs--3"></span></h5>
+        <div class="btn-reveal-trigger">
+          <button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex" type="button" id="support-chat-dropdown" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h text-900"></span></button>
+          <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a class="dropdown-item btn-support-chat" href="#!">Close</a> </div>
+        </div>
+      </div>
+      <div class="card-body chat p-0">
+        <div class="d-flex flex-column h-100 p-3" id="divMdlPerfMontresp" style="overflow: auto !important;
+        scrollbar-color: rgba(0,0,0,0);
+        scrollbar-width: thin;" >
+          
+        </div>
+      </div>
+      <div class="card-footer d-flex align-items-center gap-2 border-top ps-3 pe-4 py-3">
+        <div class="d-flex align-items-center flex-1 gap-3 border rounded-pill px-4">
+          <input class="form-control outline-none border-0 flex-1 fs--1 px-0" style="width:275px;background-color: white;" type="text" id="txtmsg" onkeyup="enableBtn()" placeholder="Write message" />
+          
+        </div>
+        <button id="btnSend" class="btn p-0 border-0 send-btn" onclick="updateResponse()"><i class="bi bi-send" onclick="updateResponse()"></i><span class="fa-solid fa-paper-plane fs--1"></span></button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- <div id="chartModal" class="modal">  
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content  bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Chart</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3 position-relative"  >
+          <canvas id="modalChart" ></canvas>  
+          <img id="savedChartImage" src="" alt="Saved Chart">
+        </div>       
+          
+        </div>
+      <div class="modal-footer">
+        
+      </div>
+    </div>
+  </div>   
+</div> -->
+
+  <!-- Modal -->
+  <div id="chartModal" class="modal fade"    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLiveLabel">Control Chart</h5>
+          <br>          
+        </div>
+        <div class="modal-body"> 
+          <div class="row" id="modelrow">
+            <label class="col-sm-3 col-form-label" style="margin: 1px;width: auto;" for="ddlFunction">Model Matrics </label>
+            <div class="col-sm-3">    
+              <select class="form-select" name="modelmatrics_1" id="modelmatrics_1" onchange="showChartModal(1,'Model','ddlmodel','modelmatrics_1')" style="width: 275px;">
+                
+              </select>
+            </div>
+          </div>
+          <div class="row" id="businessrow">
+            <label class="col-sm-3 col-form-label" style="margin: 1px;width: auto;" for="ddlFunction">Business Matrics </label>
+            <div class="col-sm-3">    
+              <select class="form-select" name="modelmatrics_2" id="modelmatrics_2" onchange="showChartModal(1,'Business','ddlmodelbus','modelmatrics_2')" style="width: 275px;">
+                
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3 position-relative"   > 
+              <canvas id="modalChart" style=" margin-bottom: 10px!important;" ></canvas> 
+              <canvas id="modalChart_1"   ></canvas>  
+              <!-- <img id="savedChartImage" src="" alt="Saved Chart">             -->
+        </div>  
+        </div>
+        <div class="modal-footer"> 
+          <!-- <button id ='btn-set-sql' class="btn btn-primary parse-json">Set SQL</button>
+          <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="hidemodal()">Close</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end modal-->
+
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script> 
+<script src="{% static 'js/chatroom.js' %}"></script>
+
+<script type='text/javascript' >
+  
+  function nextgraph(data_1,UCL,mean){
+    // const dataPoints = [2, 3, 4, 5, 2, 3, 4, 5, 6, 1, 5, 2];
+            const dataPoints = data_1;
+            
+            const ucl = UCL; // Upper control limit
+            const lcl = 0; // Lower control limit
+            const centerLine = mean; // Average or process mean
+          
+            // Prepare datasets for the control chart
+            const data = {
+                labels: Array.from({ length: dataPoints.length }, (_, i) => `${i + 1}`),// Labels for x-axis
+                // labels:date_only , 
+                datasets: [
+                    {
+                        // label: 'Measurements',
+                        data: dataPoints,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                    },
+                    {
+                        // label: 'Upper Control Limit (UCL)',
+                        data: Array(dataPoints.length).fill(ucl),
+                        borderColor: 'red',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 0,
+                    },
+                    {
+                        // label: 'Lower Control Limit (LCL)',
+                        data: Array(dataPoints.length).fill(lcl),
+                        borderColor: 'red',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 0,
+                    },
+                    {
+                        // label: 'Center Line (Mean)',
+                        data: Array(dataPoints.length).fill(centerLine),
+                        borderColor: 'green',
+                        borderDash: [10, 5],
+                        borderWidth: 2,
+                        pointRadius: 0,
+                    },
+                ],
+            };
+
+
+          var chartModal = Chart.getChart("modalChart_1"); // <canvas> id
+                if (chartModal != undefined) {
+                  chartModal.destroy();
+                }
+          console.log("object------",document.getElementById('modalChart_1'))
+          var chartModalCtx = document.getElementById('modalChart_1').getContext('2d');
+          // new Chart(modalCtx,TtlAppEthnicityoptions); 
+          var chartModal = new Chart(chartModalCtx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            display: false,
+                        },
+                        title: {
+                            display: false,
+                            text: 'Shewhart Control Chart',
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: false,
+                                text: 'Date',
+                            },
+                        },
+                        
+                    },
+                },
+            });
+            /*#END#*/
+  }
+  
+  function nextgraph_1(data_1,UCL,mean){
+    // const dataPoints = [2, 3, 4, 5, 2, 3, 4, 5, 6, 1, 5, 2];
+            const dataPoints = data_1;
+            
+            const ucl = UCL; // Upper control limit
+            const lcl = 0; // Lower control limit
+            const centerLine = mean; // Average or process mean
+          
+            // Prepare datasets for the control chart
+            const data = {
+                labels: Array.from({ length: dataPoints.length }, (_, i) => `${i + 1}`),// Labels for x-axis
+                // labels:date_only , 
+                datasets: [
+                    {
+                        // label: 'Measurements',
+                        data: dataPoints,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                    },
+                    {
+                        // label: 'Upper Control Limit (UCL)',
+                        data: Array(dataPoints.length).fill(ucl),
+                        borderColor: 'red',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 0,
+                    },
+                    // {
+                    //     // label: 'Lower Control Limit (LCL)',
+                    //     data: Array(dataPoints.length).fill(lcl),
+                    //     borderColor: 'red',
+                    //     borderDash: [5, 5],
+                    //     borderWidth: 2,
+                    //     pointRadius: 0,
+                    // },
+                    // {
+                    //     // label: 'Center Line (Mean)',
+                    //     data: Array(dataPoints.length).fill(centerLine),
+                    //     borderColor: 'green',
+                    //     borderDash: [10, 5],
+                    //     borderWidth: 2,
+                    //     pointRadius: 0,
+                    // },
+                ],
+            };
+
+
+          var chartModal = Chart.getChart("modalChart_1"); // <canvas> id
+                if (chartModal != undefined) {
+                  chartModal.destroy();
+                }
+          console.log("object------",document.getElementById('modalChart_1'))
+          var chartModalCtx = document.getElementById('modalChart_1').getContext('2d');
+          // new Chart(modalCtx,TtlAppEthnicityoptions); 
+          var chartModal = new Chart(chartModalCtx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            display: false,
+                        },
+                        title: {
+                            display: false,
+                            text: 'Shewhart Control Chart',
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: false,
+                                text: 'Date',
+                            },
+                        },
+                        
+                    },
+                },
+            });
+            /*#END#*/
+  }
+  
+
+  function showChartModal(type,datatype,id,matric_type){
+    debugger
+    console.log(matric_type)
+      mdlid = $('#'+id).val()
+      modelmatrics = $("#"+matric_type).val()
+      console.log("modelmatrics",modelmatrics)
+      var arrMM=['PSI','KLDivergence','JSDivergence','HellingerDistance','HypothesisTest']
+      $.ajax({
+          url: '/ModelMatricsData/', 
+          data:{mdlid:mdlid,modelmatrics:modelmatrics,datatype:datatype},
+          dataType: 'json',    
+          method:'GET',
+          success: function (response) { 
+            debugger;
+            console.log("Model Matrics data-----------",response.data)
+            // const dataPoints = [15, 17, 14, 18, 16, 19, 15, 20, 14, 13, 18, 16];
+            // if(response.data == null){
+            //   $("#controlchart").hide()
+            //   return
+            // }
+            const dataPoints = response.data.data;
+            if( arrMM.indexOf(modelmatrics) >=0 ){
+              const ucl = response.data.warning; // Upper control limit
+              const lcl = 0; // Lower control limit
+              const centerLine = response.data.mean; // Average or process mean
+              date_only = []
+              for (let i = 0; i < response.data.date.length; i++) {
+                  console.log("date check",response.data.date[i]);
+                  console.log(response.data.date[i].split('T')[0])
+                  date_only.push(response.data.date[i].split('T')[0])
+              }
+              // Prepare datasets for the control chart
+              const data = {
+                  // labels: Array.from({ length: dataPoints.length }, (_, i) => `Point ${i + 1}`),// Labels for x-axis
+                  labels: Array.from({ length: dataPoints.length }, (_, i) => `${i + 1}`), 
+                  datasets: [
+                      {
+                          // label: 'Measurements',
+                          data: dataPoints,
+                          borderColor: 'blue',
+                          backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                          borderWidth: 2,
+                          tension: 0.1,
+                      },
+                      { 
+                        // label: 'Upper Control Limit (UCL)',
+                          data: Array(dataPoints.length).fill(ucl),
+                          borderColor: 'red',
+                          borderDash: [5, 5],
+                          borderWidth: 2,
+                          pointRadius: 0,
+                      },
+                      // {
+                      //     // label: 'Lower Control Limit (LCL)',
+                      //     data: Array(dataPoints.length).fill(lcl),
+                      //     borderColor: 'red',
+                      //     borderDash: [5, 5],
+                      //     borderWidth: 2,
+                      //     pointRadius: 0,
+                      // },
+                      // {
+                      //     // label: 'Center Line (Mean)',
+                      //     data: Array(dataPoints.length).fill(centerLine),
+                      //     borderColor: 'green',
+                      //     borderDash: [10, 5],
+                      //     borderWidth: 2,
+                      //     pointRadius: 0,
+                      // },
+                  ],
+              };
+              var chartModal = Chart.getChart("modalChart"); // <canvas> id
+                  if (chartModal != undefined) {
+                    chartModal.destroy();
+                  }
+            console.log("object------",document.getElementById('modalChart'))
+            var chartModalCtx = document.getElementById('modalChart').getContext('2d');
+            // new Chart(modalCtx,TtlAppEthnicityoptions); 
+            var chartModal = new Chart(chartModalCtx, {
+                  type: 'line',
+                  data: data,
+                  options: {
+                      responsive: true,
+                      plugins: {
+                          legend: {
+                              position: 'top',
+                              display: false,
+                          },
+                          title: {
+                              display: false,
+                              text: 'Control Chart',
+                          },
+                      },
+                      scales: {
+                          x: {
+                              title: {
+                                  display: false,
+                                  text: 'Date',
+                              },
+                          },
+                          
+                      },
+                  },
+              });
+              /* ######  */
+              /*Next Moving Graph*/
+              nextgraph_1(response.data.data_1,response.data.UCL_1,response.data.mean_1)
+
+            }//sss
+            else{ 
+
+              const ucl = response.data.UCL; // Upper control limit
+              const lcl = response.data.LCL; // Lower control limit
+              const centerLine = response.data.mean; // Average or process mean
+              date_only = []
+              for (let i = 0; i < response.data.date.length; i++) {
+                  console.log("date check",response.data.date[i]);
+                  console.log(response.data.date[i].split('T')[0])
+                  date_only.push(response.data.date[i].split('T')[0])
+              }
+              // Prepare datasets for the control chart
+              const data = {
+                  // labels: Array.from({ length: dataPoints.length }, (_, i) => `Point ${i + 1}`),// Labels for x-axis
+                  labels: Array.from({ length: dataPoints.length }, (_, i) => `${i + 1}`), 
+                  datasets: [
+                      {
+                          // label: 'Measurements',
+                          data: dataPoints,
+                          borderColor: 'blue',
+                          backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                          borderWidth: 2,
+                          tension: 0.1,
+                      },
+                      { 
+                        // label: 'Upper Control Limit (UCL)',
+                          data: Array(dataPoints.length).fill(ucl),
+                          borderColor: 'red',
+                          borderDash: [5, 5],
+                          borderWidth: 2,
+                          pointRadius: 0,
+                      },
+                      {
+                          // label: 'Lower Control Limit (LCL)',
+                          data: Array(dataPoints.length).fill(lcl),
+                          borderColor: 'red',
+                          borderDash: [5, 5],
+                          borderWidth: 2,
+                          pointRadius: 0,
+                      },
+                      {
+                          // label: 'Center Line (Mean)',
+                          data: Array(dataPoints.length).fill(centerLine),
+                          borderColor: 'green',
+                          borderDash: [10, 5],
+                          borderWidth: 2,
+                          pointRadius: 0,
+                      },
+                  ],
+              };
+              var chartModal = Chart.getChart("modalChart"); // <canvas> id
+                if (chartModal != undefined) {
+                  chartModal.destroy();
+                }
+          console.log("object------",document.getElementById('modalChart'))
+          var chartModalCtx = document.getElementById('modalChart').getContext('2d');
+          // new Chart(modalCtx,TtlAppEthnicityoptions); 
+          var chartModal = new Chart(chartModalCtx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            display: false,
+                        },
+                        title: {
+                            display: false,
+                            text: 'Control Chart',
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: false,
+                                text: 'Date',
+                            },
+                        },
+                        
+                    },
+                },
+            });
+            /* ######  */
+            /*Next Moving Graph*/
+            nextgraph(response.data.data_1,response.data.UCL_1,response.data.mean_1)
+            }
+
+
+          
+          }
+        }); 
+
+    
+      if(type == 0){
+        $('#chartModal').modal('toggle')
+      }
+      
+  }
+
+
+
+    function supportChatInit(){    
+      const supportChat = document.querySelector('.support-chat');
+      const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+      const supportChatcontainer = document.querySelector(
+        '.support-chat-container'
+      );
+        supportChatcontainer.classList.add('show');     
+      supportChatBtn.forEach(item => {    
+      
+        item.addEventListener('click', () => {
+          
+          supportChat.classList.toggle('show-chat');
+  
+          // supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+          //   'btn-chat-close'
+          // );
+  
+          supportChatcontainer.classList.add('show');
+           
+        });
+      });
+    };
+  
+
+    $(document).ready(function(){
+          // $('#SelectBackUpUserFor').css('visibility','hidden');
+         supportChatInit(); 
+         $("#filepath").hide()
+        $('#historical').hide()
+        $("#uploddata").hide()
+        $("#controlchart").hide()
+        $("#historical_lbl").hide()
+
+         $("#filepathbus").hide()
+        $('#historical_bus').hide()
+        $("#uploddatabus").hide()
+        $("#controlchartbus").hide()
+        $("#historical_lblbus").hide()
+      }); 
+
+
+    function gotolist()
+    {
+        window.location='{{showdept}}'
+        
+    }
+
+    // function ExcelDataDwnld() {
+    //   debugger;
+      // metric = $('#ddlmodel').val()
+      // // alert(mdlid)
+      // $.ajax({
+      //     url: '/mmlabeltoexcel/', 
+      //     data:{metric:metric},
+      //     dataType: 'json',
+      //     method:'GET',
+      //     success: function (data) { 
+      //       console.log("data",data)
+      //       alert(data.msg)
+            
+      //     }
+      //   });
+    // }
+    function ExcelDataDwnld(){
+  
+      // metric = $('#ddlmodel').val()
+      mdlid = $('#ddlmodel').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/mmlabeltoexcel/', 
+          data:{mdlid:mdlid,datatype:"Model"},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) {   
+            console.log("response-----------123",data)
+            $("#businessrow").hide()
+            $("#modelrow").show()
+            $("#filepath").prop("href", data.file);
+            if(data.data_check == 'Find'){
+              $("#controlchart").show()
+            } 
+            else{
+              $("#controlchart").hide()
+            }           
+            const dropdown = $('#modelmatrics_1');
+            dropdown.find('option:not(:first)').remove();
+            data.model_matrics.forEach(item => {
+                dropdown.append(new Option(item));
+            });            
+          }
+        });
+    }
+
+    function ExcelDataDwnldforbus(){
+      debugger
+      $("#filepathbus").show()
+      $('#historical_bus').show()
+      $("#uploddatabus").show()
+      $("#controlchartbus").show()
+      $("#historical").show()
+      $("#historical_lblbus").show()
+
+      // metric = $('#ddlmodel').val()
+      mdlid = $('#ddlmodelbus').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/mmlabeltoexcelforbus/', 
+          data:{mdlid:mdlid},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("data check---------",data) 
+            $("#filepathbus").prop("href", data.file);
+            $("#businessrow").show()
+            $("#modelrow").hide()
+            const dropdown = $('#modelmatrics_2');
+            data.business_matrics.forEach(item => {
+                dropdown.append(new Option(item));
+            });
+            
+          }
+        });
+    }
+  
+    
+    function gotoupload(){
+        debugger;
+        var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+        var Historical = document.getElementById('historical').checked
+        
+        // console.log("file is",fileInput)
+        var x = new XMLHttpRequest();
+        x.open("POST","/Perf_monitoring_file_upload/",true); 
+        var formData = new FormData();
+        formData.append("csrfmiddlewaretoken", csrfToken);
+
+        var prdxnoutput = document.getElementById("fileprdxn").files[0];        
+        console.log("check file",prdxnoutput)
+        var prdxnoutput_filename = prdxnoutput.name;
+        console.log("check filename",prdxnoutput_filename)
+        formData.append("filenm", prdxnoutput_filename);
+        formData.append("filename", prdxnoutput,prdxnoutput_filename);
+        formData.append("mdl_id",$('#ddlmodel').val());
+        formData.append("historical",Historical);
+        formData.append("utility_type","Model");
+        x.send(formData);
+        x.onreadystatechange = function () {
+          console.log("x.readyState",x.readyState)
+          console.log("x.status",x.status)
+        if (x.readyState == 4 && x.status == 200) {
+            console.log("check1")
+            var json = JSON.parse(x.responseText);
+            console.log(json)
+            if(json.isvalid == 'true'){
+              alert('File Uploded successfully')
+            }
+            else{
+              alert('Columns name are not identical in the file please check')
+            }
+            
+        }
+    }
+    }
+
+    function gotouploadforbus(){
+        debugger;
+        var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+        var Historical = document.getElementById('historical_bus').checked
+        // console.log("file is",fileInput)
+        var x = new XMLHttpRequest();
+        x.open("POST","/Perf_monitoring_file_upload_bus/",true); 
+        var formData = new FormData();
+        formData.append("csrfmiddlewaretoken", csrfToken);
+
+        var prdxnoutput = document.getElementById("fileprdxnbus").files[0];        
+        console.log("check file",prdxnoutput)
+        var prdxnoutput_filename = prdxnoutput.name;
+        console.log("check filename",prdxnoutput_filename)
+        formData.append("filenm", prdxnoutput_filename);
+        formData.append("filename", prdxnoutput,prdxnoutput_filename);
+        formData.append("mdl_id",$('#ddlmodelbus').val());
+        formData.append("historical",Historical);
+        formData.append("utility_type","Business");
+        x.send(formData);
+        x.onreadystatechange = function () {
+          console.log("x.readyState",x.readyState)
+          console.log("x.status",x.status)
+        if (x.readyState == 4 && x.status == 200) {
+            console.log("check1")
+            var json = JSON.parse(x.responseText);
+            console.log(json)
+            if(json.isvalid == 'true'){
+              alert('Business File Uploded successfully')
+            }
+            else{
+              alert('Columns name are not identical in the file please check')
+            }
+            
+        }
+    }
+    }
+
+    function gotouploadfordata(){
+        debugger;
+        var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+        var Historical = document.getElementById('historical').checked
+        // console.log("file is",fileInput)
+        var x = new XMLHttpRequest();
+        x.open("POST","/home2/",true); 
+        var formData = new FormData();
+        formData.append("csrfmiddlewaretoken", csrfToken);
+
+        var prdxnoutput = document.getElementById("myfiledata").files[0];        
+        console.log("check file",prdxnoutput)
+        var prdxnoutput_filename = prdxnoutput.name;
+        console.log("check filename",prdxnoutput_filename)
+        formData.append("filenm", prdxnoutput_filename);
+        formData.append("filename", prdxnoutput,prdxnoutput_filename);
+        formData.append("mdlid",$('#ddlmodeldata').val());
+        formData.append("historical",Historical);
+        formData.append("utility_type","Data");
+        x.send(formData);
+        x.onreadystatechange = function () {
+          console.log("x.readyState",x.readyState)
+          console.log("x.status",x.status)
+        if (x.readyState == 4 && x.status == 200) {
+            console.log("check1")
+            var json = JSON.parse(x.responseText);
+            console.log(json)
+            if(json.isvalid == 'true'){
+              alert('File Uploded successfully')
+            }
+            else{
+              alert('Columns name are not identical in the file please check')
+            }
+            
+        }
+    }
+}
+
+function gethistorymsg(){ 
+
+      $("#filepath").show()
+      $('#historical').show()
+      $("#uploddata").show()
+      $("#controlchart").show()
+      $("#historical").show()
+      $("#historical_lbl").show()
+
+      ExcelDataDwnld();
+      id = $("#mdlid").val()
+      $('#divMdlPerfMontresp').empty()
+      if(id !=""){ 
+        $('input[type="text"]').val(''); 
+        $('input[type="checkbox"]').prop("checked",false)
+      $.ajax({
+              url: '/gethistorymsg/', 
+              data:{room_id: 'Perfm_'+id,mdl_id:id},
+             dataType: 'json',  
+              success: function (data) { 
+                arr=data.mmdata
+                console.log("---------------data new",data.mmdata)
+                // alert(data.Qtns)
+                if(data.mmdata.length == 0){
+                  // alert("empty")
+                  $('#button1').prop('disabled', true);
+                }
+                else{
+                  // alert("full")
+                  $.each(data.mmdata, function(i, item) {
+                  $('#txtper_'+item['metric']).val(item['metric_value_type'])
+                  $('#txtthreshold_'+item['metric']).val(item['threshold'])
+                  $('#txtWaring_'+item['metric']).val(item['warning'])
+                  })
+                  
+                  $('#button1').prop('disabled', false);
+                }
+                //************
+                qtnArr='';
+           $.each(data.data, function(key, val) { 
+            console.log("key",key,"val",val.Comment)
+            if(val.msgcss=='R')
+            {
+              qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold " style="font-size: .64rem !important;font-size: .64rem !important">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+            }
+            else if(val.msgcss=='S')
+            {
+
+              qtnArr +=' <div class="d-flex chat-message">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+                    qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='</div>';
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+                        qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold" style="font-size: .64rem !important;font-size: .64rem !important">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';   
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+            } 
+            
+          });
+           $('#divMdlPerfMontresp').append(qtnArr)
+           //$("#divRespHeader").attr('style','display:none !important');
+          }
+                //************
+                // sendPerfMonmsg($("#txtmsg").val(),$('#txtuid').val(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+              // }
+          });
+        }
+        connectWS(id)
+    }
+
+</script>
+{% endblock script %}

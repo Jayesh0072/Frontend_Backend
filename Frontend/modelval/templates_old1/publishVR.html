@@ -1,0 +1,207 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block content %}
+ 
+    {% csrf_token %}
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Publish Validation Report</h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">Model </label>
+                    
+                    <div class="col-sm-8"> 
+                    <select class="form-select" id="mdlsel"  onchange="checkUtype()"   aria-label="Default select example" >     
+                        <option value="null">Select Model</option>
+                        {% for val in  data  %}                             
+                                <option value="{{val.refference_id}}">{{val.refference_id}}</option>
+                      
+                        {% endfor %} 
+                    </select>
+                    <div class="invalid-tooltip">Please choose a department.</div>
+                    </div>
+                </div>
+
+                 
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="enddate">End Date:</label>
+                    <div class="col-sm-8"> 
+                    <input required  name="end_date" style="margin-bottom:15px;width:100%" id="enddate" type="text" readonly />
+                    </div>
+                </div> 
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto">
+                        <button class="btn btn-phoenix-primary px-5" type="button" onclick="gotolist()">Cancel</button>
+                      </div>
+                      <div class="col-auto">                       
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" id="btnPublish"   onclick="PublishVr()" value="Publish" />                        
+                      </div>
+                     
+                    
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+   
+    
+</div>
+<!-- </form> -->
+
+<div class="support-chat-container">
+  <div class="container-fluid support-chat">
+    <div class="card bg-white">
+      <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom">
+        <h5 class="mb-0 d-flex align-items-center gap-2">Demo widget<span class="fa-solid fa-circle text-success fs--3"></span></h5>
+        <div class="btn-reveal-trigger">
+          <button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex" type="button" id="support-chat-dropdown" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h text-900"></span></button>
+          <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a class="dropdown-item" href="#!">Request a callback</a><a class="dropdown-item" href="#!">Search in chat</a><a class="dropdown-item" href="#!">Show history</a>  </div>
+        </div>
+      </div>
+      <div class="card-body chat p-0">
+        <div class="d-flex flex-column-reverse scrollbar h-100 p-3">
+          <div class="text-end mt-6"><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-1100 hover-bg-soft rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
+              <p class="mb-0 fw-semi-bold fs--1">I need help with something</p><span class="fa-solid fa-paper-plane text-primary fs--1 ms-3"></span>
+            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-1100 hover-bg-soft rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
+              <p class="mb-0 fw-semi-bold fs--1">I can’t reorder a product I previously ordered</p><span class="fa-solid fa-paper-plane text-primary fs--1 ms-3"></span>
+            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-1100 hover-bg-soft rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
+              <p class="mb-0 fw-semi-bold fs--1">How do I place an order?</p><span class="fa-solid fa-paper-plane text-primary fs--1 ms-3"></span>
+            </a><a class="false d-inline-flex align-items-center text-decoration-none text-1100 hover-bg-soft rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
+              <p class="mb-0 fw-semi-bold fs--1">My payment method not working</p><span class="fa-solid fa-paper-plane text-primary fs--1 ms-3"></span>
+            </a>
+          </div>
+          <div class="text-center mt-auto">
+            <div class="avatar avatar-3xl status-online"><img class="rounded-circle border border-3 border-white" src="assets/img/team/30.webp" alt="" /></div>
+            <h5 class="mt-2 mb-3">Eric</h5>
+            <p class="text-center text-black mb-0">Ask us anything – we’ll get back to you here or by email within 24 hours.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer d-flex align-items-center gap-2 border-top ps-3 pe-4 py-3">
+        <div class="d-flex align-items-center flex-1 gap-3 border rounded-pill px-4">
+          <input class="form-control outline-none border-0 flex-1 fs--1 px-0" type="text" placeholder="Write message" />
+          <label class="btn btn-link d-flex p-0 text-500 fs--1 border-0" for="supportChatPhotos"><span class="fa-solid fa-image"></span></label>
+          <input class="d-none" type="file" accept="image/*" id="supportChatPhotos" />
+          <label class="btn btn-link d-flex p-0 text-500 fs--1 border-0" for="supportChatAttachment"> <span class="fa-solid fa-paperclip"></span></label>
+          <input class="d-none" type="file" id="supportChatAttachment" />
+        </div>
+        <button class="btn p-0 border-0 send-btn"><span class="fa-solid fa-paper-plane fs--1"></span></button>
+      </div>
+    </div>
+  </div>
+  <button class="btn p-0 border border-200 btn-support-chat" onclick="showChatbox()">
+    <span class="fs-0 btn-text text-primary text-nowrap">Chat demo</span><span class="fa-solid fa-circle text-success fs--1 ms-2"></span><span class="fa-solid fa-chevron-down text-primary fs-1"></span></button>
+</div>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+  function supportChatInit(){    
+    const supportChat = document.querySelector('.support-chat');
+    const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+    const supportChatcontainer = document.querySelector(
+      '.support-chat-container'
+    );
+      supportChatcontainer.classList.add('show');     
+    // supportChatBtn.forEach(item => {    
+    
+    //   item.addEventListener('click', () => {
+        
+    //     supportChat.classList.toggle('show-chat');
+
+    //     supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+    //       'btn-chat-close'
+    //     );
+
+    //     supportChatcontainer.classList.add('show');
+         
+    //   });
+    // });
+  };
+
+  function showChatbox(){
+    const supportChat = document.querySelector('.support-chat');
+    const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+    const supportChatcontainer = document.querySelector(
+      '.support-chat-container'
+    ); 
+     
+        
+      supportChat.classList.toggle('show-chat');
+
+      supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+        'btn-chat-close'
+      );
+
+      supportChatcontainer.classList.add('show');
+     
+  }
+
+    $(document).ready(function(){
+        // $('#SelectBackUpUserFor').css('visibility','hidden');
+       supportChatInit();
+    }); 
+    function checkUtype(){ 
+        mdl_id=$("#mdlsel").val()  
+        $("#btnPublish").prop('disabled', true);  
+        $.ajax({
+            url: '/checkutype/', 
+            data:{mdl_id: $("#mdlsel").val()},
+           dataType: 'json',   
+            success: function (data) { 
+              
+                    date = data.enddate
+                    $('#enddate').val(date) 
+                    if(data.canpublish ==true) 
+                    $("#btnPublish").prop('disabled', false);
+                    
+            }
+        });
+    } 
+    function gotolist(){
+        window.location='{{blank}}';
+    }
+
+    function validateEmail(){
+        $.ajax({
+            url: '/checkValue/', 
+            data:{val: $("#txtemail").val(),dept: $("#ddldept").val(),utype: $("#ddlutype").val(),'tbl':'email' },
+           dataType: 'json',   
+            success: function (data) { 
+                console.log(data)
+               if(data.cnt!='0'){
+                $("#txtemail").val('')
+                alert('Email already exists.')
+               }
+               
+            }
+        });
+    }
+
+    function PublishVr(){ 
+        
+        $.ajax({
+            url: '/publishVR/', 
+            data:{mdl_id: $("#mdlsel").val()},
+           dataType: 'json',   
+            success: function (data) { 
+              alert(data.msg)
+            }
+        });
+    }
+
+
+</script>
+{% endblock script %}

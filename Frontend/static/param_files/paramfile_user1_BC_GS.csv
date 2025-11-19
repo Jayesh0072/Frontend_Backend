@@ -1,0 +1,19 @@
+paramName,paramValue
+n_estimators,"[max(10, bc_search.best_params_['n_estimators'] - 10), 
+                               max(10, bc_search.best_params_['n_estimators'] - 5), 
+                               bc_search.best_params_['n_estimators'], 
+                               bc_search.best_params_['n_estimators'] + 5, 
+                               bc_search.best_params_['n_estimators'] + 10]"
+max_samples,"[max(10, bc_search.best_params_['max_samples'] -5),
+                              max(10, bc_search.best_params_['max_samples'] -2),
+                              bc_search.best_params_['max_samples'],
+                              bc_search.best_params_['max_samples'] +2,
+                              bc_search.best_params_['max_samples'] +5]"
+max_features,"[bc_search.best_params_['max_features']*0.8,
+                                   bc_search.best_params_['max_features']*0.9,
+                                   bc_search.best_params_['max_features'],
+                                   bc_search.best_params_['max_features']*1.1,
+                                   bc_search.best_params_['max_features']*1.2]"
+bootstrap,[bc_search.best_params_['bootstrap']]
+bootstrap_features,[bc_search.best_params_['bootstrap_features']]
+oob_score,[bc_search.best_params_['oob_score']]

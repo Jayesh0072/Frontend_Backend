@@ -1,0 +1,614 @@
+{% extends 'rmsebase.html' %} 
+{% url 'exportReport' as exportReport %} 
+{% load static %}  
+{% block content %}
+{% csrf_token %}
+<style>
+  
+  .fs--2 {
+    font-size: .64rem !important;
+    font-weight: 600 !important;
+  }
+  .chat .chat-message .received-message-content {
+      position: relative;
+  }
+  .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):before {
+      content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: -12px;
+      right: auto;
+      top: -1px;
+      bottom: auto;
+      border: 11px solid;
+      border-color: #e3e6ed rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+  }
+  .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):after {
+      content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: -10px;
+      right: auto;
+      top: 0px;
+      bottom: auto;
+      border: 10px solid;
+      border-color: #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+  } 
+  .chat .chat-message_sent .sent-message-content {
+    position: relative;
+  }
+  .chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery):after {
+     
+    content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: auto;
+      right: -12px;
+      top: auto;
+      bottom: 0;
+      border: 12px solid;
+      border-color:transparent transparent #3874ff  transparent; 
+  }
+  
+  .flex-end-center {
+      -webkit-box-pack: end;
+      -ms-flex-pack: end;
+      justify-content: flex-end;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+  }
+  
+   
+  .flex-1 {
+    -webkit-box-flex: 1;
+  
+    -ms-flex: 1;
+  
+    flex: 1;
+  
+  }
+    .support-chat-container {
+    display: none;
+    &.show {
+      display: block;
+    }
+  }
+  .support-chat {
+    position: fixed;
+    bottom: map-get($spacers, 7);
+    right: 0;
+    max-width: 27.87rem;
+    width: 100%;
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: bottom right;
+    z-index: 1045;
+    transition: 0.3s ease-out;
+    padding-bottom: map-get($spacers, 7);
+    .support-chat-start & {
+      right: auto;
+      left: 0;
+      transform-origin: bottom left;
+    }
+    .support-chat-bottom-lg & {
+      bottom: map-get($spacers, 11);
+    }
+    @include media-breakpoint-up(sm) {
+      right: map-get($spacers, 3);
+      .support-chat-start & {
+        left: map-get($spacers, 3);
+      }
+    }
+    @include media-breakpoint-up(lg) {
+      right: map-get($spacers, 5);
+      .support-chat-start & {
+        left: map-get($spacers, 5);
+      }
+    }
+    .card {
+      box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+      .dark & {
+        box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+      }
+    }
+    .card-body {
+      height: 27rem;
+    }
+    &.show-chat {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .send-btn {
+      width: 37.06px;
+      height: 37.06px;
+      border-radius: 50%;
+      color: var(--#{$prefix}primary);
+      &:hover {
+        background-color: var(--#{$prefix}gray-100);
+        color: var(--#{$prefix}primary-500);
+      }
+      &:active {
+        background-color: var(--#{$prefix}gray-200);
+        color: var(--#{$prefix}primary-500);
+      }
+    }
+  }
+  .btn-chat-close {
+      border-radius: 50%;
+      width: 3rem;
+      .btn-text,
+      .fa-circle {
+        display: none;
+      }
+      .fa-chevron-down {
+        display: block;
+      }
+    }
+  .support-chat + .btn-support-chat {
+    position: fixed;
+    bottom: map-get($spacers, 6);
+    right: map-get($spacers, 3);
+    width: 9rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--#{$prefix}white) !important;
+    z-index: 1045;
+    border-radius: var(--#{$prefix}border-radius-pill);
+    box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+    transition: 0.3s ease;
+    .dark & {
+      box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+    }
+    .support-chat-start & {
+      right: auto;
+      left: map-get($spacers, 3);
+    }
+    .support-chat-bottom-lg & {
+      bottom: map-get($spacers, 10);
+    }
+    @include media-breakpoint-up(sm) {
+      right: map-get($spacers, 5);
+      .support-chat-start & {
+        left: map-get($spacers, 5);
+      }
+    }
+    @include media-breakpoint-up(lg) {
+      right: map-get($spacers, 7);
+      .support-chat-start & {
+        left: map-get($spacers, 7);
+      }
+    }
+    &:hover {
+      background-color: var(--#{$prefix}gray-100) !important;
+    }
+    .fa-chevron-down {
+      display: none;
+    }
+    .btn-chat-close {
+      border-radius: 50%;
+      width: 3rem;
+      .btn-text,
+      .fa-circle {
+        display: none;
+      }
+      .fa-chevron-down {
+        display: block;
+      }
+    }
+  }
+  
+  
+  
+  </style>
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+     
+  <div class="col-lg-10">
+    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+      {% csrf_token %}  
+      <div class="card">
+          <div class="card-header"> 
+              <div class="row form-group" style="margin-bottom: 0px;">
+                <div class="col col-md-11">
+                  Model Usage
+                </div>
+                <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">           
+                    <div style="border:solid 0px;border-radius: 4px; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;font-size: 16px;display: flex;flex-direction: row;align-items: center;">                  
+                        <i class="bi bi-chat-right-quote"  style='cursor:pointer;' onclick="$('#divVT_Comm_Chat').modal('toggle')" ></i>
+                     </div> 
+               </div> 
+              
+            </div>
+          </div>
+          <div class="card-body card-block">  
+                 
+                <div class="accordion" id="accordionExample">
+                  <div class="accordion-item border-top border-300">
+                    <h2 class="accordion-header" id="headingOne">
+                      
+     
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Validator
+                      </button>
+                    </h2>
+                    <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                      <div class="accordion-body pt-0">
+                        <div class="card-body card-block">
+                          <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;"> 
+                              <div class="col col-md-2">
+                                  <label class=" form-control-label">Model Owner </label>
+                              </div>
+                              <div class="col-12 col-md-4">
+                                <select id="optEmail" onchange="getEmail()" class="form-control-sm form-control">
+                                  <option value="0">Select Email</option>
+                                  {% for emailids in emailLst %}
+                                      <option style="padding: 1px;" value="{{emailids.email}}">{{emailids.firstName}} {{emailids.lastName}} </option>
+                                  {% endfor %}
+                                  <option value="-1">Other</option>
+                                </select>
+                                <input type="text" style="display:none;border-color: black; height:31px;" id="txtemail" name="text-input" class="form-control-sm form-control">
+                              </div> 
+                          </div>
+                          <div class="row form-group"  style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-2">
+                                <label class=" form-control-label">Category </label>
+                            </div>
+                            <div class="col-12 col-md-4">
+                              <select id="optCategory"  onchange="getCategory()" class="form-control-sm form-control" multiple>
+                                {% for data in catLst %}
+                                  <option value="{{data}}" >{{data}}</option>  
+                                {% endfor %}
+                                <option value="-1">Add New</option>  
+                            </select>
+                            </div> 
+                            <div class="col col-md-5">
+                              <input type="text" style="display:none;border-color: black; height:31px;" id="txtCategory" name="text-input" class="form-control-sm form-control">
+                            </div>
+                            <div class="col-12 col-md-1">
+                              <button type="button" class="btn btn-primary btn-sm" id="btnAdd" style="margin-right: 10px;display:none" onclick="addNewCat()" >Add</button>  
+                            </div>
+                          </div> 
+                          <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                            <div class="col col-md-2">
+                              <label class=" form-control-label">Comments
+                              </label>
+                          </div>
+                          </div>
+                          <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                              <div class="col-12 col-md-12">
+                                   <textarea id="txtComments" rows="5" style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;" ></textarea>
+                              </div>
+                          </div>
+                        </div> 
+                        <div class="card-footer">
+                          <div class="col-12 gy-6">
+                              <div class="row g-3 justify-content-end">
+                                  <div class="col-auto">
+                                      <button type="button" class="btn btn-primary px-5" onclick="sendMail()">Send Email</button>
+                                  </div>
+                                  <div class="col-auto">
+                                      <button type="button" class="btn btn-primary px-5" onclick="goNext()">Next</button>
+                                  </div>
+                              </div>  
+                          </div>
+                      </div>
+    
+                          
+                      </div>
+                    </div>
+                  </div>
+                  
+             
+          </div> 
+             
+          </div> 
+      </div> 
+    </form>
+  </div>
+   
+</div>
+<div class="modal fade" id="divTune" tabindex="-1" aria-labelledby="divTune" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable modal-lg"> 
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title" id="scrollingLongModalLabel2">Comments </h5>
+       <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+       <div class="d-flex">
+         <button class="btn btn-icon btn-primary btn-circle btn-xl" id="btnchat" onclick="toogleChat('chat')"><i class="bi bi-chat-text"></i></button>
+         <button class="btn btn-icon btn-primary btn-circle btn-xl" style="display: none;" id="btncomment" onclick="toogleChat('comment')"><i class="bi bi-chat-quote"></i></button>
+        
+       </div>
+     </div>
+     <div class="modal-body p-5 px-md-6">  
+         <div class="chat-content tab-content flex-1" style="flex: 1;">
+             <div class="tab-pane h-100 fade active show" id="tab-thread-1" role="tabpanel" aria-labelledby="tab-thread-1">
+               <div class="card flex-1 h-100"> 
+                 <div id="divChatHeader" style="display: none!important;;" class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                     <div class="row mb-3 position-relative">
+                         <div  class="col-sm-12">
+                             <div id="divresp_2" style="overflow-y: scroll;;height: 210px !important;">
+                                 
+                             
+                             </div>
+                         </div>
+                     </div>                           
+                 </div>
+                 <div id="divChatfooter" style="display: none;"  class="card-footer">                    
+                   <div class="row mb-3 position-relative">
+                     <div  class="col-sm-11">
+                       <textarea id ="txtcomment" rows="2" style="width: 100%;resize: none;"></textarea>
+                     </div> 
+                     <div class="col-sm-1">                   
+                       <div class="d-flex justify-content-end align-items-end">
+                        
+                         <div>
+                           <button class="btn btn-icon btn-primary btn-circle btn-xl" type="button" onclick="updateResponse()">
+                             <i class="bi bi-send"></i></button>
+                         </div>
+                       </div>
+                     </div>
+                   </div> 
+                 </div>      
+                 
+                 <div id="divRespHeader"  class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                   <div class="row mb-3 position-relative">
+                     <div  class="col-sm-12">
+                       <textarea id ="txtReportComments" onkeyup="enableSave()" rows="12"  style="width: 100%;resize: none;"></textarea>
+                     </div>                        
+                   </div>
+                    
+                                     
+                   <div class="row mb-3 position-relative">
+                   
+                     <div class="col-sm-12">                   
+                       <div class="d-flex justify-content-end align-items-end">
+                        
+                         <div>
+                           <button class="btn btn-primary" disabled type="button" id="btnSave" onclick="saveReportComment()">Save
+                             </button>
+                         </div>
+                       </div>
+                     </div>
+                   </div> 
+                 </div> 
+               </div>
+             </div> 
+           </div>
+
+          
+     </div>
+     <!-- <div class="modal-footer">
+         <div class="col-auto" style="display: flex; justify-content: flex-end;">
+             <button type="button" class="btn btn-sm" style="margin-right: 10px;" onclick="$('#divTune').modal('toggle')" >Cancel</button> 
+         <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="saveReportComment()" >Save</button>
+         </div>
+     </div> -->
+   </div>
+ </div> 
+
+</div> 
+
+{% endblock content %}
+{% block style %} 
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+
+<style>
+  button {
+    background: #007bff;
+    border: 1px solid #ccc;
+    padding: 10px 30px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  button:active {
+    background: #e5e5e5;
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
+  }
+</style>
+{% endblock style%}
+{%  block script %}  
+<!-- <script src="{% static 'bootstrap_datepicker/js/bootstrap-datepicker.js' %}"></script> -->
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script src="{% static 'js/chatroom.js' %}"></script>
+ 
+<script type="text/javascript">   
+    window.onload=function(){
+      
+      $( "#accordion" ).accordion({
+        collapsible: true
+      });  
+      document.getElementById('txtComments').addEventListener('keydown', function(e) {
+        alert("sdd")
+        if (e.key == 'Tab') {
+          e.preventDefault();
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+      
+          // set textarea value to: text before caret + tab + text after caret
+          this.value = this.value.substring(0, start) +
+            "\t" + this.value.substring(end);
+      
+          // put caret at right position again
+          this.selectionStart =
+            this.selectionEnd = start + 1;
+        }
+      });
+    };
+    
+    $(document).ready( function () {
+      connectWS('{{request.session.vt_mdl}}');
+            $('#divresp_15').empty()
+            $("#txtSelUtil").val('Model Usage')
+            $("#txtSelSubUtil").val('')
+            $("#txtSelUtilType").val('table')
+            getVT_Comm_History('divresp_15','Model Usage', '','{{request.session.vt_mdl}}')
+            // $.ajax({ 
+            // url: '/ValidationCommentHistory/',
+            // data:{'utility':'Data Statistics of Numerical Variables','subutility': tabSel,'mdl_id':'{{request.session.vt_mdl}}'},
+            // dataType: 'json',
+            // success: function (data) {
+            //     debugger
+            //   $('#txtReportComments').val(data.comment)
+            // qtnArr = '';
+            // $.each(data.data, function(key, val) { 
+            //     if(val.msgcss=='R')
+            //     {
+            //     qtnArr +=' <div class="d-flex chat-message">';
+            //     qtnArr +='         <div class="d-flex mb-2 flex-1">';
+            //         qtnArr +='           <div class="w-100 w-xxl-75">';
+            //         qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+            //             qtnArr +='               <div class="chat-message-content received me-2">';
+            //             qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+            //                 qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+            //                 qtnArr +='                 </div>';
+            //                 qtnArr +='     </div>         ';                  
+                                
+            //                 qtnArr +='  </div>';
+            //                 qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +='  </div>';
+            //     }
+            //     else if(val.msgcss=='S')
+            //     {
+
+            //     qtnArr +=' <div class="d-flex chat-message">';
+            //         qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+            //         qtnArr +=' <div class="w-100 w-xxl-75">';
+            //         qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+            //         qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                    
+            //             qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+            //             qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+            //             qtnArr +='</div>';
+            //             qtnArr +='</div>';
+            //         qtnArr +='   <div class="d-none d-sm-flex">';
+            //             qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+            //             qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+            //             qtnArr +='  </div>';
+            //             qtnArr +=' </div>';
+            //             qtnArr +=' <div class="chat-message-content me-2">';
+            //             qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+            //                 qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +='  </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' <div class="text-end">';
+            //                 qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div> ';
+            //     } 
+            // }) 
+            // $('#divresp_2').append(qtnArr)       
+            // }
+            // });
+    })
+
+    
+ 
+    function saveReportComment()
+    { 
+      $.ajax({ 
+        url: '/savevalFindingsComment/',
+        data:{'comment':  $("#txtReportComments").val()},
+        dataType: 'json',
+        success: function (data) {
+                if(data.is_taken)
+                { 
+                  alert('Comment saved sucessfully.')             
+                }   
+        }
+        });
+    } 
+
+    function getEmail(){ 
+      $('#txtemail').val(''); 
+      if($('#optEmail').val()!='-1' & $('#optEmail').val()!='0'){
+         $('#txtemail').val($('#optEmail').val());
+      }
+      else{
+          $('#txtemail').show();
+          $('#optEmail').hide();
+      }
+  }
+
+  function getCategory(){
+    //console.log($('#optCategory').val().indexOf('-1'))
+    if($('#optCategory').val().indexOf('-1')!=-1){
+      $('#txtCategory').show();
+      $('#btnAdd').show();
+      console.log('show textbox'); 
+    }
+    else{
+      $('#txtCategory').hide();
+      $('#btnAdd').hide();
+      console.log('hide textbox')
+    }
+  }
+
+  function addNewCat(){
+    arrLst=$('#optCategory').val();
+    $('#optCategory option:last').remove(); 
+    $('#optCategory').append(new Option($('#txtCategory').val(),$('#txtCategory').val()));
+    $('#optCategory').append(new Option("Add New","-1"));
+    arrLst.push($('#txtCategory').val());
+    arrLst.splice(arrLst.indexOf('-1'),1);
+    $('#optCategory').val(arrLst)
+    $("select").scrollTop($("#optCategory").find("option[value=-1]").offset().top);
+    $('#txtCategory').hide();
+    $('#btnAdd').hide();
+  }
+
+  function sendMail(id){ 
+    var selected=[];
+    var i=1;
+    $('#optCategory :selected').each(function(){
+        item = {}
+        item ["column"+i] = $(this).text();
+        selected.push(item)
+        i++;
+        });
+        console.log(selected) 
+    $.ajax({
+        url: '/saveModelUsageReq/', 
+        data:{ email: $("#txtemail").val(),categories:JSON.stringify(selected)  },
+        dataType: 'json',
+        success: function (data) {
+           // alert(data)
+           if(data.is_taken){
+               alert('Mail sent successfully.');
+               $( "#target" ).submit();
+           }
+        }
+    });
+}
+
+function goNext(){
+  window.location="{% url 'valFindings' %}"
+}
+ </script>
+{% endblock script %} 

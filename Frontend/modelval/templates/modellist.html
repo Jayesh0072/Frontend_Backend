@@ -1,0 +1,850 @@
+{% extends 'base_dashb.html' %} 
+{% load static %} 
+{% block style %}
+<style>
+.fullCircleGreen
+{
+  width: 10px;
+  height:10px;
+  bordeR: 1px solid;
+  border-radius: 50%;
+  border-color:green;
+  background-color: green;
+  margin-left: 5px;
+  box-shadow: 0 0 0 0 green;
+	transform: scale(1);
+	animation: pulse 1s infinite;
+  }
+
+.fullCircleRed
+{
+  /* width: 20px;
+  height:20px;
+  bordeR: 1px solid;
+  border-radius: 50%; */
+  border-color:red;
+  height: 10px;
+  width: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 0 red;
+	transform: scale(1);
+	animation: pulse 1s infinite;
+  }
+
+  .fullCircleYellow
+{
+  border-color:yellow;
+  height: 10px;
+  width: 10px;
+  background-color: yellow;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 0 yellow;
+	transform: scale(1);
+	animation: pulse 1s infinite;
+  }
+  
+  
+  .blob {
+	background: orange;
+	border-radius: 50%;
+	margin: 7px 0px 0px 0px;
+	height: 12px;
+	width: 12px;
+
+	box-shadow: 0 0 0 0 rgb(228, 100, 15);
+	transform: scale(1);
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(255, 165,0, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255, 165,0, 0);
+	}
+}
+
+.blink {
+  animation: blinker 1500ms ease-in-out infinite,
+  delay-animation 750ms linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+ #sectionNav .nav-link {
+    color: #333;
+    transition: color 0.2s ease-in-out;
+  }
+  #sectionNav .nav-link.active {
+    color: #377dff !important;
+    background: transparent !important;
+    font-weight: 600;
+  }
+  #sectionNav .nav-link:hover {
+    color: #377dff;
+  }
+
+  .modal-fullscreen-custom {
+    width: 100%;
+    margin: 0;
+    max-width: 100%;
+  }
+
+</style>
+
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css' %}">
+
+{%  endblock style %}
+{% block content %}
+<div class="content" style="padding-top:0px;margin: 25px;"> 
+   <!-- Filter -->
+   <div class="row align-items-center mb-5" >
+    <div class="col">
+      <h3 class="mb-0">Model Inventory : {{modeltype}} {{modelinfo | length}} Models</h3> 
+    </div>
+    <!-- End Col -->
+
+    <div class="col-auto">
+     
+      <ul class="nav nav-segment" id="projectsTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid-tab" data-bs-toggle="tab" href="#grid" role="tab" aria-controls="grid" aria-selected="true" title="Column view">
+            <i class="bi-grid"></i>
+          </a>
+        </li> 
+        <li class="nav-item">
+          <a class="nav-link" id="grid-row" data-bs-toggle="tab" href="#rows" role="tab" aria-controls="row" aria-selected="true" title="Table view">
+            <i class="bi-list"></i>
+          </a>
+        </li> 
+      </ul> 
+    </div>
+    {% if canAdd == "1"%}
+              <div class="col-sm-auto">
+                <a class="btn btn-primary" href="{{getCriteria}}">
+                  <i class="bi-plus-lg me-1"></i> Add New
+                </a>
+              </div>
+              {% endif %}
+    <!-- End Col -->
+  </div>
+  <!-- End Filter -->
+
+  <!-- Tab Content --> 
+  <div class="tab-content" id="projectsTabContent">
+    <div class="tab-pane fade show active" id="grid" role="tabpanel" aria-labelledby="grid-tab">
+      <div class="row row-cols-1 row-cols-md-3">
+        {% for key, val in modelinfo.items  %}   
+        <div class="col mb-3 mb-lg-5" style="height: 200px;/*! background-color: aqua; */">
+          <!-- Card -->
+          <div class="card card-hover-shadow text-center h-100">
+            <div class="card-progress-wrap">
+              <!-- Progress -->
+              <div class="progress card-progress">
+                {% if val.Mdl_Risk_Label == "High" %}
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                {%elif val.Mdl_Risk_Label == "Medium" %}
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                {%elif val.Mdl_Risk_Label == "Low" %} 
+                  <div class="progress-bar bg-success"  role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                {% endif %}               
+                
+              </div>
+              <!-- End Progress -->
+            </div>
+
+            <!-- Body -->
+            <div style="height: 150px;">
+              <div style="display: flex;" class="align-items-center text-start mb-4">
+                <div class="col-auto" style="margin: 0px 10px;">
+                  <span class="d-block">{{val.Mdl_Id}} </span>
+                </div>
+                {% if val.Validation_Rating == "Fail" %}
+                  <div class="fullCircleRed" title="Validation Rating - Fail"></div>
+                {%elif val.Validation_Rating == "Needs Improvement" %}
+                  <div class="fullCircleYellow" title="Validation Rating - Needs Improvement"></div>
+                {%elif val.Validation_Rating == "Satisfactory" %}
+                  <div class="fullCircleGreen" title="Validation Rating - Satisfactory"></div>
+                {% endif %}
+                <!-- End Col -->
+                <div class="col-auto" style="margin: 0px 215px;">
+                <span class="edit-icon" data-bs-toggle="modal" data-bs-target="#editModal" role="button" style="cursor: pointer;">
+                  <i class="bi bi-pencil-square" style="margin: 0px 50px;"></i>
+                </span>
+              </div>
+
+              </div>  
+
+              <div class="mb-4" style="cursor: pointer;" onclick="gotoDetaile('{{val.Mdl_Id}}')">
+                <h3 class="mb-1" > {{val.Prm_Name}}</h3> 
+                {% if val.Mdl_Risk_Label == "High" %}
+                  <span style="font-size: small;" class="badge bg-soft-danger text-danger p-2">Model Risk : {{val.Mdl_Risk_Label}}</span>
+                {%elif val.Mdl_Risk_Label == "Medium" %}
+                    <span style="font-size: small;" class="badge bg-soft-warning text-warning p-2">Model Risk : {{val.Mdl_Risk_Label}}</span> 
+                {%elif val.Mdl_Risk_Label == "Low" %} 
+                    <span style="font-size: small;" class="badge bg-soft-success text-success p-2">Model Risk : {{val.Mdl_Risk_Label}}</span>
+                {% endif %}
+                <br><span>{{val.Category_Label}} - {{val.Sub_Category_Label}}</span>
+              </div>              
+<!-- 
+              <a class="stretched-link"  onclick="gotoDetaile('{{val.Mdl_Id}}')" href="#"></a> -->
+            </div>
+            <!-- End Body -->
+            <!-- Modal -->
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="changeRequestLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-fullscreen-custom">
+                <div class="modal-content">
+
+                  <!-- Header -->
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="changeRequestLabel">Edit Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+
+                  <div class="modal-body container-fluid">
+                    <div class="row">
+                      <div class="col-3 border-end">
+                        <nav id="sectionNav" class="nav flex-column">
+                          <a class="nav-link" href="#section1">1. Change Request Details</a>
+                          <a class="nav-link" href="#section2">2. Description of Change</a>
+                          <a class="nav-link" href="#section3">3. Impact & Risk</a>
+                          <a class="nav-link" href="#section4">4. Implementation & Testing</a>
+                          <a class="nav-link" href="#section5">5. Review & Approval</a>
+                          <a class="nav-link" href="#section6">6. Post-Implementation Review</a>
+                        </nav>
+                      </div>
+
+                      <div class="col-9"
+                          id="modalScroll"
+                          data-bs-spy="scroll"
+                          data-bs-target="#sectionNav"
+                          data-bs-offset="10"
+                          tabindex="0"
+                          style="position: relative; height:70vh; overflow-y:auto;">
+                        
+                          <!-- SECTION 1 -->
+                          <div id="section1" class="pt-3 pb-4">
+                            <h6 class="fw-bold">Change Request Details</h6>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Request ID</label>
+                              <input type="text" class="form-control form-control-sm" value="" readonly>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Request Date</label>
+                              <input id="req_Dt" name="req_Dt" type="datetime" 
+                                  class="js-flatpickr form-control flatpickr-custom" 
+                                  style="margin-bottom:15px;width:30%;" 
+                                  placeholder="mm/dd/yyyy"
+                                  data-hs-flatpickr-options='{
+                                    "dateFormat":"m/d/Y"
+                                  }' />
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Request Initiator</label>
+                              <input type="text" class="form-control form-control-sm" placeholder="">
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Model Name</label>
+                              <input type="text" class="form-control form-control-sm">
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Model ID/Version</label>
+                              <input type="text" class="form-control form-control-sm">
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Model Owner</label>
+                              <input type="text" class="form-control form-control-sm">
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <label class="col-sm-4 col-form-label">Date of Last Validation</label>
+                              <input id="pir_Dt" name="pir_Dt" type="datetime" 
+                                  class="js-flatpickr form-control flatpickr-custom" 
+                                  style="margin-bottom:15px;width:30%;" 
+                                  placeholder="mm/dd/yyyy"
+                                  data-hs-flatpickr-options='{
+                                    "dateFormat":"m/d/Y"
+                                  }' />
+                            </div>
+                          </div>
+
+                          <!-- SECTION 2 -->
+                          <div id="section2" class="pt-3 pb-4">
+                            <h6 class="fw-bold">Description of Change</h6>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Type of Change</label>
+                              <select class="form-select">
+                                <option disabled selected>Select type</option>
+                                <option>Modification</option>
+                                <option>Enhancement</option>
+                                <option>Correction</option>
+                                <option>Data Change</option>
+                                <option>Implementation Change</option>
+                              </select>
+                            </div>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">Detailed Description</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">Rationale for the Change</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-start">
+                              <label class="col-sm-4 col-form-label">Intended Benefits</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                          </div>
+
+                          <!-- SECTION 3 -->
+                          <div id="section3" class="pt-3 pb-4">
+                            <h6 class="fw-bold">Impact and Risk Assessment</h6>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">Impact on the Model</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Risk Level of the Change</label>
+                              <select class="form-select">
+                                <option disabled selected>Select risk level</option>
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                              </select>
+                            </div>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">Potential Risks</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-start">
+                              <label class="col-sm-4 col-form-label">Affected Systems and Processes</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                          </div>
+
+                          <!-- SECTION 4 -->
+                          <div id="section4" class="pt-3 pb-4">
+                            <h6 class="fw-bold">Implementation and Testing</h6>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">Implementation Plan Summary</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">Testing Plan</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">Back-out Plan</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-start">
+                              <label class="col-sm-4 col-form-label">Resources Required</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                          </div>
+
+                          <!-- SECTION 5 -->
+                          <div id="section5" class="pt-3 pb-4">
+                            <h6 class="fw-bold">Review and Approval</h6>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Reviewers</label>
+                              <div class="col-sm-8">
+                                <select class="js-select form-select"
+                                        autocomplete="off"
+                                        data-hs-tom-select-options='{
+                                          "placeholder": "Select reviewer(s)...",
+                                          "hideSearch": false
+                                        }'
+                                        multiple
+                                        name="ddlOwner"
+                                        id="ddlOwner">
+                                  <option value="A">A</option>
+                                  <option value="B">B</option>
+                                  <option value="C">C</option>
+                                  <option value="D">D</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Review Date</label>
+                              <input id="pir_Dt" name="pir_Dt" type="datetime" 
+                                  class="js-flatpickr form-control flatpickr-custom" 
+                                  style="margin-bottom:15px;width:30%;" 
+                                  placeholder="mm/dd/yyyy"
+                                  data-hs-flatpickr-options='{
+                                    "dateFormat":"m/d/Y"
+                                  }' />
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Decision</label>
+                              <select class="form-select">
+                                <option disabled selected>Select decision</option>
+                                <option>Approved</option>
+                                <option>Rejected</option>
+                                <option>Deferred</option>
+                              </select>
+                            </div>
+                            <div class="d-flex align-items-start">
+                              <label class="col-sm-4 col-form-label">Conditions/Comments</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                          </div>
+
+                          <!-- SECTION 6 -->
+                          <div id="section6" class="pt-3 pb-4">
+                            <h6 class="fw-bold">Post-Implementation Review</h6>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Date of Implementation</label>
+                              <input id="pir_Dt" name="pir_Dt" type="datetime" 
+                                  class="js-flatpickr form-control flatpickr-custom" 
+                                  style="margin-bottom:15px;width:30%;" 
+                                  placeholder="mm/dd/yyyy"
+                                  data-hs-flatpickr-options='{
+                                    "dateFormat":"m/d/Y"
+                                  }' />
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">PIR Date</label>
+                              <input id="pir_Dt" name="pir_Dt" type="datetime" 
+                                  class="js-flatpickr form-control flatpickr-custom" 
+                                  style="margin-bottom:15px;width:30%;" 
+                                  placeholder="mm/dd/yyyy"
+                                  data-hs-flatpickr-options='{
+                                    "dateFormat":"m/d/Y"
+                                  }' />
+                            </div>
+                            <div class="d-flex align-items-start mb-2">
+                              <label class="col-sm-4 col-form-label">PIR Findings</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                              <label class="col-sm-4 col-form-label">Validation Requirement</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <label class="col-sm-4 col-form-label">Completion Sign-off</label>
+                              <textarea class="form-control" rows="2"></textarea>
+                            </div>
+                          </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Footer -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Submit Request</button>
+                    <button type="button" onclick="pdf_request()" class="btn btn-primary">PDF</button>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- Footer -->
+            <div class="card-footer" style="padding: 5px 0px;">
+              <!-- Stats -->
+              <div class="row col-divider">
+                <div class="col">
+                  
+                  {% if val.task_cnt == "0" %}
+                  <span class="h4">{{val.task_cnt}}</span>
+                    <span  class="d-block fs-5">Pending Tasks</span>
+                  {% else %}
+                   <span style="cursor: pointer;"  onclick="showTasks('{{val.Mdl_Id}}')"  class="h4 blink text-danger">{{val.task_cnt}}</span>
+                   <span  style="cursor: pointer;"  onclick="showTasks('{{val.Mdl_Id}}')"   class="d-block fs-5 text-danger">Pending Tasks</span>
+                  {% endif %}
+                </div>
+                <!-- End Col -->
+
+                <div class="col">
+                  
+                  {% if val.issue_cnt == "0" %}
+                    <span class="h4">{{val.issue_cnt}}</span>
+                    <span class="d-block fs-5">Pending Issues</span>
+                  {% else %}
+                   <span style="cursor: pointer;"  onclick="showIssues('{{val.Mdl_Id}}')"  class="h4 blink text-danger">{{val.issue_cnt}}</span>
+                   <span  style="cursor: pointer;"  onclick="showIssues('{{val.Mdl_Id}}')"   class="d-block fs-5 text-danger">Pending Issues</span>
+                  {% endif %}
+                </div>
+                <!-- End Col -->
+<!-- 
+                <div class="col">
+                  <span class="h4">{{val.Mdl_Risk_Label}}</span>
+                  <span class="d-block fs-5">Model Risk</span>
+                </div>
+                End Col -->
+ 
+              </div>
+              <!-- End Stats -->
+            </div>
+            <!-- End Footer -->
+          </div>
+          <!-- End Card -->
+        </div>
+      {% endfor %}
+      </div>
+      <!-- End Row -->
+    </div> 
+    <div class="tab-pane fade" id="rows" role="tabpanel" aria-labelledby="rows-tab">
+       <!-- Card -->
+    <div class="card mb-3 mb-lg-5">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title"></h4>
+
+              <!-- Datatable Info -->
+              <div id="datatableCounterInfo" style="display: none;">
+                <div class="d-flex align-items-center">
+                  <span class="fs-6 me-3">
+                    <span id="datatableCounter">0</span>
+                    Selected
+                  </span>
+                  <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                    <i class="tio-delete-outlined"></i> Delete
+                  </a>
+                </div>
+              </div>
+              <!-- End Datatable Info -->
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <!-- Filter -->
+            <div class="row align-items-sm-center">
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">Model Source:</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="5" data-target-table="datatable_UA" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        <option value="Internal">Internal</option>
+                        <option value="Vendor">Vendor</option>
+                        <option value="Legacy">Legacy</option>
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">Model Risk</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="7" data-target-table="datatable_UA" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              <div class="col-md">
+                <form>
+                  <!-- Search -->
+                  <div class="input-group input-group-merge input-group-flush">
+                    <div class="input-group-prepend input-group-text">
+                      <i class="bi-search"></i>
+                    </div>
+                    <input id="datatableSearch" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                  </div>
+                  <!-- End Search -->
+                </form>
+              </div>
+              <!-- End Col -->
+              <!-- {% if canAdd == "1"%}
+              <div class="col-sm-auto">
+                <a class="btn btn-primary" href="{{getCriteria}}">
+                  <i class="bi-plus-lg me-1"></i> Add New
+                </a>
+              </div>
+              {% endif %} -->
+            </div>
+            <!-- End Filter -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable_UA" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                 "columnDefs": [{
+                    "targets": [0],
+                    "orderable": false
+                  }],
+                 "order": [],
+                 "info": {
+                   "totalQty": "#datatableWithPaginationInfoTotalQty"
+                 },
+                 "search": "#datatableSearch",
+                 "entries": "#datatableEntries",
+                 "pageLength": 10,
+                 "isResponsive": false,
+                 "isShowPaging": false,
+                 "pagination": "datatablePagination"
+               }'>
+          <thead class="thead-light">
+            <tr>
+              <th width="25px" style="width: 25px !important;"></th>
+              <th>Model ID</th>              
+              <th>Primary Model Name</th>
+              <th>Category</th>
+              <th>Sub Category</th>
+              <th>Model Source</th>
+              <th>Model Type</th>
+              <th>Model Risk</th>
+             
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for key, val in modelinfo.items  %}             
+            <tr>     
+              <td  style="width: 25px !important;">
+                {% if val.Validation_Rating == "Fail" %}
+                  <div class="fullCircleRed" title="Validation Rating - Fail"></div>
+                {%elif val.Validation_Rating == "Needs Improvement" %}
+                  <div class="fullCircleYellow" title="Validation Rating - Needs Improvement"></div>
+                {%elif val.Validation_Rating == "Satisfactory" %}
+                  <div class="fullCircleGreen" title="Validation Rating - Satisfactory"></div>
+                {% endif %}
+              </tdd>          
+              <td>  
+                           
+                <a class="text-decoration-none fw-bold fs-0"  href="#"  onclick="gotoDetaile('{{val.Mdl_Id}}')" >{{val.Mdl_Id}} </a>
+                
+              </td>
+              <td>
+                {{val.Prm_Name}}
+              </td>
+              <td>
+                {{val.Category_Label}}
+              </td>
+              <td>
+                {{val.Sub_Category_Label}}
+              </td>
+              <td>
+                {{val.Mdl_Src_Label}}
+              </td>
+              <td>
+                {{val.Mdl_Type_Label}}
+              </td>
+              <td>
+                {%if val.Mdl_Risk_Label == "High" %}
+                    <h5><span class="badge bg-soft-danger  text-danger">High</span></h5>
+                {%elif val.Mdl_Risk_Label == "Medium" %}
+                    <h5><span class="badge bg-soft-warning  text-warning">Medium</span></h5>
+                {%elif val.Mdl_Risk_Label == "Low" %}
+                    <h5><span class="badge bg-soft-success text-success">Low</span></h5>
+                {% endif %}
+              </td> 
+            </tr>
+          {% endfor %}    
+          </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <!-- Pagination -->
+        <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="me-2">Showing:</span>
+
+              <!-- Select -->
+              <div class="tom-select-custom">
+                <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                          "searchInDropdown": false,
+                          "hideSearch": true
+                        }'>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50" >50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <!-- End Select -->
+
+              <span class="text-secondary me-2">of</span>
+
+              <!-- Pagination Quantity -->
+              <span id="datatableWithPaginationInfoTotalQty"></span>
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-auto">
+            <div class="d-flex justify-content-center justify-content-sm-end">
+              <!-- Pagination -->
+              <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Footer -->
+    </div>
+    <!-- End Card -->
+      <!-- End Row -->
+    </div>
+  </div>
+  <!-- End Tab Content -->
+  </div>
+                        {% endblock content %}
+{% block script%}
+
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>   
+<script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+
+
+<script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<!-- <script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>  -->
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+<!-- <script src="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.js' %}"></script> -->
+<script> 
+  const editModal = document.getElementById('editModal');
+  editModal.addEventListener('shown.bs.modal', () => {
+    const scrollEl = document.querySelector('#modalScroll');
+    bootstrap.ScrollSpy.getOrCreateInstance(scrollEl).refresh();
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const reviewerSelect = document.getElementById("ddlOwner");
+    if (reviewerSelect) {
+      new TomSelect(reviewerSelect, {
+        plugins: ['checkbox_options'],
+        placeholder: "Select reviewer(s)...",
+        hideSelected: true,
+        closeAfterSelect: false
+      });
+    }
+  });
+function showTasks(mdlid){
+    document.location.href = "{% url 'getTasks' %}?mdl_id=" +mdlid +'';
+
+  }
+
+  function showIssues(mdlid){
+    document.location.href = "{% url 'getIssues' %}?mdl_id=" +mdlid +'';
+
+  }
+  // INITIALIZATION OF DATATABLES
+  // =======================================================
+  HSCore.components.HSDatatables.init($('#datatable_UA'), {
+    select: {
+      style: 'multi',
+      selector: 'td:first-child input[type="checkbox"]',
+      classMap: {
+        checkAll: '#datatableCheckAll',
+        counter: '#datatableCounter',
+        counterInfo: '#datatableCounterInfo'
+      }
+    },
+    language: {
+      zeroRecords: `<div class="text-center p-4">
+            <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+            <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+          <p class="mb-0">No data to show</p>
+          </div>`
+    }
+  });
+
+  const datatable = HSCore.components.HSDatatables.getItem(0)
+
+  document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+    item.addEventListener('change',function(e) {
+      const elVal = e.target.value,
+  targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+  targetTable = e.target.getAttribute('data-target-table');
+
+  HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+    })
+  })
+
+  function pdf_request(){ 
+      $.ajax({
+          url: '/pdf_request/', 
+          dataType: 'json',
+          success: function (data) {
+              console.log(data)
+              if (data.is_taken) {
+              //alert("Updated Successfully.");
+              window.location='{{home}}'
+              }
+          }
+      }); 
+     }
+</script>
+<script  type='text/javascript' > 
+  function gotoDetaile(id){ 
+  document.location.href = "/modelval/modelDetails?mdlId=" +id;
+
+  
+  }
+</script>
+
+{% endblock script %}

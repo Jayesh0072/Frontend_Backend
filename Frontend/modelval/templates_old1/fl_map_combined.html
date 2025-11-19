@@ -1,0 +1,427 @@
+ 
+
+{% extends 'base_dashbFL.html' %} 
+ 
+{% load static %} 
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'map/dist/leaflet.css' %}"> 
+<link rel="stylesheet" href="{% static 'map/walid.css' %}"> 
+<link rel="stylesheet" href="{% static 'map/src/Icon.Label.css' %}">
+<style>
+  
+</style> 
+
+{% endblock style %} 
+{% block script %} 
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBp5L42mktkpiyBVnEINjXJ2HYJ84KmjLI&loading=async&libraries=maps&callback=initMap"></script>
+<script>
+  
+  //var greenIcon = new LeafIcon({ iconUrl: '/static/Front/dist/assets/svg/svgs/map-pin.svg' });
+  //var greenIcon1 = new LeafIcon({ iconUrl: '/static/Front/dist/assets/svg/svgs/map-pin.svg' });
+  //var greenIcon2 = new LeafIcon({ iconUrl: '/static/map/Marker/leaf-shadow.png' });
+
+  let map;
+  var markers = [];
+  var markersB = [];
+  var markersPB = [];
+  var SelectedFilterVal='';
+
+  /*var USA_States;
+  var USA_PA;
+  var USA_IN;*/
+
+  /*var kmlLayerURL_USA = 'https://www.prescio.com/USA/us-states.kml';
+  var kmlLayerURL_PA = 'https://www.prescio.com/USA/PA.kml';
+  var kmlLayerURL_IN = 'https://www.prescio.com/USA/IN.kml';
+  var kmlOptions = {
+    preserveViewport: 1
+  };
+  kmlLayer01 = new google.maps.KmlLayer(kmlLayer01URL, kmlOptions);*/
+  //var bounds = new google.maps.LatLngBounds(); 
+
+	async function initMap() {
+		const { Map } = await google.maps.importLibrary("maps");
+		map = new Map(document.getElementById("map"), {
+			center: { lat: 38.7182996, lng: -99.8049274 },
+			zoom: 4,
+      streetViewControl: false,
+      mapTypeControl: false,
+      mapTypeId: google.maps.MapTypeId.roadmap
+		}); 
+    
+    /*USA_States = new google.maps.KmlLayer({
+      url: 'https://www.prescio.com/USA/us-states.kml', 
+      map: map
+    });*/ 
+    const USA_1 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/AL_AR_AZ_CA.kml', map: map });
+    const USA_2 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/CO_CT_DE_FL.kml', map: map });
+    const USA_3 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/GA_IA_ID_IL.kml', map: map });
+    const USA_4 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/IN_KS_KY_LA.kml', map: map });
+    const USA_5 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MA_MD_ME_MI_MN.kml', map: map });
+    const USA_6 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MO_MS_MT_NC_ND.kml', map: map });
+    const USA_7 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NE_NH_NJ_NM_NV.kml', map: map });
+    const USA_8 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NY_OH_OK_OR_PA.kml', map: map });
+    const USA_9 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/RI_SC_SD_TN_TX.kml', map: map });
+    const USA_10 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/UT_VA_VT_WI_WV_WY.kml', map: map });
+
+    const USA_11 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MI.kml', map: map });
+    const USA_12 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NC.kml', map: map });
+    
+    //const USA_AL = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/AL.kml', map: map });
+    //const USA_AR = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/AR.kml', map: map });
+    //const USA_AZ = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/AZ.kml', map: map });
+    /*
+    const USA_CA = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/CA.kml', map: map });
+    const USA_CO = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/CO.kml', map: map });
+    const USA_CT = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/CT.kml', map: map });
+    const USA_DE = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/DE.kml', map: map });
+    const USA_FL = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/FL.kml', map: map });
+    const USA_GA = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/GA.kml', map: map });
+    const USA_IA = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/IA.kml', map: map });
+    const USA_ID = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/ID.kml', map: map });
+    const USA_IL = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/IL.kml', map: map });
+    const USA_KS = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/KS.kml', map: map });
+    const USA_KY = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/KY.kml', map: map });
+    const USA_LA = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/LA.kml', map: map });
+    const USA_MA = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MA.kml', map: map });
+    const USA_MD = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MD.kml', map: map });
+    const USA_ME = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/ME.kml', map: map });
+    const USA_MI = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MI.kml', map: map });
+    const USA_MN = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MN.kml', map: map });
+    const USA_MO = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MO.kml', map: map });
+    const USA_MS = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MS.kml', map: map });
+    const USA_MT = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MT.kml', map: map });
+    const USA_NC = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NC.kml', map: map });
+    const USA_ND = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/ND.kml', map: map });
+    const USA_NE = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NE.kml', map: map });
+    const USA_NH = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NH.kml', map: map }); 
+    */
+
+    /*const USA_NJ = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NJ.kml', map: map });
+    const USA_NM = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NM.kml', map: map });
+    const USA_NV = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NV.kml', map: map });
+    const USA_NY = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NY.kml', map: map });
+    const USA_OH = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/OH.kml', map: map });
+    const USA_OK = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/OK.kml', map: map });
+    const USA_OR = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/OR.kml', map: map });
+    const USA_PA = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/PA.kml', map: map });
+    const USA_RI = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/RI.kml', map: map });
+    const USA_SC = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/SC.kml', map: map });
+    const USA_SD = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/SD.kml', map: map });
+    const USA_TN = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/TN.kml', map: map });
+    const USA_TX = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/TX.kml', map: map });
+    const USA_UT = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/UT.kml', map: map });
+    const USA_VA = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/VA.kml', map: map });
+    const USA_VT = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/VT.kml', map: map });
+    const USA_WI = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/WI.kml', map: map });
+    const USA_WV = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/WV.kml', map: map });
+    const USA_WY = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/WY.kml', map: map });*/
+    
+    //static/Front/dist/assets/svg/svgs/kml/cta.kml"
+    /*const ctaLayer = new google.maps.KmlLayer({
+      url: "/static/Front/dist/assets/svg/svgs/map-kml/us-states.kml",
+      //url: "https://googlearchive.github.io/js-v2-samples/ggeoxml/cta.kml",
+      map: map,
+    }); */
+    StateMarkers('');	   
+	}
+
+  initMap();
+
+function StateMarkers(filterCol){
+  SelectedFilterVal=filterCol;
+  clearMarkers('');
+  //Bank Icons
+  var icon_bank_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/purple.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_bank_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  
+  //Type median income type 2
+  var icon_medinc1 = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-1/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_medinc2 = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-1/maroon.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_medinc3 = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-1/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_medinc4 = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-1/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_medinc5 = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-1/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  
+  $.ajax({
+    url: '/modelval/get_CountyMedianIncome/', 
+    data:{ 'activity_year':'2023','peer':'y','filter_col':filterCol},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data State ', data.StateLatLong)
+      $.each(data.CountyLatLong, function(i, obj) {             
+        
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);        
+        
+        if(obj.incomegrp=="level1") iconName=icon_medinc1;
+        else if(obj.incomegrp=="level2") iconName=icon_medinc2;
+        else if(obj.incomegrp=="level3") iconName=icon_medinc3;
+        else if(obj.incomegrp=="level4") iconName=icon_medinc4;
+        else if(obj.incomegrp=="level5") iconName=icon_medinc5;
+       
+        markers[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: iconName,
+            html:obj.CountyName+' : '+obj.incomegrp,
+            animation : google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'state');    
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });         
+          //countyMarkers(obj.state);         
+          infowindow.open(map);
+        }); 
+      }); 
+
+      console.log('Bank Address State ',data.BankBranches)
+      $.each(data.BankBranches, function(i, objB) {   
+        var myLatLngB = new google.maps.LatLng(objB.PB_Lat, objB.PB_Long);
+        markersB[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank_purple,
+            html:objB.PB_Bank+' : '+objB.PB_Branch+' : '+objB.PB_Address+' : '+objB.PB_City+' : '+objB.PB_state+' : '+objB.PB_Zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');        
+        google.maps.event.addListener(markersB[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });    
+      }); 
+
+      console.log('Peer Bank Address State ',data.PeerBankBranches)
+      $.each(data.PeerBankBranches, function(i, objP) {        ;
+        var myLatLngB = new google.maps.LatLng(objP.PB_Lat, objP.PB_Long);
+        markersPB[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank_gray,
+            html:objP.PB_Bank+' : '+objP.PB_Branch+' : '+objP.PB_Address+' : '+objP.PB_City+' : '+objP.PB_state+' : '+objP.PB_Zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markersPB[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); 
+    }
+  });
+  //ScalePanMap('state'); 
+}
+
+function getIconName(filter_col,filterval){
+  var icon="icon_1";
+  if(filter_col=="derived_ethnicity"){
+    //Not Hispanic or Latino,Free Form Text Only,Hispanic or Latino,Joint,Ethnicity Not Available
+    if(filterval=="Not Hispanic or Latino") iconName=icon_1;
+    else if(filterval=="Free Form Text Only") iconName=icon_2;
+    else if(filterval=="Hispanic or Latino") iconName=icon_3;
+    else if(filterval=="Joint") iconName=icon_4;
+    else if(filterval=="Ethnicity Not Available") iconName=icon_5;
+  }
+  else if(filter_col=="derived_race"){
+
+  }
+  else if(filter_col=="derived_sex"){
+
+  }
+  else if(filter_col=="applicant_age "){
+
+  }
+  else if(filter_col=="tract_to_msa_income_percentage"){
+
+  }  
+  return iconName;
+}
+
+
+function clearMarkers(category='') {
+  //alert(len(category));
+  for(var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  for(var j = 0; j < markersB.length; j++) {
+    markersB[j].setMap(null);
+  }
+  for(var k = 0; k < markersPB.length; k++) {
+    markersPB[k].setMap(null);
+  }
+  /*for(var i = 0; i < markers.length; i++) {
+    if(category.length==0){
+      markers[i].setMap(null);
+    }
+    else{
+      if (markers[i].get('category') == category) {
+        markers[i].setMap(null);
+      }
+    }
+  }*/
+}
+
+function ScalePanMap(category){
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < markers.length; i++) {
+    if(markers[i].get('category') == category){
+      bounds.extend(markers[i]);
+    }
+  }
+  //map.fitBounds(bounds);
+  //map.panToBounds(bounds); 
+}
+
+function ShowHideLegend(){   
+    $("#LegendModal").modal('toggle')
+} 
+
+
+</script> 
+
+{% endblock script %}
+
+{% block content %}
+<div class="content" style="padding-top:0px;">   
+  <!-- Page Header -->
+  <div class="row">
+    <div class="col-sm-6">  
+      <!--<input type="radio" id="chk_def" onchange="StateMarkers('')" checked="checked" name="rb_Filter" /> Loans  
+      <input type="radio" id="chk_eth" onchange="StateMarkers('derived_ethnicity')" name="rb_Filter" style="margin-left: 10px;;"/> Ethnicity   
+      <input type="radio" id="chk_rac" onchange="StateMarkers('derived_race')" name="rb_Filter" style="margin-left: 10px;;"/> Race 
+      <input type="radio" id="chk_gen" onchange="StateMarkers('derived_sex')" name="rb_Filter" style="margin-left: 10px;;"/> Gender 
+      <input type="radio" id="chk_age" onchange="StateMarkers('applicant_age')" name="rb_Filter" style="margin-left: 10px;;"/> Applicant Age 
+      <input type="radio" id="chk_inc" onchange="StateMarkers('tract_to_msa_income_percentage')" name="rb_Filter" style="margin-left: 10px;"/> Income-Group -->
+    </div>
+    <div class="col-sm-6">  
+      <input type="button" style="float: right;" class="btn btn-primary" id="btn-reset" value="Show Legend" onclick="ShowHideLegend()"/>
+    </div>
+  </div> 
+
+  <div class="row">
+    <div class="col-sm-12" >             
+      <div id="map" style="width: 100%; height: 600px; border:solid 1px #c3c3c3"></div>
+                 
+    </div>  
+  </div>  
+
+    <div class="modal fade" id="LegendModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="LegendModalLabel">Map Pointers Legend</h5>            
+          </div>
+          <div class="modal-body">
+            <div class="row" style="margin-top:2px;">
+              <div class="col-sm-12" style="margin-top:12px;">  
+                <h4>Banks</h4>
+              </div>
+            </div>
+            <div class="row" style="margin-top:2px;">
+              <div class="col-sm-4" style="margin-top:12px;">  
+                <label>Our Bank Branches</label>
+              </div>
+              <div class="col-sm-1">  
+                <img src="/static/Front/dist/assets/svg/svgs/type-1/purple.svg" alt="Our Bank" />
+              </div>
+              <div class="col-sm-4" style="margin-top:12px;">  
+                <label>Peer Bank Branches</label>
+              </div>
+              <div class="col-sm-1">  
+                <img src="/static/Front/dist/assets/svg/svgs/type-1/gray.svg" alt="Bank Branches" />
+              </div>
+            </div>                       
+            <div class="row" style="margin-top:2px;">
+              <div class="col-sm-12" style="margin-top:12px;">  
+                <h4>Median Income County</h4>
+              </div>
+            </div>
+            <div class="row" style="margin-top:2px;">
+              <div class="col-sm-4" style="margin-top:12px;">  
+                <label>Less than 50,000</label>
+              </div>
+              <div class="col-sm-1"> 
+                <img src="/static/Front/dist/assets/svg/svgs/bank-1/red.svg" alt="Not Hispanic or Latino" />
+              </div>
+              <div class="col-sm-4" style="margin-top:12px;">  
+                <label>50,000 - 80,000</label>
+              </div>
+              <div class="col-sm-1">  
+                <img src="/static/Front/dist/assets/svg/svgs/bank-1/maroon.svg" alt="Free Form Text Only" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:2px;">
+              <div class="col-sm-4" style="margin-top:12px;">  
+                <label>80,001 - 110,000</label>
+              </div>
+              <div class="col-sm-1">  
+                <img src="/static/Front/dist/assets/svg/svgs/bank-1/orange.svg" alt="Hispanic or Latino" />
+              </div>
+              <div class="col-sm-4" style="margin-top:12px;">  
+                <label>110,000 - 140,000</label>
+              </div>
+              <div class="col-sm-1">  
+                <img src="/static/Front/dist/assets/svg/svgs/bank-1/yellow.svg" alt="Joint" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:2px;">
+              <div class="col-sm-4" style="margin-top:12px;">  
+                <label>More than 140,000</label>
+              </div>
+              <div class="col-sm-1">  
+                <img src="/static/Front/dist/assets/svg/svgs/bank-1/green.svg" alt="Race Not Available" />
+              </div>
+              <div class="col-sm-7">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" onclick="ShowHideLegend()">Close</button>           
+          </div>
+        </div>
+      </div>
+    </div>
+
+     
+</div>
+  
+
+{% endblock content %}

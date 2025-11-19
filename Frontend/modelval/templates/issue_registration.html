@@ -1,0 +1,535 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    #mytextarea {
+  height: 00px;
+  /*edit this*/
+}
+    
+.form-control.flatpickr-custom {
+    width: 30% !important;
+}
+</style>  
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/quill/dist/quill.snow.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css' %}">
+
+
+
+<div class="modal fade" id="divTune" tabindex="-1" aria-labelledby="divTune" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+      <div class="modal-content">
+        <!-- <div class="modal-header">
+          <h5 class="modal-title" id="scrollingLongModalLabel2">Set Tune Parameters </h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+        </div> -->
+        <div class="modal-body p-5 px-md-6">  
+    
+                <div class="col-lg-12"> 
+                   
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label" for="ddlIntrRisk">Model ID</label>
+                        <div class="col-sm-5">    
+                            <select name="model_id" id="model_id" class="form-control">
+                                {% for i in mdl_overview_obj %}
+                                <option class="dropdown-item" value="{{i.mdl_id}}">{{i.mdl_id}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>  
+  
+                    </div> 
+             
+        </div>
+        <div class="modal-footer">
+            <div class="col-auto" style="display: flex; justify-content: flex-end;"> 
+                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="generate_issueID()" >Select</button>
+                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="closeModel()" >Cancel</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<div>
+    <form action="{% url 'issue_registrartion' %}" onsubmit="myFunction()" id="target" method="post" enctype="multipart/form-data" class="form-horizontal"
+    >
+    {% csrf_token %}
+
+    <div class="content" data-bs-target="#v-pills"  data-bs-spy="scroll" style="padding-top:0px;">
+        <div class="mt-4">
+          <div class="row g-4">
+            <div class="col-12 col-xl-12 order-1 order-xl-0">
+              <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+                
+                <div class="card-body p-0">
+                  
+                  <div class="p-4 code-to-copy">
+                    <div class="row">
+                      <div class="col-sm-auto">
+                        <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                          <div class="nav flex-column nav-pills" id="v-pills">
+                            <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Issue Overview</a>
+                            <a class="nav-link ps-0 ps-sm-3" href="#v-pills-design">Relevant Personnel</a>
+                            <a class="nav-link ps-0 ps-sm-3" href="#v-pills-attributes">Relevant Dependencies</a>
+                            <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedmodels">Issue Summary</a>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm">
+                        <div style="border: 1px solid lightgrey;padding: 10px;border-radius: 0.5rem;">
+                          <h4 id="v-pills-home">Overview</h4>
+                          <div class="row">
+                            <div class="col-xl-12">
+                                <div class="row g-3 mb-6" style="margin-top:5px">
+                                    <div class="row mb-3">
+          
+                                      <label class="col-sm-4 col-form-label"></label>
+              
+                                      <!-- <div class="col-sm-2">
+              
+                                          <div class="form-check">
+              
+                                          <input class="form-check-input" id="rbnew" type="radio" name="rbisnewupdate" value="1" checked="">
+              
+                                          <label class="form-check-label" for="rbactive">New</label>
+                                          </div>  
+                                      </div>
+                                      <div class="col-sm-1"> 
+                                          <div class="form-check">
+              
+                                          <input class="form-check-input" id="rbupdate" type="radio" name="rbisnewupdate" value="0"  href="#" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal">
+                                          
+                                          <label class="form-check-label" for="rbupdate">Update</label>
+                                          </div> 
+                                      </div> -->
+                                  </div>
+                                <div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Department <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="coldata-12 col-md-8">
+                                            <input readonly type="text" id="txtModelNm" name="department"
+                                                class="form-control-sm form-control" value="{{department_obj.dept_label}}"
+                                                style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Originator <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <input readonly type="text" id="txtModelVersion" name="originator"
+                                                class="form-control-sm form-control" value="{{originator_name}}"
+                                                style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Issue Function <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                        <select required name="issue_function" id="issue_function" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                            {% for i in issue_function_obj %}
+                                            <option class="dropdown-item" value="{{i.issue_function_aid}}">{{i.issue_function_label}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Registration Date
+                                            <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <input required type="datetime" name="issue_registration_date" id="datepicker" class="js-flatpickr form-control flatpickr-custom" style="margin-bottom:15px;" placeholder="mm/dd/yyyy"
+                                            data-hs-flatpickr-options='{
+                                            "dateFormat":"m/d/Y"
+                                            }'>
+                        
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Issue Type <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+    
+                                            <select name="task_type" id="task_type" onchange="issue_type()"  style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                                <option selected>Select Issue Type</option>
+                                                <option class="dropdown-item"  value="Model">Model</option>
+                                                <option class="dropdown-item" value="Events">Events</option>
+                                                <option class="dropdown-item" value="Others">Others</option>
+                                            </select>
+                                        </div>
+                                    </div> -->
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Issue Type
+                                             <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+    
+                                            <select required name="issue_type" id="issue_type" onchange="issue_type_function()" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                                <option value="">Select</option>
+                                                {% for i in issue_type_obj %}
+                                                <option class="dropdown-item" value="{{i.issue_type_aid}}">{{i.issue_type_label}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Sub Issue Type <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <select required name="sub_issue_type" id="sub_issue_type" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                                
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Issue Id <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="coldata-12 col-md-8">
+                                            <input type="text" id="issue_id" name="issue_id"
+                                                class="form-control-sm form-control" value=""
+                                                style="font-size: 12pt;margin-bottom:15px"
+                                                readonly/>
+                                            <input type="hidden" id="link_id" name="link_id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Priority <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <select required name="issue_priority" id="issue_priority" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                            
+                                                {% for i in issue_priority_obj %}
+                                                <option class="dropdown-item" value="{{i.issue_priority_aid}}">{{i.issue_priority_label}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            End Date
+                                            <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <input required type="datetime" name="issue_end_date" id="datepicker" class="js-flatpickr form-control flatpickr-custom" style="margin-bottom:15px;" placeholder="mm/dd/yyyy"
+                                            data-hs-flatpickr-options='{
+                                            "dateFormat":"m/d/Y"
+                                            }'>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group" style="display: none;">
+                                        <div class="col col-md-4">
+                                            Completion Status <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="coldata-12 col-md-8">
+                                            <input type="number" id="txtModelNm" name="issue_completion_status"
+                                                class="form-control-sm form-control" value=""
+                                                style="padding: 1px 5px;resize: none; width: 40%;font-size: 12pt;margin-bottom:15px"
+                                                 />
+                                        </div>
+                                    </div>
+                                    <div class="row form-group" style="display: none;">
+                                        <div class="col col-md-4">
+                                            Approval Status<span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <select name="issue_approval_status" id="issue_approval_status" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                                <!-- <option value="Pending">Pending</option> -->
+                                                {% for i in issue_approval_master %}
+                                                <option class="dropdown-item" value="{{i.issue_approvalstatus_aid}}">{{i.issue_approvalstatus_label}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                            </div>
+                        </div>
+                        <div style="border: 1px solid lightgrey;padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                          <h4 id="v-pills-design" style="margin-bottom: 15px;">Relevant Personnel</h4>
+                          <div class="row">
+                            <div class="col-xl-12">
+                                <div class="row form-group">
+                                    <input type="hidden" id="issue_relevant_personnel_check" name="issue_relevant_personnel_check" value="True">
+                                    <div class="col col-md-4">
+                                        Originator <span style="color: red;">*</span>
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <input readonly type="text" id="txtModelVersion" name="issue_originator_relevant"
+                                            class="form-control-sm form-control" value="{{originator_name}}"
+                                            style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                            />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-4">
+                                        Assigned to <span style="color: red;">*</span>
+                                    </div>
+                                    <div class="tom-select-custom tom-select-custom-with-tags col-12 col-md-8" style="margin-bottom: 2%;">
+                                        <select required class="js-select form-select" autocomplete="off" multiple name="issue_assigned_to" id="issue_assigned_to"
+                                                data-hs-tom-select-options='{
+                                                "placeholder": " Assigned to"
+                                                }'>
+                                                {% for i in users_obj %}
+                                                <option class="dropdown-item" value="{{i.u_aid}}">{{i.u_fname |add:' '| add:i.u_lname}}</option>
+                                                {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-4">
+                                        Approved by <span style="color: red;">*</span>
+                                    </div>
+                                    <div class="tom-select-custom tom-select-custom-with-tags col-12 col-md-8" style="margin-bottom: 2%;">
+                                        <select required class="js-select form-select" autocomplete="off" multiple name="issue_approved_by" id="issue_approved_by"
+                                                data-hs-tom-select-options='{
+                                                "placeholder": " Approved by"
+                                                }'>
+                                                {% for i in users_obj %}
+                                                <option class="dropdown-item" value="{{i.u_aid}}">{{i.u_fname |add:' '| add:i.u_lname}}</option>
+                                                {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div style="border: 1px solid lightgrey;padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                          <h4 id="v-pills-attributes" style="margin-bottom: 15px;">Relevant Dependencies</h4>
+                          <div class="row">
+                            <div class="col-xl-12">
+                                <div class="row form-group">
+                                    <div class="col col-md-4">
+                                        Historical Dependency 
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <input type="text" id="txtModelVersion" name="historical_dependency"
+                                            class="form-control-sm form-control" value=""
+                                            style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                            />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-4">
+                                        Current Dependency  
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <input type="text" id="txtModelVersion" name="current_dependency"
+                                            class="form-control-sm form-control" value=""
+                                            style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                            />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-4">
+                                        Sub-Issue Dependency 
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <input type="text" id="txtModelVersion" name="sub_task_dependency"
+                                            class="form-control-sm form-control" value=""
+                                            style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                            />
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div> 
+                        <div style="border: 1px solid lightgrey;padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                          <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Issue Summary</h4>
+                          <div class="row">
+                            <div class="col-xl-12">
+                                <div class="row form-group">
+                                    <input type="hidden" id="issue_summery_check" name="issue_summery_check" value="True">
+                                    <div class="col col-md-4">
+                                        Issue Summary  
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <div class="quill-custom">
+                                            <div style="min-height: 15rem;margin-bottom: 20px;max-height: 150px;" id="editor_summ"></div>
+                                            <input type="hidden" name="issue_summery_comments" id="issue_summery_comments">
+                                            
+                                          </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-4">
+                                        Issue Requirements  
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <div class="quill-custom">
+                                            <div style="min-height: 15rem;margin-bottom: 20px;max-height: 150px;" id="editor_req"></div>
+                                            <input type="hidden" name="issue_requirements_comments" id="issue_requirements_comments">
+                                            
+                                          </div>
+                                    </div>
+                                </div>  
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-12 gy-6" style="margin-top: 15px;">
+                          <div class="row g-3 justify-content-end">
+                            <div class="col-auto">
+                              <button class="btn btn-phoenix-primary px-5" type="button">Cancel</button>
+                            </div>
+                            <div class="col-auto">
+                              <button class="btn btn-primary px-5 px-sm-15" type="submit">Add Issue</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                  </div>
+              </div>
+            </div> 
+          </div>
+        </div> 
+      </div>
+      
+        </div>
+</form>
+</div>
+{% endblock content %}
+{% block script%}
+
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+ 
+<script src="{% static 'Front/dist/assets/vendor/quill/dist/quill.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+
+<script>
+    var toolbarOptions=[
+            ["bold", "italic", "underline", "strike", "link", "blockquote", "code", {"list": "bullet"}]
+          ]
+
+    var quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_assignee = new Quill('#editor_assignee', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_req = new Quill('#editor_req', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_summ = new Quill('#editor_summ', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+</script>
+
+<script>
+    $(function(){ 
+        HSCore.components.HSTomSelect.init('.js-select');
+          
+        if('{{issue_id}}' !=''){
+         alert('Issue registered with Id {{issue_id}}.')
+        }
+    }
+    );
+    function generate_issueID(){
+        $.ajax({ 
+        type:'GET',
+        url: "{% url 'generate_issueID' %}",
+        data:{'model_id':$('#model_id').val(),'issue_type':$('#issue_type').val(),'issue_Lbl':$('#issue_type option:selected').text()},
+        dataType: 'json',
+        success: function (data) {  
+          console.log('data',data)  
+          console.log('data',typeof(data))   
+          document.getElementById("issue_id").value=data.issue_id
+          document.getElementById("link_id").value=data.model_id
+          $("#divTune").modal("hide");
+        }
+        });
+    }
+    function closeModel(){
+        $("#divTune").modal("hide");
+    }
+    function myFunction(){ 
+    var editorContentInput_req = document.getElementById('issue_requirements_comments');        //req comments
+    var editorContentInput_summ = document.getElementById('issue_summery_comments');        //summery comments
+ 
+    // console.log("data",editorContentInput_approver)
+ 
+        //req comments
+        var content_req = quill_req.root.innerHTML;
+        editorContentInput_req.value = content_req;
+
+        //summery comments
+        var content_sum = quill_summ.root.innerHTML;
+        editorContentInput_summ.value = content_sum;
+ 
+    }
+
+    function issue_type_function()
+    {  
+        console.log("issue_type_function")
+        console.log($('#issue_type option:selected').text())
+      $.ajax({ 
+        type:'GET',
+        url: "{% url 'get_sub_issue_type' %}",
+        data:{'issue_type':$('#issue_type').val()},
+        dataType: 'json',
+        success: function (data) {  
+          console.log('data',data)  
+          console.log('data',typeof(data))
+
+          previous_data=$('#sub_issue_type option').text()
+          console.log("previous_data",previous_data)  
+          if (previous_data){
+            console.log("if")
+            $("#sub_issue_type option").remove();   //$('#id option').remove();
+          }
+          for (const [key, value] of Object.entries(data)) {
+            console.log('Data',`${key}`, `${value}`);
+            var option = $('<option />');
+            option.attr('value',`${key}`).text(`${value}`);
+
+            $('#sub_issue_type').append(option);
+           
+            }
+
+            if ($('#issue_type option:selected').text() == "Model"){
+                
+                $("#divTune").modal("toggle");
+            }
+            else{
+                generate_issueID();
+            }
+
+             
+        }
+        });
+    
+      
+    }
+    
+</script>
+{% endblock script %}

@@ -1,0 +1,4 @@
+paramName,paramValue
+criterion, ['entropy']
+min_samples_leaf," list(np.arange(0.1, 0.5))"
+bootstrap,"[True, False]"

@@ -1,0 +1,451 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block content %} 
+
+<div class="content" style="padding-top:0px;width:80%;margin-left: 10%">
+  {% csrf_token %}     
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Update Production Output</h4>
+              {{file}}
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                
+                <ul class="nav nav-underline" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true">Model</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab-profile" role="tab" aria-controls="tab-profile" aria-selected="false" tabindex="-1">Data</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#tab-contact" role="tab" aria-controls="tab-contact" aria-selected="false" tabindex="-1">Business</a></li>
+                  </ul>
+                  <div class="tab-content mt-3" id="myTabContent">
+                    <!--Model-->
+                    <div class="tab-pane fade show active" id="tab-home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label" for="ddlFunction">Model </label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlmodel" id="ddlmodel" onchange="ExcelDataDwnld()"  >
+                                <option value="">Select Model</option>
+                                {% for val in data.data  %}
+                                  
+                                  <option value="{{val}}">{{val}}</option> 
+                                    
+                                {% endfor %} 
+                              </select>
+                              
+                            </div>
+                       
+                             
+                            <div class="col-sm-3"> 
+                              <a style="margin-right: 5px;" id="filepath" href="" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i>Download Template </a>   
+                              <!-- <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="ExcelDataDwnld()" value="Download Template" /> -->
+                            </div>
+                        </div> 
+                        <div class="row mb-3">
+                          <label class="col-sm-3 col-form-label" for="ddlFunction">Production Output </label>
+                          <div class="col-sm-4">    
+                           <input type="file" id="fileprdxn" name="fileprdxn"/>
+                          </div>
+                     
+                           
+                          <div class="col-sm-4">    
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="gotoupload()" value="Upload Data" />
+                          </div>
+                      </div> 
+                       
+                       
+                        
+                        <div class="col-12 gy-6">
+                            <div class="row g-3 justify-content-end">
+                              <div class="col-auto"> 
+                                <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                              </div>
+                          
+                             
+                            </div>
+                        </div>
+                    </div>
+                    <!--#### Data #####-->
+                    <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
+                      <div class="container">
+                        <form method="post" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            <div class="row mb-3">
+                              <label class="col-sm-3 col-form-label" for="ddlFunction">Model </label>
+                              <div class="col-sm-4">    
+                                <select class="form-select" name="ddlmodel" id="ddlmodeldata"  >
+                                  <option value="">Select Model</option>
+                                  {% for val in data.data  %}
+                                    
+                                    <option value="{{val}}">{{val}}</option> 
+                                      
+                                  {% endfor %} 
+                                </select>
+                                
+                              </div>
+                         
+                               
+                              <div class="col-sm-3"> 
+                                <a style="margin-right: 5px;" id="filepath" href="" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i>Download Template </a>   
+                                <!-- <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="ExcelDataDwnld()" value="Download Template" /> -->
+                              </div>
+                          </div> 
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <input type="file" name="myfile" id="myfiledata" required>            </div>
+                                <div class="col-lg-1">
+                                    <button class="btn btn-primary btn-sm" onclick="gotouploadfordata()">Upload</button>
+                                </div>
+                                <!-- <div class="col-2">
+                                    <button class="btn btn-primary btn-sm"  {{isDisabled}} onclick="goNextData()" style="margin-left: 4px;"
+                                    type="button">Next</button>
+                                </div> -->
+                              </div>
+                            
+                            <div style="height: 15px;"></div>
+                            <div style="height: 25px;"></div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h4 class="title-2 m-b-25">Data from source</h2>
+                                        <div class="table-responsive">
+                                            <table id="csvData" class="table table-sm fs--1 mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        {% for data in dataTypes %}
+                                                        <th style='padding-top:10px;padding-bottom:10px;'>
+                                                            {{data.colName}}
+                                                        </th>
+                                                        {% endfor %}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for k in df %}
+                                                    <tr>
+                                                        {% for key, val in k.items %}
+                    
+                                                        <td style='padding-top:10px;padding-bottom:10px;'>{{ val }}</td>
+                    
+                                                        {% endfor %}
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                </div>
+                            </div>
+                            <div style="height: 25px;"></div>
+                    
+                        </form>
+                    </div>
+                    </div>
+                    <!--End-->
+                    <!--Business-->
+                    <div class="tab-pane fade" id="tab-contact" role="tabpanel" aria-labelledby="contact-tab">
+                      <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="ddlFunction">Model </label>
+                        <div class="col-sm-4">    
+                          <select class="form-select" name="ddlmodel" id="ddlmodelbus" onchange="ExcelDataDwnldforbus()"  >
+                            <option value="">Select Model</option>
+                            {% for val in data.data  %}
+                              
+                              <option value="{{val}}">{{val}}</option> 
+                                
+                            {% endfor %} 
+                          </select>
+                          
+                        </div>
+                   
+                         
+                        <div class="col-sm-3"> 
+                          <a style="margin-right: 5px;" id="filepathbus" href="" download> <i class="fa fa-download" style="font-size: 12px;" title="Export to PDF"></i>Download Template </a>   
+                          <!-- <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="ExcelDataDwnld()" value="Download Template" /> -->
+                        </div>
+                    </div> 
+                    <div class="row mb-3">
+                      <label class="col-sm-3 col-form-label" for="ddlFunction">Production Output </label>
+                      <div class="col-sm-4">    
+                       <input type="file" id="fileprdxnbus" name="fileprdxn"/>
+                      </div>
+                 
+                       
+                      <div class="col-sm-4">    
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="gotouploadforbus()" value="Upload Data" />
+                      </div>
+                  </div> 
+                   
+                   
+                    
+                    <div class="col-12 gy-6">
+                        <div class="row g-3 justify-content-end">
+                          <div class="col-auto"> 
+                            <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                          </div>
+                      
+                         
+                        </div>
+                    </div>
+                    </div>
+                        
+                  </div>
+                
+
+                
+            </div>
+        </div>
+    </div>    
+    
+</div> 
+{% endblock content %}
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+<script type='text/javascript' >
+    function supportChatInit(){    
+      const supportChat = document.querySelector('.support-chat');
+      const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+      const supportChatcontainer = document.querySelector(
+        '.support-chat-container'
+      );
+        supportChatcontainer.classList.add('show');     
+      supportChatBtn.forEach(item => {    
+      
+        item.addEventListener('click', () => {
+          
+          supportChat.classList.toggle('show-chat');
+  
+          // supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+          //   'btn-chat-close'
+          // );
+  
+          supportChatcontainer.classList.add('show');
+           
+        });
+      });
+    };
+  
+
+    $(document).ready(function(){
+          // $('#SelectBackUpUserFor').css('visibility','hidden');
+         supportChatInit(); 
+         $('#csvData').DataTable({
+            sDom: 'lrtip',
+            "ordering": false,
+            scrollY: 450,
+            scrollX: true,
+            scroller: true,
+            paging: false,
+            info: false
+        }); 
+      }); 
+
+      function validateFormData() {
+        var fileName = $("#myfiledata").val();
+
+        if (fileName) { // returns true if the string is not empty
+            // alert(fileName + " was selected");
+        } else { // no file was selected
+            alert("Please select a file.");
+            return false;
+        }
+    }
+    function goNextData() {
+        window.location = "{% url 'dataCleaning' %}"
+    } 
+
+
+    function gotolist()
+    {
+        window.location='{{showdept}}'
+        
+    }
+
+    // function ExcelDataDwnld() {
+    //   debugger;
+      // metric = $('#ddlmodel').val()
+      // // alert(mdlid)
+      // $.ajax({
+      //     url: '/mmlabeltoexcel/', 
+      //     data:{metric:metric},
+      //     dataType: 'json',
+      //     method:'GET',
+      //     success: function (data) { 
+      //       console.log("data",data)
+      //       alert(data.msg)
+            
+      //     }
+      //   });
+    // }
+    function ExcelDataDwnld(){
+      debugger
+      // metric = $('#ddlmodel').val()
+      mdlid = $('#ddlmodel').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/mmlabeltoexcel/', 
+          data:{mdlid:mdlid},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("data",data)
+            alert(data.msg)
+            console.log("filepath",data.file)
+            $("#filepath").prop("href", data.file);
+            
+          }
+        });
+    }
+
+    function ExcelDataDwnldforbus(){
+      debugger
+      // metric = $('#ddlmodel').val()
+      mdlid = $('#ddlmodelbus').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/mmlabeltoexcelforbus/', 
+          data:{mdlid:mdlid},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("data",data)
+            alert(data.msg)
+            console.log("filepathbus",data.file)
+            $("#filepathbus").prop("href", data.file);
+            
+          }
+        });
+    }
+
+    function ExcelDataDwnldfordata(){
+      debugger
+      // metric = $('#ddlmodel').val()
+      mdlid = $('#ddlmodeldata').val()
+      console.log("mdlid",mdlid)
+      // alert(mdlid)
+      $.ajax({
+          url: '/mmlabeltoexcelfordata/', 
+          data:{mdlid:mdlid},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("data",data)
+            alert(data.msg)
+              
+          }
+        });
+    }
+  
+    
+    function gotoupload(){
+        debugger;
+        var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+
+        // console.log("file is",fileInput)
+        var x = new XMLHttpRequest();
+        x.open("POST","/Perf_monitoring_file_upload/",true); 
+        var formData = new FormData();
+        formData.append("csrfmiddlewaretoken", csrfToken);
+
+        var prdxnoutput = document.getElementById("fileprdxn").files[0];        
+        console.log("check file",prdxnoutput)
+        var prdxnoutput_filename = prdxnoutput.name;
+        console.log("check filename",prdxnoutput_filename)
+        formData.append("filenm", prdxnoutput_filename);
+        formData.append("filename", prdxnoutput,prdxnoutput_filename);
+        formData.append("mdl_id",$('#ddlmodel').val());
+        x.send(formData);
+        x.onreadystatechange = function () {
+          console.log("x.readyState",x.readyState)
+          console.log("x.status",x.status)
+        if (x.readyState == 4 && x.status == 200) {
+            console.log("check1")
+            var json = JSON.parse(x.responseText);
+            console.log(json)
+            if(json.isvalid == 'true'){
+              alert('File Uploded successfully')
+            }
+            else{
+              alert('Columns name are not identical in the file please check')
+            }
+            
+        }
+    }
+    }
+
+    function gotouploadforbus(){
+        debugger;
+        var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+
+        // console.log("file is",fileInput)
+        var x = new XMLHttpRequest();
+        x.open("POST","/Perf_monitoring_file_upload_bus/",true); 
+        var formData = new FormData();
+        formData.append("csrfmiddlewaretoken", csrfToken);
+
+        var prdxnoutput = document.getElementById("fileprdxnbus").files[0];        
+        console.log("check file",prdxnoutput)
+        var prdxnoutput_filename = prdxnoutput.name;
+        console.log("check filename",prdxnoutput_filename)
+        formData.append("filenm", prdxnoutput_filename);
+        formData.append("filename", prdxnoutput,prdxnoutput_filename);
+        formData.append("mdl_id",$('#ddlmodelbus').val());
+        x.send(formData);
+        x.onreadystatechange = function () {
+          console.log("x.readyState",x.readyState)
+          console.log("x.status",x.status)
+        if (x.readyState == 4 && x.status == 200) {
+            console.log("check1")
+            var json = JSON.parse(x.responseText);
+            console.log(json)
+            if(json.isvalid == 'true'){
+              alert('File Uploded successfully')
+            }
+            else{
+              alert('Columns name are not identical in the file please check')
+            }
+            
+        }
+    }
+    }
+
+    function gotouploadfordata(){
+        debugger;
+        var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+
+        // console.log("file is",fileInput)
+        var x = new XMLHttpRequest();
+        x.open("POST","/home2/",true); 
+        var formData = new FormData();
+        formData.append("csrfmiddlewaretoken", csrfToken);
+
+        var prdxnoutput = document.getElementById("myfiledata").files[0];        
+        console.log("check file",prdxnoutput)
+        var prdxnoutput_filename = prdxnoutput.name;
+        console.log("check filename",prdxnoutput_filename)
+        formData.append("filenm", prdxnoutput_filename);
+        formData.append("filename", prdxnoutput,prdxnoutput_filename);
+        formData.append("mdlid",$('#ddlmodeldata').val());
+        x.send(formData);
+        x.onreadystatechange = function () {
+          console.log("x.readyState",x.readyState)
+          console.log("x.status",x.status)
+        if (x.readyState == 4 && x.status == 200) {
+            console.log("check1")
+            var json = JSON.parse(x.responseText);
+            console.log(json)
+            if(json.isvalid == 'true'){
+              alert('File Uploded successfully')
+            }
+            else{
+              alert('Columns name are not identical in the file please check')
+            }
+            
+        }
+    }
+    }
+</script>
+{% endblock script %}

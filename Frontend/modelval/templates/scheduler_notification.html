@@ -1,0 +1,273 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notification Scheduler Setup</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f4f7f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    select,
+    input[type="time"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #fff;
+      font-size: 14px;
+      transition: border 0.2s ease;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      border-color: #4a90e2;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .radio-group label {
+      margin: 0;
+      font-weight: normal;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    button {
+      background-color: #4a90e2;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #3c7dc5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Notification Scheduler</h2>
+
+  <form id="notificationForm" method="post">
+    {% csrf_token %}
+
+    <!-- Alert Type -->
+    <div class="form-group">
+      <label for="alertType">Select Alert Type:</label>
+      <select id="alertType" name="alertType" required>
+        <option value="">--Select--</option>
+        <option value="overdue_tasks">Overdue Tasks/Issues</option>
+        <option value="upcoming_tasks">Upcoming Tasks/Issues</option>
+        <option value="email_alerts">Email Alerts</option>
+        <option value="other">Other</option>
+
+      </select>
+    </div>
+
+    <!-- Frequency -->
+    <div class="form-group">
+      <label for="frequency">Select Frequency:</label>
+      <select id="frequency" name="frequency" onchange="handleFrequencyChange()" required>
+        <option value="">--Select--</option>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+    </div>
+
+    <!-- Time -->
+    <div class="form-group">
+    <label for="time">Time:</label>
+    <input type="time" id="time" name="time" min="06:00" max="18:00" required>
+    </div>
+
+    <!-- Weekly -->
+    <div class="form-group hidden" id="weeklyOptions">
+      <label for="dayOfWeek">Select Day of Week:</label>
+      <select id="dayOfWeek" name="dayOfWeek">
+        <option value="">--Select--</option>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
+      </select>
+    </div>
+
+    <!-- Monthly -->
+    <div class="form-group hidden" id="monthlyOptions">
+      <label for="dateOfMonth">Date Of Month (1-31):</label>
+      <input type="number" id="dateOfMonth" name="dateOfMonth" min="1" max="31">
+    </div>
+
+    <!-- Days Before End Date -->
+    <div class="form-group" id="daysBeforeContainer">
+      <label for="daysBefore">Notify X Days Before End Date:</label>
+      <select id="daysBefore" name="daysBefore">
+        <script>
+          for (let i = 1; i <= 30; i++) {
+            document.write(`<option value="${i}">${i} day(s)</option>`);
+          }
+        </script>
+      </select>
+    </div>
+
+    <!-- Active Status -->
+    <div class="form-group">
+      <label>Active Status:</label>
+      <div class="radio-group">
+        <input type="radio" id="activeYes" name="isActive" value="true" checked>
+        <label for="activeYes">Active</label>
+        <input type="radio" id="activeNo" name="isActive" value="false">
+        <label for="activeNo">Inactive</label>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit">Save Schedule</button>
+  </form>
+</div>
+
+{% endblock content %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+  document.getElementById('time').addEventListener('input', function () {
+      let timeValue = this.value;
+      if (timeValue < "06:00" || timeValue > "18:00") {
+          alert("Please select a time between 6:00 AM and 6:00 PM.");
+          this.value = "";
+      }
+  });
+    $('#alertType').change(function () {
+    var selectedAlert = $(this).val();
+
+    if (selectedAlert) {
+        $.ajax({
+            url: "{% url 'get_alert_schedule_data' %}",  // Django URL to fetch data
+            method: "GET",
+            data: { alert_type: selectedAlert },
+            success: function (data) {
+                console.log("data",data)
+                // Fill the form fields with returned data
+                $('#frequency').val(data.frequency);
+                $('#time').val(data.time);
+                $('#daysBefore').val(data.notify_days_before);
+                
+                console.log("Status ",data.is_active)
+                if (data.is_active) {
+                    $('#activeYes').prop('checked', true);   // Active radio selected
+                } else {
+                    $('#activeNo').prop('checked', true);  // Inactive radio selected
+                }                
+                
+
+                const freq = document.getElementById('frequency').value;
+                console.log("freq",freq)
+                if (freq === 'weekly') {
+                    document.getElementById('weeklyOptions').classList.remove('hidden');
+                    $('#dayOfWeek').val(data.day_of_week);
+                    console.log('dayOfWeek',document.getElementById('dayOfWeek'))
+                    document.getElementById('monthlyOptions').classList.add('hidden');
+                } else if (freq === 'monthly') {
+                    document.getElementById('monthlyOptions').classList.remove('hidden');
+                    $('#dateOfMonth').val(data.date_of_month);
+                    document.getElementById('weeklyOptions').classList.add('hidden');
+                }else if (freq === 'daily') {
+                    document.getElementById('monthlyOptions').classList.add('hidden');
+                    document.getElementById('weeklyOptions').classList.add('hidden');
+                    
+
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching alert data:", xhr.responseText);
+            }
+        });
+    }
+    });
+
+    $('#notificationForm').submit(function (e) {
+      e.preventDefault();  // Prevent default form submission
+
+      $.ajax({
+        url: "{% url 'scheduler_notification' %}",  // URL defined in your urls.py
+        method: "POST",
+        data: $(this).serialize(),  // Send form data
+        success: function (data) {
+            console.log("data",data)
+            alert(data.msg);
+        },
+        error: function (xhr, status, error) {
+          alert("Error: " + xhr.responseText);
+        }
+      });
+    });
+  
+
+function handleFrequencyChange() {
+    const freq = document.getElementById('frequency').value;
+    document.getElementById('weeklyOptions').classList.add('hidden');
+    document.getElementById('monthlyOptions').classList.add('hidden');
+
+    if (freq === 'weekly') {
+        document.getElementById('weeklyOptions').classList.remove('hidden');
+    } else if (freq === 'monthly') {
+        document.getElementById('monthlyOptions').classList.remove('hidden');
+    }
+}
+</script>
+
+</body>
+</html>
+{% endblock script %}

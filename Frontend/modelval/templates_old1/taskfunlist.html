@@ -1,0 +1,261 @@
+{% extends 'base.html' %}  
+{% load static %} 
+{% block content %}
+
+<div class="content" style="padding-top:0px;"> 
+  <div class="content container-fluid">
+    <!-- Page Header -->
+  
+    <!-- End Page Header -->
+
+
+    <!-- Card -->
+    <div class="card mb-3 mb-lg-5">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title">Add Function</h4>
+
+              
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <!-- Filter -->
+            <div class="row align-items-sm-center">
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">Label:</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        {% for val in users  %}
+                          <option value="{{val.task_function_label}}">{{val.task_function_label}}</option>
+                        {% endfor %}   
+                        <!-- <option value="MRMedited">MRMedited</option>
+                        <option value="Credit">Credit</option>
+                        <option value="Fraud">Fraud</option> -->
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              
+              <div class="col-md">
+                <form>
+                  <!-- Search -->
+                  <div class="input-group input-group-merge input-group-flush">
+                    <div class="input-group-prepend input-group-text">
+                      <i class="bi-search"></i>
+                    </div>
+                    <input id="datatableSearch" type="search" class="form-control" placeholder="Search users" aria-label="Search users">
+                  </div>
+                  <!-- End Search -->
+                </form>
+              </div>
+              <!-- End Col -->
+                <!--Add New-->
+                <div class="col-sm-auto">
+                  <a class="btn btn-primary" href="{{newtaskfun}}">
+                    <i class="bi-plus-lg me-1"></i> Add New
+                  </a>
+                </div>
+                <!--End Add New-->
+            </div>
+            <!-- End Filter -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                 "columnDefs": [{
+                    "targets": [0],
+                    "orderable": false
+                  }],
+                 "order": [],
+                 "info": {
+                   "totalQty": "#datatableWithPaginationInfoTotalQty"
+                 },
+                 "search": "#datatableSearch",
+                 "entries": "#datatableEntries",
+                 "pageLength": 10,
+                 "isResponsive": false,
+                 "isShowPaging": false,
+                 "pagination": "datatablePagination"
+               }'>
+          <thead class="thead-light">
+            <tr>
+              
+              <th>Label</th>
+              <th>Description</th>
+              <th>Edit</th>
+            
+             
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for val in users %} 
+              <tr class="position-static"> 
+                <td>
+                  
+                   {{val.task_function_label}} 
+                </td>
+                <td>
+                  {{val.task_function_description}}
+                </td>   
+                <td><a href="{% url 'edit_task_function' val.task_function_aid %}"><i class="bi-pencil-fill me-1"></i>
+                  <span>
+                    <span class="badge-label">Edit</span><span class="ms-1" data-feather="edit-3" style="height:12.8px;width:12.8px;">
+                    </span></span></a></td>
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <!-- Pagination -->
+        <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="me-2">Showing:</span>
+
+              <!-- Select -->
+              <div class="tom-select-custom">
+                <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                          "searchInDropdown": false,
+                          "hideSearch": true
+                        }'>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50" >50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <!-- End Select -->
+
+              <span class="text-secondary me-2">of</span>
+
+              <!-- Pagination Quantity -->
+              <span id="datatableWithPaginationInfoTotalQty"></span>
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-auto">
+            <div class="d-flex justify-content-center justify-content-sm-end">
+              <!-- Pagination -->
+              <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Footer -->
+    </div>
+    <!-- End Card -->
+
+  </div>
+</div>
+
+
+
+{% endblock content %}
+
+{%block script%} 
+
+  <!-- JS Global Compulsory  -->
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-form-search/dist/hs-form-search.min.js' %}"></script>
+
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/moment.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/clipboard/dist/clipboard.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script> 
+
+    // INITIALIZATION OF DATATABLES
+    // =======================================================
+    HSCore.components.HSDatatables.init($('#datatable'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+
+    const datatable = HSCore.components.HSDatatables.getItem(0)
+
+    document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+      item.addEventListener('change',function(e) {
+        const elVal = e.target.value,
+    targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+    targetTable = e.target.getAttribute('data-target-table');
+
+    HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+      })
+    })
+  </script>
+    {%endblock script %}

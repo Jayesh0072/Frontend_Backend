@@ -1,0 +1,1333 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+<link  rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css'%}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/quill/dist/quill.snow.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+{% csrf_token %}
+<div class="content" style="padding-top:0px;"> 
+  <!-- Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="d-flex mb-3">
+        <div class="flex-grow-1">
+          <div class="row">
+            <div class="col-lg mb-3 mb-lg-0">
+              <h1 class="page-header-title" id="lblmdlnameid">{{mdl_id}}</h1>  
+              <!-- End Row -->
+            </div>
+            <!-- End Col -->
+            <!-- End Col -->
+          </div>
+          <!-- End Row -->
+        </div>
+        <div class="col-sm-auto">
+          <a class="btn btn-primary" href="{{modelList}}">
+            <i class="bi-arrow-bar-left me-1"></i> Back
+          </a>
+        </div>
+      </div>
+      <!-- End Media -->
+
+      <!-- Nav -->
+      <!-- Nav -->
+      <div class="js-nav-scroller hs-nav-scroller-horizontal"> 
+
+        <ul class="nav nav-tabs page-header-tabs" id="projectsTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="Overview-tab" data-bs-toggle="tab" href="#Overview" role="tab" aria-controls="Overview" aria-selected="true">Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="Files-tab" data-bs-toggle="tab" href="#Files" role="tab" aria-controls="Files" aria-selected="true">Files
+              <span id='lblFileCnt' class="badge bg-soft-dark text-dark  rounded-circle ms-1">{{modelDocs.items | length}} </span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " class="nav-link" id="Task-tab" data-bs-toggle="tab" href="#Task" role="tab" aria-controls="Task" aria-selected="true">Tasks
+            <span  class="badge bg-soft-dark text-dark  rounded-circle ms-1">{{task_list | length}} </span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " class="nav-link" id="Issue-tab" data-bs-toggle="tab" href="#Issue" role="tab" aria-controls="Issue" aria-selected="true">Issues
+            <span  class="badge bg-soft-dark text-dark  rounded-circle ms-1">{{issue_list | length}} </span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " class="nav-link" id="Activity-tab" data-bs-toggle="tab" href="#Activity" role="tab" aria-controls="Activity" aria-selected="true">Activity
+              <span  class="badge bg-soft-dark text-dark  rounded-circle ms-1">{{activity_lst | length}} </span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " class="nav-link" id="Findings-tab" data-bs-toggle="tab" href="#Findings" role="tab" aria-controls="Findings" aria-selected="true">Validation Rating Calculation
+              </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " class="nav-link" id="current-validation-tab" data-bs-toggle="tab" href="#CurrentValidation" role="tab" aria-controls="Findings" aria-selected="true" >Current Validation
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " class="nav-link" id="next-validation-tab" data-bs-toggle="tab" href="#NextValidation" role="tab" aria-controls="Findings" aria-selected="true">Next Validation
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- End Nav -->
+    </div>
+    <div class="tab-content" id="projectsTabContent">
+      <div class="tab-pane fade show active" id="Overview" role="tabpanel" aria-labelledby="Overview=tab">
+        <div class="card-body" style="overflow-y: scroll;overflow-x:hidden;height: 400px;">
+          <div class="row">
+            <table class="table table1" >
+                <tr id="trpubldate">
+                  <th scope="row" style="width:40%">Date of Publishing Validation Report</th>
+                  <td><label id='lblpublishDate'></label></td>
+                </tr>                 
+                <tr id="trrptlink">
+                  <th scope="row">Validation Report</th>
+                  <td><a id="hrefReport"  target="_blank"><label id='lblVRReportlink'></label></a></td>                      
+                </tr>        
+                <tr>
+                  <th scope="row" style="width:40%">Department</th>
+                  <td><label id='lblDept'></label></td>
+                </tr>                 
+                <tr>
+                  <th scope="row">Function</th>
+                  <td><label id='lblFunc'></label></td>                      
+                </tr>
+                <tr>
+                  <th scope="row">Registration Date</th>
+                  <td><label id='lblRegDate'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Id</th>
+                  <td><label id='lblMdlId'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Primary Model Name </th>
+                  <td><label id='lblPrmNm'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Secondary Model Name </th>
+                  <td><label id='lblSecNm'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Model Source  </th>
+                  <td><label id='lblMdlSrc'></label></td>
+                </tr> 
+                <tr>
+                  <th scope="row">Model Type  </th>
+                  <td><label id='lblMdlType'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Model Abstract</th>
+                  <td><label id='lblMdlAbsct'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Objective of Model</th>
+                  <td><label id='lblMdlObj'></label></td>
+                </tr> 
+                <tr>
+                  <th scope="row">Application of Model</th>
+                  <td><label id='lblApplMdl'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Model Risk Analysis </th>
+                  <td><label id='lblMdlRiskAnlz'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Products Addressed </th>
+                  <td><label id='lblPrdAddr'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Usage Frequency </th>
+                  <td><label id='lblSsageFreq'></label></td>
+                </tr>
+                <!-- risk tab started -->
+                <tr>
+                  <th scope="row">Model Risk </th>
+                  <td><label id='lblMdlRisk'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Intrinsic Risk </th>
+                  <td><label id='lblIntrRisk'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Reliance</th>
+                  <td><label id='lblReliance'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Materiality</th>
+                  <td><label id='lblMateriality'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Risk Mitigation </th>
+                  <td><label id='lblRiskMiti'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Fair Lending</th>
+                  <td><label id='lblFairLendg'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Model Owner/s</th>
+                  <td><label id='lblOwner'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Model Developer/s</th>
+                  <td><label id='lblDevlopers'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">User/s</th>
+                  <td><label id='lblUsers'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Production Support</th>
+                  <td><label id='lblPrdnSupp'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Upstream Models</th>
+                  <td><label id='lblupstr'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Downstream Models</th>
+                  <td><label id='lbldwstr'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Approach</th>
+                  <td><label id='lblApproach'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Monitoring Frequency</th>
+                  <td><label id='lblMonFreq'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Monitoring Metrics</th>
+                  <td><label id='lblMonMtrc'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Trigger Event/s </th>
+                  <td><label id='lblTriggerEve'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Last Trigger Event Date  </th>
+                  <td><label id='lblLastTgrDt'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Last Trigger Event Mitigation Date </th>
+                  <td><label id='lblMitgDt'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Trigger Event Mitigation  </th>
+                  <td><label id='lblMitiEv'></label></td>
+                </tr>
+                <!-- risk tab ended --> 
+            </table>
+          </div>
+        </div>
+        <div style="display: flex;justify-content: end;" class="col-auto">
+          <!-- <a class="nav-link" href="http://3.131.88.246:8000" target="_blank" data-bs-toggle="" aria-expanded="false">           
+            <button class="btn btn-sm btn-primary px-6">Validate Model</button>
+          </a>
+          <a class="nav-link" href="#" data-bs-toggle="" aria-expanded="false">           
+            <button class="btn btn-sm btn-primary px-6">Version History</button>
+          </a> -->
+          {% for key, data in mdlsts.items %}  
+          
+             {% if  data.canEdit == "Yes" and data.tempexists == 'No' %}
+              <button class="btn btn-outline-primary" type="button" id="btnEdit" style="display: none;" onclick="approveEdit()">Approve Edit Access </button>
+            {% endif %}
+            
+            {% if data.tempexists != 'No' %}
+              <button class="btn btn-outline-primary" type="button" id="btnApprove" style="display: none;" onclick="showEdit()">Approve Updated Changes </button>
+            {% endif %}
+          {% endfor  %}
+          <button class="btn btn-outline-primary" type="button" onclick="assignValidation()">Assign Validation </button>
+          
+         
+          <!-- <button class="btn btn-outline-primary" type="button" id="btnDecomm" style="display: none;" onclick="showDecomm()">Decommission</button> -->
+          <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div> 
+
+      <div class="tab-pane" id="Files" role="tabpanel" aria-labelledby="Files-tab"> 
+              <div class="row form-group"> 
+                  <!-- List Group -->
+      <ul class="list-group"> {{modelDocs}}
+        {% for key, data in modelDocs.items %} 
+        <!-- Item -->
+        <li class="list-group-item">
+          <div class="row align-items-center">
+            <div class="col-auto">
+              {% if data.doc_type == "doc" %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/word-icon.svg' %}" alt="Image Description">
+              {% elif data.doc_type == "docx" %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/word-icon.svg' %}" alt="Image Description">
+              {% elif data.doc_type == "xls" %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/excel-icon.svg' %}" alt="Image Description">
+              {% elif data.doc_type == "xlsx" %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/excel-icon.svg' %}" alt="Image Description">
+              {% elif data.doc_type == "csv" %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/placeholder-csv-format.svg' %}" alt="Image Description">
+              {% elif data.doc_type == "pdf" %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/pdf-icon.svg' %}" alt="Image Description">
+              {% elif data.doc_type == "png" %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/placeholder-img-format.svg' %}" alt="Image Description">
+              {%  else %}
+                <img class="avatar avatar-xs avatar-4x3" src="{% static 'Front/dist/assets/svg/svgs/google-docs-icon.svg' %}" alt="Image Description">
+              {% endif %}
+            </div>
+
+            <div class="col">
+              <h5 class="mb-0">
+                <a class="text-dark"  href="\static\document_files\{{mdl_id}}\{{data.Mdl_Doc_Name}}"  target="_blank">{{data.Mdl_Doc_Type}}</a>
+              </h5>
+              <ul class="list-inline list-separator small text-body">
+                <li class="list-inline-item">{{data.Mdl_Doc_Name}} {{data.doc_type}}</li>
+              </ul>
+            </div>
+            <!-- End Col -->
+          </div>
+          <!-- End Row -->
+        </li>
+        <!-- End Item -->
+        {% endfor %}
+  
+      </ul>
+      <!-- End List Group -->
+            </div>   
+            
+      </div> 
+      <div  class="tab-pane" id="Task" role="tabpanel" aria-labelledby="Task-tab">  
+        <div class="row row-cols-1 row-cols-md-3">
+          {% for key, val in task_list.items  %}   
+          <div class="col mb-3 mb-lg-5">
+            <!-- Card -->
+            <div class="card card-hover-shadow text-center h-100">
+              <div class="card-progress-wrap">
+                <!-- Progress -->
+                <div class="progress card-progress">
+                  {% if val.task_priority_label == "High" %}
+                  <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  {%elif val.task_priority_label == "Medium" %}
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  {%elif val.task_priority_label == "Low" %} 
+                    <div class="progress-bar bg-success"  role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  {% endif %}               
+                  
+                </div>
+                <!-- End Progress -->
+              </div>
+  
+              <!-- Body -->
+              <div class="card-body">
+                <div class="row align-items-center text-start mb-4">
+                  <div class="col">
+                    <span class="d-block">{{val.Task_ID}} </span>
+                  </div>
+                  <!-- End Col --> 
+                </div>  
+  
+                <div class="mb-4">
+                  <h3 class="mb-1"> {{val.Task_Name}}</h3> 
+                  {% if val.task_priority_label == "High" %}
+                    <span style="font-size: small;" class="badge bg-soft-danger text-danger p-2">Task Risk : {{val.task_priority_label}}</span>
+                  {%elif val.task_priority_label == "Medium" %}
+                      <span style="font-size: small;" class="badge bg-soft-warning text-warning p-2">Task Risk : {{val.task_priority_label}}</span> 
+                  {%elif val.task_priority_label == "Low" %} 
+                      <span style="font-size: small;" class="badge bg-soft-success text-success p-2">Task Risk : {{val.task_priority_label}}</span>
+                  {% endif %}
+                  
+                </div>              
+  
+                <a class="stretched-link" href="#"></a>
+              </div>
+              <!-- End Body -->
+  
+              <!-- Footer -->
+              <div class="card-footer">
+                <!-- Stats -->
+                <div class="row col-divider">
+                  <div class="col">
+                    <span class="h4">{{val.Task_ApprovalStatus_Label}}</span>
+                    <span class="d-block fs-5">Task Status</span>
+                  </div>
+                  <!-- End Col -->
+  
+                  <div class="col">
+                    <span class="h4">{{val.Task_Type_label}}</span>
+                    <span class="d-block fs-5">Task Type</span>
+                  </div>
+                  <!-- End Col -->
+  <!-- 
+                  <div class="col">
+                    <span class="h4">{{val.Mdl_Risk_Label}}</span>
+                    <span class="d-block fs-5">Model Risk</span>
+                  </div>
+                  End Col -->
+   
+                </div>
+                <!-- End Stats -->
+              </div>
+              <!-- End Footer -->
+            </div>
+            <!-- End Card -->
+          </div>
+        {% endfor %}
+        </div>
+      </div>
+      <div   class="tab-pane" id="Activity" role="tabpanel" aria-labelledby="Activity-tab">
+        {% for activity in activity_lst %}
+        <ul class="step">
+          <!-- Step Item -->
+          <li class="step-item">
+            <div class="step-content-wrapper">
+              <span class="step-icon step-icon-pseudo step-icon-soft-dark"></span>
+            
+              <div class="step-content">
+                <h5 class="step-title">   
+                  <a class="text-dark" href="#">{{activity.activity_trigger}}/{{activity.activity_details}}</a>
+                </h5>
+
+                <p class="fs-5 mb-1">{{activity.user}} <a class="text-uppercase" href="#"><i class="bi-journal-bookmark-fill"></i></a><span class="badge bg-soft-success text-success rounded-pill"><span class="legend-indicator bg-success"></span></span></p>
+
+                <span class="text-muted small text-uppercase">{{activity.date}}  {{activity.time}}</span>
+              </div>
+            </div>
+          </li>
+          <!-- Step Item -->
+          
+        </ul>
+        {% endfor %}
+      </div>
+      <div  class="tab-pane" id="Issue" role="tabpanel" aria-labelledby="Issue-tab"> 
+        
+        <div class="row row-cols-1 row-cols-md-3">
+          {% for key, val in issue_list.items  %}   
+          <div class="col mb-3 mb-lg-5">
+            <!-- Card -->
+            <div class="card card-hover-shadow text-center h-100">
+              <div class="card-progress-wrap">
+                <!-- Progress -->
+                <div class="progress card-progress">
+                  {% if val.issue_priority_label == "High" %}
+                  <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  {%elif val.issue_priority_label == "Medium" %}
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  {%elif val.issue_priority_label == "Low" %} 
+                    <div class="progress-bar bg-success"  role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  {% endif %}               
+                  
+                </div>
+                <!-- End Progress -->
+              </div>
+  
+              <!-- Body -->
+              <div class="card-body">
+                <div class="row align-items-center text-start mb-4">
+                  <div class="col">
+                    <span class="d-block">{{val.Issue_ID}} </span>
+                  </div>
+                  <!-- End Col --> 
+                </div>  
+  
+                <div class="mb-4">
+                  <h3 class="mb-1"> {{val.Issue_ID}}</h3> 
+                  {% if val.issue_priority_label == "High" %}
+                    <span style="font-size: small;" class="badge bg-soft-danger text-danger p-2">Issue Risk : {{val.issue_priority_label}}</span>
+                  {%elif val.issue_priority_label == "Medium" %}
+                      <span style="font-size: small;" class="badge bg-soft-warning text-warning p-2">Issue Risk : {{val.issue_priority_label}}</span> 
+                  {%elif val.issue_priority_label == "Low" %} 
+                      <span style="font-size: small;" class="badge bg-soft-success text-success p-2">Issue Risk : {{val.issue_priority_label}}</span>
+                  {% endif %}
+                  
+                </div>              
+  
+                <a class="stretched-link" href="#"></a>
+              </div>
+              <!-- End Body -->
+  
+              <!-- Footer -->
+              <div class="card-footer">
+                <!-- Stats -->
+                <div class="row col-divider">
+                  <div class="col">
+                    <span class="h4">{{val.Issue_ApprovalStatus_Label}}</span>
+                    <span class="d-block fs-5">Task Status</span>
+                  </div>
+                  <!-- End Col -->
+  
+                  <div class="col">
+                    <span class="h4">{{val.Issue_Type_Label}}</span>
+                    <span class="d-block fs-5">Issue Type</span>
+                  </div>
+                  <!-- End Col -->
+  <!-- 
+                  <div class="col">
+                    <span class="h4">{{val.Mdl_Risk_Label}}</span>
+                    <span class="d-block fs-5">Model Risk</span>
+                  </div>
+                  End Col -->
+   
+                </div>
+                <!-- End Stats -->
+              </div>
+              <!-- End Footer -->
+            </div>
+            <!-- End Card -->
+          </div>
+        {% endfor %}
+        </div>
+      </div>
+      <div   class="tab-pane" id="Findings" role="tabpanel" aria-labelledby="Findings-tab">   
+        <table class="table table1" id="findingstbl" style="border: 1px solid black;">
+          <tr style="border: 1px solid black;">
+            <th>Validation Element</th>
+            <th>Validation Sub Element</th>
+            <th>Low</th>
+            <th>Medium</th>
+            <th>High</th>
+            <th>Rating</th>
+          </tr>
+          {% for key, val in validationRatings.items  %}  
+          <tr style="border: 1px solid black;">
+              <td style="vertical-align: middle;">{{val.Element_text}}</td>
+              <td style="border: 1px solid black;">{{val.sub_element_text}}</td>
+              <td style="border: 1px solid black;text-align: center;">{{val.lowcnt}}</td>
+              <td style="border: 1px solid black;text-align: center">{{val.medcnt}}</td>
+              <td style="border: 1px solid black;text-align: center">{{val.highcnt}}</td>
+              {% if val.rating == "Fail"  %}
+                <td style="vertical-align: middle;background-color: red;color: beige;text-align: center;">{{val.rating}}</td>
+              {% elif val.rating  == "Satisfactory"%}
+                <td style="vertical-align: middle;background-color: green;color: beige;;text-align: center;">{{val.rating}}</td>
+              {% elif val.rating  == "Needs Improvement"%}
+                <td style="vertical-align: middle;background-color: yellow;color: gray;text-align: center;">{{val.rating}}</td>
+              {% else %}
+                <td style="vertical-align: middle;text-align: center;">{{val.rating}}</td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </table>    
+       
+      </div>
+      <div class="tab-pane " id="CurrentValidation" role="tabpanel" aria-labelledby="currentValidation-tab" >
+        <div class="card-body" style="overflow-y: scroll;overflow-x:hidden;height: 400px;" >
+          <div class="row">
+            <table class="table table1" >
+                <tr id="trpubldate">
+                  <th scope="row" style="width:40%">Validation Period</th>
+                  <td><label id='lblvalperiod'></label></td>
+                </tr>                 
+                <tr id="trrptlink">
+                  <th scope="row">Validation Scope</th>
+                  <td><label id="valscope"><label id='lblVRReportlink'></label></td>                      
+                </tr>        
+                <tr>
+                  <th scope="row" style="width:40%">Validator</th>
+                  <td><label id='lblvalidator'></label></td>
+                </tr>
+                <tr id="int_validator">
+                  <th scope="row" style="width:40%">Internal Validator</th>
+                  <td><label id='lblintvalidator'></label></td>
+                </tr>
+                <tr id="ext_validator">
+                  <th scope="row" style="width:40%">External Validator</th>
+                  <td><label id='lblextvalidator'></label></td>
+                </tr>
+                <!-- <tr>
+                  <th scope="row">Validation Status</th>
+                  <td><select class="js-select form-select" name="modelid" id="validation_status" style="width: 300px;" onchange="showValStatus()" data-hs-tom-select-options='{
+                            "placeholder": "Select Validation Status...",
+                            "hideSearch": true
+                          }' >
+                            <option value="Select Validation status">Select Validation status</option> 
+                            <option value="In_Progress">In Progress</option>
+                            <option value="Completed">Completed</option>   
+                          </select> </td>                      
+                </tr> 
+                <tr id="validation_progress_row">
+                  <th scope="row">Validation Progress</th>
+                  <td><input class="form-control" id="validation_progress" type="text" name="txtMdlAppl" />
+                  </tr></td>                
+                <tr> -->
+                  <th scope="row">Projected Start Date</th>
+                  <!-- <td><label id='startdate'></label></td>     -->
+                  <td><input  id="startdate" name="txtPrdDt"  type="datetime" style="width: 50px;" class="js-flatpickr form-control flatpickr-custom"  placeholder="mm/dd/yyyy"
+                  data-hs-flatpickr-options='{
+                  "dateFormat":"m/d/Y"
+                  }' /></td>                                    
+                </tr>
+                <tr>
+                  <th scope="row">Projected End Date</th>
+                  <td><input  id="enddate" name="txtPrdDt"  type="datetime" class="js-flatpickr form-control flatpickr-custom" style="margin-bottom:15px;width:30%;" placeholder="mm/dd/yyyy"
+                  data-hs-flatpickr-options='{
+                  "dateFormat":"m/d/Y"
+                  }' /></td> 
+                </tr>
+                <tr>
+                  <th scope="row">Revised End Date</th>
+                  <td><input  id="rvsdenddate" name="txtPrdDt"  type="datetime" class="js-flatpickr form-control flatpickr-custom" style="margin-bottom:15px;width:30%;" placeholder="mm/dd/yyyy"
+                  data-hs-flatpickr-options='{
+                  "dateFormat":"m/d/Y"
+                  }' /></td>
+                </tr>
+                <tr>
+                  <th scope="row">Previous Total Fees</th>
+                  <td><label id='lblprvsttlnm'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Estimated Total Fees</th>
+                  <td><label id='lblestttlfes'></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">Actual Total Fees </th>
+                  <!-- <td><label id='lblactlttlfees'></label></td> -->
+                  <td><input class="form-control" id="lblactlttlfees" type="text" name="txtactlttlfees" />
+                  </tr></td> 
+                </tr> 
+                <tr>
+                  <th scope="row">Validation Status</th>
+                  <td><select class="js-select form-select" name="modelid" id="validation_status" onchange="showValStatus()" data-hs-tom-select-options='{
+                            "placeholder": "Select Validation Status...",
+                            "hideSearch": true
+                          }' >
+                            <option value="Select Validation status">Select Validation status</option> 
+                            <option value="In_Progress">In Progress</option>
+                            <option value="Completed">Completed</option>   
+                          </select> </td>                      
+                </tr> 
+                <tr id="validation_progress_row">
+                  <th scope="row">Validation Progress</th>
+                  <td><input class="form-control" id="validation_progress" type="text" name="txtMdlAppl" />
+                  </tr></td>                
+                
+                <tr>
+                  <th scope="row">Comment </th>
+                  <td><textarea id="lblcomment" name="comment" rows="4" cols="50"></textarea></td>
+                </tr>
+                <tr>
+                  <th scope="row">Response</th>
+                  <td><textarea id="lblresp" name="comment" rows="4" cols="50"></textarea></td>
+                </tr>
+                
+                <!-- risk tab ended --> 
+            </table>
+          </div>
+        </div>
+        <div style="display: flex;justify-content: end;" class="col-auto">
+          <!-- <a class="nav-link" href="http://3.131.88.246:8000" target="_blank" data-bs-toggle="" aria-expanded="false">           
+            <button class="btn btn-sm btn-primary px-6">Validate Model</button>
+          </a>
+          <a class="nav-link" href="#" data-bs-toggle="" aria-expanded="false">           
+            <button class="btn btn-sm btn-primary px-6">Version History</button>
+          </a> -->
+          <!-- {% for key, data in mdlsts.items %}  
+          
+             {% if  data.canEdit == "Yes" and data.tempexists == 'No' %}
+              <button class="btn btn-outline-primary" type="button" id="btnEdit" style="display: none;" onclick="approveEdit()">Approve Edit Access </button>
+            {% endif %}
+            
+            {% if data.tempexists != 'No' %}
+              <button class="btn btn-outline-primary" type="button" id="btnApprove" style="display: none;" onclick="showEdit()">Approve Updated Changes </button>
+            {% endif %}
+          {% endfor  %} -->
+          <button class="btn btn-outline-primary" type="button" onclick="update_Validation_planning('{{mdl_id}}')">Update Validation Planning</button>
+          
+         
+          <!-- <button class="btn btn-outline-primary" type="button" id="btnDecomm" style="display: none;" onclick="showDecomm()">Decommission</button> -->
+          <!-- <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button> -->
+        </div>
+      </div>
+      <div class="tab-pane " id="NextValidation" role="tabpanel" aria-labelledby="NextValidation-tab" >
+        <div class="card-body" style="overflow-y: scroll;overflow-x:hidden;height: 400px;" >
+          <div class="row">
+            <table class="table table1" >
+                <tr id="trpubldate">
+                  <th scope="row" style="width:40%">Validation Period</th>
+                  <!-- <td><label id='Nlblvalperiod'></label></td> -->
+                   <td>
+                    <div class="col-sm-6">    
+                      <input  id="Nlblvalperiod" name="txtPrdDt"  type="month" class="js-flatpickr form-control flatpickr-custom" style="margin-bottom:15px;width:30%;" placeholder="mm/yyyy"
+                      data-hs-flatpickr-options='{
+                      "dateFormat":"m/Y"
+                      }' /> 
+                    </div>
+                  </td>                  
+                </tr>                 
+                <tr id="trrptlink">
+                  <th scope="row">Validation Scope</th>
+                  <!-- <td><label id="Nvalscope"><label id='lblVRReportlink'></label></td> -->
+                  <td>
+                    <div class="col-sm-6">    
+                          <select class="js-select form-select" name="ddlFunction" id="Nvalscope" data-hs-tom-select-options='{
+                            "placeholder": "Select Scope...",
+                            "hideSearch": true
+                          }' onchange="validationScope()">  
+                            <option value="Initial Validation">Initial Validation</option>
+                            <option value="Periodic Re-Validation (Full or Limited)">Periodic Re-Validation (Full or Limited)</option>
+                            <option value="Event-Driven Validation">Event-Driven Validation</option>    
+                          </select>
+                  </div>
+                </td>                      
+                </tr>        
+                <tr>
+                  <th scope="row" style="width:40%">Validator</th>
+                  <!-- <td><label id='Nlblvalidator'></label></td> -->
+                  <td>
+                    <div class="col-sm-6">    
+                          <select class="js-select form-select" name="ddlFunction" id="Nlblvalidator" data-hs-tom-select-options='{
+                            "placeholder": "Select Validator...",
+                            "hideSearch": true
+                          }' onchange="show_validator()" >
+                            <option value="">Select Validator</option>  
+                            <option value="Internal">Internal</option>
+                            <option value="External">External</option>
+                          </select>
+                        </div>
+                  </td>
+                </tr>
+                <tr id="int_val_sel">
+                  <th scope="row" style="width:40%">Internal Validator</th>
+                  <!-- <td><label id='Nlblintvalidator'></label></td> -->
+                  <td>
+                    <div class="col-sm-8">    
+                          <select class="js-select form-select" name="ddlFunction" id="Nlblintvalidator" data-hs-tom-select-options='{
+                            "placeholder": "Select internal validators...",
+                            "hideSearch": true
+                          }' >
+                            <option value="">Select internal Validator</option>  
+                            {% for usrnm in user_data  %}  
+                                <option value="{{usrnm.u_name}}">{{usrnm.u_name}}</option>   
+                            {% endfor %} 
+                          </select>
+                      </div>
+                  </td>
+                </tr>
+                <tr id="ext_val_sel">
+                  <th scope="row" style="width:40%">External Validator</th>
+                  <!-- <td><label id='Nlblextvalidator'></label></td> -->
+                  <td>
+                    <div class="col-sm-8">    
+                        <input class="form-control" id="Nlblextvalidator" name="txtMdlAbsct" type="text" name="txtMdlAbsct" />
+                      </div>
+                  </td>
+                </tr>                 
+                <tr>
+                  <th scope="row">Projected Start Date</th>
+                  <!-- <td><label id='Nstartdate'></label></td>  -->
+                  <td><input  id="Nstartdate" name="txtstrtDt"  type="datetime" style="width: 50px;" class="js-flatpickr form-control flatpickr-custom"  placeholder="mm/dd/yyyy"
+                  data-hs-flatpickr-options='{
+                  "dateFormat":"m/d/Y"
+                  }' /></td>                     
+                </tr>
+                <tr>
+                  <th scope="row">Projected End Date</th>
+                  <!-- <td><label id='Nenddate'></label></td> -->
+                  <td><input  id="Nenddate" name="txtendDt"  type="datetime" style="width: 50px;" class="js-flatpickr form-control flatpickr-custom"  placeholder="mm/dd/yyyy"
+                  data-hs-flatpickr-options='{
+                  "dateFormat":"m/d/Y"
+                  }' /></td>
+                </tr>
+                <!-- <tr>
+                  <th scope="row">Revised End Date</th>
+                  <td><label id='Nrvsdenddate'></label></td>
+                </tr> -->
+                <tr>
+                  <th scope="row">Previous Total Fees</th>
+                  <!-- <td><label id='Nlblprvsttlnm'></label></td> -->
+                  <td><input class="form-control" id="Nlblprvsttlnm" type="text" name="txtMdlAppl" /></td>
+                </tr>
+                <tr>
+                  <th scope="row">Estimated Total Fees</th>
+                  <!-- <td><label id='Nlblestttlfes'></label></td> -->
+                  <td><input class="form-control" id="Nlblestttlfes" name="txtMdlAbsct" type="text" name="txtMdlAbsct" /></td>
+                </tr>
+                <!-- <tr>
+                  <th scope="row">Actual Total Fees </th>
+                  <td><label id='Nlblactlttlfees'></label></td>
+                </tr>  -->
+                <tr>
+                  <th scope="row">Comment </th>
+                  <!-- <td><label id='Nlblcomment'></label></td> -->
+                  <td><textarea id="Nlblcomment" name="comment" rows="4" cols="50"></textarea></td>
+                </tr>
+                <tr>
+                  <th scope="row">Response</th>
+                  <!-- <td><label id='Nlblresp'></label></td> -->
+                  <td><textarea id="Nlblresp" name="comment" rows="4" cols="50"></textarea></td>
+                </tr>
+                
+                <!-- risk tab ended --> 
+            </table>
+          </div>
+        </div>
+        <div style="display: flex;justify-content: end;" class="col-auto">
+          <!-- <a class="nav-link" href="http://3.131.88.246:8000" target="_blank" data-bs-toggle="" aria-expanded="false">           
+            <button class="btn btn-sm btn-primary px-6">Validate Model</button>
+          </a>
+          <a class="nav-link" href="#" data-bs-toggle="" aria-expanded="false">           
+            <button class="btn btn-sm btn-primary px-6">Version History</button>
+          </a> -->
+          {% for key, data in mdlsts.items %}  
+          
+             {% if  data.canEdit == "Yes" and data.tempexists == 'No' %}
+              <button class="btn btn-outline-primary" type="button" id="btnEdit" style="display: none;" onclick="approveEdit()">Approve Edit Access </button>
+            {% endif %}
+            
+            {% if data.tempexists != 'No' %}
+              <button class="btn btn-outline-primary" type="button" id="btnApprove" style="display: none;" onclick="showEdit()">Approve Updated Changes </button>
+            {% endif %}
+          {% endfor  %}
+          <button class="btn btn-outline-primary" type="button" onclick="SaveNextValidation('{{mdl_id}}')">Save Next Validation </button>
+          
+         
+          <!-- <button class="btn btn-outline-primary" type="button" id="btnDecomm" style="display: none;" onclick="showDecomm()">Decommission</button> -->
+          <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  
+  <!--Next Validation-->
+     
+  </div>
+  <!-- End Content -->
+  </div>
+  {% endblock content %}
+  {% block script%}
+  
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+  <!-- <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script> -->
+
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script> 
+    <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  
+  
+    <!-- JS Front -->
+    
+
+    <script src="{% static 'Front/dist/assets/vendor/hs-sticky-block/dist/hs-sticky-block.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/hs-scrollspy/dist/hs-scrollspy.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+
+  <script>
+    $('#validation_progress').on('keypress', function (e) {
+      if (e.which < 48 || e.which > 57) {
+        e.preventDefault();
+      }
+    });
+    $('#lblactlttlfees').on('keypress', function (e) {
+      if (e.which < 48 || e.which > 57) {
+        e.preventDefault();
+      }
+    });
+    $('#Nlblprvsttlnm').on('keypress', function (e) {
+      if (e.which < 48 || e.which > 57) {
+        e.preventDefault();
+      }
+    });
+    $('#Nlblestttlfes').on('keypress', function (e) {
+      if (e.which < 48 || e.which > 57) {
+        e.preventDefault();
+      }
+    }); 
+
+    $("#validation_progress_row").hide()
+    $(function(){
+        flatpickr("#startdate", {
+            dateFormat: "m/d/Y"
+        });
+    });
+    $(function(){
+        flatpickr("#enddate", {
+            dateFormat: "m/d/Y"
+        });
+    });
+    $(function(){
+        flatpickr("#rvsdenddate", {
+            dateFormat: "m/d/Y"
+        });
+    });
+    showModala('{{mdl_id}}','','','','')
+    
+    //showDocs('M070100')
+    mergecells()
+    function mergecells()
+    {
+      const table = document.getElementById('findingstbl');
+
+      let headerCell = null;
+      let headerCel2=null;
+
+      for (let row of table.rows) {
+        const firstCell = row.cells[0];
+        const lastCell = row.lastElementChild;
+        if (headerCell === null || firstCell.innerText !== headerCell.innerText) {
+          headerCell = firstCell;
+          headerCel2=lastCell
+        } else {
+          headerCell.rowSpan++;
+          headerCel2.rowSpan++;
+          firstCell.remove();
+          // headerCell.rowSpan++;
+          lastCell.remove();
+        }
+      }
+      
+      // headerCell = null;
+      // for (let row of table.rows) {
+      //   const lastCell = row.lastElementChild;
+      //   console.log('firstCell.innerText ',lastCell.innerText)
+      //   if (lastCell.innerText != '-' &&(headerCell === null || lastCell.innerText !== headerCell.innerText)) {
+      //     headerCell = lastCell;
+      //   } else {
+         
+      //   }
+      // }
+    }
+
+  function showValStatus(){
+    val_stat = $("#validation_status").val()
+    if(val_stat == 'In_Progress'){
+      $("#validation_progress_row").show()
+    }
+    else{
+      $("#validation_progress_row").hide()
+    }
+    
+  }
+
+
+  function show_validator(){
+    debugger
+    validator = $("#Nlblvalidator").val()
+    if(validator == 'Internal'){
+        $("#int_val_sel").show()
+        $('#ext_val_sel').hide()
+    }
+    else{
+        $('#ext_val_sel').show()
+        $("#int_val_sel").hide()
+    }
+  }
+
+  function showDocs(id){
+  $('#tbldocs').find('tbody').empty(); 
+    $.ajax({
+      url: '/getMdlDocs/', 
+      data:{ mdl_id: id},
+      dataType: 'json',   
+      success: function (data) { 
+        $.each(data.docs, function(key, val) {  
+          myRow='<tr> <td><div style="display: flex;"> <div style="margin-right: 10px;">'+val.Mdl_Doc_Type+'</div> </div> </td>  <td><a href="\\static\\document_files\\'+data.mdl_id+'\\'+val.Mdl_Doc_Name +'"  target="_blank">'+val.Mdl_Doc_Name +'</a></td>  </tr> '
+          $('#tbldocs').find('tbody').append(myRow);
+        });   
+      }
+    });
+  }
+
+
+  // function CurrentValidation(id){
+  //   debugger
+  //   // let data = '{{Next_val}}'
+  //   // console.log(data);
+  //   $.ajax({
+  //     url: '/CurrentValidation/', 
+  //     data:{ mdl_id: id},
+  //     dataType: 'json',   
+  //     success: function (data) { 
+  //       debugger
+  //       console.log("data",data)  
+  //       $("#lblvalperiod").text(data.data.validation_period)
+  //       $("#valscope").text(data.data.validation_scope)
+  //       $("#lblvalidator").text(data.data.validator)
+  //       $("#lblintvalidator").text(data.data.internal_validator)
+  //       $("#lblextvalidator").text(data.data.external_validator)
+  //       $("#startdate").text(data.data.projected_start_date)
+  //       $("#enddate").text(data.data.projected_end_date)
+  //       $("#rvsdenddate").text(data.data.revised_end_date)
+  //       $("#lblprvsttlnm").text(data.data.previous_total_fees)
+  //       $("#lblestttlfes").text(data.data.estimated_total_fees)
+  //       $("#lblactlttlfees").text(data.data.actual_total_fees)
+  //       $("#lblcomment").text(data.data.comment)
+  //       $("#lblresp").text(data.data.response)
+  //     }
+  //   });
+  // }
+
+
+  function NextValidation(id){
+    debugger
+    mdl_risk_a = $('#lblMdlRisk').text()
+    // let data = '{{Next_val}}'
+    // console.log(data);
+    $.ajax({
+      url: '/modelval/CurrentValidation/', 
+      data:{ mdl_id: id,mdl_risk:mdl_risk_a },
+      dataType: 'json',   
+      success: function (data) { 
+        debugger
+        console.log("data-----------",data) 
+        val_period = data.data.validation_period 
+        mdl_risk = $('#lblMdlRisk').text()  
+        console.log("risk check", mdl_risk)
+
+        
+        //current data
+        $("#lblvalperiod").text(data.data.validation_period)
+        $("#valscope").text(data.data.validation_scope)
+        $("#lblvalidator").text(data.data.validator)
+        if(data.data.validator == 'Internal'){
+          $("#lblintvalidator").text(data.data.internal_validator)
+          $("#int_validator").show()
+          $("#ext_validator").hide()
+        }
+        else{
+          $("#lblextvalidator").text(data.data.external_validator)
+          $("#int_validator").hide()
+          $("#ext_validator").show()
+        }
+        $("#startdate").val(data.curr_dates.start_date)
+        $("#enddate").val(data.curr_dates.end_date)
+        $("#rvsdenddate").val(data.curr_dates.revised_date)
+        $("#lblprvsttlnm").text(data.data.previous_total_fees)
+        $("#lblestttlfes").text(data.data.estimated_total_fees)
+        $("#lblactlttlfees").val(data.data.actual_total_fees)
+        $("#lblcomment").text(data.data.comment)
+        $("#lblresp").text(data.data.response)
+
+        if (data.Next_val_new == null){
+          //Next data
+          $("#Nlblvalperiod").val(data.updated_dates.next_val_period) 
+          $("#Nvalscope").val(data.data.validation_scope)
+          $("#Nlblvalidator").val(data.data.validator)
+          if(data.data.validator == 'Internal'){
+            $("#Nlblintvalidator").val(data.data.internal_validator)
+            $("#int_val_sel").show()
+            $("#ext_val_sel").hide()
+          }
+          else{
+            $("#Nlblextvalidator").val(data.data.external_validator)
+            $("#int_val_sel").hide()
+            $("#ext_val_sel").show()
+          }
+
+          $("#Nlblintvalidator").val(data.data.internal_validator)
+          $("#Nlblextvalidator").text(data.data.external_validator)
+          $("#Nstartdate").val(data.updated_dates.next_projected_start_date)
+          $("#Nenddate").val(data.updated_dates.next_projected_end_date)
+          // $("#Nrvsdenddate").text(data.data.revised_end_date)
+          $("#Nlblprvsttlnm").val(data.data.previous_total_fees)
+          $("#Nlblestttlfes").val(data.data.estimated_total_fees)
+          // $("#Nlblactlttlfees").text(data.data.actual_total_fees)
+          $("#Nlblcomment").text(data.data.comment)
+          $("#Nlblresp").text(data.data.response)
+        }
+        else{
+          //Next data
+          debugger
+          console.log("next validation data",data.Next_val_new)
+          $("#Nlblvalperiod").val(data.Next_val_new.data[0].validation_period) 
+          $("#Nvalscope").val(data.Next_val_new.data[0].validation_scope)
+          $("#Nlblvalidator").val(data.Next_val_new.data[0].validator)
+          if(data.data.validator == 'Internal'){
+            $("#Nlblintvalidator").val(data.Next_val_new.data[0].internal_validator)
+            $("#int_val_sel").show()
+            $("#ext_val_sel").hide()
+          }
+          else{
+            $("#Nlblextvalidator").val(data.Next_val_new.data[0].external_validator)
+            $("#int_val_sel").hide()
+            $("#ext_val_sel").show()
+          }
+          // $("#Nlblintvalidator").val(data.data.internal_validator)
+          // $("#Nlblextvalidator").text(data.data.external_validator)
+          $("#Nstartdate").val(data.Next_val_new.Next_curr_dates.start_date)
+          $("#Nenddate").val(data.Next_val_new.Next_curr_dates.end_date)
+          // $("#Nrvsdenddate").text(data.data.revised_end_date)
+          $("#Nlblprvsttlnm").val(data.Next_val_new.data[0].previous_total_fees)
+          $("#Nlblestttlfes").val(data.Next_val_new.data[0].estimated_total_fees)
+          // $("#Nlblactlttlfees").text(data.data.actual_total_fees)
+          $("#Nlblcomment").text(data.Next_val_new.data[0].comment)
+          $("#Nlblresp").text(data.Next_val_new.data[0].response)
+        }
+          
+      }
+    });
+  }
+
+  function showModala(id,canDecom,decomSts,canEdit,tempexists){
+    debugger
+    if(canDecom=="Yes"){
+      $('#btnDecomm').show()  
+    }
+    else{
+      $('#btnDecomm').hide()
+    }
+    if(canEdit=="Yes" && tempexists=='No'){
+      $('#btnEdit').show()
+    }
+    else{
+      $('#btnEdit').hide()
+    }
+    if(tempexists!='No'){
+      $('#btnApprove').show()
+    }
+    else{
+      $('#btnApprove').hide()
+    }
+    $("#txtmdlid").val(id);
+    $('#decommSts').val(decomSts);
+    $('#lblmdlnameid').text('');
+    $('#lblDept').text('');
+    $('#lblFunc').text('');
+    $('#lblRegDate').text('');
+    $('#lblMdlId').text('');
+    $('#lblPrmNm').text('');
+    $('#lblSecNm').text('');
+    $('#lblMdlSrc').text('');
+    $('#lblMdlType').text('');
+    $('#lblMdlAbsct').text('');
+    $('#lblMdlObj').text('');
+    $('#lblApplMdl').text('');
+    $('#lblMdlRiskAnlz').text('');
+    $('#lblPrdAddr').text('');
+    $('#lblSsageFreq').text('');
+    //risk tab starts
+    $('#lblMdlRisk').text('');
+    $('#lblIntrRisk').text('');
+    $('#lblReliance').text('');
+    $('#lblMateriality').text('');
+    $('#lblRiskMiti').text('');
+    $('#lblFairLendg').text('');
+    $('#lblDevlopers').text('');
+    $('#lblUsers').text('');
+    $('#lblPrdnSupp').text('');
+    
+    //relevant users ends
+    //dependencies starts
+    $('#lblupstr').text('');
+    $('#lbldwstr').text('');
+    $('#lblApproach').text('');
+    $('#lblMonFreq').text('');
+    $('#lblMonMtrc').text('');
+    $('#lblTriggerEve').text('');
+    $('#lblLastTgrDt').text('');
+    $('#lblMitgDt').text('');
+    $('#lblMitiEv').text(''); 
+    $('#lblOwner').text('');
+    $.ajax({
+          url: '/modelval/getMdlDetailsById/', 
+          data:{ mdlId: id},
+          dataType: 'json',   
+          success: function (data) { 
+              if(data.istaken=='true'){
+              // $('#tblMaster tr:last').after('<tr><td>'+$("#txtopt").val()+'</td><td>'+$("#txtdesc").val()+'</td></tr>');
+              
+              //console.log(data.mdldata[0].Mdl_Src_Label,',' +' id is '+data.mdldata.Mdl_Id)
+              if(data.isvrpublished!='no'){
+              $('#lblpublishDate').text(data.isvrpublished);
+              $("#hrefReport").attr("href", "/static/media/ValidationReport_"+id+".pdf")
+              $('#lblVRReportlink').text("ValidationReport_"+id+".pdf");
+              $("#trpubldate").show();
+              $("#trrptlink").show();
+              }
+              else  {
+              $("#trpubldate").hide();
+              $("#trrptlink").hide();
+              }
+              $('#lblmdlnameid').text(data.mdldata[0].Prm_Name + ' ('+data.mdldata[0].Mdl_Id +')');
+              $('#lblDept').text(data.mdldata[0].Dept_Label);
+              $('#lblFunc').text(data.mdldata[0].Mdl_Fncn_Label);
+              $('#lblRegDate').text(data.mdldata[0].regdate);
+              $('#lblMdlId').text(data.mdldata[0].Mdl_Id);
+              $('#lblPrmNm').text(data.mdldata[0].Prm_Name);
+              $('#lblSecNm').text(data.mdldata[0].Sec_Name);
+              $('#lblMdlSrc').text(data.mdldata[0].Mdl_Src_Label);
+              $('#lblMdlType').text(data.mdldata[0].Mdl_Type_Label);
+              $('#lblMdlAbsct').text(data.mdldata[0].Mdl_Absct);
+              $('#lblMdlObj').text(data.mdldata[0].Mdl_objective);
+              $('#lblApplMdl').text(data.mdldata[0].Mdl_Appl);
+              $('#lblMdlRiskAnlz').text(data.mdldata[0].Mdl_Risk_Ansl);
+              $('#lblPrdAddr').text(data.mdldata[0].Prd_Addr_Label);
+              $('#lblSsageFreq').text(data.mdldata[0].Mdl_Use_Freq_Label);
+              //risk tab starts
+              debugger
+              $('#lblMdlRisk').text(data.mdldata[0].Mdl_Risk_Label);
+              $('#lblIntrRisk').text(data.mdldata[0].Intrinsic_Label);
+              $('#lblReliance').text(data.mdldata[0].Reliance_Label);
+              $('#lblMateriality').text(data.mdldata[0].Materiality_Label);
+              $('#lblRiskMiti').text(data.mdldata[0].Risk_Mtgn);
+              $('#lblFairLendg').text(data.mdldata[0].Fair_Lndg);
+              $('#lblDevlopers').text(data.Developer);
+              $('#lblUsers').text(data.User);
+              $('#lblPrdnSupp').text(data.PrdnSupport);
+              $('#lblOwner').text(data.Owner);
+
+              
+              //relevant users ends
+              //dependencies starts
+              $('#lblupstr').text('');
+              $('#lbldwstr').text('');
+              if(Object.keys(data.dependencies).length>0){
+              $('#lblupstr').text(data.dependencies[0].Mdl_Dwstream_Label);
+              $('#lbldwstr').text(data.dependencies[0].Mdl_Upstream_Label);
+              }
+              //dependencies ends
+
+              //perfomance monitoring start
+              $('#lblApproach').text('');
+              $('#lblMonFreq').text('');
+              $('#lblMonMtrc').text('');
+              $('#lblTriggerEve').text('');
+              $('#lblLastTgrDt').text('');
+              $('#lblMitgDt').text('');
+              $('#lblMitiEv').text(''); 
+              if(Object.keys(data.PerformMon).length>0){
+              $('#lblApproach').text(data.PerformMon[0].Approach);
+              $('#lblMonFreq').text(data.PerformMon[0].Mdl_Montr_Freq_Label);
+              $('#lblMonMtrc').text(data.PerformMon[0].Monr_Mtrcs);
+              $('#lblTriggerEve').text(data.PerformMon[0].Tgr_Evt);
+              $('#lblLastTgrDt').text(data.PerformMon[0].Lst_Tgr_Dt);
+              $('#lblMitgDt').text(data.PerformMon[0].Lst_Tgr_Mtgn_Dt);
+              $('#lblMitiEv').text(data.PerformMon[0].Tgr_Evt_Mtgn); 
+              }
+              // CurrentValidation('{{mdl_id}}')
+              NextValidation('{{mdl_id}}')
+              //perfomance monitoring ends
+
+              }
+              else
+              {
+                
+              }
+          }
+      });
+    
+  }
+
+
+  // function update_Validation_planning(id){
+  //     debugger
+  //     var x = new XMLHttpRequest();
+  //     x.open("POST","/SaveValidationPlanning/",true); 
+  //     let formData = new FormData();
+  //     var csrfToken = $("input[name=csrfmiddlewaretoken]").val();
+  //     formData.append("csrfmiddlewaretoken", csrfToken); 
+
+  //     // Normal text fields
+  //     formData.append('model_id', id);
+  //     formData.append('validation_period', $('#lblvalperiod').val());
+  //     formData.append('validation_scope', $("#valscope").val());
+  //     formData.append('validator', $('#lblvalidator').val());
+  //     formData.append('internal_validator', $('#lblintvalidator').val());
+  //     formData.append('external_validator', $('#lblextvalidator').val());
+  //     formData.append('projected_start_date', $('#startdate').val());
+  //     formData.append('projected_end_date', $('#enddate').val());
+  //     formData.append('revised_end_date', $('#rvsdenddate').val());
+  //     formData.append('previous_total_fees', $('#lblprvsttlnm').val());
+  //     formData.append('estimated_total_fees', $('#lblestttlfes').val());
+  //     formData.append('actual_total_fees', $('#lblactlttlfees').val());
+  //     formData.append('comment', $('#lblcomment').val());
+  //     formData.append('response', $('#lblresp').val()); 
+
+  //     x.send(formData);
+  //     x.onreadystatechange = function () {
+  //       console.log("x.readyState",x.readyState)
+  //       console.log("x.status",x.status)
+  //     if (x.readyState == 4 && x.status == 200) {
+  //         debugger
+  //         console.log("check1")
+  //         var json = JSON.parse(x.responseText);
+  //         console.log(json)
+  //         alert(json.msg)
+  //     }
+  //   }
+  // }
+
+  
+
+  function update_Validation_planning(id) {
+    debugger
+    const csrftoken = $("input[name=csrfmiddlewaretoken]").val();// getCookie('csrftoken');
+    console.log("validation status",$("#validation_status").val(),"validation progress",$("#validation_progress").val())
+    const data = {
+        'model_id': id,
+        'validation_period': $('#lblvalperiod').text(),
+        'validation_scope': $("#valscope").text(),
+        'validator': $('#lblvalidator').text(),
+        'internal_validator': $('#lblintvalidator').text(),
+        'external_validator': $('#lblextvalidator').text(),
+        'projected_start_date': $('#startdate').val(),
+        'projected_end_date': $('#enddate').val(),
+        'revised_end_date': $('#rvsdenddate').val(),
+        'previous_total_fees': $('#lblprvsttlnm').text(),
+        'estimated_total_fees': $('#lblestttlfes').text(),
+        'actual_total_fees': $('#lblactlttlfees').val(),
+        'validation_status':$("#validation_status").val(),
+        'validation_progress':$("#validation_progress").val(),
+        'comment': $('#lblcomment').val(),
+        'response': $('#lblresp').val()
+    };
+
+    $.ajax({
+        url: '/modelval/SaveValidationPlanning/',
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },   // <-- important
+        data: data,
+        success: function(response) {
+            console.log("Response:", response);
+            alert(response.msg);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", status, error);
+            alert("An error occurred. Check console for details.");
+        }
+    });
+}
+
+
+function SaveNextValidation(id) {
+    debugger;
+    const csrftoken = $("input[name=csrfmiddlewaretoken]").val();// getCookie('csrftoken');
+    const data = {
+        'model_id': id,
+        'validation_period': $('#Nlblvalperiod').val(),
+        'validation_scope': $("#Nvalscope").val(),
+        'validator': $('#Nlblvalidator').val(),
+        'internal_validator': $('#Nlblintvalidator').val(),
+        'external_validator': $('#Nlblextvalidator').val(),
+        'projected_start_date': $('#Nstartdate').val(),
+        'projected_end_date': $('#Nenddate').val(),
+        'previous_total_fees': $('#Nlblprvsttlnm').val(),
+        'estimated_total_fees': $('#Nlblestttlfes').val(),
+        'validation_status':$("#validation_status").val(),
+        'validation_progress':$("#validation_progress").val(),
+        'comment': $('#Nlblcomment').val(),
+        'response': $('#Nlblresp').val()
+    };
+
+    $.ajax({
+        url: '/modelval/SaveNextValidationPlanning/',
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },   // <-- important
+        data: data,
+        success: function(response) {
+            console.log("Response:", response);
+            alert(response.msg);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", status, error);
+            alert("An error occurred. Check console for details.");
+        }
+    });
+}
+
+
+
+</script>
+{% endblock script %}                    

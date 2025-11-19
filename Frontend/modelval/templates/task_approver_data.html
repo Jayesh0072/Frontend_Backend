@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    #mytextarea {
+  height: 00px;
+  /*edit this*/
+}
+    .accordion-button::after {
+        display: none;
+    }
+
+    #datepicker,#datepicker_end_date{
+        width: 180px;
+    }
+
+    #datepicker,#datepicker_end_date>span:hover {
+        cursor: pointer;
+    }
+</style> 
+<link href="vendors/flatpickr/flatpickr.min.css" rel="stylesheet" /> 
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/quill/dist/quill.snow.css' %}">
+
+
+<div>
+    <form  id="target" method="post" enctype="multipart/form-data" class="form-horizontal"
+        >
+        {% csrf_token %}
+
+        <div class="content" data-bs-target="#v-pills"  data-bs-spy="scroll" style="padding-top:0px;">
+            <div class="mt-4">
+              <div class="row g-4">
+                <div class="col-12 col-xl-12 order-1 order-xl-0">
+                  <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+                    
+                    <div class="card-body p-0">
+                      
+                      <div class="p-4 code-to-copy">
+                        <div class="row">
+                          <div class="col-sm-auto">
+                            <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                              <div class="nav flex-column nav-pills" id="v-pills">
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Task Overview</a>
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedmodels">Task Summary</a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm">
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-home">Overview</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row g-3 mb-6" style="margin-top:5px">
+                                    
+                                    <div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Name <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly type="text" id="txt_Task_Name" name="txt_Task_Name"
+                                                    class="form-control-sm form-control" value="{{task_name}}"
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                    required />
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Task ID <span style="color: red;">*</span>
+                                            </div> 
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" name="select_task" id="select_task"
+                                                class="form-control-sm form-control" value="{{department_obj.dept_label}}"
+                                                style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Department <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="department" name="department"
+                                                    class="form-control-sm form-control" value="{{department_obj.dept_label}}"
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Originator <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly type="text" id="originator" name="originator"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Task Function <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="task_function_label" name="task_function_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Registration Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+        
+                                                <input readonly class="form-control" name="reg_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="reg_date" type="datetime"
+                                                 placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/>
+        
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Task Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="task_type_label" name="task_type_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Sub Task Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="sub_task_type_label" name="sub_task_type_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Priority <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="task_priority_label" name="task_priority_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                End Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly class="form-control " name="end_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="end_date" type="text"
+                                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Completion Status <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="number" id="completion_status" name="completion_status"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Approval<span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="approval_status" name="approval_status"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div> 
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Task Summary</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row form-group">
+                                        <input type="hidden" id="task_summery_check" name="task_summery_check" value="True">
+                                        <div class="col col-md-4">
+                                            Task Summary</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="quill-custom">
+                                                <div style="min-height: 15rem;margin-bottom: 20px;" id="editor_summ"></div>
+                                                <input type="hidden" name="task_summery_comments" id="task_summery_comments">
+                                                
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Task Requirements</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="quill-custom">
+                                                <div style="min-height: 15rem;margin-bottom: 20px" id="editor_req"></div>
+                                                <input type="hidden" name="task_requirements_comments" id="task_requirements_comments">
+                                                
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Assignee comments</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="quill-custom">
+                                                <div style="min-height: 15rem;margin-bottom: 20px" id="editor_assignee"></div>
+                                                <input type="hidden" name="task_assignee_comments" id="task_assignee_comments">
+                                                
+                                              </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Approver Comments <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="quill-custom">
+                                                <div style="min-height: 15rem;margin-bottom: 20px" id="editor_approver"></div>
+                                                <input type="hidden" name="task_approver_comments" id="task_approver_comments">
+                                                
+                                              </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- <div class="col-12 gy-6" style="margin-top: 15px;">
+                              <div class="row g-3 justify-content-end">
+                                <div class="col-auto">
+                                  <button class="btn btn-phoenix-primary px-5" type="button" onclick="gotoTaks()"> Cancel</button>
+                                </div>
+                                <div class="col-auto">
+                                  <button class="btn btn-primary px-5 px-sm-15" type="button" onclick="saveChanges()">Save</button>
+                                </div>
+                              </div> -->
+                            </div>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+                </div> 
+              </div>
+            </div> 
+          </div>
+          
+            </div>
+    </form>
+</div>
+<script src="assets/js/flatpickr.js"></script>
+<script src="{% static 'Front/dist/assets/vendor/quill/dist/quill.min.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script>
+    (function() {
+      // INITIALIZATION OF QUILLJS EDITOR
+      // =======================================================
+      HSCore.components.HSQuill.init('.js-quill')
+    })();
+  </script>
+
+<script>
+    var toolbarOptions=[
+            ["bold", "italic", "underline", "strike", "link", "blockquote", "code",  {"list": "bullet"}]
+          ]
+
+   
+
+    var quill_assignee = new Quill('#editor_assignee', {
+        theme: 'snow',
+        readOnly: true,
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_req = new Quill('#editor_req', {
+        theme: 'snow',
+        readOnly: true,
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_summ = new Quill('#editor_summ', {
+        theme: 'snow',
+        readOnly: true,
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_approver = new Quill('#editor_approver', {
+        theme: 'snow',
+        readOnly: true,
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+    
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    $('#select_task').val('{{taskid}}')
+        get_task_ID_data('{{taskid}}');
+});
+    
+    function get_task_ID_data(id)
+    {  
+      $.ajax({ 
+        type:'GET',
+        url: "{% url 'get_task_ID_data' %}",
+        data:{'id': id},
+        dataType: 'json',
+        success: function (data) {  
+          console.log('data',data)  
+          console.log('data',typeof(data))
+          document.getElementById("department").value=data.department
+          document.getElementById("originator").value=data.originator
+          document.getElementById("task_function_label").value=data.task_function_label
+          document.getElementById("reg_date").value=data.reg_date
+          document.getElementById("task_type_label").value=data.task_type_label
+          document.getElementById("sub_task_type_label").value=data.sub_task_type_label
+          document.getElementById("task_priority_label").value=data.task_priority_label
+          document.getElementById("end_date").value=data.end_date
+          document.getElementById("completion_status").value=data.completion_status
+          document.getElementById("approval_status").value=data.task_approvalstatus_label
+
+          $('#txt_Task_Name').val(data.task_name)
+          console.log("approval_label",data.task_approvalstatus_label)
+          console.log("approval_status",data.approval_status)
+
+    
+            quill_summ.root.innerHTML = data.task_summery;
+            quill_req.root.innerHTML = data.task_req;
+            quill_assignee.root.innerHTML = data.task_assignee;
+            quill_approver.root.innerHTML = data.approver_comments;
+        
+        }
+        });
+    }
+    
+    
+</script>
+{% endblock content %}

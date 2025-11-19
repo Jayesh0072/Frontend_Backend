@@ -1,0 +1,159 @@
+{% extends 'rmsebase.html' %} 
+{% load static %}
+{% url 'home' as home %} 
+{% block content %} 
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+    
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Model Selection</h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-3 col-form-label" for="txtsection">Model</label>
+
+                    <div class="col-sm-8">
+                        <select class="form-select" id="ddlModel" name="ddlModel" onchange="getSegments()"  aria-label="Default select example" required>                      
+                            {% for key, val in mdlLst.items  %} 
+                                <option value="{{val.Mdl_Id}}">{{val.Mdl_Id}}</option>
+                            {% endfor %}  
+                        </select> 
+                    </div>
+                </div>  
+                <div class="row mb-3 position-relative"> 
+                    <label class="col-sm-3 col-form-label" for="txtsection">Dataset</label>
+        
+                    <div class="col-sm-8">
+                        <select class="form-select" id="ddlDataset" name="ddlDataset" aria-label="Default select example" required>                      
+                          <option value="">All Data</option>
+                            {% for key, val in segLst.items  %} 
+                                <option value="{{val.Query_Rule}}">{{val.Rulename}}</option>
+                            {% endfor %}  
+                        </select> 
+                    </div>
+                     
+                </div>            
+                 
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="hidemodal()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="setMdl()" value="Select" /> 
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+
+    function hidemodal(){
+        window.location='{{blank}}'
+        $('#staticBackdropLive').modal('toggle');
+        
+    }
+
+    function setMdl(){ 
+        $.ajax({
+            url: '/setVTMdl/', 
+            data:{ mdlId: $('#ddlModel').val() ,'ddlDataset': JSON.stringify($('#ddlDataset').val())  },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                if (data.is_taken) {
+                //alert("Updated Successfully.");
+                window.location='{{home}}'
+                }
+            }
+        }); 
+    }
+
+    function getSegments(){ 
+      console.log('ddlDataset')
+      $mySelect = $('#ddlDataset');       
+         
+       $mySelect.empty();
+       var $option = $("<option/>", {
+                       value: "",
+                       text: "All Data"
+                   });
+       $mySelect.append($option);
+      $.ajax({
+                    url: '/getVTModelsSegments/', 
+                    data:{ mdlId: $('#ddlModel').val() ,'ddlDataset': JSON.stringify($('#ddlDataset').val())  },
+                    dataType: 'json',
+                    success: function (data) {
+                      $.each(data.segLst, function(key, value) { 
+                          var $option = $("<option/>", {
+                              value: value.Query_Rule,
+                              text: value.Rulename
+                          });
+                          $mySelect.append($option);
+                      });
+                    }
+                }); 
+    }
+
+    // function validateform(){ 
+    //     if($("#txtdept").val().trim().length<1){
+    //         alert('Plese enter department.');
+    //         return false;
+    //     }
+    //     $.ajax({
+    //         url: '/adddept/', 
+    //         data:{ dept: $("#txtdept").val(),desc:$('#txtdesc').val(),ismrm:$('input[name="rbismrm"]:checked').val()},
+    //        dataType: 'json',   
+    //         success: function (data) { 
+    //            if(data.isvalid=='true'){
+    //             alert('Department added successfully.')
+    //            }
+    //            else
+    //            {
+    //             alert('Error while adding department.')
+    //            }
+    //         }
+    //     });
+    // }
+
+    // function checkUsername(){ 
+    //     $.ajax({
+    //         url: '/checkValue/', 
+    //         data:{val: $("#txtdept").val(),'tbl':'dept' },
+    //        dataType: 'json',   
+    //         success: function (data) { 
+    //            if(data.cnt!='0'){
+    //             $("#txtdept").val('')
+    //             alert('Department already exists.')
+    //             $("#txtdept").focus()
+    //            }
+               
+    //         }
+    //     });
+    // }
+
+    // function gotolist()
+    // {
+    //     window.location='{{showdept}}'
+        
+    // }
+</script>
+{% endblock script %}

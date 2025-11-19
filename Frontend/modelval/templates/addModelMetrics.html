@@ -1,0 +1,278 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %} 
+
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Add Model Metrics</h4>
+            </div>
+        <div class="card-body p-0">
+            {% csrf_token %}
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+                    
+                    <label class="col-sm-4 col-form-label" for="txtutype">Category <span style="color: red;">*</span></label>
+                    <input type="hidden" name="csrfmiddlewaretoken" value="">
+
+                    <div class="col-sm-8">
+                        {% if category_label %}
+                        <input class="form-control" readonly id="mdl_category" value="{{category_label}}" type="text" maxlength="100" required=""> 
+                        {% else %}
+                        <select class="form-select" onchange="getSubcat()" id="mdl_category" aria-label="Default select example" required> 
+                        {% for val in category %} 
+                            <option value="{{val.category_aid}}">{{val.category_label}}</option>
+                        {% endfor %} 
+                        </select>
+                        {% endif %}
+                        
+                    </div>
+                </div> 
+                <div class="row mb-3 position-relative">
+                    
+                    <label class="col-sm-4 col-form-label" for="txtutype">Sub Category <span style="color: red;">*</span></label>
+                    <input type="hidden" name="csrfmiddlewaretoken" value="">
+
+                    <div class="col-sm-8">
+                        {% if sub_category_label %}
+                        <input class="form-control" readonly id="mdl_sub_category" value="{{sub_category_label}}" type="text" maxlength="100" required=""> 
+                        {% else %}
+                        <select class="form-select"  id="mdl_sub_category" aria-label="Default select example" required> 
+                       
+                        </select>
+                        {% endif %}
+                    </div>
+                </div> 
+               
+                <div class="row mb-3 position-relative">
+                    
+                    <label class="col-sm-4 col-form-label" for="txtutype">Metric <span style="color: red;">*</span></label>
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+                    <div class="col-sm-8">
+                        {% if mm_label %}
+                        <input class="form-control" readonly  id="metric" value="{{mm_label}}" type="text" maxlength="100" required=""> 
+                        {% else %}
+                        <input class="form-control"  id="metric" value="" type="text" maxlength="100" required=""> 
+                        {% endif %}
+                    </div>
+                </div> 
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-form-label col-sm-4 pt-0">Department <span style="color: red;">*</span></label>
+                        <div class="col-sm-8">
+                            <select  multiple class="form-control"  id="depart_id">
+                                {% for val in users  %} 
+                                    {% if val.dept_label in dept_list %}
+                                        <option value="{{val.dept_aid}}" selected>{{val.dept_label}} </option>                       
+                                    {% else %}
+                                        <option value="{{val.dept_aid}}">{{val.dept_label}} </option> 
+                                    {% endif %}                               
+                                {%endfor%}
+                            </select>
+                        </div> 
+                        
+                    </div>
+                </fieldset>  
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtdesc">Description</label>
+
+                    <div class="col-sm-8">
+
+                    <textarea class="form-control" id="metric_desc"  type="text" maxlength="150" >{{mm_description}}</textarea>
+                    </div>
+                </div>           
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-form-label col-sm-4 pt-0">Active Status</label>
+                        <div class="col-sm-2">
+                            <div class="form-check">
+                                {% if mm_status == 1 %}
+                                <input class="form-check-input" checked="" id="rbactive" type="radio" name="rbactivests" value="1"> 
+                                <label class="form-check-label" for="rbactive">Active</label>
+                                {% else %}
+                                <input class="form-check-input" checked=""  id="rbactive" type="radio" name="rbactivests" value="1"> 
+                                <label class="form-check-label" for="rbactive">Active</label>
+                                {% endif %}
+                            </div> 
+                        </div> 
+                        <div class="col-sm-1"> 
+                            <div class="form-check"> 
+                            {% if mm_status == 0 %}
+                           
+                            <input class="form-check-input" checked="" id="rbinactive" type="radio" name="rbactivests" value="1"> 
+                            <label class="form-check-label"  for="rbinactive">Inactive</label>
+                            {% else %}
+                            <input class="form-check-input" id="rbinactive" type="radio" name="rbactivests" value="0"> 
+                            <label class="form-check-label" for="rbinactive">Inactive</label>
+                            {% endif %}
+                            </div> 
+                        </div>
+                        
+                    </div>
+                </fieldset> 
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-form-label col-sm-4 pt-0">Is Global?</label>
+                        <div class="col-sm-2">
+                            <div class="form-check">
+                                {% if mm_is_global == 1 %}
+                                <input class="form-check-input" checked="" id="rbglobalyes" type="radio" name="rbglobal" value="1"> 
+                                <label class="form-check-label" for="rbactive">Yes</label>
+                                {% else %}
+                                <input class="form-check-input" checked="" id="rbglobalyes" type="radio" name="rbglobal" value="1"> 
+                                <label class="form-check-label" for="rbactive">Yes</label>
+                                {% endif %}
+                            </div> 
+                        </div> 
+                        <div class="col-sm-1"> 
+                            <div class="form-check"> 
+                            {% if mm_is_global == 0 %}
+                            <input class="form-check-input" checked="" id="rbglobalno" type="radio" name="rbglobal" value="1"> 
+                            <label class="form-check-label" for="rbinactive">No</label>
+                            {% else %}
+                            <input class="form-check-input" id="rbglobalno" type="radio" name="rbglobal" value="0"> 
+                            <label class="form-check-label" for="rbinactive">No</label>
+                            {% endif %}
+                            </div> 
+                        </div>
+                        
+                    </div>
+                </fieldset>  
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        {% if mm_label %}
+                        <input type="hidden" id="update_id" value="{{mm_aid}}" >
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                        {% else %}
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" />
+                        {% endif %} 
+                      </div>
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div> 
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+
+<script type='text/javascript' >
+
+
+    function getSubcat(){ 
+        var $mySelect,selid ;
+        
+        $mySelect = $('#mdl_category'); 
+        selid=$('#mdl_category').val();
+        
+        console.log('selid',selid)
+         
+        $.ajax({
+            url: '/getSubcat/', 
+            data:{ secid: selid},
+        dataType: 'json',   
+            success: function (data) { 
+            console.log('data',data)
+            $mySelect_sub = $('#mdl_sub_category'); 
+            $mySelect_sub.empty();
+            
+            $.each(data.sub_cat.data, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.sub_category_aid,
+                        text: value.sub_category_label
+                    });
+                    $mySelect_sub.append($option);
+                });
+            }
+        });
+    } 
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    // var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    
+    function validateform(){ 
+        
+        $.ajax({
+            url: '/savemodelmetrics/', 
+            data:{metric: $("#metric").val(),'depart_id': $("#depart_id").val(),desc:$('#metric_desc').val(),
+                    'cat': $("#mdl_category").val(),'sub_cat': $("#mdl_sub_category").val(),activests:$('input[name="rbactivests"]:checked').val(),isglobal:$('input[name="rbglobal"]:checked').val(),update_id:$('#update_id').val()},
+            dataType: 'json',
+            method:'POST',
+            headers:{
+                "X-CSRFToken": csrftoken
+            },
+            success: function (data) { 
+                console.log("return message",data)
+                alert(data.msg)
+            //    if(data.isvalid=='true'){
+            //     alert(data.msg)
+            //    }
+            //    else if(data.isvalid=='update'){
+            //     alert('Department updated successfully.')
+            //    }
+            //    else
+            //    {
+            //     alert('Error while adding department.')
+            //    }
+            }
+        });
+    }
+
+    function checkUsername(){ 
+        $.ajax({
+            url: '/checkValue/', 
+            data:{val: $("#txtdept").val(),'tbl':'dept' },
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.cnt!='0'){
+                $("#txtdept").val('')
+                alert('Department already exists.')
+                $("#txtdept").focus()
+               }
+               
+            }
+        });
+    }
+
+    function gotolist()
+    {
+        window.location='{% url 'showModelMetrics' %}'
+        
+    }
+</script>
+{% endblock script %}

@@ -1,0 +1,346 @@
+{% extends 'rmsebase.html' %} 
+{% load static %} 
+<style>
+th{
+    padding: 10px 0px 10px 10px!important;
+ } 
+.button{
+    background-image: url('\static\images\save.png') no-repeat;
+    cursor:pointer;
+    border: none;
+} 
+</style>
+{% block content %}
+<div class="row" style="margin-left:auto;"> 
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="row form-group" style="margin-bottom: 0px;">
+                    <div class="col col-md-11">
+                        Data Type Conversion
+                    </div>
+                    <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">         
+                         <!-- <div style="border:solid 0px;border-radius: 4px; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;"> 
+                            <img src='\static\images\save.png' onclick="saveTbl()" title="Save" style='cursor:pointer;'/>
+                                            
+                         </div>   -->
+                    </div>
+                     
+                </div>                  
+            </div>
+            <div class="card-body card-block">
+                <ul class="nav nav-underline" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-item nav-link active" id="custom-nav-numtype-tab"  data-bs-toggle="tab" href="#custom-nav-numtype" role="tab" aria-controls="custom-nav-numtype"
+                            aria-selected="false">Numeric To String Coversion</a>
+                    </li>
+                    <li class="nav-item"> 
+                        <a class="nav-item nav-link" id="custom-nav-mean_ad-tab" data-bs-toggle="tab" href="#custom-nav-mean_ad" role="tab" aria-controls="custom-nav-mean_ad"
+                            aria-selected="true">String To  Numeric Coversion</a>
+                        </li>
+                     
+                </ul>
+                <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="custom-nav-numtype" role="tabpanel" aria-labelledby="custom-nav-numtype-tab">
+                        <!-- <div class="table-responsive table--no-card m-b-40">
+                            <table id='descData' class="table table-borderless table-striped table-earning"> -->
+                                <div class="table-responsive" style="height: 400px;overflow: scroll;">
+                                    <table class="table table-sm fs--1 mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="sort align-middle" scope="col"  style="width:5%;">
+                                                    <input type="checkbox" id="name1" onclick="selectall()"/>
+                                                  </th>
+                                                <th class="sort align-middle" scope="col" >Column Name</th> 
+                                                <th class="sort align-middle" scope="col" >Column Data type &nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                            </tr>
+                                        </thead>  
+                                        <tbody>      
+                                            {% for data in dataTypes %}
+                                            <tr> 
+                                                <td class="align-middle white-space-nowrap ps-0 py-4">
+                                  
+                                                    <input type="checkbox" name="chk"  id="chk_{{data.AID}}" onclick="registerclick('{{data.AID}}')"/> 
+                                                 </td>
+                                                <td class="align-middle white-space" >
+                                                  <label id="lbl_{{data.AID}}">{{data.colName}}</label>
+                                                </td> 
+                                                <td class="align-middle white-space" >
+                                                    {{data.dataType}}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                    </div>
+                    <div class="tab-pane fade" id="custom-nav-mean_ad" role="tabpanel" aria-labelledby="custom-nav-mean_ad-tab">
+                        <!-- <div class="table-responsive table--no-card m-b-40">
+                            <table id='mean_adData' class="table table-borderless table-striped table-earning"> -->
+                                <div class="table-responsive" style="height: 400px;overflow: scroll;">
+                                    <table class="table table-sm fs--1 mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="sort align-middle" scope="col"  style="width:5%;">
+                                                    <input type="checkbox" id="name1str" onclick="selectallstr()"/>
+                                                  </th>
+                                                <th class="sort align-middle" scope="col" >Column Name</th> 
+                                                <th class="sort align-middle" scope="col" >Column Data type &nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                            </tr>
+                                        </thead>  
+                                        <tbody>      
+                                            {% for data in dataTypesStr %}
+                                            <tr> 
+                                                <td class="align-middle white-space-nowrap ps-0 py-4">
+                                  
+                                                    <input type="checkbox" name="chkstr"  id="chk_str_{{data.AID}}" onclick="registerclickstr('{{data.AID}}')"/> 
+                                                 </td>
+                                                <td class="align-middle white-space" >
+                                                  <label id="lbl_str_{{data.AID}}">{{data.colName}}</label>
+                                                </td> 
+                                                <td class="align-middle white-space" >
+                                                    {{data.dataType}}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                    </div>                                  
+           
+                </div>
+              
+            </div> 
+            <!--<div class="card-footer">
+                <div class="row" style="display: flex; justify-content: flex-end;"> 
+                    <button  class="btn btn-primary btn-sm"    onclick="goNext()" style="margin-left: 10px;" type="button">Next</button>                     
+                </div>
+            </div>-->
+            <div class="card-footer">
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                        <div class="col-auto">
+                            <button class="btn btn-primary px-5" onclick="adddata()">Convert</button>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+
+        </div> 
+    </div>     
+                <div id="divComment" title="Add comments" style="display: none;width:70%">
+                    <div style="width:100%">
+                        <input type="text" value="{{chartType}}" id="txtchartType" style="display: none;"/>
+                        <textarea id="txtcomment" rows="5" style="resize: none; border:1px solid black;width:100%;" ></textarea>
+                   </div> 
+                </div> 
+            
+                        {% endblock content %}
+{%  block script %}
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'jquery-3.5.1.js' %}"></script>
+    <!-- Jquery JS-->
+    <script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'dataTables.min.js' %}"></script><script type='text/javascript' >
+        $(document).ready( function () {  
+            $('#dataType').DataTable({
+            sDom: 'lrtip',
+            "ordering": false,
+            scrollY: 400,
+            scrollX: true,
+            scroller: true,
+            paging:false,
+            info:false
+            }); 
+        } );
+
+        var arrQtns=[];
+        var arrQtnsStr=[]
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       
+        if($('#chk_'+id).prop('checked')){
+          
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          }
+        }
+        else{  
+          $('#name1').prop('checked', false);            
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+        
+        }
+    }
+
+    function registerclickstr(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       
+        if($('#chk_str_'+id).prop('checked')){          
+          if(arrQtnsStr.indexOf(id)<0){
+              arrQtnsStr.push(id);  
+          }
+        }
+        else{  
+            console.log('inside else')
+          $('#name1str').prop('checked', false);            
+          arrQtnsStr.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+        
+        }
+    }
+
+    function selectall(){ 
+      var yes = document.getElementById("name1");  
+       
+      // alert("select all")
+      // var check = false;
+      if (yes.checked == true){
+        var ele=document.getElementsByName('chk');
+        
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].click(); 
+          }
+      }
+      else{
+        var ele=document.getElementsByName('chk');
+        
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+           ele[i].click();  // ele[i].checked=false;
+              
+          }
+      }
+      
+    } 
+    function selectallstr(){ 
+      var yes = document.getElementById("name1str");  
+       
+      // alert("select all")
+      // var check = false;
+      if (yes.checked == true){
+        var ele=document.getElementsByName('chkstr');
+         
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].click(); 
+          }
+      }
+      else{
+        var ele=document.getElementsByName('chkstr');
+        
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+           ele[i].click();  // ele[i].checked=false;
+              
+          }
+      }
+      
+    }
+    
+
+    function adddata(){ 
+      if(arrQtns.length<1 && arrQtnsStr.length<1){
+        alert('Please select column(s).')
+        return
+      }
+
+      updatedata=[]
+      updatedatastr=[]
+      arrQtns.forEach(i => {
+        if($('#chk_'+i).prop('checked')) {
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["colName"] = $('#lbl_'+i).text();
+         
+
+          updatedata.push(item); 
+        }
+    
+      });
+
+      arrQtnsStr.forEach(i => {
+        if($('#chk_str_'+i).prop('checked')) {
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["colName"] = $('#lbl_str_'+i).text();        
+
+          updatedatastr.push(item); 
+        }
+    
+      }); 
+      
+      if(updatedata.length>0 || updatedatastr.length>0){
+        $.ajax({
+          url: '/updatenumtostring/', 
+          data:{ colList: JSON.stringify(updatedata) ,colListStr: JSON.stringify(updatedatastr) },
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){
+                alert('Data type changed for selected fields.')
+              }
+          }
+        }); 
+      }  
+       
+    }  
+
+
+
+    function showComment()
+    {  
+        $("#divComment").dialog({   
+            width: "70%",   
+            modal: true,
+            buttons:             /* Save: function() {
+                $(this).dialog("close");
+                } */ [
+                {
+                    text: "Save",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() {  
+                        $.ajax({ 
+                            url: '/DatatypeComments/',
+                            data:{ comments: $('#txtcomment').val()}, 
+                            dataType: 'json',
+                            success: function (data) {
+                                    if(data.is_taken)
+                                    {
+                                        alert('Comments added to pdf file.')
+                                    }            
+                            }
+                        }); 
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Cancel",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() {
+                        // Save code here
+                        $(this).dialog("close");
+                    }
+                }
+            ],  
+        }); 
+    }
+ 
+    function saveTbl(){
+        $.ajax({ 
+            url: '/saveTableInfo/',
+            data:{tableType:'DataTypenCnt',tableName:'Data types and cnt', comments:'',var1:'',var2:''}, 
+            dataType: 'json',
+            success: function (data) {
+                    if(data.is_taken)
+                    {
+                        alert('Table saved.')
+                    }            
+            }
+        }); 
+    }
+
+    function goNext(){
+        window.location="{% url 'showCatColFreq' %}"
+     } 
+    </script>
+{% endblock script %} 

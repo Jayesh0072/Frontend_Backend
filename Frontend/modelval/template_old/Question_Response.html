@@ -1,0 +1,195 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %} 
+<form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal">   
+  {% csrf_token %}  
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+            
+               
+                
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Roles Responsibility Question Response</h4>
+                        </div>
+                        <div class="card-body card-block">   
+                          <div class="row form-group">                                     
+                            <div class="col col-md-12">
+                                <select id="mdl_id" name="mdl_id" onchange="$('#target').submit()"  style="margin-bottom: 15px;" class="form-control form-control-sm" > 
+                                  <option   value="">Select</option> 
+                                   {% for  data in mdl_id %}
+                                        <option value="{{data}}">{{data}}</option>
+                                    {% endfor %}                                            
+                                </select>                                        
+                            </div>                                     
+                          </div>   
+                          <div class="row form-group">   
+                            {% for question in questions %}                                  
+                            <div class="accordion" id="accordionExample_{{question.qtn_id}}" style="margin-bottom: 25px;">
+                              <div class="accordion-item border-top border-300">
+                                <h2 class="accordion-header" id="headingOne">
+                                  
+                 
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_{{question.qtn_id}}" aria-expanded="true" aria-controls="collapseOne_{{question.qtn_id}}">
+                                    {{question.question_text}}
+                                  </button>
+                                </h2>
+                                <div class="accordion-collapse collapse" id="collapseOne_{{question.qtn_id}}" aria-labelledby="headingOne" data-bs-parent="#accordionExample_{{question.qtn_id}}" style="">
+                                  <div class="accordion-body pt-0"> 
+                                       
+                                      
+                                      <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                                          <div class="col-12 col-md-12">
+                                               <textarea id="txtComments_{{question.qtn_id}}"   rows="5" style="resize: none; border:1px solid black;width: 100%;font-size: 10pt;" >{{question.Question_Resp}}</textarea> 
+                                          </div>
+                                          <input type="text" id="txtid_{{question.qtn_id}}" value="{{question.qtn_id}}" hidden>
+                                      </div>
+                                  
+                                 
+                
+                                      
+                                  </div>
+                                </div>
+                              </div>
+                              
+                         
+                        </div> 
+                        {% endfor %}
+                          </div>
+                           
+                  </div> 
+                  
+                  <div class="card-footer" style="border: 0px solid red;;">
+                      <div class="col-12 gy-6">
+                          <div class="row g-3 justify-content-end">
+                           
+                              <div class="col-auto">
+                                 
+                                  <button type="button" class="btn btn-primary" id="btn_report" onclick="saveResponse()">Save</button> 
+                                  
+                              </div>
+                             
+                              <div class="col-auto">
+                                  <button type="button" class="btn btn-primary" onclick="goNext()">Next</button>
+                              </div>
+                          </div>  
+                      </div>
+                  </div>
+                        </div>
+
+                    </div> 
+                </div>
+                 
+            </div>
+      </form>       
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script type='text/javascript' >
+    var myTable;
+    var colDtTbl;
+    $(document).ready( function () { 
+      $('#mdl_id').val('{{selected_id}}');
+      if($('#mdl_id > option').length==1)
+        {
+          alert('No models allocated.')
+        }
+    } ); 
+    var questions ={{questions| safe}} 
+    $.each(questions, function(i, obj) {
+        // alert(i,obj)
+      //use obj.id and obj.name here, for example:
+    //   item = {}  
+    //   item['value'] = obj.cnt;
+    //   item['name'] = obj.Mdl_Type_Label;
+    //   mdlType.push(item)
+    });
+    // var arrQtns=[]
+    // function registerclick(id){
+    //     //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       
+    //     if($('#txtComments_'+id).val()){ 
+    //       if(arrQtns.indexOf(id)<0){
+    //           arrQtns.push(id);  
+    //       }
+    //     }
+    //     else{ // only splice array when item is found
+           
+    //       arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+    //       $('#name1').prop('checked', false); 
+    //     }
+    // }
+    function saveResponse(){
+       
+        var questions ={{questions| safe}} 
+        console.log(questions)
+        try {
+        $.each(questions, function(i, obj) {
+         
+        console.log("compl id",$('#txtid_'+obj.qtn_id).val())
+        console.log("response",$('#txtComments_'+obj.qtn_id).val())
+      //use obj.id and obj.name here, for example:
+    //   item = {}  
+    //   item['value'] = obj.cnt;
+    //   item['name'] = obj.Mdl_Type_Label;
+    //   mdlType.push(item)
+        if ($('#txtComments_'+obj.qtn_id).val() == '')
+        {
+            // alert("please add comment")
+            
+        }
+        else{
+        $.ajax({
+            url: '/savequestionresponse/', 
+            data:{mdl_id:$('#mdl_id').val(),response: $('#txtComments_'+obj.qtn_id).val(),qtn_id:$('#txtid_'+obj.qtn_id).val()},
+            dataType: 'json',
+            success: function (data) {
+               // alert(data)
+               if(data.isvalid == 'true'){
+                // alert('Response saved successfully.'); 
+               }
+               else{
+                // alert('Something Went Wrong')
+               }
+            }
+        });
+      }
+        
+      });
+      alert('Response saved successfully.');
+    }
+    catch(err) {
+        alert('Something Went Wrong',err)
+    }
+        //alert('src is '+ $("#txt_src").val() + ', email is '+ $("#txt_email").val() +' , cols are '+ $("#selectCols").val() )
+        // console.log('clicked '+ $('#txtComments').val() )
+        // alert($('#txtid').val() )
+        // alert($('#txtComments').val())
+        // $.ajax({
+        //     url: '/saveauditresponse/', 
+        //     data:{response: $('#txtComments').val(),compl_id:$('#txtid').val()},
+        //     dataType: 'json',
+        //     success: function (data) {
+        //        // alert(data)
+        //        if(data.isvalid == 'true'){
+        //         alert('Response saved successfully.'); 
+        //        }
+        //        else{
+        //         alert('Something Went Wrong')
+        //        }
+        //     }
+        // });
+        
+    }
+
+
+
+    function goNext(){
+        window.location="{% url 'valFindings' %}"
+} 
+</script>
+{% endblock script %}

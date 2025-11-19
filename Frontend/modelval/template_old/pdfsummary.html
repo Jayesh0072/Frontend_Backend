@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <form method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+
+
+        {% csrf_token %}
+        <div class="content" style="padding-top:0px;width:80%;margin-left: 10%;height: 100%;"> 
+           
+            <div class="card h-90s">
+                <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                            -webkit-border-top-right-radius: 6px;
+                            -moz-border-radius-topleft: 6px;
+                            -moz-border-radius-topright: 6px;
+                            border-top-left-radius: 6px;
+                            border-top-right-radius: 6px;">
+                      <h4 style="color:#3e465b; padding:10px 20px">.pdf Summarizer</h4>
+                    </div>
+                <div class="card-body p-0">
+                
+                    <div class="p-4 code-to-copy"> 
+                        <div class="row mb-3 position-relative"> 
+                            <div class="col-sm-12">  
+                                <select   id="ddlfiles" onchange="checkUpload()" style="width:100%"  class="form-select" aria-label="Default select example"> 
+                                    {% if file_name == "" %}
+                                        <option selected value="">Select Document</option>
+                                    {% else %}
+                                        <option value="">Select Document</option>
+                                    {% endif %}
+                                    {% for key, i in uploaded_files.items  %}   
+                                        {% if file_name == i.Doc_Name %} 
+                                            <option selected class="dropdown-item" value="{{i.Doc_Id}}">{{i.Doc_Name}}</option>
+                                        {%else%}
+                                            <option class="dropdown-item" value="{{i.Doc_Id}}">{{i.Doc_Name}}</option>
+                                        {%endif%}
+                                    {% endfor %}  
+                                    <option class="dropdown-item" value="Add">Add New</option>
+                                </select>     
+                                
+                            </div>
+                        </div>  
+                        <div class="row mb-3 position-relative" id="divupload" style="display: none;" > 
+                            <div class="col-sm-9">  
+                                      
+                                <input type="file" name="myfile" id="myfile"  value="{{file_name}}" required>  
+                            </div>      
+                            <div class="col-sm-1 justify-content-end" style="display: flex;">        
+                                <button class="btn btn-primary btn-sm"   type="button" onclick="showddl()">Clear</button>
+                            </div>  
+                            <div class="col-sm-2 justify-content-end" style="display: flex;">        
+                                <button class="btn btn-primary btn-sm"   type="submit">Upload</button>
+                            </div>
+                        </div>     
+                         
+                        <div class="row mb-3 position-relative">   
+                            <div class="col-sm-12">        
+                                <textarea class="form-control" id="txtquery" placeholder="Ask your query" type="text" rows="2" maxlength="150"></textarea>
+                            </div>
+                        </div>           
+                         
+        
+                        <div class="col-12 gy-6">
+                            <div class="row g-3 justify-content-end">
+                                <div class="col-auto"> 
+                                    <audio id="myaudio" style="display: none;" controls="controls" preload= 'auto'
+                                            playsinline="">
+                                                <source src="{{aiaudio}}" type="audio/mpeg" />
+                                            </audio>
+                                </div>
+                                <div class="col-auto"> 
+                                <input type="button"  class="btn btn-outline-warning me-1 mb-1"  id="btnplay" value="Play" onclick="play()">
+                                </div>
+                              
+                              <div class="col-auto"> 
+                                <input type="button" class="btn btn-outline-info me-1 mb-1" onclick="gotolist()"   value="Cancel"/>
+                              </div>
+                              <div class="col-auto"  id="btnShow" >
+                                <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="getsummary()" value="Show" /> 
+                              </div>
+                              <div class="col-auto" id="btnloading" style="display: none;">
+                                <button class="btn btn-primary px-5 px-sm-5"  type="button" disabled="" >
+                                    <span class="spinner-border spinner-border-sm" style="--phoenix-spinner-width: 0.70rem;
+                                    --phoenix-spinner-height: 0.70rem;--phoenix-spinner-border-width: 0.2em;" 
+                                    role="status" aria-hidden="true"></span>
+                                    Loading...
+                                
+                                </button>
+                                </div>
+                            </div>
+                          </div>
+                        
+                         
+                        <div class="row mb-3 position-relative" style="margin-top: 10px;"> 
+                          
+                            <div class="col-sm-12">        
+                                <textarea class="form-control" id="txtResponse" type="text" readonly rows="10"></textarea>
+                            </div>
+                        </div> 
+                        <div class="row mb-3 position-relative" style="margin-top: 10px;"> 
+                          
+                            <div class="col-sm-10">        
+                                 <input id="txtRespName" class="form-control" style="width:100%" type="text"/>
+                            </div>
+                            <div class="col-auto">
+                                <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="saveResp()" value="Save" /> 
+                              </div>
+                        </div> 
+                    </div>
+                        <!--<div class="row mb-3 position-relative"> 
+                            <div class="col-sm-12">        
+                                <textarea class="form-control" id="txtResponse" type="text" rows="15" maxlength="150"> </textarea>
+                            </div>
+                        </div>  -->
+                </div>
+            </div>
+            
+      
+        </div>
+       
+
+    </form>
+</div>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script type='text/javascript'>
+    var audiosrc=''
+    var myAudio = document.getElementById("myaudio");
+var isPlaying = false;
+    $(document).ready(function () {
+        if('{{msg|safe}}' !=''){
+            alert('{{msg|safe}}');
+        }
+        $('#csvData').DataTable({
+            sDom: 'lrtip',
+            "ordering": false,
+            scrollY: 450,
+            scrollX: true,
+            scroller: true,
+            paging: false,
+            info: false
+        });
+    });
+
+    function getsummary(){ 
+        console.log('{{file_name|safe}}')
+        var flnm='{{file_name|safe}}';
+        $("#btnShow").hide();
+        $("#btnloading").show();
+        $("#txtResponse").val('')
+        $.ajax({
+            url: '/pdfsummaryresp/', 
+            data:{ txtquery: $("#txtquery").val(),fileName:$("#ddlfiles option:selected").text()},
+            dataType: 'json',   
+            success: function (data) { 
+                console.log(data.response)
+                audiosrc=data.aiaudio
+                $("#txtResponse").val(data.response)
+                var source = document.getElementById('myaudio');
+     
+                source.src =   audiosrc;  
+                $("#btnShow").show();
+                $("#btnloading").hide();
+            }
+        });
+    }
+
+    // function getsummary(){ 
+    //     console.log('{{file_name|safe}}')
+    //     var flnm='{{file_name|safe}}';
+    //     $("#btnShow").hide();
+    //     $("#btnloading").show();
+    //     $("#txtResponse").val('')
+    //     $.ajax({
+    //         url: '/codereview/', 
+    //         data:{ txtquery: $("#txtquery").val(),fileName:flnm},
+    //         dataType: 'json',   
+    //         success: function (data) { 
+    //             console.log(data.message) 
+    //             $("#txtResponse").val(data.message)
+                
+    //         }
+    //     });
+    // }
+
+
+    function validateForm() {
+        var fileName = $("#myfile").val();
+
+        if (fileName) { // returns true if the string is not empty
+            // alert(fileName + " was selected");
+        } else { // no file was selected
+            alert("Please select a file.");
+            return false;
+        }
+    }
+ 
+ function gotolist(){
+window.location='{{blank}}'
+
+ }
+
+ function play(){
+    console.log('button click')
+   
+    $('#myaudio').show()
+    togglePlay();
+
+}
+
+
+function togglePlay() {
+  isPlaying ? myAudio.pause() : myAudio.play();
+};
+
+myAudio.onplaying = function() {
+    console.log('playing')
+  isPlaying = true;
+};
+myAudio.onpause = function() {
+    console.log('pause')
+  isPlaying = false;
+};
+
+function checkUpload(){
+    if($("#ddlfiles").val()=='Add'){
+        $('#myfile').click();
+        $('#divupload').show();
+        $("#ddlfiles").hide();
+    }
+}
+ 
+function showddl() {
+
+    $('#divupload').hide();
+    $("#ddlfiles").show();
+    $("#ddlfiles").val('')
+ 
+}   
+
+function saveResp(){
+console.log($('#txtResponse').val().length,$('#txtRespName').val().length,$("#ddlfiles").val().length)
+if($('#txtResponse').val().length==0 || $('#txtRespName').val().length==0 || $("#ddlfiles").val().length==0 ||  $("#txtquery").val().legth==0){
+    alert('All fields are mandatory')
+    return;
+}
+else{
+    //savePDFResp
+    $.ajax({
+        url: '/savePDFResp/', 
+        data:{ resp: $("#txtResponse").val(),fileid:$("#ddlfiles").val(),respLbl:$("#txtRespName").val(),query: $("#txtquery").val()},
+        dataType: 'json',   
+        success: function (data) { 
+           alert('Response saved successfully.')
+        }
+    });
+}
+
+}
+</script>
+{% endblock script %}

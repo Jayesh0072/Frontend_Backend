@@ -1,0 +1,230 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block style %} 
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">  -->
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+
+.multi-select {
+  height: 120px;
+}
+
+{% endblock style %}
+{% block content %}
+
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+  <div class="col-lg-10">
+    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+      {% csrf_token %}  
+      <div class="card">
+          <div class="card-header">
+            Validation Findings
+          </div>
+          <div class="card-body card-block">  
+                <div class="accordion" id="accordionExample">
+                  <div class="accordion-item border-top border-300">
+                    <h2 class="accordion-header" id="headingOne">
+                      
+     
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Validation
+                      </button>
+                    </h2>
+                    <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                      <div class="accordion-body pt-0">
+                        <div class="card-body card-block">
+                        
+
+                          <div class="row form-group" style="margin-bottom:10px;">
+                            <div class="col col-md-3">
+                                <label class="form-control-label">Model ID</label>
+                            </div>
+                            <div class="col-12 col-md-7">
+                                <div class="mb-1">
+                                <input type="checkbox" id="selectAll_mdlid" onclick="toggleSelectAll(this, 'mdlid')">
+                                <label for="selectAll_mdlid">Select All</label>
+                                </div>
+                                <select id="mdlid" name="mdlid" class="form-select multi-select" multiple onchange="checkSelectAll('mdlid', 'selectAll_mdlid')">
+                                {% for val in mdlid %}
+                                    <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            </div>
+
+                          
+                          <!--Modified by Shuvankar dated 2024.03.26 Starts-->
+                          <div class="row form-group" style="margin-bottom:10px;">
+                            <div class="col col-md-3">
+                                <label class="form-control-label">Validation Elements</label>
+                            </div>
+                            <div class="col-12 col-md-7">
+                                <div class="mb-1">
+                                <input type="checkbox" id="selectAll_validation_element" onclick="toggleSelectAll(this, 'validation_element')">
+                                <label for="selectAll_validation_element">Select All</label>
+                                </div>
+                                <select id="validation_element" name="validation_element" class="form-control-sm form-control multi-select" multiple onchange="checkSelectAll('validation_element', 'selectAll_validation_element')">
+                                {% for key,itmValElm in ValCatElm.items %}
+                                    <option value="{{itmValElm.Element_AID}}">{{itmValElm.Element_text}}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            </div>
+ 
+
+                          
+
+                          <!--Modified by Shuvankar dated 2024.03.26 Ends-->
+                          <!--Added by Shuvankar dated 2024.03.26 Starts-->
+                        <div class="row form-group" style="margin-bottom:10px;">
+                        <div class="col col-md-3">
+                            <label class="form-control-label">Validation Category</label>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div class="mb-1">
+                            <input type="checkbox" id="selectAll_optValCat" onclick="toggleSelectAll(this, 'optValCat')">
+                            <label for="selectAll_optValCat">Select All</label>
+                            </div>
+                            <select id="optValCat" name="optValCat" class="form-control-sm form-control multi-select" multiple onchange="checkSelectAll('optValCat', 'selectAll_optValCat')">
+                            {% for key, itmValCat in ValCatLst.items %}
+                                <option value="{{itmValCat.Category_AID}}">{{itmValCat.Category_text}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        </div>
+ 
+                         
+
+                        </div>
+                        <div class="card-footer">
+                          <div class="row mb-1 position-relative">  
+                              
+                              <div class="col-sm-5" style="display: flex; justify-content: flex-end;">
+                                <!-- <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="sendMail()" >Send Email</button> -->
+                                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="saveFindings()" >Save</button>
+                                <!-- <button  class="btn btn-primary btn-sm"    onclick="gotoNext()" type="button">Next</button> -->
+                              </div> 
+                          </div>       
+                        </div>
+                          
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+             
+          </div> 
+      </div> 
+    </form>
+  </div>
+   
+</div>
+
+{% endblock content %}
+{%  block script %}  
+<!-- <script src="{% static 'bootstrap_datepicker/js/bootstrap-datepicker.js' %}"></script> -->
+ 
+ 
+<script type="text/javascript">   
+    window.onload=function(){
+      $( "#accordion" ).accordion({
+        collapsible: true
+      });  
+      document.getElementById('txtComments').addEventListener('keydown', function(e) {
+        if (e.key == 'Tab') {
+          e.preventDefault();
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+      
+          // set textarea value to: text before caret + tab + text after caret
+          this.value = this.value.substring(0, start) +
+            "\t" + this.value.substring(end);
+      
+          // put caret at right position again
+          this.selectionStart =
+            this.selectionEnd = start + 1;
+        }
+      });
+    };
+    document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.multi-select').forEach(select => {
+        select.addEventListener('change', function () {
+        const options = Array.from(this.options);
+        const isSelectAll = Array.from(this.selectedOptions).some(opt => opt.value === 'select_all');
+
+        if (isSelectAll) {
+            const allSelected = options.filter(opt => opt.value !== 'select_all' && opt.selected).length === options.length - 1;
+
+            options.forEach(opt => {
+            if (opt.value !== 'select_all') {
+                opt.selected = !allSelected;
+            }
+            });
+
+            this.querySelector('option[value="select_all"]').selected = true;
+        }
+        });
+    });
+    });
+
+
+    function toggleSelectAll(checkbox, selectId) {
+        const select = document.getElementById(selectId);
+        const options = Array.from(select.options);
+        options.forEach(opt => opt.selected = checkbox.checked);
+        select.dispatchEvent(new Event('change')); // manually trigger to update visuals
+    }
+
+    function checkSelectAll(selectId, checkboxId) {
+        const select = document.getElementById(selectId);
+        const checkbox = document.getElementById(checkboxId);
+
+        const options = Array.from(select.options);
+        const allSelected = options.every(opt => opt.selected);
+        checkbox.checked = allSelected;
+    }
+
+    function saveFindings() {
+    // Get selected values from each dropdown (excluding "select_all")
+    const getSelectedValues = (selector) => {
+        return Array.from(document.querySelector(selector).selectedOptions)
+                    .map(opt => opt.value)
+                    .filter(val => val !== "select_all");
+    };
+
+    const mdlid = getSelectedValues('#mdlid');
+    const validation_element = getSelectedValues('#validation_element');
+    const optValCat = getSelectedValues('#optValCat');
+
+    const dataToSend = {
+        mdlid: mdlid,
+        validation_element: validation_element,
+        optValCat: optValCat,
+        csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+    };
+
+    console.log("Sending:", dataToSend);
+
+    fetch("{% url 'valFindings_2' %}", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": dataToSend.csrfmiddlewaretoken
+        },
+        body: JSON.stringify(dataToSend)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert("Saved successfully");
+        console.log("Response:", data);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Error saving data");
+    });
+    }
+    
+
+   
+
+ </script>
+{% endblock script %} 

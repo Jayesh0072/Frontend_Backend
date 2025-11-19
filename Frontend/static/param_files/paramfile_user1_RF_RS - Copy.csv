@@ -1,0 +1,7 @@
+paramName,paramValue
+max_features," ['Auto', 'sqrt', 'log2']+ list(np.arange(0.5, 1, 0.2))"
+criterion," ['entropy', 'gini']"
+max_depth,"list(np.linspace(int(98/10), 98, 5).astype(int))"
+min_samples_leaf,"list(np.arange(0.5, 1, 0.2))"
+n_estimators,"np.linspace(10, round(1.5*98), 5).astype(int)"
+bootstrap,"[True, False]"

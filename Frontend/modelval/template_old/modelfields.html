@@ -1,0 +1,325 @@
+{% extends 'adminbase.html' %} 
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="card h-100">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Model Fields</h4>
+        </div>
+  <div class="card-body">
+  <div class="mb-9">
+    <div id="utility" data-list='{"valueNames":["Utility"]}'>
+       
+      <div class="row g-3 justify-content-between align-items-end mb-4">
+         
+        <div class="col-12 col-sm-auto">
+          <div class="d-flex align-items-center">
+            <div class="search-box me-3">
+              <div class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                <input class="form-control search-input search" type="search" placeholder="Search functionality" aria-label="Search" />
+                <span class="fas fa-search search-box-icon"></span>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+        <!-- <div class="col-12 col-sm-auto"  style="float: left;">
+          <select class="form-select" id="ddlutype" aria-label="Default select example" onchange="getdata()" required>                      
+            <option selected="" value="">Select User Type</option>
+            {% for key, val in utype.items  %} 
+            <option value="{{val.UC_AID}}">{{val.UC_Label}}</option>
+            {% endfor %} 
+          </select>
+        </div> -->
+        <!-- <div id="selectall" class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="selectall()"  disabled></i>Select All</a>
+        </div>
+        <div id="selectall" class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="deSelectall()"  disabled></i>Deselect All</a>
+        </div> -->
+        <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="adddata()"  ></i>Update</a>
+        </div>
+        <!-- <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="adddata()"  disabled><i class="fa-solid fa-plus me-2"></i>Add</a>
+        </div> -->
+      </div> 
+      <div class="table-responsive scrollbar" id="lstRes" style="max-height:450px;">
+        <table id="tblutl" class="table fs--1 mb-0 border-top border-200">
+          <thead>
+            <tr>
+              <th class="sort white-space-nowrap align-middle ps-0" style="width:5%;">
+                <input type="checkbox" id="name1" onclick="selectall1()"/>
+              </th>
+              <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Utility" style="width:40%;">Field Name</th>
+              <th class="sort white-space-nowrap align-middle ps-3" scope="col" data-sort="Process_Name" style="width:15%;">Field Label</th> 
+              <th class="sort white-space-nowrap align-middle ps-3" scope="col" data-sort="Area" style="width:15%;">Is Mandatory</th>
+              <th class="sort white-space-nowrap align-middle ps-3" scope="col" data-sort="Add" style="width:10%;">Is Visible</th>
+              <!-- <th class="sort white-space-nowrap align-middle ps-3" scope="col" data-sort="Edit" style="width:10%;">Added By</th> -->
+              <!-- <th class="sort white-space-nowrap align-middle ps-3" scope="col" data-sort="Delete" style="width:10%;">AddDate</th> -->
+              
+              
+            </tr>
+          </thead>
+          <tbody class="list" id="project-list-table-body">
+            {% for val in fields_obj  %} 
+              <tr class="position-static"> 
+                <td class="align-middle time white-space-nowrap ps-0 py-4">
+                  
+                   <input type="checkbox" name="chk" id="chk_{{val.field_id}}" onclick="registerclick('{{val.field_id}}')"/> 
+                </td>
+                <td class="align-middle time white-space-nowrap ps-0 Utility py-4"> 
+                 <input type="text" id="txt_field_{{val.field_id}}" style="border: none; background-color: transparent;" value="{{val.fields_name}}" readonly/>
+                 <input type="hidden" id="hdn_{{val.field_id}}" value="{{val.fields_name}}">
+                </td>
+                <td class="align-middle time white-space-nowrap ps-0 Utility py-4"> 
+                    <input type="text" id="txt_lbl_{{val.field_id}}" style="border: none; background-color: transparent;" value="{{val.field_label}}" contenteditable="true"/>
+                    <input type="hidden" id="hdn_{{val.field_label}}" value="{{val.fields_name}}">
+                </td>
+                <!-- <td class="align-middle white-space-nowrap ps-3 py-4">
+                  <input class="form-check-input" id="rbro_{{val.R_AID}}" onchange="enablechk(true,'{{val.R_AID}}')" type="radio" name="rb_{{val.R_AID}}" value="ro">
+                </td>
+                <td class="align-middle white-space-nowrap ps-3 py-4">
+                  <input class="form-check-input" id="rbrw_{{val.R_AID}}" onchange="enablechk(false,'{{val.R_AID}}')"  type="radio" name="rb_{{val.R_AID}}" value="rw">
+                </td>   -->
+                <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                 
+                  {% if val.is_mandatory == True %}
+                    <input class="form-check-input res" id="chk_mandatory_{{val.field_id}}"   checked type="checkbox" >
+                  {%else%}                     
+                    <input class="form-check-input res" id="chk_mandatory_{{val.field_id}}"     type="checkbox" >
+                   {%endif%} 
+                </td>
+                <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                  {% if val.is_visible == True %}
+                  <input class="form-check-input res" id="chk_visible_{{val.field_id}}" checked  type="checkbox" >
+                  {%else%}                     
+                  <input class="form-check-input res" id="chk_visible_{{val.field_id}}"  type="checkbox" >
+                 {%endif%} 
+                </td>
+                <!-- <td>
+                    <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="updatefields('{{val.field_id}}','{{val.field_label}}')"  ></i>Update</a>
+                    </div>
+                </td> -->
+                <!-- <td class="align-middle white-space-nowrap ps-3 Status">
+                  <input class="form-check-input res" id="chkdelete_{{val.R_AID}}" name="chk" type="checkbox" disabled>
+                </td>  -->
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+      <!-- <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+        <div class="d-flex">
+           <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p>
+            <a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a> 
+        </div>
+        <div class="d-flex">
+          <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+          <ul class="mb-0 pagination"></ul>
+          <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+        </div>
+      </div> -->
+    </div>
+  </div> 
+  </div>
+</div> 
+</div>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+  var arrQtns=[]
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+        var yes = document.getElementById("chk_"+id);  
+        console.log("yes",yes.checked)
+        if($('#chk_'+id).prop('checked')){
+          $('#rbro_'+id).prop('checked', true);  
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          }
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name1').prop('checked', false);
+        }
+    }
+    var arrQtns=[]
+    function updatefields(id,label){
+        debugger;
+        alert("id"+id+label)
+        // label = document.getElementById(label).value;
+        // console.log('label',label)
+        // if($('#chk_'+id).prop('checked')){ 
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+              console.log("array",arrQtns)
+          }
+        // }
+        else{ // only splice array when item is found
+            
+            arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+            $('#name1').prop('checked', false); 
+            }
+    }
+
+    function selectall1()
+    { 
+      var yes = document.getElementById("name1");  
+      console.log("yes",yes.checked)
+      if (yes.checked == true){
+        console.log("yess")
+        var ele=document.getElementsByName('chk');
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].click();  
+        }  
+      }
+      else{
+        var ele=document.getElementsByName('chk');
+        console.log("ele----------",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+           ele[i].checked=false;  // ele[i].checked=false;
+     
+          }
+      }
+          
+    }
+
+    function adddata(){  
+      if(arrQtns.length<1){
+        alert('Please select fields(s).')
+        return
+      }
+
+      updatedata=[]
+      arrQtns.forEach(i => {
+        console.log("i ",i,$('#chk_'+i).prop('checked'))
+        if($('#chk_'+i).prop('checked')) {
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["AID"] = i;
+          item["fieldlbl"]= $("#txt_lbl_"+i).val();
+          item["mandatory"]= $("#chk_mandatory_"+i).prop('checked');
+          item["visible"]= $("#chk_visible_"+i).prop('checked'); 
+          if (item["fieldlbl"].length == 0){
+            console.log("value empty")
+          }
+          else{
+            updatedata.push(item);
+          }
+        //   updatedata.push(item); 
+        }
+    
+      });
+      console.log('updatedata ',updatedata)
+      
+    //   if(updatedata.length>0){
+    //     $.ajax({
+    //       url: '/updateuseraccess/', 
+    //       data:{ datalist: JSON.stringify(updatedata),uc:$('#ddlutype').val()  },
+    //       dataType: 'json',
+    //       success: function (data) { 
+    //           if(data.istaken=="true"){
+    //             alert('User access granted for selected utilities and rights.')
+    //           }
+    //       }
+    //     }); 
+    //   }  
+
+    if(updatedata.length>0){
+        $.ajax({
+          url: '/updateFields/', 
+          data:{ datalist: JSON.stringify(updatedata)  },
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){
+                alert('Data updated.')
+              }
+          }
+        }); 
+      }  
+       
+    }  
+
+    function selectall()
+    {
+      debugger;
+      alert("select all")
+      // var chk = $('#name1').val()
+      var yes = document.getElementById("name1");  
+      console.log("yes",yes.checked)
+      // var ele=document.getElementsByName('chk');
+      // for(var i=0; i<ele.length; i++){  
+      //   if(ele[i].type=='checkbox')  
+      //       ele[i].checked=true;  
+      // }    
+    }
+
+    function deSelectall(){  
+      var ele=document.getElementsByName('chk');  
+      for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].checked=false;              
+      }  
+    }      
+    function getdata()
+      {    
+        $('#lstRes').find('input:checkbox').prop('checked', false);    
+        $('input[type="radio"]').prop('checked', false);  
+        $('.res').each(function() { 
+            $(this).prop('disabled', true); 
+        });
+        arrQtns=[]
+        $.ajax({
+          url: '/getUCAccessData/', 
+          data:{uc:$('#ddlutype').val()  },
+          dataType: 'json',
+          success: function (data) {  
+              if(data.istaken=="true"){
+                $.each(data.ucdata, function(i, obj) { 
+                  enablechk(true,obj.R_AID)
+                  arrQtns.push(obj.R_AID);  
+                  $('#chk_'+obj.R_AID).prop('checked', true);
+                  $("input[name=rb_"+obj.R_AID +"][value=" + obj.UA_Perm + "]").prop('checked', true);
+                  $('#chkadd_'+obj.R_AID).prop('checked', obj.UA_Add);
+                  $('#chkedit_'+obj.R_AID).prop('checked', obj.UA_Edit);
+                  $('#chkdelete_'+obj.R_AID).prop('checked', obj.UA_Delete);
+                  if(obj.UA_Perm=='rw'){ 
+                    enablechk(false,obj.R_AID)
+                  } 
+                });
+                  
+              }
+          }
+        });
+
+      }
+
+    function enablechk(val,id){ 
+      $('#chkadd_'+id).prop('disabled',val);
+      $('#chkedit_'+id).prop('disabled',val);
+      $('#chkdelete_'+id).prop('disabled',val);
+      if(val==false){
+        $('#chkadd_'+id).prop('checked', true);
+        $('#chkedit_'+id).prop('checked', true);
+      }
+      else{
+        $('#chkadd_'+id).prop('checked', false);
+        $('#chkedit_'+id).prop('checked', false);
+        $('#chkdelete_'+id).prop('checked', false);
+      }
+    }
+</script>
+{% endblock script %}

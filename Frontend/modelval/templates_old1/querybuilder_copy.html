@@ -1,0 +1,377 @@
+ 
+ 
+{% load static %}   
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>jQuery QueryBuilder Example</title>
+
+  
+  <!-- <link rel="stylesheet" href="{% static 'node_modules/bootstrap-select-1.13.14/dist/css/bootstrap-select.css' %}"> -->
+  <!-- <link rel="stylesheet" href="{% static 'node_modules/chosenjs/chosen.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap-slider/dist/css/bootstrap-slider.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/selectize/dist/css/selectize.bootstrap3.css' %}"> -->
+                   
+ 
+  <!-- <link rel="stylesheet" href="{% static '/node_modules/bootstrap/dist/css/bootstrap.css' %}" id="bt-theme">  -->
+  <!-- <link
+  type="text/css" 
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous"
+/> -->
+<style>
+  @import url("https://s3.eu-central-1.amazonaws.com/ac-webassets/whitney/stylesheet.css")
+ </style>
+ <style>
+ #builder{
+  width:50%;
+  display:block;
+  margin: 0 auto;
+}
+#buttons{
+text-align:center
+}
+h1,#query{
+  text-align:center;
+  font-family:'Whitney SSM', sans-serif;
+}
+p{
+  font-family:'Whitney SSM', sans-serif;
+  color:white !important; 
+  font-size:20px; 
+}
+
+#query{
+  font-size:18px
+}
+
+.query-builder .rules-group-container{
+  background-color:#19A7C1;
+
+}
+
+.rule
+.query-builder form-inline{
+    background-color:#19A7C1;
+
+}
+.rules-list{
+    background-color:#19A7C1;
+
+}
+
+.btn-primary{
+  background-color:silver
+}
+.btn{
+  font-size:13px;
+  font-family:'Whitney SSM', sans-serif;
+
+
+}
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary{
+    background-color:olvie
+}
+
+.rule-container{
+  background-color:AntiqueWhite
+}
+
+.form-control{
+    font-family:'Whitney SSM', sans-serif;
+}
+
+.btn-xs {
+  padding: 1px 5px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px!important;
+}
+
+.btn btn-xs btn-success{
+  background-color:red !important
+}
+
+
+#btn-set, #btn-reset,#btn-get-sql{
+    background-color:#19A7C1;
+    font-size:20px;
+    border: none;
+  padding: 1px 50px;
+  text-decoration: none;
+      -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+  border-radius: 0 !important;
+}
+
+#btn-set:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#btn-reset:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#btn-get-sql:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #333; /* Modern Browsers */
+    width:50%
+}
+
+input{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family:'Whitney SSM', sans-serif;
+  
+}
+
+#selectDiv{
+  display:inline-block;
+}
+
+
+
+
+</style>
+</head>  
+<div class="container">
+  <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+    <div class="card h-100">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Query builder</h4>
+            </div>  
+    <div class="card-body p-0">
+  
+    <div id="builder"></div>
+ </div>
+    </div>
+  </div>
+</div>
+
+
+ 
+<!-- 
+<script src="{% static 'node_modules/chosenjs/chosen.jquery.js' %}"></script> 
+ <script src="{% static 'node_modules/bootstrap-select-1.13.14/dist/js/bootstrap-select.js' %}"></script>  
+<script src="{% static 'node_modules/bootbox/bootbox.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-slider/dist/bootstrap-slider.js' %}"></script>
+<script src="{% static 'node_modules/selectize/dist/js/standalone/selectize.js' %}"></script>
+
+<script src="{% static 'node_modules/sql-parser-mistic/browser/sql-parser.js' %}"></script>
+<script src="{% static 'node_modules/interactjs/dist/interact.js' %}"></script> -->
+
+<!-- 
+<script src="{% static 'node_modules/jquery-extendext/jquery-extendext.js' %}"></script>
+
+<script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'node_modules/interactjs/dist/interact.min.js' %}"></script> -->
+<script src="{% static 'node_modules/jquery/dist/jquery.js' %}"></script>
+<script src="{% static 'node_modules/dist/js/query-builder.standalone.js' %}" ></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script>
+ 
+// Fix for Bootstrap Datepicker
+$('#builder').on('afterUpdateRuleValue.queryBuilder', function(e, rule) {
+  if (rule.filter.plugin === 'datepicker') {
+    rule.$el.find('.rule-value-container input').datepicker('update');
+  }
+});
+
+var rules_widgets = {
+	condition: 'AND',
+	rules: [{
+		"id": "''price''",
+		"operator": 'less',
+		"value": 10.25
+	},{
+    "id": "''date''",
+    "operator": 'equal',
+  }, 
+          {
+		"condition": 'OR',
+		"rules": [{
+			"id": "''category''",
+			"operator": 'equal',
+			"value": 2
+		}]
+	}]
+};
+
+	$('#builder').queryBuilder({
+	plugins: ['bt-tooltip-errors'],
+	
+	filters: [
+    {
+		"id": "name",
+		"label": "Name",
+		"type": "string"
+	}, 
+   {
+    "id": "''date''",
+    "label": "Datepicker",
+    "type": 'date',
+    "validation": {
+      "format": 'YYYY/MM/DD'
+    },
+    "plugin": 'datepicker',
+    "plugin_config": {
+      "format": 'yyyy/mm/dd',
+      "todayBtn": 'linked',
+      "todayHighlight": true,
+      "autoclose": true
+    }
+  },
+      {
+		"id": "''category''",
+		"label": "Category",
+		"type": "integer",
+		"input": "select",
+		"values": {
+			"1": "Books",
+			"2": "Movies",
+			"3": "Music",
+			"4": "Tools",
+			"5": "Goodies",
+			"6": "Clothes"
+		},
+		"operators": ["equal", "not_equal", "in", "not_in", "is_null", "is_not_null"]
+	}, {
+		"id": "''in_stock''",
+		"label": "In stock",
+		"type": "integer",
+		"input": "radio",
+		"values": {
+			"1": "Yes",
+			"0": "No"
+		},
+		"operators": ["equal","in"]
+	}, {
+		"id": "''price''",
+		"label": "Price",
+		"type": "double",
+		"validation": {
+			"min": 0,
+			"step": 0.01
+		}
+	}, {
+		"id": "''id''",
+		"label": "identifier",
+		"type": "string",
+		"placeholder": "____-____-____",
+		"operators": ["equal", "not_equal"],
+		"validation": {
+		"format": "/^.{4}-.{4}-.{4}$/}"}
+    }
+],
+	rules: rules_widgets
+});
+
+
+
+$( '<div id=selectDiv"><p>SELECT</p><input id="rowsselect" type="text" name="LastName" placeholder="Number of rows (Max 50 mln)"></div><br>' ).insertBefore( $( ".rules-group-header" ).first())
+
+
+
+	/****************************************************************
+							Triggers and Changers QueryBuilder
+*****************************************************************/
+
+$('#btn-get').on('click', function() {
+	var result = $('#builder').queryBuilder('getRules');
+	if (!$.isEmptyObject(result)) {
+		alert(JSON.stringify(result, null, 2));
+	}
+	else{
+		console.log("invalid object :");
+	}
+	console.log(result);
+});
+
+$('#btn-reset').on('click', function() {
+	$('#builder').queryBuilder('reset');
+});
+
+$('#btn-set').on('click', function() {
+	//$('#builder').queryBuilder('setRules', rules_basic);
+	var result = $('#builder').queryBuilder('getRules');
+	if (!$.isEmptyObject(result)) {
+		rules_widgets = result;
+	}
+});
+
+//When rules changed :
+$('#builder').on('getRules.queryBuilder.filter', function(e) {
+	//$log.info(e.value);
+});
+
+
+$('#btn-get-sql').on('click', function() {
+
+var result = $('#builder').queryBuilder('getSQL',false);
+  
+console.log(result)
+
+   if (result.sql.length) {
+          
+      
+      if( isNaN($( "#rowsselect" ).val())==false && Number.isInteger(Number($( "#rowsselect" ).val())) && Number($( "#rowsselect" ).val())>0 && Number($( "#rowsselect" ).val())<=50000000){
+        
+        $("#rowsselect").css({"background-color": "white"});
+        $('#rowsselect').attr('placeholder','Number of rows (Max 50 mln)');
+        $('#query').html('SELECT * FROM TABLENAME' + '<br>' +'WHERE ' + result.sql + '<br>' + ' LIMIT ' + $( "#rowsselect" ).val());  
+        
+      }
+     
+      else if( isNaN($( "#rowsselect" ).val())==false && Number.isInteger(Number($( "#rowsselect" ).val())) && Number($( "#rowsselect" ).val())>50000000 ){
+        
+        $("#rowsselect").val();
+        $('#rowsselect').attr('placeholder','PLEASE INSERT A NUMBER LESS THAN 50 Mln');
+        $("#rowsselect").css({"background-color": "#FFDDDC"});
+        
+      }     
+     
+      else{
+        $("#rowsselect").val();
+        $('#rowsselect').attr('placeholder','PLEASE INSERT A VALID INTEGER NUMBER');
+        $("#rowsselect").css({"background-color": "#FFDDDC"});
+         //$('#query').html('SELECT * from TABLENAME' + '<br>' + 'WHERE ' + result.sql);      
+      }
+    }
+
+    });
+
+
+
+
+
+</script>
+ 
+ 
+</html>   

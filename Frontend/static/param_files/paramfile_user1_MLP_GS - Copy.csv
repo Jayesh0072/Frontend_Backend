@@ -1,0 +1,10 @@
+paramName,paramValue
+hidden_layer_sizes," [mlp_search.best_params_['hidden_layer_sizes']-int(89/20),
+                                     mlp_search.best_params_['hidden_layer_sizes'],
+                                     mlp_search.best_params_['hidden_layer_sizes']+int(89/20)]"
+activation,[mlp_search.best_params_['activation']]
+solver,[mlp_search.best_params_['solver']]
+learning_rate,"[mlp_search.best_params_['learning_rate_init']*0.8, mlp_search.best_params_['learning_rate_init'],
+                                    mlp_search.best_params_['learning_rate_init']*1.2]"
+alpha,"[mlp_search.best_params_['alpha']*0.8,                                   mlp_search.best_params_['alpha'],                                   mlp_search.best_params_['alpha']*1.2]"
+momentum,"[mlp_search.best_params_['momentum']*0.8,                                   mlp_search.best_params_['momentum'],                                   mlp_search.best_params_['momentum']*1.2]"

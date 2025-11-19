@@ -1,0 +1,125 @@
+{% extends 'rmsebase.html' %} 
+{% load static %} 
+{% block style%}
+
+<style>
+  
+    /* Style the form container */
+.tab-pane form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the file input */
+.tab-pane form input[type="file"] {
+    display: block;
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Style the upload button */
+.tab-pane form button[type="submit"] {
+    background-color: #28a745; /* Green color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tab-pane form button[type="submit"]:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tab-pane form {
+        padding: 15px;
+    }
+
+    .tab-pane form button[type="submit"] {
+        width: 100%; /* Full-width button on smaller screens */
+    }
+}
+
+    
+    
+    
+    </style>
+{% endblock style %}
+{% block content %}  
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+        <div class="row form-group" style="margin-bottom: 0px;">
+            <div class="col col-md-11">
+                Data Import
+            </div>
+            
+          
+        </div>                  
+    </div>
+        <div class="card-body card-block">                             
+            <ul class="nav nav-underline" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-item nav-link {% if tab == 'raw' %}active{% endif %}" id="custom-nav-numtype-tab" onclick="setType('raw')" data-bs-toggle="tab" href="#custom-nav-numtype" role="tab" aria-controls="custom-nav-numtype"
+                        aria-selected="false">Raw Data</a>
+                </li>
+                <li class="nav-item"> 
+                    <a class="nav-item nav-link {% if tab == 'fl' %}active{% endif %}" id="custom-nav-mean_ad-tab" onclick="setType('fl')" data-bs-toggle="tab" href="#custom-nav-mean_ad" role="tab" aria-controls="custom-nav-mean_ad"
+                        aria-selected="true" style="margin-left: 100px;">FL Data</a>
+                </li>
+            </ul>
+            <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+                <!-- Raw Data Form -->
+                <div class="tab-pane fade {% if tab == 'raw' %}show active{% endif %}" id="custom-nav-numtype" role="tabpanel" aria-labelledby="custom-nav-numtype-tab">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="upload_type" value="raw">
+                        <input type="file" name="file" required>
+                        <button type="submit">Upload</button>
+                    </form>
+                </div>
+                
+                <!-- FL Data Form -->
+                <div class="tab-pane fade {% if tab == 'fl' %}show active{% endif %}" id="custom-nav-mean_ad" role="tabpanel" aria-labelledby="custom-nav-mean_ad-tab">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="upload_type" value="fl">
+                        <input type="file" name="file" required>
+                        <button type="submit">Upload</button>
+                    </form>
+                </div>                                  
+            </div>
+        </div>
+    </div>    
+</div>
+
+
+      
+                
+{% endblock content %}
+{%  block script %}
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'jquery-3.5.1.js' %}"></script>
+    <!-- Jquery JS-->
+    <script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'dataTables.min.js' %}"></script>
+    <script src="{% static 'js/chatroom.js' %}"></script>
+    <script type='text/javascript' >
+        const alertMessage = "{{ api_data.msg|escapejs }}"; // Get the message from the server
+        if (alertMessage) {
+            alert(alertMessage); // Show the alert if a message exists
+        }
+       
+    </script>
+{% endblock script %} 

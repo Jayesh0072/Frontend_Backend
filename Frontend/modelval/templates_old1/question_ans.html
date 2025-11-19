@@ -1,0 +1,586 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block style %}
+<style>
+    .dynamic-input {
+        margin-top: 10px;
+    }
+
+    .add-option {
+        margin-top: 10px;
+    }
+
+    #addOptionBtn {
+        margin-left: 5px;
+    }
+
+    form {
+        background-color: #fff;
+        padding: 0px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    textarea {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        resize: vertical;
+        width: 60%;
+    }
+
+    select {
+        width: 60%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .text-input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .textarea-input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    .add-option-input {
+        width: 40%;
+        padding: 8px;
+        margin-right: 5px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .save-option-btn {
+        padding: 8px 12px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .save-option-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .inline-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        /* Space between input and button */
+    }
+    /* Add some padding to the table */
+.custom-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+/* Style table headers */
+.custom-table th {
+    background-color: gray;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+/* Style table cells */
+.custom-table td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Input styling inside table cells */
+.custom-table .table-input {
+    width: 100%;
+    border: none;
+    text-align: center;
+    background-color: #f8f9fa;
+    padding: 8px;
+}
+
+/* Styling for input focus inside table */
+.custom-table .table-input:focus {
+    outline: none;
+    background-color: #e2e6ea;
+}
+
+/* Add zebra stripes to table rows */
+.custom-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+</style>
+{% endblock style %}
+{% block content %}
+
+<form id="myForm">
+        <div class="col-auto" style="width:100%;; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+            -webkit-border-top-right-radius: 6px;
+            -moz-border-radius-topleft: 6px;
+            -moz-border-radius-topright: 6px;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;">
+                <h4 style="color:#3e465b; padding:10px 20px">FL Sections</h4>
+            </div>
+    <label style="padding-top: 15px;padding-left:25px ;" for="myTextarea">Add Self Question Text</label>
+    <textarea id="myTextarea" style="margin-left:25px;" name="myTextarea" rows="4" cols="50"></textarea>
+    <select id="myDropdown" style="margin-left:25px;" name="myDropdown">
+        <option value=""> Answer Type</option>
+        <option value="sub_question">Sub Question</option>
+        <option value="text">Text</option>
+        <option value="paragraph">Paragraph</option>
+        <option value="options">Options</option>
+        <option value="radio">Radio Button</option>
+        <option value="table">Table</option>
+    </select>
+    <!-- Dynamic input container -->
+    <div id="dynamicInputContainer"></div>
+
+    <label for="myTextarea1" id="label_sub" style="display: none;margin-left:25px;">Enter Self Sub Question Text</label>
+    <textarea id="myTextarea1" style="display: none;margin-left:25px;" name="myTextarea1" rows="4" cols="50"></textarea>
+
+    <select id="myDropdown1" style="display: none;margin-left:25px;" name="myDropdown1">
+        <option value="">Sub Answer Type</option>
+        <option value="text">Text</option>
+        <option value="paragraph">Paragraph</option>
+        <option value="options">Options</option>
+        <option value="radio">Radio Button</option>
+    </select>
+
+    <!-- Dynamic input container -->
+    <div id="dynamicInputContainer1"></div>
+
+
+    <button type="button" style="margin-left: 25px;margin-bottom: 25px;" id="submitBtn">Submit</button>
+</form>
+{% endblock content %}
+{% block script %}
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    $(document).ready(function () {
+        $('#myDropdown').on('change', function () {
+            var selectedValue = $(this).val();
+            var dynamicContainer = $('#dynamicInputContainer');
+            dynamicContainer.empty();  // Clear any existing input elements
+
+            // Add input elements based on the selected value
+            // if (selectedValue === 'text') {
+            //     dynamicContainer.append('<label for="textInput">Enter your text:</label><input class="form-control" style="width:60%;margin-bottom:10px" type="text" id="textInput" name="textInput">');
+            // } 
+            if (selectedValue === 'paragraph') {
+                myDropdown1.style.display = 'none';
+                myTextarea1.style.display = 'none';
+                label_sub.style.display = 'none'
+
+            }else if (selectedValue === 'text') {
+                myDropdown1.style.display = 'none';
+                myTextarea1.style.display = 'none';
+                label_sub.style.display = 'none'
+
+            }else if (selectedValue === 'sub_question') {
+                myDropdown1.style.display = 'block';
+                myTextarea1.style.display = 'block';
+                label_sub.style.display = 'block';
+
+            }else  if (selectedValue === 'options') {
+                myDropdown1.style.display = 'none';
+                myTextarea1.style.display = 'none';
+                label_sub.style.display = 'none'
+
+                // dynamicContainer.append('<label for="dropdownInput">Choose an option:</label><select id="dropdownInput" name="dropdownInput"></select>');
+                dynamicContainer.append('<div class="inline-container"><input style="margin-bottom:10px;" type="text" id="newOptionInput" class="form-control add-option-input"><button style="margin-bottom:10px;" type="button" id="addOptionBtn" class="save-option-btn"><i class="fas fa-plus"></i></button></div>');
+
+                // Handle the click event of the Add Option button
+                $(document).on('click', '#addOptionBtn', function () {
+                    var addOptionContainer = $('<div class="add-option"><input class="form-control" style="width:40%;margin-bottom:10px" type="text" id="newOption" placeholder="Enter new option"></div>');
+                    $('#dynamicInputContainer').append(addOptionContainer);
+
+                    // // Handle the save option button click
+                    // addOptionContainer.on('click', '#saveOptionBtn', function() {
+                    //     var newOptionValue = $('#newOption').val();
+                    //     if (newOptionValue.trim() !== '') {
+                    //         $('#dropdownInput').append('<option value="' + newOptionValue + '">' + newOptionValue + '</option>');
+                    //         addOptionContainer.remove();  // Remove the input field after adding
+                    //     }
+                    // });
+                });
+            } else if (selectedValue === 'radio') {
+                myDropdown1.style.display = 'none';
+                myTextarea1.style.display = 'none';
+                label_sub.style.display = 'none'
+
+                dynamicContainer.append('<div class="inline-container"><input type="text" style="margin-bottom:10px;" id="newRadioInput" class="form-control add-option-input"><button style="margin-bottom:10px;" type="button" id="addRadioBtn" class="save-option-btn"><i class="fas fa-plus"></i></button></div>');
+                // Handle the click event of the Add Option button
+                $(document).on('click', '#addRadioBtn', function () {
+                    var addOptionContainer = $('<div class="add-option"><input class="form-control" style="width:40%;margin-bottom:10px" type="text" id="newRadio" placeholder="Enter new option"></div>');
+                    $('#dynamicInputContainer').append(addOptionContainer);
+
+                    // // Handle the save option button click
+                    // addOptionContainer.on('click', '#saveOptionBtn', function() {
+                    //     var newOptionValue = $('#newOption').val();
+                    //     if (newOptionValue.trim() !== '') {
+                    //         $('#dropdownInput').append('<option value="' + newOptionValue + '">' + newOptionValue + '</option>');
+                    //         addOptionContainer.remove();  // Remove the input field after adding
+                    //     }
+                    // });
+                });
+            }
+            else if (selectedValue === 'table') {
+                myDropdown1.style.display = 'none';
+                myTextarea1.style.display = 'none';
+                label_sub.style.display = 'none'
+
+                // Prompt for number of rows and columns
+                dynamicContainer.append('<label for="numRows">Number of rows:</label><input type="number" id="numRows" class="form-control" style="width:60%;margin-bottom:10px;" min="1" value="1">');
+                dynamicContainer.append('<label for="numCols">Number of columns:</label><input type="number" id="numCols" class="form-control" style="width:60%;margin-bottom:10px;" min="1" value="1">');
+                dynamicContainer.append('<button type="button" id="addHeadersBtn" class="btn btn-primary" style="margin-bottom:10px;">Add Headers</button>');
+
+                // Handle header input creation
+                $(document).on('click', '#addHeadersBtn', function () {
+                    var numCols = parseInt($('#numCols').val());
+                    dynamicContainer.append('<div id="headerInputsContainer"></div>'); // Container for header inputs
+                    $('#headerInputsContainer').empty();
+
+                    // Create input fields for headers
+                    for (var i = 0; i < numCols; i++) {
+                        $('#headerInputsContainer').append('<label for="header' + i + '">Header ' + (i + 1) + ':</label><input type="text" id="header' + i + '" class="form-control" style="width:60%;margin-bottom:10px;" placeholder="Enter header">');
+                    }
+
+                    // Button to create the table with headers
+                    dynamicContainer.append('<button type="button" id="createTableBtn" class="btn btn-primary" style="margin-bottom:10px;">Create Table</button>');
+                });
+
+                // Handle table creation
+                $(document).on('click', '#createTableBtn', function () {
+                    var numRows = parseInt($('#numRows').val());
+                    var numCols = parseInt($('#numCols').val());
+                    console.log("numRows,numCols",numRows,numCols)
+                    if (numRows > 0 && numCols > 0) {
+                        var table = $('<table class="custom-table table table-bordered"></table>');
+                        var tableHeader = $('<tr></tr>');
+
+                        // Create table headers based on user input
+                        for (var i = 0; i < numCols; i++) {
+                            var headerValue = $('#header' + i).val() || 'Header ' + (i + 1);
+                            tableHeader.append('<th>' + headerValue + '</th>');
+                        }
+                        table.append(tableHeader);
+
+                        // Create rows and columns with input fields
+                        for (var i = 0; i < numRows; i++) {
+                            var tableRow = $('<tr></tr>');
+                            for (var j = 0; j < numCols; j++) {
+                                tableRow.append('<td><input type="text" class="form-control table-input"></td>');
+                            }
+                            table.append(tableRow);
+                        }
+
+                        // Append the table to the container
+                        dynamicContainer.append(table);
+                    }
+                });
+            }
+        });
+
+        $('#myDropdown1').on('change', function () {
+            var selectedValue = $(this).val();
+            var dynamicContainer = $('#dynamicInputContainer1');
+            dynamicContainer.empty();  // Clear any existing input elements
+
+            // Add input elements based on the selected value
+            // if (selectedValue === 'text') {
+            //     dynamicContainer.append('<label for="textInput">Enter your text:</label><input class="form-control" style="width:60%;margin-bottom:10px" type="text" id="textInput" name="textInput">');
+            // } 
+            if (selectedValue === 'options') {
+                // dynamicContainer.append('<label for="dropdownInput">Choose an option:</label><select id="dropdownInput" name="dropdownInput"></select>');
+                dynamicContainer.append('<div class="inline-container"><input style="margin-bottom:10px;" type="text" id="newOptionInput1" class="form-control add-option-input"><button style="margin-bottom:10px;" type="button" id="addOptionBtn1" class="save-option-btn"><i class="fas fa-plus"></i></button></div>');
+
+                // Handle the click event of the Add Option button
+                $(document).on('click', '#addOptionBtn1', function () {
+                    var addOptionContainer = $('<div class="add-option"><input class="form-control" style="width:40%;margin-bottom:10px" type="text" id="newOption1" placeholder="Enter new option"></div>');
+                    $('#dynamicInputContainer1').append(addOptionContainer);
+
+                    // // Handle the save option button click
+                    // addOptionContainer.on('click', '#saveOptionBtn', function() {
+                    //     var newOptionValue = $('#newOption').val();
+                    //     if (newOptionValue.trim() !== '') {
+                    //         $('#dropdownInput').append('<option value="' + newOptionValue + '">' + newOptionValue + '</option>');
+                    //         addOptionContainer.remove();  // Remove the input field after adding
+                    //     }
+                    // });
+                });
+            } else if (selectedValue === 'radio') {
+                dynamicContainer.append('<div class="inline-container"><input type="text" style="margin-bottom:10px;" id="newRadioInput1" class="form-control add-option-input"><button style="margin-bottom:10px;" type="button" id="addRadioBtn1" class="save-option-btn"><i class="fas fa-plus"></i></button></div>');
+                // Handle the click event of the Add Option button
+                $(document).on('click', '#addRadioBtn1', function () {
+                    var addOptionContainer = $('<div class="add-option"><input class="form-control" style="width:40%;margin-bottom:10px" type="text" id="newRadio1" placeholder="Enter new option"></div>');
+                    $('#dynamicInputContainer1').append(addOptionContainer);
+
+                    // // Handle the save option button click
+                    // addOptionContainer.on('click', '#saveOptionBtn', function() {
+                    //     var newOptionValue = $('#newOption').val();
+                    //     if (newOptionValue.trim() !== '') {
+                    //         $('#dropdownInput').append('<option value="' + newOptionValue + '">' + newOptionValue + '</option>');
+                    //         addOptionContainer.remove();  // Remove the input field after adding
+                    //     }
+                    // });
+                });
+            }
+        });
+
+
+        $('#submitBtn').on('click', function () {
+            // Prepare data to be sent
+            var formData = {};
+            var selectedValue = $('#myDropdown').val();
+
+            // var options = $('#dropdownInput option');  // Get all option elements
+            // var values = [];  // Array to hold values
+
+            // options.each(function() {
+            //     values.push($(this).val());  // Add each option value to the array
+            // });
+
+            if (selectedValue == 'options') {
+                var newOptionValues = [];
+                var newOptionInputValues = [];
+
+                // Loop through all inputs with the id 'newOption' to gather their values
+                $('input[id="newOption"]').each(function () {
+                    var value = $(this).val().trim();
+                    if (value) {
+                        newOptionValues.push(value);
+                    }
+                });
+
+                // Loop through all inputs with the id 'newOptionInput' to gather their values
+                $('input[id="newOptionInput"]').each(function () {
+                    var value = $(this).val().trim();
+                    if (value) {
+                        newOptionInputValues.push(value);
+                    }
+                });
+
+                // Now newOptionValues and newOptionInputValues arrays contain the respective values
+                console.log("New Option Values:", newOptionValues);
+                console.log("New Option Input Values:", newOptionInputValues);
+
+                var mergedValues = newOptionValues.concat(newOptionInputValues);
+
+                console.log("Merged Values:", mergedValues);
+
+            } else
+                if (selectedValue == 'radio') {
+                    var newRadioValues = [];
+                    var newRadioInputValues = [];
+
+                    // Loop through all inputs with the id 'newOption' to gather their values
+                    $('input[id="newRadio"]').each(function () {
+                        var value = $(this).val().trim();
+                        if (value) {
+                            newRadioValues.push(value);
+                        }
+                    });
+
+                    // Loop through all inputs with the id 'newOptionInput' to gather their values
+                    $('input[id="newRadioInput"]').each(function () {
+                        var value = $(this).val().trim();
+                        if (value) {
+                            newRadioInputValues.push(value);
+                        }
+                    });
+
+                    // Now newOptionValues and newOptionInputValues arrays contain the respective values
+                    console.log("New Radio Values:", newRadioValues);
+                    console.log("New radio Input Values:", newRadioInputValues);
+
+                    var mergedValues = newRadioValues.concat(newRadioInputValues);
+
+                    console.log("Merged Values:", mergedValues);
+
+                }
+                else if (selectedValue == 'table'){
+                    var headers = [];
+                    var numCols = parseInt($('#numCols').val());
+                    var numRows = parseInt($('#numRows').val());
+                    // Collect the header values again before submission
+                    for (var i = 0; i < numCols; i++) {
+                        var headerValue = $('#header' + i).val() || 'Header ' + (i + 1);
+                        headers.push(headerValue);
+                    }
+                    console.log("headers",headers,"col",numCols,"row",numRows)
+
+                }
+
+            // sub questions code
+
+            var selectedValue1 = $('#myDropdown1').val();
+
+
+            if (selectedValue1 == 'options') {
+                var newOptionValues1 = [];
+                var newOptionInputValues1 = [];
+
+                // Loop through all inputs with the id 'newOption' to gather their values
+                $('input[id="newOption1"]').each(function () {
+                    var value = $(this).val().trim();
+                    if (value) {
+                        newOptionValues1.push(value);
+                    }
+                });
+
+                // Loop through all inputs with the id 'newOptionInput' to gather their values
+                $('input[id="newOptionInput1"]').each(function () {
+                    var value = $(this).val().trim();
+                    if (value) {
+                        newOptionInputValues1.push(value);
+                    }
+                });
+
+                // Now newOptionValues and newOptionInputValues arrays contain the respective values
+                console.log("New Option Values:", newOptionValues1);
+                console.log("New Option Input Values:", newOptionInputValues1);
+
+                var mergedValues1 = newOptionValues1.concat(newOptionInputValues1);
+
+                console.log("Merged Values 1:", mergedValues1);
+
+            } else
+                if (selectedValue1 == 'radio') {
+                    var newRadioValues1 = [];
+                    var newRadioInputValues1 = [];
+
+                    // Loop through all inputs with the id 'newOption' to gather their values
+                    $('input[id="newRadio1"]').each(function () {
+                        var value = $(this).val().trim();
+                        if (value) {
+                            newRadioValues1.push(value);
+                        }
+                    });
+
+                    // Loop through all inputs with the id 'newOptionInput' to gather their values
+                    $('input[id="newRadioInput1"]').each(function () {
+                        var value = $(this).val().trim();
+                        if (value) {
+                            newRadioInputValues1.push(value);
+                        }
+                    });
+
+                    // Now newOptionValues and newOptionInputValues arrays contain the respective values
+                    console.log("New Radio Values:", newRadioValues1);
+                    console.log("New radio Input Values:", newRadioInputValues1);
+
+                    var mergedValues1 = newRadioValues1.concat(newRadioInputValues1);
+
+                    console.log("Merged Values 1:", mergedValues1);
+
+                }
+
+            formData['question'] = $('#myTextarea').val();
+            formData['answer_type'] = $('#myDropdown').val();
+            formData['options_value'] = mergedValues
+
+            formData['sub_question'] = $('#myTextarea1').val();
+            formData['sub_answer_type'] = $('#myDropdown1').val();
+            formData['sub_options_value'] = mergedValues1
+            formData['headers'] = headers
+            formData['numCols'] = numCols
+            formData['numRows'] = numRows
+            
+
+            // Collect data based on the selected input type
+            // if (selectedValue === 'text') {
+            //     formData['textInput'] = $('#textInput').val();
+            // } else if (selectedValue === 'paragraph') {
+            //     formData['textareaInput'] = $('#textareaInput').val();
+            // } else if (selectedValue === 'options') {
+            //     formData['dropdownInput'] = $('#dropdownInput').val();
+            // } else if (selectedValue === 'radio') {
+            //     formData['radioInput'] = $('input[name="radioInput"]:checked').val();
+            // }
+
+            // Perform the AJAX request
+            $.ajax({
+                url: '/question_ans/', // Replace with your server URL
+                type: 'POST',
+                data: formData,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);  // Include the CSRF token in the request header
+                },
+                success: function (response) {
+                    // Handle success
+                    console.log('Form submitted successfully!');
+                    console.log(response);
+                    alert('Form submitted successfully!')
+                },
+                error: function (error) {
+                    // Handle error
+                    console.log('Error submitting form.');
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock script %}

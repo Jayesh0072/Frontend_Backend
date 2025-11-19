@@ -1,0 +1,812 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block style %}
+<link rel="stylesheet" href="{% static 'JQMap/dist/jqvmap.css' %}" />
+<style>
+
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+.row-cols-md-8 > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
+  .btn-primary-panes{
+   /* border-radius: 50%;*/
+  width: 3rem; 
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f2f3f6!important;
+  z-index: 1045;
+  /* border-radius: 1px; */
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  font-size:1.4rem;
+  }
+
+  
+  .btn-primary-panes:active {
+  background-color:  #f2f3f6!important;
+  color: red;
+}
+
+</style>
+<style>
+  .jqvmap-zoomin {
+    top: 10px!important;
+}
+, .jqvmap-zoomout{
+    top: 20px!important;
+}
+.jqvmap-zoomin, .jqvmap-zoomout {
+    position: absolute;
+    left: 10px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #000000;
+    padding: 3px;
+    color: white;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    line-height: 7px;
+    text-align: center;
+}
+  #vmap,#vmap2 {
+        width: 100%;
+        height: 100%;
+        background-color:transparent;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+      }
+      
+
+      .jqvmap-region {
+        cursor: default !important;
+      }
+
+      .map-pin {
+        width: 32px;
+        height: 25px;
+        position: absolute;
+        top: -25px;
+        left: -16px;
+        background-size: 20px 20px;
+        background-repeat: no-repeat;
+        text-align: center;
+        background-position: top center;
+        color: #888;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .map-pin span {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        left: 0;
+      }
+
+      .red {
+        background-image: url("{% static 'JQMap/dist/images/marker/red.png' %}");
+      }
+      .blue {
+        background-image: url("{% static 'JQMap/dist/images/marker/blue.png' %}") ;
+      }      
+      .purple {
+        background-image: url("{% static 'JQMap/dist/images/marker/purple.png' %}") ;
+      }
+      .yellow {
+        background-image: url("{% static 'JQMap/dist/images/marker/yellow.png' %}") ;
+      }
+      .green {
+        background-image: url("{% static 'JQMap/dist/images/marker/green.png' %}") ;
+      }
+      .grey {
+        background-image: url("{% static 'JQMap/dist/images/marker/grey.png' %}") ;
+      }
+
+      .coral-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/coral.svg' %}") ;
+      }
+      .cyan-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/cyan.svg' %}") ;
+      }
+      .green-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/green.svg' %}") ;
+      }
+      .orange-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/orange.svg' %}") ;
+      }
+      .purple-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/purple.svg' %}") ;
+      }
+      .red-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/red.svg' %}") ;
+      }
+      .sky-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/sky.svg' %}") ;
+      }
+      .yellow-circle {
+        background-image: url("{% static 'JQMap/dist/images/marker/RoundedIcons/yellow.svg' %}") ;
+      }
+
+
+      /* Setup basic CSS for Label */
+      .jqvmap-pin {
+        font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+        cursor: default;
+      }
+
+      /* Reposition Labels that are not quite right ( labels are centered in shape, and sometimes need tweaking ) */
+
+      #jqvmap1_fl_pin {
+        margin-left: 5%;
+      }
+</style> 
+
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/fixedColumns.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/dataTables.scroller.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.css' %}">
+{% endblock style %}
+{% block content %} 
+<form action="" id="target" method="post" class="form-horizontal" >
+  {% csrf_token %}  
+ 
+ <div id="divPane" class="modal fade bd-example-modal-xl" tabindex="-1" aria-hidden="true">
+  <!-- style="border-right: 1px solid var(--phoenix-navbar-footer-border-color);border-bottom: 1px solid var(--phoenix-navbar-footer-border-color); position:absolute; left:28px; top:62px; width:200px; height:82px; padding:5px;background: var(--phoenix-navbar-vertical-bg-color);"> -->
+  <div class="modal-dialog modal-md modal-dialog-scrollable modal-lg">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Items</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 px-6 py-0"> 
+        <div class="row row-cols-1 row-cols-md-2"style="padding-left: 2rem;padding-bottom: 0.5rem;">
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkmodelprogress" type="checkbox"   unchecked="" onchange="savepanes()"/>
+            <label class="form-check-label" for="chkmodelprogress">Portfolio Characteristics</label>
+           </div>
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkvalfindngs" type="checkbox" value=""    unchecked="" onchange="savepanes()"/>
+            <label class="form-check-label" for=" ">Disparate Impact</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkissuests" type="checkbox"  value=""     unchecked="" onchange="savepanes()"/>
+            <label class="form-check-label" for=" ">Spatial Distribution</label>
+           </div>          
+        </div>
+      </div>
+    </div>
+  </div> 
+ 
+  
+ </div>
+ 
+
+<div class="content" style="padding-top:0px;">
+ 
+   <!-- Card -->
+   <!-- <div class="mb-3 mb-lg-5"> -->  
+    <!-- <div class="row row-cols-1 row-cols-md-6"  >
+      <div class="col mb-2">
+        <button type="button" class="btn btn-primary-panes"   data-bs-toggle="modal" style="color:#377dff" data-bs-target="#divPane">
+           <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><i class="bi-tv fs-1" style="font-size: 1.6rem;"></i></span>
+        </button>   
+       </div>
+       <div class="col mb-2">
+        <button type="button" class="btn btn-primary-panes"   data-bs-toggle="modal" style="color:#377dff" data-bs-target="#divControlClassSel">
+           <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><i class="bi-gear fs-1" style="font-size: 1.6rem;"></i></span>
+        </button>   
+       </div>
+      <div class="col mb-2" id="divBtnMdlProgress" style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Portfolio Characteristics" data-bs-toggle="collapse" data-bs-target="#collapseModelDiv" aria-expanded="false" aria-controls="collapseModelDiv">
+          
+          <i class="bi-graph-up-arrow text-primary"></i>
+        </button>
+      </div>  
+      <div class="col mb-2" id="divBtnValfindings" style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Validation Findings" data-bs-toggle="collapse" data-bs-target="#collapseValFindings" aria-expanded="false" aria-controls="collapseValFindings">
+          <i class="bi-search text-primary"></i> 
+        </button>       
+      </div>
+      <div class="col mb-2" id="divBtnMapCompare"  style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Issues" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          
+          <i class="bi-geo-alt text-primary"></i>
+        </button>
+      </div> 
+      <div class="col mb-2" >
+        <span class="d-block fs-6">FL Rating</span>
+        <div class="d--flex align-items-center">
+          <h3 class="mb-0">{{FLRating}}</h3>
+        </div>
+      </div>
+    </div>  -->
+    <div class="row" style="padding:0px 10px;">
+      <div class="col-sm-6 col-lg-3 mb-3 mb-lg-5" style="margin-bottom: 1rem !important"  >
+        <!-- Card -->
+        <div class="card h-60" style="background: linear-gradient(108.4deg, #cda490, #e5bfac 98.4%); ">
+          <div class="card-body" >
+             
+
+            <div class="row align-items-center gx-2">
+              <div class="col">
+                <span class="js-counter display-4 text-dark" style="color: white!important;;">10</span>
+                <span class="text-body fs-4 ms-1" style="color: white!important;;">Overdue Tasks</span>
+              </div>
+              <!-- End Col --> 
+            </div>
+            <!-- End Row -->
+          </div>
+        </div>
+        <!-- End Card -->
+      </div>
+      <div class="col-sm-6 col-lg-3 mb-3 mb-lg-5" style="margin-bottom: 1rem !important" >
+        <!-- Card -->
+        <div class="card h-60" style="background: linear-gradient(109.6deg, #7a9083 11.2%, #90ab9a 91.1%); ">
+          <div class="card-body">
+             
+
+            <div class="row align-items-center gx-2">
+              <div class="col">
+                <span class="js-counter display-4 text-dark" style="color: white  !important;;">12</span>
+                <span class="text-body fs-4 ms-1 "  style="color: white  !important;;">Tasks Due This week</span>
+              </div>
+              <!-- End Col --> 
+            </div>
+            <!-- End Row -->
+          </div>
+        </div>
+        <!-- End Card -->
+      </div> 
+      <div class="col-sm-6 col-lg-3 mb-3 mb-lg-5" style="margin-bottom: 1rem !important" >
+        <!-- Card -->
+        <div class="card h-60" style="background: linear-gradient(108.4deg, #779198 3.3%,#a1b9bf  98.4%); ">
+          <div class="card-body">
+             
+
+            <div class="row align-items-center gx-2">
+              <div class="col">
+                <span class="js-counter display-4 text-dark" style="color: white!important;;">7</span>
+                <span class="text-body fs-4 ms-1" style="color: white!important;;">Overdue Issues</span>
+              </div>
+              <!-- End Col --> 
+            </div>
+            <!-- End Row -->
+          </div>
+        </div>
+        <!-- End Card -->
+      </div> 
+      
+      <div class="col-sm-6 col-lg-3 mb-3 mb-lg-5" style="margin-bottom: 1rem !important" >
+        <!-- Card -->
+        <div class="card h-60"  style="background: linear-gradient(109.6deg, #dfc18f  , #f8d9a6 ); ">
+          <div class="card-body">
+             
+
+            <div class="row align-items-center gx-2">
+              <div class="col">
+                <span class="js-counter display-4 text-dark" style="color: white  !important;;">22</span>
+                <span class="text-body fs-4 ms-1"  style="color: white  !important;;">Issues Due This week</span>
+              </div>
+              <!-- End Col --> 
+            </div>
+            <!-- End Row -->
+          </div>
+        </div>
+        <!-- End Card -->
+      </div>
+    </div>
+
+    <div class="row" style="padding:0px 10px">  
+      {% for  key,val in modeltypes.items %} 
+        <div class="col-sm-6 col-lg-3 mb-3 mb-lg-5" style="margin-bottom: 1rem !important" >
+          <!-- Card -->
+          <a class="card card-hover-shadow h-100" href="#" style="background-image: linear-gradient(108.5deg,{{val.color}} 11.2%, {{val.color}} 68%);;">
+            <div class="card-body" style="color: white!important;">
+              <h6 class="card-subtitle fs-4"  style="color: white!important;"  onclick="ShowModelTypewise('{{val.Mdl_Type_Label}}')"> {{val.Mdl_Type_Label}}</h6>
+              <div class="row align-items-center gx-2">
+                <div class="col" style="color: white;">
+                  <span class="js-counter display-4 text-dark"  style="color: white!important;" data-value="24">{{val.cnt}}</span>
+                  <span class="text-body fs-5 ms-1"  style="color: white!important;">  {{val.tscnt}} Tasks</span>
+                  <span class="text-body fs-5 ms-1"  style="color: white!important;">{{val.isscnt}} Issues</span>
+                </div>
+                <!-- End Col -->              
+                <!-- End Col -->
+              </div>
+              <!-- End Row --> 
+              <span style="color:white!important" class="fs-5" onclick="ShowModelRiskWise('{{val.Mdl_Type_Label}}','Low')">Risk:{{val.Lowrk}} Low</span>
+              <span style="color:white!important" class="fs-5" onclick="ShowModelRiskWise('{{val.Mdl_Type_Label}}','Medium')">,{{val.Mediumrk}} Medium</span>       
+              <span style="color:white!important" class="fs-5" onclick="ShowModelRiskWise('{{val.Mdl_Type_Label}}','High')">,{{val.Highrisk}} High </span> 
+            </div>
+          </a>
+          <!-- End Card -->
+        </div>
+      {% endfor %}
+      
+      {% for  val in srcCnt %} 
+      <div class="col-sm-6 col-lg-3 mb-3 mb-lg-5" style="margin-bottom: 1rem !important" >
+        <!-- Card -->
+        <a class="card card-hover-shadow h-100" href="#" style="background-image:linear-gradient(102.2deg, {{val.itemStyle}} 9.6%, {{val.itemStyle}}  96.1%); ">
+          <div class="card-body" style="color: white!important;">
+            <h6 class="card-subtitle fs-4"  style="color: white!important;">{{val.lbl}}  Models</h6>
+            <div class="row align-items-center gx-2">
+              <div class="col" style="color: white;">
+                <span class="js-counter display-4 text-dark"  style="color: white!important;" data-value="24">  {{val.value}}</span>
+                <span class="text-body fs-5 ms-1"  style="color: white!important;">{{val.tscnt}}  Tasks</span>
+                <span class="text-body fs-5 ms-1"  style="color: white!important;"> {{val.isscnt}}  Issues</span>
+              </div>
+              <!-- End Col -->              
+              <!-- End Col -->
+            </div>
+            <!-- End Row --> 
+            <span style="color:white!important" class="fs-5" onclick="ShowModelRiskWise('{{val.lbl}}','Low')">Risk:{{val.Lowrk}} Low</span>
+            <span style="color:white!important" class="fs-5" onclick="ShowModelRiskWise('{{val.lbl}}','Medium')">,{{val.Mediumrk}} Medium</span>       
+            <span style="color:white!important" class="fs-5" onclick="ShowModelRiskWise('{{val.lbl}}','High')">,{{val.Highrisk}} High </span> 
+          </div>
+        </a>
+        <!-- End Card -->
+      </div>
+      {% endfor %}
+    </div>
+    <div class="row">
+      
+      <div class="col-sm-5" style="width:48%;text-align: center; align-items: center;  display: flex; justify-content: center;"> 
+        <h4>Validation Findings By Elements</h4>
+      </div>
+      <div class="col-sm-1" style="width:2%;"></div>
+      <div class="col-sm-5" style="width:48%;text-align: center; align-items: center;  display: flex;  justify-content: center;"> 
+        <h4>Validation Findings By Category</h4>
+      </div>
+    </div>
+
+    <div class="row"> 
+      
+      <div class="col-sm-5" style="width:48%;text-align: center; align-items: center;  display: flex; justify-content: center;background: radial-gradient(circle at 18.7% 37.8%, rgb(250, 250, 250) 0%, rgb(225, 234, 238) 90%); ;"> 
+        <canvas id="valFindingsByElements"  style="width:250px;height: 100px; "></canvas>
+      </div>
+      <div class="col-sm-1" style="width:2%;"></div>
+      <div class="col-sm-5" style="width:48%;text-align: center; align-items: center;  display: flex;  justify-content: center;background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);;"> 
+        <canvas id="valFindingsByCat"  style="width:250px;height: 100px"></canvas>
+      </div>
+    </div>
+    <div class="row">  
+      <div style="height: 100%;" id='calendar' class="fullcalendar-custom">
+
+      </div> 
+    </div> 
+    
+     
+  <!-- </div> -->
+</div>
+ 
+ 
+</form> 
+  {% endblock content %}
+  {% block script %} 
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+   
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script> 
+  
+ 
+  
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.js' %}"></script>
+ <script src="{% static 'Front/dist/assets/vendor/fullcalendar/main.min.js' %}"></script>
+ <script src="{% static 'Front/dist/assets/vendor/hs-fullcalendar-filter/dist/hs-fullcalendar-filter.min.js' %}"></script>
+<!--<script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script> -->
+  <script type='text/javascript' > 
+      //  var eventlist = {{ activity_lst|safe }};
+        //  console.log("eventlist",eventlist)  
+       
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     var calendarEl = document.getElementById('calendar');
+        //     var calendar = new FullCalendar.Calendar(calendarEl, {
+        //         initialView: 'dayGridMonth',
+        //         height:$(window).height()*0.4, 
+        //         events:eventlist,
+        //         headerToolbar: {
+        //         left: 'prev,next today',
+        //         center: 'title',
+        //         right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        //         },
+        //         eventClick: info => {
+        //                console.log(info.event._def.title)
+        //             $.ajax({
+        //                     url: '/checkUserRole/', 
+        //                     data:{mdl_id:info.event._def.title},
+        //                     dataType: 'json',   
+        //                     success: function (data) { 
+        //                         console.log(data)
+        //                         if(data.role=="Assignee")
+        //                             window.location= "/task_assignee?id="+info.event._def.title;                                   
+        //                         else if(data.role=="Approver"){
+        //                             //window.location= "task_approver?id=" +info.event._def.title;
+        //                             document.location.href = "/task_approver?id=" +info.event._def.title;
+        //                         }
+        //                         else if(data.role=="Originator")
+        //                         document.location.href = "/edit_task/" +info.event._def.title;
+        //                     }
+        //                 });           
+        //         },
+        //         eventMouseEnter: function(info) { 
+                    
+        //     var tis=info.el;
+        //     if(info.event.extendedProps.description){
+        //         var popup=info.event.extendedProps.popup;
+        //         var tooltip = '<div class="tooltipevent" style="top:'+($(tis).offset().top-5)+'px;left:'+($(tis).offset().left+($(tis).width())/2)+'px"><div>' +info.event.extendedProps.description   + '</div><div>' +  + '</div></div>';
+        //         var $tooltip = $(tooltip).appendTo('body'); 
+        //     }
+        // },
+        // eventMouseLeave: function(info) {
+          
+        //     $(info.el).css('z-index', 8);
+        //     $('.tooltipevent').remove();
+        // },
+        //     });
+        //     calendar.render();
+        // });
+
+
+
+    var mdlType=[] 
+   
+    var tabSelected='Dashboard' 
+    var rowIdx=1;   
+    modelINfo();   
+    function modelINfo(){
+      console.log('inside modelINfo');
+      var modeltypes={{modeltypes|safe}}; 
+      mdlType=[]        
+    crtcolor=[]
+    crtlbl=[] 
+    $.each(modeltypes, function(i, obj) { 
+      mdlType.push(obj.cnt);
+      crtcolor.push(obj.color);
+      crtlbl.push(obj.Mdl_Type_Label)
+    });
+   console.log('crtlbl',modeltypes,crtlbl)
+    var datafindingsByElements={{findingsByElements|safe}};
+    var catType=[]        
+    var High=[]
+    var Med=[] 
+    var Low=[]; 
+    $.each(datafindingsByElements, function(i, obj) { 
+      catType.push(obj.Validation_Element);
+      High.push(obj.High);
+      Med.push(obj.Medium);
+      Low.push(obj.Low)
+    });
+   
+ lstColorArray=['#0dcaf0', '#fd7e14','#ffc107','#dc3545','#198754','#0d6efd','#FFFF00','#FF00FF']
+    let chartIncomeGrpApprlRate = Chart.getChart("valFindingsByElements"); // <canvas> id
+          if (chartIncomeGrpApprlRate != undefined) {
+            chartIncomeGrpApprlRate.destroy();
+          }
+           var ctxIncomeGrpApprlRate = document.getElementById("valFindingsByElements").getContext('2d'); 
+            chartIncomeGrpApprlRate = new Chart(ctxIncomeGrpApprlRate, {
+            type: 'bar',
+            data: {
+            labels:catType,
+            datasets: [{   
+            label: 'High', 
+            data: High, 
+            backgroundColor:'rgba(255, 0, 0, 0.8)',
+            } ,{ 
+              label: 'Medium', 
+              data: Med, 
+              backgroundColor:'orange' 
+            } ,{ 
+              label: 'Low', 
+            data: Low,
+            backgroundColor:'green' 
+            }],
+            },
+            options: {
+              tooltips: {
+              displayColors: true,
+              callbacks: {
+              mode: 'x',
+              },
+              },
+              scales: {
+              x: {
+              stacked: true,
+              // ticks: {
+              //     color: "white", // this here
+              //   },
+              },
+              y: {
+              stacked: true,
+              // ticks: {
+              //     color: "white", // this here
+              //   },
+              }
+              },  
+              indexAxis: 'y',
+              plugins: { 
+              legend: {
+                position: 'top',
+                display: false,
+              },
+              title: {
+                display: false,
+                text: 'Model Type'
+              }
+            },
+            chartArea: {
+                backgroundColor: 'rgba(251, 85, 85, 0.4)'
+            }
+            // responsive: true
+            }
+            });		 
+             //approval rate IncomeGrp ends
+             
+             var datafindingsCntByCategory={{findingsCntByCategory|safe}};
+    var valCategory=[]        
+    var catHigh=[]
+    var catMed=[] 
+    var catLow=[]; 
+    $.each(datafindingsCntByCategory, function(i, obj) { 
+      valCategory.push(obj.Validation_Category);
+      catHigh.push(obj.High);
+      catMed.push(obj.Medium);
+      catLow.push(obj.Low)
+    });
+    let chartFindingsByCat = Chart.getChart("valFindingsByCat"); // <canvas> id
+          if (chartFindingsByCat != undefined) {
+            chartFindingsByCat.destroy();
+          }
+           var ctxFindingsByCat = document.getElementById("valFindingsByCat").getContext('2d'); 
+           chartFindingsByCat = new Chart(ctxFindingsByCat, {
+            type: 'bar',
+            data: {
+            labels:valCategory,
+            datasets: [{   
+            label: 'High', 
+            data: High, 
+            backgroundColor:'rgba(255, 0, 0, 0.8)',
+            } ,{ 
+              label: 'Medium', 
+              data: catMed, 
+              backgroundColor:'orange' 
+            } ,{ 
+              label: 'Low', 
+            data: catLow,
+            backgroundColor:'green' 
+            }],
+            },
+            options: {
+              tooltips: {
+              displayColors: true,
+              callbacks: {
+              mode: 'x',
+              },
+              },
+              scales: {
+              x: {
+              stacked: true,
+              // ticks: {
+              //     color: "white", // this here
+              //   },
+              },
+              y: {
+              stacked: true,
+              // ticks: {
+              //     color: "white", // this here
+              //   },
+              }
+              },  
+              indexAxis: 'y',
+              plugins: { 
+              legend: {
+                position: 'top',
+                display: false,
+              },
+              title: {
+                display: false,
+                text: 'Model Type'
+              }
+            },
+            chartArea: {
+                backgroundColor: 'rgba(251, 85, 85, 0.4)'
+            }
+            // responsive: true
+            }
+            });		 
+             //approval rate IncomeGrp ends
+    //          const data = {
+		// 	labels: ['Java', 'Python', 'C++', 
+		// 			'JavaScript', 'C#', 'PHP'],
+		// 	datasets: [{
+		// 		label: 'Programming Languages',
+		// 		data: [1, 2, 3, 4, 5, 6],
+		// 		backgroundColor: [
+		// 			'rgba(255, 99, 132, 0.5)',
+		// 			'rgba(54, 162, 235, 0.5)',
+		// 			'rgba(255, 205, 86, 0.5)',
+		// 			'rgba(75, 192, 192, 0.5)',
+		// 			'rgba(153, 102, 255, 0.5)',
+		// 			'rgba(255, 159, 64, 0.5)'
+		// 		],
+		// 		borderColor: [
+		// 			'rgba(255, 99, 132, 1)',
+		// 			'rgba(54, 162, 235, 1)',
+		// 			'rgba(255, 205, 86, 1)',
+		// 			'rgba(75, 192, 192, 1)',
+		// 			'rgba(153, 102, 255, 1)',
+		// 			'rgba(255, 159, 64, 1)'
+		// 		],
+		// 		borderWidth: 1
+		// 	}]
+		// };
+		// const backgroundColorPlugin = {
+		// 	id: 'customCanvasBackgroundColor',
+		// 	beforeDraw: (chart) => {
+		// 		const ctx = chart.ctx; 
+    //     var gradient = ctx.createLinearGradient(0, chart.height, 0, chart.width);   
+    //     gradient.addColorStop(0, '#c471f5');           
+    //     gradient.addColorStop(1, '#fa71cd' );   
+		// 		ctx.fillStyle =gradient;// 'rgba(220, 220, 0, 0.5)';
+		// 		ctx.fillRect(0, 0, chart.width, chart.height);
+		// 	}
+		// };
+		// const config = {
+		// 	type: 'bar',
+		// 	data: data,
+		// 	plugins: [backgroundColorPlugin],
+		// 	options: {
+		// 		scales: {
+		// 			y: {
+		// 				beginAtZero: true
+		// 			}
+		// 		}
+		// 	}
+		// };
+		// let ctx = document.getElementById('barChart')
+		// 				.getContext('2d');
+		// let myBarChart = new Chart(ctx, config);
+    }
+
+
+
+
+    function showpanes(){ 
+      let element = document.querySelector('#collapseModelDiv'); 
+          let bsCollapse = bootstrap.Collapse.getInstance(element); 
+          if (bsCollapse === null) {
+              bsCollapse = new bootstrap.Collapse(element, {
+                  toggle: false   // this parameter is important!
+              })
+          } 
+        if (localStorage.getItem('chkPortChat')=='checked') {          
+          bsCollapse.show(); 
+          $('#divBtnMdlProgress').show();
+          $('#divmodelProgress').show();
+          $('#chkmodelprogress').prop('checked',true)
+        } 
+        else {           
+          bsCollapse.hide();
+          $('#divmodelProgress').hide();
+          $('#divBtnMdlProgress').hide();
+          $('#chkmodelprogress').prop('checked',false)
+        }  
+
+       
+  
+
+        
+        let collapseValFindings = document.querySelector('#collapseValFindings'); 
+        let bscollapseValFindings = bootstrap.Collapse.getInstance(collapseValFindings); 
+        if (bscollapseValFindings === null) {
+          bscollapseValFindings = new bootstrap.Collapse(collapseValFindings, {
+                toggle: false   // this parameter is important!
+            })
+        } 
+        if (localStorage.getItem('DispImpct')=='checked') {      
+           bscollapseValFindings.show(); 
+          $("#divValfindings").show()
+          $("#divBtnValfindings").show()
+          $('#chkvalfindngs').prop('checked',true)
+        } else {           
+           bscollapseValFindings.hide();
+          $("#divValfindings").hide()
+          $("#divBtnValfindings").hide()
+          $('#chkvalfindngs').prop('checked',false)
+        }  
+        
+        let collapseExample = document.querySelector('#collapseExample'); 
+        let bscollapseExample= bootstrap.Collapse.getInstance(collapseExample); 
+        if (bscollapseExample === null) {
+          bscollapseExample = new bootstrap.Collapse(collapseExample, {
+                toggle: false   // this parameter is important!
+            })
+        }
+        if (localStorage.getItem('chkissuests')=='checked') {   
+             
+          $("#divBtnIssueSts").show(); 
+          $("#divIssuestatus").show(); 
+          bscollapseExample.show()
+          $('#chkissuests').prop('checked',true)
+        } else {     
+          $("#divBtnIssueSts").hide();       
+          $("#divIssuestatus").hide(); 
+          bscollapseExample.hide()
+          $('#chkissuests').prop('checked',false)
+        }  
+         
+    }
+
+    function savepanes(){          
+        if ($('#chkmodelprogress').prop('checked')) {           
+            localStorage.setItem('chkPortChat', 'checked');
+        } else {
+            localStorage.setItem('chkPortChat', 'unchecked');
+        }  
+
+      
+        if ($('#chkvalfindngs').prop('checked')) { 
+            localStorage.setItem('DispImpct', 'checked');
+        } else {
+          localStorage.setItem('DispImpct','unchecked');
+        } 
+
+        if ($('#chkissuests').prop('checked')) { 
+            localStorage.setItem('chkissuests', 'checked');
+        } else {
+          localStorage.setItem('chkissuests','unchecked');
+        } 
+
+       
+
+        if ($('#chktasks').prop('checked')) {
+          localStorage.setItem('chktasks', 'checked');
+        } else {
+          localStorage.setItem('chktasks', 'unchecked');
+        } 
+
+        if ($('#chkactivity').prop('checked')) {
+          localStorage.setItem('chkactivity', 'checked');
+        } else {
+          localStorage.setItem('chkactivity', 'unchecked');
+        } 
+  
+        showpanes();
+    }
+ 
+    function ShowModelTypewise(mdlType){ 
+      document.location.href = "/modelList?ty=pie&colnm="+mdlType+"&chartnm=Model Risk Tier";
+    }
+
+    function ShowModelRiskWise(mdlType,riskType){
+      document.location.href = "/modelList?ty=bar&colnm="+riskType+"&chartnm=Model Risk Tier&mdlType="+mdlType;
+    }
+  </script> 
+   
+  {%endblock script %}

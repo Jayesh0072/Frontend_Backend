@@ -1,0 +1,160 @@
+    {% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+    
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    {% csrf_token %}
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+      <div class="card h-50">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Bank Details</h4>
+        </div> 
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy">   
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtutype" >Name <span style="color: red;">*</span></label>
+
+                    <div class="col-sm-8">
+
+                        <input class="form-control" value="{{bankName}}" id="txtbank" type="text" maxlength="100" required=""> 
+
+                    </div>
+                </div> 
+
+                <div class="row mb-3 position-relative">
+
+                    
+                    <label class="col-form-label col-sm-4 pt-0">Domain <span style="color: red;">*</span></label>
+                    <div class="col-sm-8">
+
+                        <input class="form-control" value="{{bankDomain}}" id="bankDomain" placeholder="@abc.com" type="text" maxlength="100" required=""> 
+
+                    </div>
+                </div> 
+                <div class="row mb-3 position-relative">
+
+                    
+                    <label class="col-form-label col-sm-4 pt-0">AI Assistant Name <span style="color: red;">*</span></label>
+                    <div class="col-sm-8">
+
+                        <input class="form-control" value="{{bankAI}}" id="bankAI"  type="text" maxlength="100" required=""> 
+
+                    </div>
+                </div> 
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-sm-4 col-form-label" for="txtaddress">Address</label>
+
+                        <div class="col-sm-8">
+
+                        <textarea class="form-control" id="txtaddress" type="text" maxlength="150">{{bankAddress}} </textarea>
+                        </div>
+                        
+                    </div>
+                </fieldset> 
+                <div class="row mb-3 position-relative">
+
+                    
+                    <label class="col-form-label col-sm-4 pt-0">Logo</label>
+                    <div class="col-sm-8">
+
+                        <input type="file" name="myfile" value="{{bankLogo}}" id="myfile" accept=".jpg, .png, .jpeg, .gif|image/*"> 
+
+                    </div>
+                </div>               
+                
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                       
+                        <div class="col-auto"> 
+                          <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" />                          
+                        </div>
+                       
+                      </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+<script type='text/javascript' >
+    var boolShowMenu='{{boolShowMenu}}'
+        if(boolShowMenu==0){
+          $('#divMenu').hide() 
+        }
+        else {
+          $('#divMenu').show()
+        }  
+    function validateform(){ 
+        if($("#txtbank").val().trim().length<1 || $('#bankDomain').val().trim().lengt<1 || $('#bankAI').val().trim().lengt<1){
+            alert('Plese enter mandatory fields.');
+            return false;
+        } 
+    var file  = document.getElementById('myfile').files[0]; 
+    var filename =''
+    if(file===undefined){
+        file='';
+        filename=''
+    } 
+    else{
+        filename = file.name; 
+    }
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val(); 
+    var x = new XMLHttpRequest();
+    x.open("POST","/addbank/",true); 
+    x.setRequestHeader( "X-CSRFToken",csrftoken); 
+    //x.send('{"comment":"'+comment+'"}');
+    var fd = new FormData();
+    if(filename!=''){
+        console.log('inside filename')
+    fd.append("filename", file,filename);
+    fd.append("filenm", filename);
+    }
+    fd.append("bankName",  $("#txtbank").val());
+    fd.append("bankAddress", $('#txtaddress').val());
+    fd.append("domain", $('#bankDomain').val());
+    fd.append("bankAI",$('#bankAI').val())
+    console.log(fd)
+   //fd.append("myfile", filename );
+    x.send(fd);
+    x.onreadystatechange = function () { 
+        console.log(x)
+        if (x.readyState == 4 && x.status == 200) {
+            var json = JSON.parse(x.responseText); 
+            if(json.is_taken)
+            {
+                alert('Data updated successfully.')
+            }
+                
+        }
+    }
+       /*$.ajax({
+            url: '/addbank/', 
+            data:{ 'bankName': $("#txtbank").val(),'bankAddress':$('#txtaddress').val(),'domain':$('#bankDomain').val()},
+           dataType: 'json',    
+            success: function (data) { 
+                alert(data.msg) 
+            }
+        });*/
+    }
+ 
+</script>
+{% endblock script %}

@@ -1,0 +1,2400 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<style>
+
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+</style>
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/fixedColumns.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/dataTables.scroller.min.css' %}">
+<div class="border border-start-0" style="z-index: 100; position:absolute; left:0;top:143px; width:28px; height:82px; padding:5px; background: var(--phoenix-navbar-vertical-bg-color);">
+  <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" data-bs-target="#divPane">
+     <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><span data-feather="monitor"></span></span>
+  </a>
+  <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Add Task"><span  data-feather="flag"></span></span>
+  <span class="nav-link-icon"  data-toggle="tooltip" title="Add Activity"><span data-feather="activity"></span></span>
+
+ </div>
+ 
+ <div id="divPane" class="modal fade"  tabindex="-1" aria-hidden="true">
+  <!-- style="border-right: 1px solid var(--phoenix-navbar-footer-border-color);border-bottom: 1px solid var(--phoenix-navbar-footer-border-color); position:absolute; left:28px; top:62px; width:200px; height:82px; padding:5px;background: var(--phoenix-navbar-vertical-bg-color);"> -->
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Items</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 px-6 py-0">
+        <div class="row gx-14" style="padding-left: 2rem;padding-bottom: 0.5rem;">
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkmodelprogress" type="checkbox" value=""  onchange="showpanes()" checked=""/>
+            <label class="form-check-label" for="chkmodelprogress">Model Progress</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkmodelprogress2" type="checkbox" value="" onchange="showpanes()"/>
+            <label class="form-check-label" for="chkmodelprogress2">Model Source /Approval Status</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkmodel" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkmodel">Models</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkupcoming" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkupcoming">Upcoming</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkactivity" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkactivity">Tasks</label>
+           </div>
+         
+        </div>
+      </div>
+    </div>
+  </div> 
+ 
+  
+ </div>
+
+<!-- Added by Shuvankar dated 2024.01.01 Starts (pop-up for filter )-->
+<div id="divFilterPopup"  style="width: 500px; left:50%; margin-left: -250px;" class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Filter Criteria</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 "> 
+        <fieldset>
+          <div class="row" style="margin-top: 1rem;">
+              <label class="col-form-label col-sm-3 pt-0">Interval</label>
+              <div class="col-sm-3">
+
+                <div class="form-check"> 
+                <input class="form-check-input" id="rbWeekly" type="radio" name="rbInterval" value="Week" >  
+                 
+                <label class="form-check-label" for="rbactive">Weekly</label>
+                </div>  
+            </div>
+              <div class="col-sm-3">
+
+                  <div class="form-check"> 
+                  <input class="form-check-input" id="rbMonthly" type="radio" name="rbInterval" value="Monthly" >  
+                   
+                  <label class="form-check-label" for="rbactive">Monthly</label>
+                  </div>  
+              </div>
+              <div class="col-sm-3"> 
+                  <div class="form-check">    
+                  <input class="form-check-input"  id="rbQtr" type="radio" name="rbInterval" value="Qtr" checked="true">   
+                  <label class="form-check-label" for="rbQtr">Quaterly</label>
+                  </div> 
+              </div>
+          </div>
+      </fieldset> 
+      <div class="row" style="margin-top: 1rem;">
+        <label class="col-sm-3 col-form-label" for="txtRegDt"> Status </label>
+        <div class="col-sm-8">    
+           <select id="ddlIssueSts" class="form-select" data-choices="data-choices" multiple="multiple" placeholder="Issue status" data-options='{"removeItemButton":true,"placeholder":true}'>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Provisional Approval">Provisional Approval</option>
+            <option value="Not Approved">Not Approved</option>
+           </select>
+        </div>                         
+      </div> 
+        <div class="row" style="margin-top: 1rem;">
+          <label class="col-sm-3 col-form-label" for="txtRegDt"> Date Range </label>
+          <div class="col-sm-4">    
+            <input  id="txtDtFrom" name="txtDtFrom"  type="text" class="form-control datetimepicker" 
+            placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}' />
+          </div>
+          <div class="col-sm-4">    
+            <input  id="txtDtTo" name="txtDtTo"  type="text" class="form-control datetimepicker" 
+            placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'   />
+          </div>                         
+        </div> 
+        <!-- <div class="row mb-6">
+        </div>  -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divFilterPopup').modal('toggle')">Cancel</button> 
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="OptionSelected()">Show</button>
+      </div>
+    </div>
+  </div>   
+</div>
+<!-- Added by Shuvankar dated 2024.01.01 Ends (pop-up for filter )-->
+
+
+<!-- Added by Shuvankar dated 2024.01.04 Starts (pop-up for filter for Models )-->
+<div id="divFilterMetricPopup"  style="width: 300px; left:50%; margin-left: -150px;" class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Performance</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 px-6 py-0">
+        <div class="row gx-14" style="padding-left: 2rem;padding-bottom: 0.5rem;">
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="rbCritical" type="radio" name="rbMetricType" value="All" checked="true" onclick="MetricTypeSelected('')">                                  
+            <label class="form-check-label" for="rbCritical">All</label>
+          </div>  
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbCritical" type="radio" name="rbMetricType" value="NotDone" onclick="MetricTypeSelected('-')">                                  
+            <label class="form-check-label" for="rbCritical">Not Done</label>
+          </div>  
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbNormal" type="radio" name="rbMetricType" value="Normal" onclick="MetricTypeSelected('text-normal')">                                  
+            <label class="form-check-label" for="rbNormal">Normal</label>
+          </div>
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbWarning" type="radio" name="rbMetricType" value="Warning" onclick="MetricTypeSelected('text-warning')">                                  
+            <label class="form-check-label" for="rbWarning">Warning</label>
+          </div> 
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbCritical" type="radio" name="rbMetricType" value="Critical" onclick="MetricTypeSelected('text-danger')">                                  
+            <label class="form-check-label" for="rbCritical">Critical</label>
+          </div>          
+        </div>
+
+        
+      </div>
+    </div>
+  </div>   
+</div>
+<!-- Added by Shuvankar dated 2024.01.04 Ends (pop-up for filter for Models )-->
+
+<div class="content" style="padding-top:0px;">
+ 
+   <!-- Card -->
+   <div class="card mb-3 mb-lg-5">
+    
+
+    <!-- Body -->
+    <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300">
+      <div class="card-body">
+        <div class="row col-sm-divider">
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-clipboard-data fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <span class="d-block fs-6"><a style="color:inherit" href="{{modelList}}">Models</a></span>
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">{{modelttl}}</h3> 
+                </div>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-clock-history fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <span class="d-block fs-6">Tools</span>
+                <div class="d--flex align-items-center">
+                  <h3 class="mb-0">{{toolCnt}}</h3>
+                </div>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-list-task fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <span class="d-block fs-6">Tasks</span>
+                <div class="d--flex align-items-center">
+                  <h3 class="mb-0">{{taskCnt}}</h3>
+                </div>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-binoculars fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <span class="d-block fs-6">Program Score</span>
+                <div class="d--flex align-items-center">
+                  <h3 class="mb-0">{{icqratings}}</h3>
+                </div>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Body --> 
+    </div>  
+    
+
+    <div id="divValfindings" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300">
+      <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+          <div class="row g-3 justify-content-between align-items-center">
+            <div class="col-12 col-md">
+              <h4 class="text-900 mb-0" data-anchor="data-anchor"> Validation Findings </h4>
+            </div>
+            <div class="col col-md-auto">
+              <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+               
+                <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code" role="button" 
+                aria-controls="basic-example-code" aria-expanded="false"> <schartIdpan class="me-2" data-feather="plus-square"></span> </a>
+                <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" style="padding-bottom: 0px;">
+          <div class="d-flex justify-content-end mb-5">
+            <!-- Nav -->
+            <ul class="nav nav-segment" id="expensesTabEg1" role="tablist">
+              <li class="nav-item" data-toggle="chart-bar" data-datasets="thisWeek" data-trigger="click" onclick="$('#div__finsingsbyCategory').hide();$('#div_finsingsbyElemets').show()" data-action="toggle">
+                <a class="nav-link active" href="javascript:;" data-bs-toggle="tab">Validation Elements</a>
+              </li>
+              <li class="nav-item" data-toggle="chart-bar" data-datasets="lastWeek" data-trigger="click"  onclick="$('#div_finsingsbyElemets').hide();$('#div__finsingsbyCategory').show()"  data-action="toggle">
+                <a class="nav-link" href="javascript:;" data-bs-toggle="tab">Category</a>
+              </li>
+            </ul>
+            <!-- End Nav -->
+          </div>
+            <div class="collapse code-collapse collapse show" id="basic-example-code">
+              <div class="bg-white border-300">
+                <div class="row">
+                  
+                       
+                      <!-- Table -->
+                  <div id="div_finsingsbyElemets" class="table-responsive datatable-custom"> 
+                    <table id="datatable_finsingsbyElemets" class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                    data-hs-datatables-options='{
+                            "order": []
+                    }'>
+                      <thead class="thead-light">
+                        <tr> 
+                          <th>Validation Element</th>
+                          <th>High</th>
+                          <th>Medium</th>
+                          <th>Low</th>
+                          <th>Total</th>              
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {% for key, val in findingsByElements.items  %}             
+                        <tr>               
+                          
+                          <td>
+                            {{val.Validation_Element}}
+                          </td>
+                          <td>
+                            {{val.High}}
+                          </td>
+                          <td>
+                            {{val.Medium}}
+                          </td>
+                          <td>
+                            {{val.Low}}
+                          </td> 
+                          <td>
+                            {{val.Total}}
+                          </td> 
+                        </tr>
+                      {% endfor %}    
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- End Table --> 
+                 
+                    <!-- Table -->
+                    <div id="div__finsingsbyCategory" style="display: None;"  class="table-responsive datatable-custom"> 
+                      <table id="datatable_finsingsbyCategory" class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                      data-hs-datatables-options='{
+                              "order": []
+                      }'>
+                        <thead class="thead-light">
+                          <tr> 
+                            <th>Category</th>
+                            <th>High</th>
+                            <th>Medium</th>
+                            <th>Low</th>
+                            <th>Total</th>              
+                          </tr>
+                        </thead>
+  
+                        <tbody>
+                          {% for key, val in findingsCntByCategory.items  %}             
+                          <tr>               
+                            
+                            <td>
+                              {{val.Validation_Category}}
+                            </td>
+                            <td>
+                              {{val.High}}
+                            </td>
+                            <td>
+                              {{val.Medium}}
+                            </td>
+                            <td>
+                              {{val.Low}}
+                            </td> 
+                            <td>
+                              {{val.Total}}
+                            </td> 
+                          </tr>
+                        {% endfor %}    
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- End Table --> 
+                </div>
+              </div>
+          </div> 
+        </div>
+      </div>   
+    </div>
+    <p>
+      <!-- <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Link with href
+      </a>
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Button with data-bs-target
+      </button> -->
+      <button type="button" id="plus" class="btn btn-primary" data-type="minus" data-field="quant[1]" onclick="show1()">
+        <span class="glyphicon glyphicon-plus"></span>+
+      </button>
+      <button type="button" id="minus" class="btn btn-primary" data-type="plus" data-field="quant[1]" onclick="hide1()">
+        <span class="glyphicon glyphicon-minus"></span>-
+      </button> 
+    </p>
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body">
+        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+      </div>
+    </div>
+    <!-- Added by Shuvankar Starts 2024.01.01 -->
+    <div id="divIssuestatus" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300">
+       
+      <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+          <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+            <div class="row g-3 justify-content-between align-items-center">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" data-anchor="data-anchor"> 
+                  <a   data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Issue Status By Priority</a> </h4>
+              </div>
+              <div class="col col-md-auto">
+                <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" data-bs-target="#divFilterPopup">
+                  <span class="text-primary" data-toggle="tooltip" title="Select Filter Criteria"><span data-feather="filter"></span></span>
+                </a>               
+              </div>
+              <div class="col col-md-auto">      
+                <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">                 
+                  <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code" role="button" 
+                  aria-controls="basic-example-code" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                  <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div class="card-body"  style="padding-bottom: 0px;">
+              <div class="collapse" id="collapseExample">
+                <div class="bg-white border-300">
+                  <div class="row"> 
+                    <div class="col-12 col-xl-12 col-xxl-12"> 
+                      <canvas id="stackedChartID" height="350" width="580"></canvas>                        
+                    </div>
+                  </div>
+                </div>
+            </div> 
+          </div>
+        </div>        
+    </div>
+    <!-- Added by Shuvankar Ends 2024.01.01 -->
+
+    <div id="divmodelProgress" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300">
+      <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+          <div class="row g-3 justify-content-between align-items-center">
+            <div class="col-12 col-md">
+              <h4 class="text-900 mb-0" data-anchor="data-anchor">  Model Progress </h4>
+            </div>
+            <div class="col col-md-auto">
+              <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+               
+                <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code" role="button" 
+                aria-controls="basic-example-code" aria-expanded="false"> <schartIdpan class="me-2" data-feather="plus-square"></span> </a>
+                <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" style="padding-bottom: 0px;">
+            <div class="collapse code-collapse collapse show" id="basic-example-code">
+              <div class="bg-white border-300">
+                <div class="row">
+                  <div class="col-12 col-xl-7 col-xxl-6">
+                    <div class="chartjs-custom mb-3 mb-sm-5">
+                      <h3>Model Type </h3> 
+                      <canvas id="chartId" height="350" width="580"></canvas>
+                    </div>
+                  </div>
+                  <div class="col-12 col-xl-5 col-xxl-6">
+                    <h3>Model Risk Tier </h3> 
+                    <canvas id="chrtRiskTier" height="350" width="580"></canvas>
+                  </div>
+                </div>
+              </div>
+          </div> 
+        </div>
+      </div>   
+    </div>
+    <div id="divmodelProgress2" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300" style="margin-top:1rem;">
+       
+      <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+          <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+            <div class="row g-3 justify-content-between align-items-center">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" data-anchor="data-anchor">Model Source/Approval Status </h4>
+              </div>
+              <div class="col col-md-auto">
+                <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                 
+                  <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code2" role="button" 
+                  aria-controls="basic-example-code2" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                  <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="basic-example-code2">
+                <div class="bg-white border-300">
+                  <div class="row">
+                    <div class="col-12 col-xl-6 col-xxl-6">
+                      <h3>Model Source </h3> 
+                      <canvas id="chrtMdlSrc" height="350" width="580"></canvas>
+                    </div> 
+                    <div class="col-12 col-xl-6 col-xxl-6">
+                      <h3>Approval Status </h3> 
+                      <div class="echart-zero-burnout-chart3" style="min-height:320px;width:100%"></div>
+                    </div>
+                  </div>
+                </div>
+            </div> 
+          </div>
+        </div> 
+  </div>
+
+
+<!-- Added by Shuv Starts (for Project Details pop-up)-->
+<div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scrollingLongModalLabel2">Model Info</h5>
+        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+      </div>
+      <div class="modal-body p-5 px-md-6">
+        <table class="table table1" >
+          <tr id="trpubldate">
+            <th scope="row" style="width:40%">Date of Publishing Validation Report</th>
+            <td><label id='lblpublishDate'></label></td>
+          </tr>                 
+          <tr id="trrptlink">
+            <th scope="row">Validation Report</th>
+            <td><a id="hrefReport"  target="_blank"><label id='lblVRReportlink'></label></a></td>                      
+          </tr>      
+          <tr>
+            <th scope="row" style="width:40%">Department</th>
+            <td><label id='lblDept'></label></td>
+          </tr>                 
+          <tr>
+            <th scope="row">Function</th>
+            <td><label id='lblFunc'></label></td>                      
+          </tr>
+          <tr>
+            <th scope="row">Registration Date</th>
+            <td><label id='lblRegDate'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Id</th>
+            <td><label id='lblMdlId'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Primary Model Name </th>
+            <td><label id='lblPrmNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Secondary Model Name </th>
+            <td><label id='lblSecNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Source  </th>
+            <td><label id='lblMdlSrc'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Model Type  </th>
+            <td><label id='lblMdlType'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Abstract</th>
+            <td><label id='lblMdlAbsct'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Objective of Model</th>
+            <td><label id='lblMdlObj'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Application of Model</th>
+            <td><label id='lblApplMdl'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Risk Analysis </th>
+            <td><label id='lblMdlRiskAnlz'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Products Addressed </th>
+            <td><label id='lblPrdAddr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Usage Frequency </th>
+            <td><label id='lblSsageFreq'></label></td>
+          </tr>
+          <!-- risk tab started -->
+          <tr>
+            <th scope="row">Model Risk </th>
+            <td><label id='lblMdlRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Intrinsic Risk </th>
+            <td><label id='lblIntrRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Reliance</th>
+            <td><label id='lblReliance'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Materiality</th>
+            <td><label id='lblMateriality'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Risk Mitigation </th>
+            <td><label id='lblRiskMiti'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Fair Lending</th>
+            <td><label id='lblFairLendg'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Owner/s</th>
+            <td><label id='lblOwner'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Developer/s</th>
+            <td><label id='lblDevlopers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">User/s</th>
+            <td><label id='lblUsers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Production Support</th>
+            <td><label id='lblPrdnSupp'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Upstream Models</th>
+            <td><label id='lblupstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Downstream Models</th>
+            <td><label id='lbldwstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Approach</th>
+            <td><label id='lblApproach'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Frequency</th>
+            <td><label id='lblMonFreq'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Metrics</th>
+            <td><label id='lblMonMtrc'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event/s </th>
+            <td><label id='lblTriggerEve'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Date  </th>
+            <td><label id='lblLastTgrDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Mitigation Date </th>
+            <td><label id='lblMitgDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event Mitigation  </th>
+            <td><label id='lblMitiEv'></label></td>
+          </tr>
+          <!-- risk tab ended --> 
+      </table>
+      </div>
+      <div class="modal-footer"> 
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+
+    <div  id="divmodels" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Models <span style="font-size: medium;">(Brief summary of all models)</span></h4>
+                 </div>
+                 
+                 <div class="col col-md-auto">
+                  <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" data-bs-target="#divFilterMetricPopup">
+                    <span class="text-primary" data-toggle="tooltip" title="Select Mteric Type"><span data-feather="filter"></span></span>
+                  </a>               
+                </div>
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-projectSummary" role="button" 
+                    aria-controls="pnl-projectSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+                <div class="collapse code-collapse collapse show" id="pnl-projectSummary">
+                   <!-- Header -->
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center"> 
+              <!-- Datatable Info -->
+              <div id="datatableCounterInfo" style="display: none;">
+                <div class="d-flex align-items-center">
+                  <span class="fs-6 me-3">
+                    <span id="datatableCounter">0</span>
+                    Selected
+                  </span>
+                  <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                    <i class="tio-delete-outlined"></i> Delete
+                  </a>
+                </div>
+              </div>
+              <!-- End Datatable Info -->
+            </div>
+          </div>
+          <!-- End Col -->
+          <div class="col-auto">
+            <!-- Filter -->
+            <div class="row align-items-sm-center">
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">Model Source:</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_UA" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        <option value="Internal">Internal</option>
+                        <option value="Vendor">Vendor</option>
+                        <option value="Legacy">Legacy</option>
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">Model Risk</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="5" data-target-table="datatable_UA" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              <div class="col-md">
+                <form>
+                  <!-- Search -->
+                  <div class="input-group input-group-merge input-group-flush">
+                    <div class="input-group-prepend input-group-text">
+                      <i class="bi-search"></i>
+                    </div>
+                    <input id="datatableSearch" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                  </div>
+                  <!-- End Search -->
+                </form>
+              </div> 
+            </div>
+            <!-- End Filter -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable_UA" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                 "columnDefs": [{
+                    "targets": [0],
+                    "orderable": false
+                  }],
+                 "order": [],
+                 "info": {
+                   "totalQty": "#datatableWithPaginationInfoTotalQty"
+                 },
+                 "search": "#datatableSearch",
+                 "entries": "#datatableEntries",
+                 "pageLength": 5,
+                 "isResponsive": false,
+                 "isShowPaging": false,
+                 "pagination": "datatablePagination"
+               }'>
+          <thead class="thead-light">
+            <tr>
+              <th></th>
+              <th>Model ID</th>
+              <th>Primary Model Name</th>
+              <th>Model Source</th>
+              <th>Model Type</th>
+              <th>Model Risk</th>
+             
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for key, val in modelinfo.items  %}             
+            <tr>
+               
+              <td>                  
+                
+                <span class="nav-link-icon" style="padding-right: 5px;"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                {% if val.canDecomm == "Yes" %}
+                  <span class="nav-link-icon" data-toggle="tooltip" title="Decommision"><span id="sp_decomm_{{val.Mdl_Id}}" onclick="showComment('{{val.Mdl_Id}}','{{val.Is_Decomm}}')" style="cursor: pointer;" class="{{val.decommcss}}" data-feather="eye-off"></span></span>
+                {%else%}
+                  <span class="nav-link-icon" data-toggle="tooltip" title="Decommision"><span class="{{val.decommcss}}" data-feather="eye-off"></span></span>
+                {%endif%}
+                <img src='\static\images\documents.png'  title="Documents" style='cursor:pointer;' onclick="showDocs('{{val.Mdl_Id}}')"/>
+              </td>
+              <td>              
+                <a class="text-decoration-none fw-bold fs-0"  href="#"  onclick="showModala('{{val.Mdl_Id}}','{{val.canDecomm}}','{{val.Is_Decomm}}','{{val.canEdit}}','{{val.tempexists}}')"  >{{val.Mdl_Id}}</a>
+              </td>
+              <td>
+                {{val.Prm_Name}}
+              </td>
+              <td>
+                {{val.Mdl_Src_Label}}
+              </td>
+              <td>
+                {{val.Mdl_Type_Label}}
+              </td>
+              <td>
+                {%if val.Mdl_Risk_Label == "High" %}
+                    <h5><span class="badge bg-soft-danger  text-danger">High</span></h5>
+                {%elif val.Mdl_Risk_Label == "Medium" %}
+                    <h5><span class="badge bg-soft-warning  text-warning">Medium</span></h5>
+                {%elif val.Mdl_Risk_Label == "Low" %}
+                    <h5><span class="badge bg-soft-success text-success">Low</span></h5>
+                {% endif %}
+              </td> 
+            </tr>
+          {% endfor %}    
+          </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <!-- Pagination -->
+        <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="me-2">Showing:</span>
+
+              <!-- Select -->
+              <div class="tom-select-custom">
+                <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                          "searchInDropdown": false,
+                          "hideSearch": true
+                        }'>
+                  <option value="5" selected>5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50" >50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <!-- End Select -->
+
+              <span class="text-secondary me-2">of</span>
+
+              <!-- Pagination Quantity -->
+              <span id="datatableWithPaginationInfoTotalQty"></span>
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-auto">
+            <div class="d-flex justify-content-center justify-content-sm-end">
+              <!-- Pagination -->
+              <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Footer -->
+                </div>
+            </div>  
+              </div>  
+        </div>
+      </div>
+    </div>
+    <div  id="divTasks" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Tasks <span style="font-size: medium;">(Brief summary of all tasks)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-tasksSummary" role="button" 
+                    aria-controls="pnl-tasksSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="pnl-projectSummary">
+                 <!-- Header -->
+    <div class="card-header">
+      <div class="row justify-content-between align-items-center flex-grow-1">
+        <div class="col-md">
+          <div class="d-flex justify-content-between align-items-center"> 
+            <!-- Datatable Info -->
+            <div id="datatableCounterInfo" style="display: none;">
+              <div class="d-flex align-items-center">
+                <span class="fs-6 me-3">
+                  <span id="datatableCounter">0</span>
+                  Selected
+                </span>
+                <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                  <i class="tio-delete-outlined"></i> Delete
+                </a>
+              </div>
+            </div>
+            <!-- End Datatable Info -->
+          </div>
+        </div>
+        <!-- End Col -->
+        <div class="col-auto">
+          <!-- Filter -->
+          <div class="row align-items-sm-center">
+            <div class="col-sm-auto">
+              <div class="row align-items-center gx-0">
+                <div class="col">
+                  <span class="text-secondary me-2">Approval Status:</span>
+                </div>
+                <!-- End Col -->
+
+                <div class="col-auto">
+                  <!-- Select -->
+                  <div class="tom-select-custom tom-select-custom-end">
+                    <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="4" data-target-table="datatable_Task" autocomplete="off" data-hs-tom-select-options='{
+                              "searchInDropdown": false,
+                              "hideSearch": true,
+                              "dropdownWidth": "10rem"
+                            }'>
+                      <option value="null" selected>All</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Provisional Approval">Provisional Approval</option>
+                      <option value="Not Approved">Not Approved</option>
+                    </select>
+                  </div>
+                  <!-- End Select -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Col -->
+
+            <div class="col-sm-auto">
+              <div class="row align-items-center gx-0">
+                <div class="col">
+                  <span class="text-secondary me-2">Priority :</span>
+                </div>
+                <!-- End Col -->
+
+                <div class="col-auto">
+                  <!-- Select -->
+                  <div class="tom-select-custom tom-select-custom-end">
+                    <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_Task" autocomplete="off" data-hs-tom-select-options='{
+                              "searchInDropdown": false,
+                              "hideSearch": true,
+                              "dropdownWidth": "10rem"
+                            }'>
+                      <option value="null" selected>All</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                  <!-- End Select -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Col -->
+
+            <div class="col-md">
+              <form>
+                <!-- Search -->
+                <div class="input-group input-group-merge input-group-flush">
+                  <div class="input-group-prepend input-group-text">
+                    <i class="bi-search"></i>
+                  </div>
+                  <input id="datatableSearch_Task" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                </div>
+                <!-- End Search -->
+              </form>
+            </div> 
+
+            <div class="col-auto">
+              <!-- Dropdown -->
+              <div class="dropdown me-2">
+                <button type="button" class="btn btn-white btn-sm dropdown-toggle" id="usersExportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi-download me-2"></i> Export
+                </button>
+      
+                <div class="dropdown-menu dropdown-menu-sm-end" aria-labelledby="usersExportDropdown">
+                  <span class="dropdown-header">Options</span>
+                  <a id="export-copy" class="dropdown-item" href="javascript:;">
+                    <img class="avatar avatar-xss avatar-4x3 me-2" src="../../static/Front/dist/assets/svg/illustrations/copy-icon.svg"  alt="Image Description">
+                    Copy
+                  </a>
+                  <a id="export-print" class="dropdown-item" href="javascript:;">
+                    <img class="avatar avatar-xss avatar-4x3 me-2" src="../../static/Front/dist/assets/svg/illustrations/print-icon.svg" alt="Image Description">
+                    Print
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <span class="dropdown-header">Download options</span>
+                  <a id="export-excel" class="dropdown-item" href="javascript:;">
+                    <img class="avatar avatar-xss avatar-4x3 me-2" src="../../static/Front/dist/assets/svg/brands/excel-icon.svg" alt="Image Description">
+                    Excel
+                  </a>
+                  <a id="export-csv" class="dropdown-item" href="javascript:;">
+                    <img class="avatar avatar-xss avatar-4x3 me-2" src="../../static/Front/dist/assets/svg/components/placeholder-csv-format.svg" alt="Image Description">
+                    .CSV
+                  </a>
+                  <a id="export-pdf" class="dropdown-item" href="javascript:;">
+                    <img class="avatar avatar-xss avatar-4x3 me-2" src="../../static/Front/dist/assets/svg/brands/pdf-icon.svg" alt="Image Description">
+                    PDF
+                  </a>
+                </div>
+              </div>
+              <!-- End Dropdown -->
+            </div>
+          </div>
+          <!-- End Filter -->
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Header -->
+
+    <!-- Table -->
+    <div class="table-responsive datatable-custom">
+      <table id="datatable_Task" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+               "columnDefs": [{
+                  "targets": [0],
+                  "orderable": false
+                }],
+               "order": [],
+               "info": {
+                 "totalQty": "#datatableWithPaginationInfoTotalQty_Task"
+               },
+               "search": "#datatableSearch_Task",
+               "entries": "#datatableEntries_Task",
+               "pageLength": 5,
+               "isResponsive": false,
+               "isShowPaging": false,
+               "pagination": "datatablePagination_Task"
+             }'>
+        <thead class="thead-light">
+          <tr>
+            <th></th>
+            <th>Task ID</th>
+            <th>Role</th>                            
+            <th>Priority</th>
+            <th>Approval Status</th>
+            <th>Task Function</th>
+            <th>Task Type</th>
+            <th>Completion Status</th>
+            <th>End Date</th>
+          </tr>
+        </thead>  
+        <tbody class="list" id="project-list-table-body">
+          {% for key, val in taskLst.items  %}             
+            <tr class="position-static">
+              <td >
+                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+              </td>
+              <td >
+                
+                <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectTasks('{{val.Task_ID}}','{{val.U_Role}}')" >{{val.Task_ID}}</a>
+              </td>
+              <td>
+                
+                {{val.U_Role}}</a>
+              </td>
+              <td>
+                
+                {%if val.Task_Priority_Label == "High" %}
+                  <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                {%elif val.Task_Priority_Label == "Medium" %}
+                    <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                {%elif val.Task_Priority_Label == "Low" %}
+                    <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                {% endif %}
+              </td>
+              <td>
+                {{val.Task_ApprovalStatus_Label}} 
+              </td>
+              <td >
+                {{val.Task_Function_Label}}
+              </td>
+              <td>
+               {{val.Task_Type_label}}
+              </td>
+              <td> 
+              {{val.Completion_Status}}
+              </td>
+              <td>                                
+               {{val.end_dt}}
+              </td> 
+            </tr>
+          {% endfor %}   
+        </tbody>
+      </table>
+    </div>
+    <!-- End Table -->
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <!-- Pagination -->
+      <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+        <div class="col-sm mb-2 mb-sm-0">
+          <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+            <span class="me-2">Showing:</span>
+
+            <!-- Select -->
+            <div class="tom-select-custom">
+              <select id="datatableEntries_Task" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                        "searchInDropdown": false,
+                        "hideSearch": true
+                      }'>
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50" >50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <!-- End Select -->
+
+            <span class="text-secondary me-2">of</span>
+
+            <!-- Pagination Quantity -->
+            <span id="datatableWithPaginationInfoTotalQty_Task"></span>
+          </div>
+        </div>
+        <!-- End Col -->
+
+        <div class="col-sm-auto">
+          <div class="d-flex justify-content-center justify-content-sm-end">
+            <!-- Pagination -->
+            <nav id="datatablePagination_Task" aria-label="Activity pagination"></nav>
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Pagination -->
+    </div>
+    <!-- End Footer -->
+              </div>
+          </div> 
+              </div>  
+        </div>
+      </div>
+    </div> 
+    <div  id="divIssues" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Issues <span style="font-size: medium;">(Brief summary of all Issues)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-issueSummary" role="button" 
+                    aria-controls="pnl-issueSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="pnl-projectSummary">
+                 <!-- Header -->
+    <div class="card-header">
+      <div class="row justify-content-between align-items-center flex-grow-1">
+        <div class="col-md">
+          <div class="d-flex justify-content-between align-items-center"> 
+            <!-- Datatable Info -->
+            <div id="datatableCounterInfo" style="display: none;">
+              <div class="d-flex align-items-center">
+                <span class="fs-6 me-3">
+                  <span id="datatableCounter">0</span>
+                  Selected
+                </span>
+                <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                  <i class="tio-delete-outlined"></i> Delete
+                </a>
+              </div>
+            </div>
+            <!-- End Datatable Info -->
+          </div>
+        </div>
+        <!-- End Col -->
+        <div class="col-auto">
+          <!-- Filter -->
+          <div class="row align-items-sm-center">
+            <div class="col-sm-auto">
+              <div class="row align-items-center gx-0">
+                <div class="col">
+                  <span class="text-secondary me-2">Approval Status:</span>
+                </div>
+                <!-- End Col -->
+
+                <div class="col-auto">
+                  <!-- Select -->
+                  <div class="tom-select-custom tom-select-custom-end">
+                    <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="4" data-target-table="datatable_Issue" autocomplete="off" data-hs-tom-select-options='{
+                              "searchInDropdown": false,
+                              "hideSearch": true,
+                              "dropdownWidth": "10rem"
+                            }'>
+                      <option value="null" selected>All</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Provisional Approval">Provisional Approval</option>
+                      <option value="Not Approved">Not Approved</option>
+                    </select>
+                  </div>
+                  <!-- End Select -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Col -->
+
+            <div class="col-sm-auto">
+              <div class="row align-items-center gx-0">
+                <div class="col">
+                  <span class="text-secondary me-2">Priority :</span>
+                </div>
+                <!-- End Col -->
+
+                <div class="col-auto">
+                  <!-- Select -->
+                  <div class="tom-select-custom tom-select-custom-end">
+                    <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_Issue" autocomplete="off" data-hs-tom-select-options='{
+                              "searchInDropdown": false,
+                              "hideSearch": true,
+                              "dropdownWidth": "10rem"
+                            }'>
+                      <option value="null" selected>All</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                  <!-- End Select -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Col -->
+
+            <div class="col-md">
+              <form>
+                <!-- Search -->
+                <div class="input-group input-group-merge input-group-flush">
+                  <div class="input-group-prepend input-group-text">
+                    <i class="bi-search"></i>
+                  </div>
+                  <input id="datatableSearch_Issue" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                </div>
+                <!-- End Search -->
+              </form>
+            </div> 
+          </div>
+          <!-- End Filter -->
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Header -->
+
+    <!-- Table -->
+    <div class="table-responsive datatable-custom">
+      <table id="datatable_Issue" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+               "columnDefs": [{
+                  "targets": [0],
+                  "orderable": false
+                }],
+               "order": [],
+               "info": {
+                 "totalQty": "#datatableWithPaginationInfoTotalQty_Issue"
+               },
+               "search": "#datatableSearch_Issue",
+               "entries": "#datatableEntries_Issue",
+               "pageLength": 5,
+               "isResponsive": false,
+               "isShowPaging": false,
+               "pagination": "datatablePagination_Issue"
+             }'>
+             <thead>
+              <tr>
+                <th class="white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;"></th>
+                <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;">Issue ID</th>
+                <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="U_Role" style="width:8%;">Role</th>                            
+                <th class="sort align-middle ps-3" scope="col" data-sort="Task_Priority_Label" style="width:30%;">Priority</th>
+                <th class="sort align-middle ps-3" scope="col" data-sort="Task_ApprovalStatus_Label" style="width:10%;">Approval Status</th>
+                <th class="sort align-middle ps-3" scope="col" data-sort="Task_Function_Label" style="width:15%;">Task Function</th>
+                <th class="sort align-middle ps-3" scope="col" data-sort="Task_Type_label" style="width:12%;">Task Type</th>
+                <th class="sort align-middle ps-3" scope="col" data-sort="Completion_Status" style="width:9%;">Completion Status</th>
+                <th class="sort align-middle text-end" scope="col" data-sort="end_dt" style="width:10%;">End Date</th>
+              </tr>
+            </thead>  
+            <tbody class="list" id="project-list-table-body">
+              {% for key, val in issueList.items  %}             
+                <tr class="position-static">
+                  <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                    <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                    <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                    <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                  </td>
+                  <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                    
+                    <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectIssues('{{val.Issue_ID}}','{{val.U_Role}}')" >{{val.Issue_ID}}</a>
+                  </td>
+                  <td class="align-middle time white-space-nowrap ps-0 U_Role py-4">
+                    
+                    {{val.U_Role}}</a>
+                  </td>
+                  <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                    
+                    {%if val.Issue_Priority_Label == "High" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                    {%elif val.Issue_Priority_Label == "Medium" %}
+                        <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                    {%elif val.Issue_Priority_Label == "Low" %}
+                        <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                    {% endif %}
+                  </td>
+                  <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                    {{val.Issue_ApprovalStatus_Label}} 
+                  </td>
+                  <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                    {{val.Issue_Function_Label}}
+                  </td>
+                  <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                   {{val.Issue_Type_label}}
+                  </td>
+                  <td class="align-middle white-space-nowrap ps-3 Status"> 
+                  {{val.Completion_Status}}
+                  </td>
+                  <td class="align-middle white-space-nowrap text-end Approval_Status">                                
+                   {{val.end_dt}}
+                  </td> 
+                </tr>
+              {% endfor %}   
+            </tbody>
+          </table>
+    </div>
+    <!-- End Table -->
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <!-- Pagination -->
+      <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+        <div class="col-sm mb-2 mb-sm-0">
+          <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+            <span class="me-2">Showing:</span>
+
+            <!-- Select -->
+            <div class="tom-select-custom">
+              <select id="datatableEntries_Issue" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                        "searchInDropdown": false,
+                        "hideSearch": true
+                      }'>
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50" >50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <!-- End Select -->
+
+            <span class="text-secondary me-2">of</span>
+
+            <!-- Pagination Quantity -->
+            <span id="datatableWithPaginationInfoTotalQty_Issue"></span>
+          </div>
+        </div>
+        <!-- End Col -->
+
+        <div class="col-sm-auto">
+          <div class="d-flex justify-content-center justify-content-sm-end">
+            <!-- Pagination -->
+            <nav id="datatablePagination_Issue" aria-label="Activity pagination"></nav>
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Pagination -->
+    </div>
+    <!-- End Footer -->
+              </div>
+          </div>  
+              </div>  
+        </div>
+      </div>
+    </div>
+    <div  id="divAudit" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Audit Trail <span style="font-size: medium;">(Latest activities)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-auditSummary" role="button" 
+                    aria-controls="pnl-auditSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="pnl-auditSummary">
+                <div class="timeline-vertical timeline-with-details">
+                  {% for activity in activity_lst %}
+                  <ul class="step">
+                    <!-- Step Item -->
+                    <li class="step-item">
+                      <div class="step-content-wrapper">
+                        <span class="step-icon step-icon-pseudo step-icon-soft-dark"></span>
+                      
+                        <div class="step-content">
+                          <h5 class="step-title">   
+                            <a class="text-dark" href="#">{{activity.activity_trigger}}/{{activity.activity_details}}</a>
+                          </h5>
+
+                          <p class="fs-5 mb-1">{{activity.user}} <a class="text-uppercase" href="#"><i class="bi-journal-bookmark-fill"></i></a><span class="badge bg-soft-success text-success rounded-pill"><span class="legend-indicator bg-success"></span></span></p>
+
+                          <span class="text-muted small text-uppercase">{{activity.date}}  {{activity.time}}</span>
+                        </div>
+                      </div>
+                    </li>
+                    <!-- Step Item -->
+                    
+                  </ul>
+                  {% endfor %}
+
+                </div>
+              </div>
+            </div>
+            <!---->
+              </div>  
+        </div>
+      </div>
+    </div> 
+   
+  </div>
+
+  <div class="modal fade" id="divActivityDetails" tabindex="-1" aria-labelledby="divActivityDetails" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scrollingLongModalLabel2">Activity Details</h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+        </div>
+        <div class="modal-body p-5 px-md-6">
+          <p id="txtActivityDetails"></p>
+          <input type="hidden" id="hdnactivityid"/>
+        </div>
+        <div class="modal-footer"> 
+          <button class="btn btn-outline-primary" type="button" onclick="viewAll()">View All</button>
+          <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="divDocs" tabindex="-1" aria-labelledby="divDocs" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scrollingLongModalLabel2">Model Documents</h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+        </div>
+        <div class="modal-body p-5 px-md-6">
+      <div class="row form-group"> 
+    <div class="table-responsive table--no-card m-b-40"> 
+        <table id="tbldocs" class="table table-borderless table-striped table-earning">
+            <thead>
+                <tr> 
+                    <th style="padding: 10px 0px 10px 10px;">Document Type</th> 
+                    <th style="padding: 10px 0px 10px 10px;">Document Name</th>  
+                </tr>
+            </thead>  
+            <tbody>
+               
+                {% for key, data in modelDocs.items %} 
+                    <tr> 
+                            <td>
+                                <div style="display: flex;">
+                                    <div style="margin-right: 10px;">{{data.Mdl_Doc_Type}}</div>   
+                                    <!-- <div class="blob" id="div_{{data.docIdx}}" title="View Comments" onclick="showdocCom(this.id,'{{data.docref}}')"></div> -->
+                                </div>
+                            </td>     
+                        <td><a href="\static\document_files\{{selectedMdl}}\{{data.Mdl_Doc_Name}}"  target="_blank">{{data.Mdl_Doc_Name}}</a></td>                                                                                             
+                          
+                    </tr> 
+                {% endfor %} 
+            </tbody>
+           </table>
+    </div>
+</div>
+</div>
+<div class="modal-footer"> 
+<button class="btn btn-outline-primary" type="button" id="btnOk"  data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div> 
+
+  {% endblock content %}
+  {% block script %} 
+>
+
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+ 
+
+  <!-- JS Global Compulsory  -->
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'Front/dist/assets/vendor/hs-header/dist/hs-header.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-nav-scroller/dist/hs-nav-scroller.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/list.js/dist/list.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-go-to/dist/hs-go-to.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/prism/prism.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/moment.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+  <!-- JS Front -->
+  <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script>
+
+  <!-- JS Implementing Plugins -->
+  
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>
+  <script type='text/javascript' > 
+    function show1(){
+      debugger
+      $("#collapseExample").show()
+    }
+    function hide1(){
+      debugger
+      $("#collapseExample").hide()
+    }
+
+//     var mdlType=[] 
+//     console.log( "ready!" );
+//     showpanes() 
+   
+//     //charttest();
+//      // Executes when the HTML document is loaded and the DOM is ready
+//     var riskcnt= {{mdlRiskCnt|safe}};
+   
+//     var modeltypes={{modeltypes|safe}}; 
+     
+//     var mdlSrc={{srcCnt|safe}}; 
+    
+//     var riskcntarr=[]
+//     $.each(riskcnt, function(i, obj) { 
+//       riskcntarr.push(obj.value); 
+//     }); 
+//     shoenewchart(riskcnt)
+//     function showpanes(){
+         
+//         if ($('#chkmodelprogress').prop('checked')) {
+//             $('#divmodelProgress').show();
+//             localStorage.setItem('chkmodelprogress', 'checked');
+//         } else {
+//             $('#divmodelProgress').hide();
+//             localStorage.setItem('chkmodelprogress', 'unchecked');
+//         }  
+//         if ($('#chkmodel').prop('checked')) {
+//             $('#divmodels').show();
+//         } else {
+//             $('#divmodels').hide();
+//         } 
+
+//         if ($('#chkupcoming').prop('checked')) {
+//             $('#divupcoming').show();
+//         } else {
+//             $('#divupcoming').hide();
+//         } 
+
+//         if ($('#chkactivity').prop('checked')) {
+//             $('#divtask').show();
+//         } else {
+//             $('#divtask').hide();
+//         } 
+
+//         if ($('#chkmodelprogress2').prop('checked')) {
+//             $('#divmodelProgress2').show();
+//         } else {
+//             $('#divmodelProgress2').show();
+//         }  
+//         $('#divmodelProgress2').show();
+//     }
+
+    
+
+//     function showDetails()
+//     {
+//       window.location='{{projectsDetails}}'
+//     }
+//     function showModala(id){
+//       $('#lblpublishDate').text('')
+//       $('#lblDept').text('');
+//       $('#lblFunc').text('');
+//       $('#lblRegDate').text('');
+//       $('#lblMdlId').text('');
+//       $('#lblPrmNm').text('');
+//       $('#lblSecNm').text('');
+//       $('#lblMdlSrc').text('');
+//       $('#lblMdlType').text('');
+//       $('#lblMdlAbsct').text('');
+//       $('#lblMdlObj').text('');
+//       $('#lblApplMdl').text('');
+//       $('#lblMdlRiskAnlz').text('');
+//       $('#lblPrdAddr').text('');
+//       $('#lblSsageFreq').text('');
+//       //risk tab starts
+//       $('#lblMdlRisk').text('');
+//       $('#lblIntrRisk').text('');
+//       $('#lblReliance').text('');
+//       $('#lblMateriality').text('');
+//       $('#lblRiskMiti').text('');
+//       $('#lblFairLendg').text('');
+//       $('#lblDevlopers').text('');
+//       $('#lblUsers').text('');
+//       $('#lblPrdnSupp').text('');
+      
+//       //relevant users ends
+//       //dependencies starts
+//       $('#lblupstr').text('');
+//       $('#lbldwstr').text('');
+//       $('#lblApproach').text('');
+//                 $('#lblMonFreq').text('');
+//                 $('#lblMonMtrc').text('');
+//                 $('#lblTriggerEve').text('');
+//                 $('#lblLastTgrDt').text('');
+//                 $('#lblMitgDt').text('');
+//                 $('#lblMitiEv').text(''); 
+//       $.ajax({
+//             url: '/getMdlDetailsById/', 
+//             data:{ mdlId: id},
+//            dataType: 'json',   
+//             success: function (data) { 
+//                if(data.istaken=='true'){
+//                // $('#tblMaster tr:last').after('<tr><td>'+$("#txtopt").val()+'</td><td>'+$("#txtdesc").val()+'</td></tr>');
+//                $('#projectsCardViewModal').modal('toggle');
+//                //console.log(data.mdldata[0].Mdl_Src_Label,',' +' id is '+data.mdldata.Mdl_Id)
+                            
+//                if(data.isvrpublished!='no'){
+//                 $('#lblpublishDate').text(data.isvrpublished);
+//                $("#hrefReport").attr("href", "/static/media/ValidationReport_"+id+".pdf")
+//                $('#lblVRReportlink').text("ValidationReport_"+id+".pdf");
+//                $("#trpubldate").show();
+//                 $("#trrptlink").show();
+//                }
+//                else  {
+//                 $("#trpubldate").hide();
+//                 $("#trrptlink").hide();
+//                }
+//                $('#lblDept').text(data.mdldata[0].Dept_Label);
+//                $('#lblFunc').text(data.mdldata[0].Mdl_Fncn_Label);
+//                $('#lblRegDate').text(data.mdldata[0].regdate);
+//                $('#lblMdlId').text(data.mdldata[0].Mdl_Id);
+//                $('#lblPrmNm').text(data.mdldata[0].Prm_Name);
+//                $('#lblSecNm').text(data.mdldata[0].Sec_Name);
+//                $('#lblMdlSrc').text(data.mdldata[0].Mdl_Src_Label);
+//                $('#lblMdlType').text(data.mdldata[0].Mdl_Type_Label);
+//                $('#lblMdlAbsct').text(data.mdldata[0].Mdl_Absct);
+//                $('#lblMdlObj').text(data.mdldata[0].Mdl_objective);
+//                $('#lblApplMdl').text(data.mdldata[0].Mdl_Appl);
+//                $('#lblMdlRiskAnlz').text(data.mdldata[0].Mdl_Risk_Ansl);
+//                $('#lblPrdAddr').text(data.mdldata[0].Prd_Addr_Label);
+//                $('#lblSsageFreq').text(data.mdldata[0].Mdl_Use_Freq_Label);
+//                //risk tab starts
+//                $('#lblMdlRisk').text(data.mdldata[0].Mdl_Risk_Label);
+//                $('#lblIntrRisk').text(data.mdldata[0].Intrinsic_Label);
+//                $('#lblReliance').text(data.mdldata[0].Reliance_Label);
+//                $('#lblMateriality').text(data.mdldata[0].Materiality_Label);
+//                $('#lblRiskMiti').text(data.mdldata[0].Risk_Mtgn);
+//                $('#lblFairLendg').text(data.mdldata[0].Fair_Lndg);
+               
+               
+//                $('#lblOwner').text('');
+//                $('#lblDevlopers').text('');
+//                $('#lblUsers').text('');
+//                $('#lblPrdnSupp').text('');
+
+//                $('#lblOwner').text(data.Owner);
+//                $('#lblDevlopers').text(data.Developer);
+//                $('#lblUsers').text(data.User);
+//                $('#lblPrdnSupp').text(data.PrdnSupport);
+               
+//                //relevant users ends
+//                //dependencies starts
+//                $('#lblupstr').text('');
+//                $('#lbldwstr').text('');
+//                if(Object.keys(data.dependencies).length>0){
+//                 $('#lblupstr').text(data.dependencies[0].Mdl_Dwstream_Label);
+//                 $('#lbldwstr').text(data.dependencies[0].Mdl_Upstream_Label);
+//                }
+//                //dependencies ends
+
+//                //perfomance monitoring start
+//                $('#lblApproach').text('');
+//                 $('#lblMonFreq').text('');
+//                 $('#lblMonMtrc').text('');
+//                 $('#lblTriggerEve').text('');
+//                 $('#lblLastTgrDt').text('');
+//                 $('#lblMitgDt').text('');
+//                 $('#lblMitiEv').text(''); 
+//                if(Object.keys(data.PerformMon).length>0){
+//                 $('#lblApproach').text(data.PerformMon[0].Approach);
+//                 $('#lblMonFreq').text(data.PerformMon[0].Mdl_Montr_Freq_Label);
+//                 $('#lblMonMtrc').text(data.PerformMon[0].Monr_Mtrcs);
+//                 $('#lblTriggerEve').text(data.PerformMon[0].Tgr_Evt);
+//                 $('#lblLastTgrDt').text(data.PerformMon[0].Lst_Tgr_Dt);
+//                 $('#lblMitgDt').text(data.PerformMon[0].Lst_Tgr_Mtgn_Dt);
+//                 $('#lblMitiEv').text(data.PerformMon[0].Tgr_Evt_Mtgn); 
+//                }
+//                //perfomance monitoring ends
+
+//                }
+//                else
+//                {
+                 
+//                }
+//             }
+//         });
+      
+//     }
+   
+
+    function redirectTasks(id,role){ 
+      debugger
+      if(role=='Assigned'){ 
+        console.log('inside if')
+        document.location.href = "/task_assignee?id=" +id;
+        
+      }
+      else if(role=='For Approval'){ 
+        document.location.href = "/task_approver?id=" +id;
+      }
+    }
+
+    // function redirectIssues(id,role){
+    //   debugger
+    //   console.log(id,',',role,(role=='Assigned'))
+    //   if(role=='Assigned'){ 
+    //     console.log('inside if')
+    //     document.location.href = "/issue_assignee?id=" +id;
+        
+    //   }
+    //   else if(role=='For Approval'){ 
+    //     document.location.href = "/issue_approver?id=" +id;
+    //   }
+    // }
+
+//     function activitytrail(refference_id,activityDetails){
+//       $('#txtActivityDetails').text(activityDetails)
+//       $('#hdnactivityid').val(refference_id);
+// $("#divActivityDetails").modal('toggle')
+// //document.location.href = "/activitytrail?selectSection=" +refference_id;
+
+// }
+
+// function viewAll(id)
+// {
+//   $('#hdnactivityid').val(id);
+//   document.location.href = "/activitytrail?selectSection=" + $('#hdnactivityid').val();
+// }
+
+// function showDocs(id){
+//   $('#tbldocs').find('tbody').empty(); 
+//     $.ajax({
+//       url: '/getMdlDocs/', 
+//       data:{ mdl_id: id},
+//       dataType: 'json',   
+//       success: function (data) { 
+//         $.each(data.docs, function(key, val) {  
+//           myRow='<tr> <td><div style="display: flex;"> <div style="margin-right: 10px;">'+val.Mdl_Doc_Type+'</div> </div> </td>  <td><a href="\\static\\document_files\\'+data.mdl_id+'\\'+val.Mdl_Doc_Name +'"  target="_blank">'+val.Mdl_Doc_Name +'</a></td>  </tr> '
+//           $('#tbldocs').find('tbody').append(myRow);
+//         });
+//       $("#divDocs").modal('toggle')
+//       }
+//     });
+//     }
+//     var paramIntervalVal='Monthly';
+//     function OptionSelected(){ 
+//       paramIntervalVal =$('input[name="rbInterval"]:checked').val()
+//       var stackprioritydata=[];
+//       var chartlbl=[];
+//       $.ajax({
+//         url: '/getIssuesByQtrOrMonth/', 
+//         data:{'ptype':paramIntervalVal,'frdate':$('#txtDtFrom').val(),'todt':$('#txtDtTo').val(),'sts':$('#ddlIssueSts').val()},
+//         dataType: 'json',   
+//         success: function (data) {    
+//         if(data.issuePriority.length>0){
+//             stackprioritydata=data.issuePriority;
+//           chartlbl=data.chartSeries;
+//           $('#issueSTacked').show()
+//         }  
+//         else {
+//           stackprioritydata=[[''],[''],['']];
+//           chartlbl=['','',''];
+//           //$('#issueSTacked').hide();
+//           $("#divFilterPopup").modal('toggle');
+//           alert('No data.')
+//          // return;
+//         }         
+//         const { getColor, getData, resize, getPastDates } = window.phoenix.utils;
+//         const $issueStackChartEl = document.querySelector(
+//           '.echart-issue-stacked-chart'
+//         );
+       
+       
+//         stackprioritydata=(stackprioritydata) 
+//         if ($issueStackChartEl) {
+//           const userOptions = getData($issueStackChartEl, 'echarts');
+//           const chart = window.echarts.init($issueStackChartEl);
+//           const rawData =  stackprioritydata
+        
+//         const totalData = [];
+//         for (let i = 0; i < rawData[0].length; ++i) {
+//           let sum = 0;
+//           for (let j = 0; j < rawData.length; ++j) {
+//             sum += rawData[j][i];
+//           }
+//           totalData.push(sum);
+//         }
+//         console.log(totalData)
+//           const getDefaultOptions = () => ({
+//             color: [  
+//               getColor('danger'),
+//               getColor('warning'),
+//               getColor('success')
+//             ],
+//             legend: {
+//           selectedMode: false
+//         },
+//         legend: {
+//               // orient: 'vertical',
+//             x: 'right',         
+//           selectedMode: false
+        
+//           },
+//             tooltip: {
+//               trigger: 'item',  
+//             }, 
+//             grid: {
+//               right: 5,
+//         left: 0,
+//         bottom: '15%',
+//         top: 20,
+//         containLabel: true
+//               },
+//             xAxis: {        
+//             type: 'category',
+//             data:chartlbl,  
+//               triggerEvent: true
+//             },
+//             yAxis: {
+//               type: 'value'
+//             },
+//               series : [
+//               'High',
+//               'Medium',
+//               'Low'
+//             ].map((name, sid) => {
+//               return {
+//                 name,
+//                 type: 'bar',
+//                 stack: 'total',
+//                 barWidth: '60%',
+//                 label: {
+//                   show: true,
+//                   formatter: (params) => params.value // Math.round(params.value * 1000) / 10 + '%'
+//                 },
+//                 data: rawData[sid].map((d, did) =>
+//                   totalData[did] <= 0 ? 0 : d /// totalData[did]
+//                 )
+//               };
+//             })
+//           });
+
+//           updateChart(chart, userOptions, getDefaultOptions);
+
+//           resize(() => {
+//             chart.resize();
+//           });
+//         }
+//         $("#divFilterPopup").modal('toggle')
+//         }
+//     });
+//   }
+
+//   function updateChart(chart, userOptions, getDefaultOptions) {
+//       const themeController = document.body;
+//       // Merge user options with lodash
+//       const { merge } = window._;
+//       chart.setOption(merge(getDefaultOptions(), userOptions));
+      
+//       themeController.addEventListener(
+//         'clickControl',
+//         ({ detail: { control } }) => {
+//           if (control === 'phoenixTheme') {
+//             chart.setOption(window._.merge(getDefaultOptions(), userOptions));
+//           }
+//         }
+//       );
+
+//       chart.on('click', params => {  
+//         //console.log(params.seriesType + ',' + params.seriesName + ','+params.name)
+      
+
+//         // Construct the full URL with "id"
+//         document.location.href = "/issueLst?ty=" +paramIntervalVal+"&colnm="+params.name+"&chartnm="+params.seriesName;
+//       })
+//   }
+// // -------------------end config.js--------------------
+
+
+
+// function MetricTypeSelected(optn){ 
+//       //var v1=$('radio[name="rbInterval"]').val();  
+//       //console.log('Before call to API',paramIntervalVal,',',$('#txtDtFrom').val(),',',$('#txtDtTo').val())
+//       $('#project-list-table-body-model').empty();
+//       $.ajax({
+//         url: '/getModelListByUSerid/', 
+//         data:{'optntype':optn},
+//         dataType: 'json',   
+//         success: function (data) {  
+//           console.log('ModelListFiltered data ',data.modelinfo);
+//           strRows='';
+//             $.each(data.modelinfo, function(i, item) {
+//               console.log(item)
+//               strRows +=' <tr class="position-static"> ';
+//               strRows +='         <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4"> ';
+//               //strRows +='             <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="'+item["Upcoming"]+'" data-feather="calendar"></span></span> ';
+
+//               strRows+='<span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>';
+//               strRows+='<span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag '+item["mdl_perf"]+'"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></span>';
+
+//               //strRows +='             <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="'+item["mdl_perf"]+'"  data-feather="flag"></span></span> ';
+//               strRows +='             <img src="\\static\\images\\documents.png"  title="Documents" style="cursor:pointer;" onclick="showDocs('+item["Mdl_Id"]+')"/> ';
+//               strRows +='           </td> ';
+//               strRows +='           <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4"> ';
+//               strRows +='             <a class="text-decoration-none fw-bold fs-0" href="#" onclick="showModala('+item["Mdl_Id"]+')" >'+item["Mdl_Id"]+'</a> ';
+//               strRows +=' </td> ';
+//               strRows +=' <td class="align-middle white-space-nowrap Process_Name ps-3 py-4"> '+item["Prm_Name"] 
+//               strRows +='  </td> ';
+//               strRows +='  <td class="align-middle white-space-nowrap Type ps-3 py-4"> '+item["Mdl_Src_Label"] 
+//               strRows +='  </td> ';
+//               strRows +=' <td class="align-middle white-space-nowrap Area ps-3 py-4">'+item["Mdl_Type_Label"]            
+//               strRows +='  </td> ';
+//               strRows +='  <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4"> ';
+//               if (item["Mdl_Risk_Label"] == "High" )
+//               strRows +='      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5> ';
+//               else if (item["Mdl_Risk_Label"] == "Medium")
+//               strRows +='       <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5> ';
+//               else if( item["Mdl_Risk_Label"] == "Low" )
+//               strRows +='       <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5> ';
+//               strRows +='  </td> ';
+//               strRows +='                 </tr> ';
+//               $('#project-list-table tbody').append(strRows);
+//               strRows='';
+//             });
+//             $("#divFilterMetricPopup").modal('toggle')
+//           }
+//       });
+// }
+
+// function shoenewchart(riskcnt){ 
+ 
+//       var modeltypes={{modeltypes|safe}}; 
+//       mdlType=[]        
+//     crtcolor=[]
+//     crtlbl=[]
+//     $.each(modeltypes, function(i, obj) { 
+//       mdlType.push(obj.cnt);
+//       crtcolor.push(obj.color);
+//       crtlbl.push(obj.Mdl_Type_Label)
+//     });
+
+
+//     $.each(riskcnt, function(i, obj) { 
+//       riskcntarr.push(obj.value); 
+//     });
+//       var chrt = document.getElementById("chartId").getContext("2d");
+//       var chartId = new Chart(chrt, {
+//          type: 'doughnut',
+//          data: {
+//             labels:crtlbl,
+//             datasets: [{ 
+//             data:mdlType,
+//             backgroundColor: crtcolor,
+//             hoverOffset: 5
+//             }],
+//          },
+//          options: {
+//           responsive: false,
+//           cutout:'60%',
+//           plugins: {
+//             legend: {
+//               position: 'top',
+//             },
+//             title: {
+//               display: false,
+//               text: 'Model Type'
+//             }
+//           }
+//         },
+//       }); 
+
+//       datasetsbubble=[]
+//       x=5
+//       y=5
+       
+//       $.each(modeltypes, function(i, obj) {
+//       //use obj.id and obj.name here, for example:
+    
+      
+//     });   
+    
+//     colorarr=['#0dcaf0', '#fd7e14','#ffc107','#dc3545','#198754','#0d6efd']
+//     lblarr= ['Internal', 'Legacy','Vendor']
+//     $.each(mdlSrc, function(i, obj) {       
+//       item = {}  
+//       item['label'] =lblarr[i];
+//       item['color'] = colorarr[i];
+//       item['data'] =[{"x": x, "y": x, "r": obj.value}];
+//       item['backgroundColor'] =colorarr[i];
+//       item['borderColor'] =  "transparent";
+//       item['radius'] = obj.value;
+//       datasetsbubble.push(item)
+//       x+=20;
+//       y+=2
+//     });  
+//     var chrtMdlSrc = document.getElementById("chrtMdlSrc").getContext("2d");
+//     var chartId = new Chart(chrtMdlSrc, {
+//          type: 'bubble',
+//          data: {
+//             labels: crtlbl,
+//             datasets:  datasetsbubble,
+//          },
+//          options: {
+          
+//          responsive: false,
+//          plugins: {
+//               tooltips: {
+//                   callbacks: {
+//                       label: (context)=> {
+//                           console.log('datat is ',context) 
+//                       }
+//                   }
+//               }
+//             },
+//          "scales": {
+//                       "y": {
+//                         "grid": {
+//                           "display": false,
+//                           "drawBorder": false
+//                         },
+//                         "ticks": {
+//                           "display": false,
+//                           "beginAtZero": true
+//                         },
+//                         "max": 500
+//                       },
+//                       "x": {
+//                        "grid": {
+//                           "display": false,
+//                           "drawBorder": false
+//                         },
+//                         "ticks": {
+//                           "display": false,
+//                           "max": 100,
+//                           "beginAtZero": true
+//                         }
+//                       }
+//                     }
+//           },
+          
+//       });
+
+//       var chrtRiskTier = document.getElementById("chrtRiskTier");
+//       const ctxRiskTier  = chrtRiskTier.getContext('2d');
+//       const chartIdchrtRiskTier = new Chart(ctxRiskTier, {
+//          type: 'bar',
+//          data: {
+//             labels:['High', 'Medium','Low',  'None'],
+//             datasets: [{ 
+//             data:riskcntarr,
+//             backgroundColor: crtcolor,
+//             hoverOffset: 5
+//             }],
+//          },
+//          options: {
+//           responsive: true,  
+//           plugins: {
+//             legend: {
+//               display: false,
+//             },
+//           }
+//         },
+//       }); 
+
+//       chrtRiskTier.onclick = (evt) => {
+//         console.log('bar clicked')
+//         const res = chartIdchrtRiskTier.getElementsAtEventForMode(
+//     evt,
+//     'nearest',
+//     { intersect: true },
+//     true
+//   );
+//   console.log('res ',res)
+//   // If didn't click on a bar, `res` will be an empty array
+//   if (res.length === 0) {
+//     return;
+//   }
+//   // Alerts "You clicked on A" if you click the "A" chart 
+//   document.location.href = "/projectsDetails?ty=bar&colnm="+chartIdchrtRiskTier.data.labels[res[0].index]+"&chartnm=Model Risk Tier";
+//       };
+
+//       var stackprioritydata='{{issuePriority|safe}}';
+//       console.log('stackprioritydata ',stackprioritydata,typeof(stackprioritydata))
+//       stackprioritydata = stackprioritydata.replace(/'/g, '"') //replacing all ' with "
+//       stackprioritydata = JSON.parse(stackprioritydata)
+//       console.log(stackprioritydata)
+//         $.each(stackprioritydata, function(i, obj) {  
+//       });
+//       var chartlbl=({{chartSeries|safe}});  
+//       const canvas = document.getElementById('stackedChartID');
+// const ctx = canvas.getContext('2d');
+// const chart = new Chart(ctx, {
+//   type: 'bar', 
+//             data: { 
+//                 labels: chartlbl, 
+//                 datasets: [{ 
+//                     label: 'High',       
+//                     backgroundColor: "#dc3545", 
+//                     data: stackprioritydata[0], 
+//                 }, { 
+//                     label:  'Medium',    
+//                     backgroundColor: "#ffc107", 
+//                     data: stackprioritydata[1], 
+//                 }, { 
+//                     label:    'Low',
+//                     backgroundColor: "#198754", 
+//                     data: stackprioritydata[2]
+//                 }], 
+//             },  
+   
+//   options: {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//               scales: { 
+//                     x: { 
+//                         stacked: true, 
+//                     }, 
+//                     y: { 
+//                         stacked: true 
+//                     } 
+//                 } 
+//   }
+// });
+
+// // Make sure to attach `onclick` to the canvas, **not** the chart instance
+// canvas.onclick = (evt) => {
+//   const res = chart.getElementsAtEventForMode(
+//     evt,
+//     'nearest',
+//     { intersect: true },
+//     true
+//   );
+//   // If didn't click on a bar, `res` will be an empty array
+//   if (res.length === 0) {
+//     return;
+//   }
+//   // Alerts "You clicked on A" if you click the "A" chart
+//   console.log('You clicked on ' ,res, chart.data.labels[res[0].index], res[0].datasetIndex, chart.data.datasets[res[0].datasetIndex].label);
+//   console.log("ty=" +'Qtr'+"&colnm="+ chart.data.labels[res[0].index]+"&chartnm="+chart.data.datasets[res[0].datasetIndex].label)
+//   document.location.href = "/issueLst?ty=" +'Qtr'+"&colnm="+ chart.data.labels[res[0].index]+"&chartnm="+chart.data.datasets[res[0].datasetIndex].label;
+// }; 
+//   }
+  
+  </script>
+  <script> 
+
+    // INITIALIZATION OF DATATABLES
+    // =======================================================
+    HSCore.components.HSDatatables.init($('#datatable_UA'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    }); 
+
+    document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+      item.addEventListener('change',function(e) {
+        const elVal = e.target.value,
+    targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+    targetTable = e.target.getAttribute('data-target-table');
+
+    HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+      })
+    }) 
+    
+    HSCore.components.HSDatatables.init($('#datatable_Task'), {
+      dom: 'Bfrtip',
+        buttons: [
+          {
+            extend: 'copy',
+            className: 'd-none'
+          },
+          {
+            extend: 'excel',
+            className: 'd-none'
+          },
+          {
+            extend: 'csv',
+            className: 'd-none'
+          },
+          {
+            extend: 'pdf',
+            className: 'd-none'
+          },
+          {
+            extend: 'print',
+            className: 'd-none'
+          },
+        ],
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    }); 
+    
+
+    const datatable = HSCore.components.HSDatatables.getItem('datatable_Task')
+
+$('#export-copy').click(function() {
+  datatable.button('.buttons-copy').trigger()
+});
+
+$('#export-excel').click(function() {
+  datatable.button('.buttons-excel').trigger()
+});
+
+$('#export-csv').click(function() {
+  datatable.button('.buttons-csv').trigger()
+});
+
+$('#export-pdf').click(function() {
+  datatable.button('.buttons-pdf').trigger()
+});
+
+$('#export-print').click(function() {
+  datatable.button('.buttons-print').trigger()
+});
+    HSCore.components.HSDatatables.init($('#datatable_Issue'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+    
+    </script>
+  {%endblock script %}

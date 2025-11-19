@@ -1,0 +1,116 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+    
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">Add Criteria Quetions</h4>
+                </div>  
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtsection">Section</label>
+
+                    <div class="col-sm-8">
+                        <select class="form-select" onchange="updateSection()" id="ddlSection" aria-label="Default select example" required>                      
+                            <option selected="" value="">Select section</option>
+                            {% for key, val in qtnSections.items  %} 
+                            <option value="{{val.Section_Label}}">{{val.Section_Label}}</option>
+                            {% endfor %} 
+                            <option value="Add">Add new</option>
+                        </select>
+                        <input class="form-control" id="txtsection" type="text" value="" style="display: none;" required=""> 
+
+                    </div>
+                </div>  
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="txtQtns">Question</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="txtQtns" type="text"> </textarea>
+                    </div>
+                </div>           
+                 
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" /> 
+                      </div>
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+<!-- JS Front -->
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+<script type='text/javascript' >
+    function validateform(){ 
+        if($('#txtsection').val().trim().length<1 || $('#txtQtns').val().trim().length<1){
+            alert('Please fill both fields.');
+            return false;       
+        }
+
+        $.ajax({
+            url: '/addQuestion/', 
+            data:{ section: $('#txtsection').val(),question:$('#txtQtns').val()},
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.isvalid=='true'){
+                alert('Question added succcessfully.');
+                $('#formusercat').submit();
+               }
+               else
+               {
+                alert('Error while adding question.')
+               }
+            }
+        });
+    }
+
+    function updateSection(){ 
+        if($('#ddlSection').val()=="Add"){
+            $('#ddlSection').hide();
+            $('#txtsection').show();
+        }
+        else{
+            {
+            $('#ddlSection').show();
+            $('#txtsection').hide();
+            $('#txtsection').val($('#ddlSection').val());
+        }
+        }
+    }
+
+    function gotolist()
+    {
+        window.location='{{showdept}}'
+        
+    }
+</script>
+{% endblock script %}

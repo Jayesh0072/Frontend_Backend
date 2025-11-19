@@ -1,0 +1,287 @@
+{% extends 'base.html' %} 
+{% url 'exportReport' as exportReport %} 
+{% load static %} 
+{% block style %} 
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">  -->
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+<link  rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css'%}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css'%}">
+{% endblock style %}
+{% block content %}
+
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+     
+  <div class="col-lg-10">
+    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+      {% csrf_token %}  
+      <div class="card">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                -webkit-border-top-right-radius: 6px;
+                -moz-border-radius-topleft: 6px;
+                -moz-border-radius-topright: 6px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Model Validation Assignment</h4>
+        </div>  
+          <div class="card-body card-block">
+              <div class="mb-9">
+                <div class="row mb-3">
+                  <label class="col-sm-1 col-form-label" style="width: 10%;" for="ddlModel">Model </label>
+                  <div class="col-sm-3">   
+                    <select  class="form-select" data-choices="data-choices" data-options='{"removeItemButton":false,"placeholder":true}' onchange="getassged()" name="ddlModel" id="ddlModel"> 
+                      <option value="">Select</option> 
+                      {% for key, val in modelinfo.items  %}      
+                       {% if val.Mdl_Id == selMdl %}                             
+                        <option selected value="{{val.Mdl_Id}}">{{val.Mdl_Id}}</option>   
+                      {%else%}
+                        <option value="{{val.Mdl_Id}}">{{val.Mdl_Id}}</option>   
+                      {%endif%}
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <label class="col-sm-1 col-form-label" style="width: 12%;" for="ddlUsers">Assign To </label>
+                  <div class="col-sm-6">   
+                    <select  class="js-select form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' name="ddlUsers" id="ddlUsers" data-hs-tom-select-options='{
+                      "placeholder": "Select...",
+                      "hideSearch": true
+                    }'> 
+                      <option value="">Select</option> 
+                      {% for key, val in mrmUsers.items  %}                                   
+                        <option value="{{val.u_aid}}">{{val.uname}}</option>   
+                      {% endfor %}
+                    </select>
+                    <!-- <select class="js-select form-select" autocomplete="off" data-hs-tom-select-options='{
+                      "placeholder": "Select a person...",
+                      "hideSearch": true
+                    }' multiple>
+                      <option value="">Select a person...</option>
+                      <option value="4">Thomas Edison</option>
+                      <option value="1">Nikola</option>
+                      <option value="3">Nikola Tesla</option>
+                      <option value="5">Arnold Schwarzenegger</option>
+                    </select> -->
+                  </div>
+                 
+                </div>
+              </div>  
+              <div class="mb-9">
+                <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                  
+                   
+                  <div class="table-responsive scrollbar"  style="max-height:300px;">
+                    <table class="table fs--1 mb-0 border-top border-200">
+                      <thead>
+                        <tr>
+                          
+                          <th class="sort white-space-nowrap align-middle ps-0" scope="col" style="width:5%;">
+                            <input type="checkbox" id="name1" onclick="selectall()"/> 
+                          </th>
+                          <th class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:30%;" >Request For</th>
+                          <th class="sort align-middle ps-3" scope="col"  style="width:30%;">Assign To</th> 
+                          <th class="sort align-middle ps-3" scope="col"  style="width:15%;">End Date</th> 
+                          <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Task ID</th> 
+                                        
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="project-list-table-body">
+                        {% for key, val in validationTYpes.items  %} 
+                          <tr class="position-static"> 
+                            <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">
+                              
+                              <input type="checkbox" name="chk" id="chk_{{val.Mdl_Val_Type_AID}}" onclick="registerclick('{{val.Mdl_Val_Type_AID}}')"/> 
+                            </td>                
+                            <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">
+                              {{val.Mdl_Val_Type_Label}}
+                            </td>
+                            <td class="align-middle white-space-nowrap ps-0  py-4"> 
+                              <label id='lbl_{{val.Mdl_Val_Type_AID}}'></label>
+                            </td>
+                            <td class="align-middle white-space-nowrap ps-0  py-4">
+                                <!-- <input required  class="form-control datetimepicker" name="end_date" style="margin-bottom:15px;width:90%" id="txt_{{val.Mdl_Val_Type_AID}}"  type="text"
+                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/> -->
+                                <!-- Flatpickr -->
+                                <input type="text" class="js-flatpickr form-control flatpickr-custom" name="end_date" id="txt_{{val.Mdl_Val_Type_AID}}" placeholder="Select dates"
+                                data-hs-flatpickr-options='{
+                                  "dateFormat": "m/d/Y"
+                                }'>
+                                <!-- End Flatpickr -->
+                            </td>  
+                            <td class="align-middle white-space-nowrap ps-0  py-4">
+                              
+                              <label id='txt_task_{{val.Mdl_Val_Type_AID}}'></label>
+                          </td>                           
+                          </tr>
+                        {% endfor %}   
+                      </tbody>
+                    </table>
+                  </div>
+                
+                </div>
+              </div> 
+          </div> 
+          <div  class="card-footer"> 
+            <div class="col-auto" style="display: flex; justify-content: flex-end;">
+              <button type="button" class="btn btn-outline-primary" style="margin-right: 10px;" onclick="gotoBlank()">Cancel</button>
+              <button type="button" class="btn btn-primary" style="margin-right: 10px;" onclick="add()" >Add</button>
+              
+ 
+            </div> 
+          </div>
+    </form>
+  </div>
+   
+</div>
+
+{% endblock content %}
+{%  block script %}  
+<!-- <script src="{% static 'bootstrap_datepicker/js/bootstrap-datepicker.js' %}"></script> -->
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+
+<!-- JS Front -->
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+<script type="text/javascript">  
+  
+   var arrQtns=[] 
+   
+   $(document).ready(function () { 
+    HSCore.components.HSTomSelect.init('.js-select') 
+    HSCore.components.HSFlatpickr.init('.js-flatpickr')
+    $('#ddlModel').val('{{selMdl}}')   
+    getassged();
+   });
+   
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+       
+        if($('#chk_'+id).prop('checked')){ 
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          }
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name1').prop('checked', false); 
+        }
+    }
+
+    function selectall(){ 
+      var yes = document.getElementById("name1");  
+      console.log("yes",yes.checked)
+      // alert("select all")
+      // var check = false;
+      if (yes.checked == true){
+        var ele=document.getElementsByName('chk');
+        console.log("ele",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+            ele[i].click(); 
+          }
+      }
+      else{
+        var ele=document.getElementsByName('chk');
+        console.log("ele----------",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].checked=false;  
+          }
+      }
+      
+    }
+
+    function add(){ 
+      if($('#ddlModel').val()=="") {
+        alert('Please select model.');
+        return
+      }
+      else if($('#ddlUsers').val()==""){
+        alert('Please select user(s).')
+        return
+      }
+
+      else if(arrQtns.length<1){
+        alert('Please select request type(s).')
+        return
+      }
+
+      updatedata=[]
+      arrQtns.forEach(i => {
+        if($('#chk_'+i).prop('checked')) {
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["AID"] = i
+          item["End_date"] = $('#txt_'+i).val()
+          updatedata.push(item); 
+        }
+    
+      }); 
+      var users=$('#ddlUsers').val();
+      arrUsers=[]
+      users.forEach(i => {
+          item = {}  
+          item["UID"] = i
+          arrUsers.push(item);      
+    
+      }); 
+      if(updatedata.length>0){
+        $.ajax({
+          url: '/assignValidation/', 
+          data:{ datalist: JSON.stringify(updatedata),mdlId:$('#ddlModel').val(),ddlUsers:JSON.stringify(arrUsers)  },
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){ 
+                if(data.assignTaskLst.length>0){
+                $.each(data.assignTaskLst, function(i, obj) { 
+                  var select_users = $('#ddlUsers option:selected').toArray().map(item => item.text).join();
+                  $('#txt_task_'+obj.AID).text(obj.task_id)
+                  $('#lbl_'+obj.AID).text(select_users)
+                });
+                alert('Validation request assigned to selected users.')
+              }
+              else{
+                alert('Validation request already assigned.')
+              }
+              }
+          }
+        }); 
+      } 
+    }
+
+    function getassged(){
+      $('#projectSummary').find('input:checkbox').prop('checked', false);  
+  
+      jQuery('#projectSummary label').contents().filter(function () {
+              return this.nodeType === 3;
+          }).remove();
+      arrQtns=[]
+      $.ajax({
+                    url: '/getAssignedTo/', 
+                    data:{ mdlId:$('#ddlModel').val()  },
+                    dataType: 'json',
+                    success: function (data) { 
+                      console.log(data)
+                        if(data.istaken=="true"){ 
+                           $.each(data.assignedTo, function(i, obj) { 
+                              // arrQtns.push(obj.Validation_Task_Type);  
+                              
+                              // $('#chk_'+obj.Validation_Task_Type).prop('checked', true);
+                              $('#lbl_'+obj.Validation_Task_Type).text(obj.users)
+                              $('#txt_'+obj.Validation_Task_Type).val(obj.End_Date)
+                              $('#txt_'+obj.Validation_Task_Type).prop('disabled', true);
+                              $('#txt_task_'+obj.Validation_Task_Type).text(obj.Task_ID)
+                           });
+                        }
+                    }
+                  }); 
+    }
+
+    function gotoBlank(){
+      window.location='{{blank}}'
+    }
+ </script>
+{% endblock script %} 

@@ -1,0 +1,678 @@
+{% extends 'base.html' %}  
+{% load static %} 
+{% block style %} 
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">  -->
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+{% endblock style %}
+{% block content %}
+
+<div style="margin-left:auto;display: flex; justify-content:center;">         
+     
+  <div class="col-lg-10">
+    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+      {% csrf_token %}  
+      <div class="card">
+          <div class="card-header">
+            Validation Findings
+          </div>
+          <div class="card-body card-block">  
+                 
+                <div class="accordion" id="accordionExample">
+                  <div class="accordion-item border-top border-300">
+                    <h2 class="accordion-header" id="headingOne">
+                      
+     
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Validation
+                      </button>
+                    </h2>
+                    <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                      <div class="accordion-body pt-0">
+                        <div class="card-body card-block">
+                          <!--<div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;"> 
+                              <div class="col col-md-3">
+                                  <label class=" form-control-label">Findings </label>
+                              </div>
+                              <div class="col-12 col-md-4"> 
+                                  <select id="optFindings" onchange="getData()"  class="form-control-sm form-control">
+                                      <option value="0">Select</option> 
+                                      
+                                      {% for data in List %}
+                                        <option value="{{data.val}}" style="color: {{data.color}};  background-color: {{data.bgColor}};">{{data.val}}</option>  
+                                      {% endfor %}
+                                      <option value="-1">Add New</option>  
+                                  </select>
+                              </div> 
+                          </div>-->
+                          <div class="row form-group"  style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3">
+                                <label class=" form-control-label">Date </label>
+                            </div>
+                            <div class="col-12 col-md-4">
+                              <input type="text"   readonly value="{{today}}" id="txtDate" name="text-input" class="form-control-sm form-control"> 
+                              <input type="text"   readonly value="{{today}}" id="txttodayDate" name="text-input" style="display: none"> 
+                            </div> 
+                          </div>
+                          <div class="row form-group"  style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3">
+                                <label class=" form-control-label" for="ddlSource">Model</label>
+                            </div>
+                            <div class="col-12 col-md-4">    
+                                <select class="js-select form-select" id="mdlid" name="mdlid" onchange="getfindingsID()" data-hs-tom-select-options='{
+                                }' required>
+                                <option value="">Select model</option>     
+                                {% for i in mdl_ids %}
+                                <option value="{{i}}">{{i}}</option>     
+                                {% endfor %}                            
+                                </select>
+                            </div>
+                          </div>
+                          <div class="row form-group"  style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3">
+                                <label class=" form-control-label" for="ddlSource">Findings ID</label>
+                            </div>
+                            <div class="col-12 col-md-4">    
+                                <select class="js-select form-select" id="findings_ID"  name="findings_ID" data-hs-tom-select-options='{
+                                }' required> 
+                                </select>
+                            </div>
+                          </div>
+                          <!--Modified by Shuvankar dated 2024.03.26 Starts-->
+                          <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                              <div class="col col-md-3">
+                                  <label class=" form-control-label">Validation Elements</label>
+                              </div>
+                              <div class="col-12 col-md-7">   
+                                <!--<input type="text"  id="txtAssessment" name="text-input" class="form-control-sm form-control"> -->
+                                <select id="validation_element" disabled class="form-control-sm form-control" name="validation_element">
+                                  <option value="0">Select Validation Elements</option>
+
+                                  {% for key,itmValElm in ValCatElm.items %}
+                                      <option value="{{itmValElm.Element_AID}}">{{itmValElm.Element_text}}</option>
+                                  {% endfor %}
+                                </select>
+                              </div>                              
+                          </div> 
+                          <!--Modified by Shuvankar dated 2024.03.26 Ends-->
+                          <!--Added by Shuvankar dated 2024.03.26 Starts-->
+                          <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3"> 
+                              Validation Category 
+                            </div>
+                            <div class="col-12 col-md-7">
+                              <select id="validation_cat" disabled name="validation_cat" class="form-control-sm form-control">
+                                <option value="0">Select Validation Category</option>
+                                {% for key, itmValCat in ValCatLst.items %}
+                                <option value="{{itmValCat.Category_AID}}">{{itmValCat.Category_text}}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+                          <!--Added by Shuvankar dated 2024.03.26 Ends-->
+                          <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3"> 
+                              Severity 
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <select name="optRisk_Level" disabled  id="optRisk_Level" class="form-control-sm form-control"> 
+                                    <option value="3">High</option>
+                                    <option value="2">Medium</option>
+                                    <option value="1">Low</option>
+                                </select>
+                            </div>
+                          </div> 
+                          <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3"> 
+                              Level 
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <select name="optLevel"   disabled id="optLevel" class="form-control-sm form-control"> 
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                          </div> 
+                          <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                            <div class="col col-md-2">
+                              <label class=" form-control-label">Description
+                              </label>
+                          </div>
+                          </div>
+                          <div class="row form-group" style="padding-bottom:0px;margin-bottom:10px;padding-top:0px;margin-top:0px;"> 
+                              <div class="col-12 col-md-12">
+                                   <textarea id="txtComments" disabled rows="3" style="resize: none;width: 100%;font-size: 10pt;" class="form-control form-control-sm"></textarea>
+                              </div>
+                          </div>
+                          <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                            <div class="col col-md-2">
+                              <label class=" form-control-label">Response
+                              </label>
+                            </div>
+                          </div>
+                          <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                              <div class="col-12 col-md-12">
+                                   <textarea id="txtResp" rows="3" style="resize: none;width: 100%;font-size: 10pt;" class="form-control form-control-sm"></textarea>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="card-footer">
+                          <div class="row mb-1 position-relative">  
+                              <!-- <div class="col-sm-7">  
+                                <select id="optEmail" onchange="getEmail()"   class="form-control-sm form-control">
+                                      <option value="0">Select Email</option>
+
+                                      {% for emailids in emailLst %}
+                                          <option value="{{emailids.email}}">{{emailids.firstName}} {{emailids.lastName}} </option>
+                                      {% endfor %}
+                                      <option value="-1">Other</option>
+                                  </select>
+                                    <input type="text" style="display:none;" id="txtemail" name="text-input" class="form-control-sm form-control">                        
+                                  
+                              </div> -->
+                              <div class="col-sm-11" style="display: flex; justify-content: flex-end;">
+                                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="showExportModal()" >Export</button>
+                                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="updateFindings()" >Update</button>
+                                {% comment %} <button id="openModal"  class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"    onclick="openmodal()" type="button">OpenModal</button> {% endcomment %}
+                              </div> 
+                          </div>       
+                        </div>
+                          
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content p-3">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exportModalLabel">Select Findings ID</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                          <div class="row form-group" style="padding-top:0px;margin-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="col col-md-3">
+                              <label class="form-control-label" for="ddlSource">Findings ID</label>
+                            </div>
+                            <div class="col-12 col-md-4">
+                              <select class="js-select form-select" id="findings_ID_pdf" name="findings_ID_pdf"
+                                      data-hs-tom-select-options='{}' multiple required>
+                                  <!-- Options will be dynamically added -->
+                              </select>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary btn-sm" onclick="get_findings_data()">Export</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+          
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Comments
+          
+                      </button>
+                    </h2>
+                    <div class="accordion-collapse collapse" id="collapseTwo" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                      <div class="accordion-body pt-0">
+                        <div> 
+                          <div class="card-body card-block"> 
+                            <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                              <div class="col col-md-2">
+                                <label class=" form-control-label">Comments
+                                </label>
+                              </div>
+                            </div>
+                            <div class="row form-group" style="padding-bottom:0px;margin-bottom:0px;padding-top:0px;margin-top:0px;"> 
+                                <div class="col-12 col-md-12">
+                                     <textarea id="txtReportComments" rows="20" style="resize: none;width: 100%;font-size: 10pt;" class="form-control form-control-sm" ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                          <div class="col-12 gy-6">
+                              <div class="row g-3 justify-content-end">
+                                  <div class="col-auto">
+                                    <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="saveReportComment()" >Save</button>
+                                  </div>
+                              </div>  
+                          </div>
+                      </div>  
+                      </div>
+                    </div>
+                  </div> 
+                </div> -->
+             
+          </div> 
+      </div> 
+    </form>
+  </div>
+  <!-- Modal file upload -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="modalContent">
+      
+    </div>
+  </div>
+</div>
+<!-- End modal -->
+   
+</div>
+
+{% endblock content %}
+{%  block script %}  
+<!-- <script src="{% static 'bootstrap_datepicker/js/bootstrap-datepicker.js' %}"></script> -->
+ 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">   
+    window.onload=function(){
+      $( "#accordion" ).accordion({
+        collapsible: true
+      });  
+      document.getElementById('txtComments').addEventListener('keydown', function(e) {
+        if (e.key == 'Tab') {
+          e.preventDefault();
+          var start = this.selectionStart;
+          var end = this.selectionEnd;
+      
+          // set textarea value to: text before caret + tab + text after caret
+          this.value = this.value.substring(0, start) +
+            "\t" + this.value.substring(end);
+      
+          // put caret at right position again
+          this.selectionStart =
+            this.selectionEnd = start + 1;
+        }
+      });
+    };
+
+    {% comment %} function exportFindingsPDF() {
+      const findingsId = $('#findings_ID_pdf option:selected').text();
+      const mdlId = $('#mdlid option:selected').text();
+
+      if (!findingsId || !mdlId) {
+        alert("Please select both Model and Findings ID.");
+        return;
+      }
+
+      $.ajax({
+        url: '/generate_findings_pdf/',
+        type: 'POST',
+        data: {
+          'find_ID': findingsId,
+          'mdlid': mdlId,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        xhrFields: { responseType: 'blob' },
+        success: function (data, status, xhr) {
+          const blob = new Blob([data], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Finding_${findingsId}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        },
+        error: function () {
+          alert("Error generating PDF.");
+        }
+      });
+    }
+     {% endcomment %}
+    function exportFindingsPDF() {
+      const formData = new FormData();
+      formData.append("find_ID", $("#findings_ID_pdf").val());
+      formData.append("mdlid", $("#mdlid").val());
+
+      $.ajax({
+          type: 'POST',
+          url: '/generate_findings_pdf/',  // update to your URL path
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (pdfPath) {
+              alert("PDF saved at: " + pdfPath);
+              window.open(pdfPath, '_blank');
+          },
+          error: function () {
+              alert("PDF generation failed.");
+          }
+      });
+  }
+
+    function showExportModal() {
+        var myModal = new bootstrap.Modal(document.getElementById('exportModal'), {
+            keyboard: true
+        });
+        myModal.show();
+    }
+
+    function getfindingsID(){
+        var $mySelect ;
+        $mySelect = $('#findings_ID'); 
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option);
+        
+        var $mySelect2 ;
+        $mySelect2 = $('#findings_ID_pdf'); 
+        $mySelect2.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect2.append($option);
+
+        $.ajax({ 
+        url: '/getfindingsID/',
+        data:{'mdlid': $('#mdlid option:selected').text()},
+        dataType: 'json',
+        success: function (data) {
+                console.log("fin_lst",data)
+                $.each(data, function(index,value) { 
+                    console.log("data",index,value)
+                    var $option = $("<option/>", {
+                        value: value,
+                        text: value
+                    });
+                    $mySelect.append($option);
+                });
+                $.each(data, function(index,value) { 
+                    console.log("data",index,value)
+                    var $option = $("<option/>", {
+                        value: value,
+                        text: value
+                    });
+                    $mySelect2.append($option);
+                });
+        }
+        });
+    }
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let cookie of cookies) {
+              cookie = cookie.trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  const csrftoken = getCookie('csrftoken');
+
+  function get_findings_data() {
+      const mdlid = $('#mdlid option:selected').text();
+      const selectedIDs = $('#findings_ID_pdf').val(); // array of selected values
+
+      if (!selectedIDs || selectedIDs.length === 0) {
+          alert("Please select at least one Findings ID.");
+          return;
+      }
+
+      let allPdfData = [];
+
+      // Use Promise.all to wait for all data fetches
+      const requests = selectedIDs.map(id =>
+          $.ajax({
+              url: '/getfindingsData/',
+              data: {
+                  'find_ID': id,
+                  'mdlid': mdlid
+              },
+              dataType: 'json'
+          }).then(data => {
+              const $mySelect = $('#validation_element');
+              const $mySelect_cat = $('#validation_cat');
+
+              $mySelect.val(data.validation_element);
+              $mySelect_cat.val(data.validation_category);
+
+              // Get display text
+              const selectedElementText = $mySelect.find("option:selected").map(function () {
+                  return $(this).text();
+              }).get().join(", ");
+
+              const selectedCategoryText = $mySelect_cat.find("option:selected").map(function () {
+                  return $(this).text();
+              }).get().join(", ");
+
+              const severityText = $("#optRisk_Level option:selected").text();
+              const levelText = $("#optLevel").val();
+              const description = data.finding_description || "";
+              const response = data.response || "";
+
+              // Push formatted data into array
+              allPdfData.push({
+                  "Date": new Date().toLocaleDateString(),
+                  "Model": mdlid,
+                  "Findings ID": id,
+                  "Validation Elements": selectedElementText,
+                  "Validation Category": selectedCategoryText,
+                  "Severity": severityText,
+                  "Level": levelText,
+                  "Description": description,
+                  "Response": response
+              });
+          })
+      );
+    
+    console.log("allPdfData",allPdfData)
+    Promise.all(requests).then(() => {
+        generateFindingsPDF(allPdfData); // Send all at once
+    }).catch(err => {
+        console.error("Error fetching findings data:", err);
+        alert("Something went wrong while fetching findings data.");
+    });
+}
+
+
+  function generateFindingsPDF(pdfData) {
+    $.ajax({
+        url: '/generate_findings_pdf/',
+        type: 'POST',
+        data: JSON.stringify(pdfData),
+        contentType: 'application/json',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function (response) {
+            alert("PDF saved successfully!");
+            window.open(response.file_path, "_blank");
+        },
+        error: function (xhr, status, error) {
+            alert("Failed to save PDF: " + error);
+        }
+    });
+}
+
+    function get_findings_data_PDF(){
+      var $mySelect ;
+      $mySelect = $('#validation_element'); 
+      
+
+      var $mySelect_cat ;
+      $mySelect_cat = $('#validation_cat'); 
+        
+
+      $.ajax({ 
+      url: '/getfindingsData/',
+      data:{'find_ID': $('#findings_ID_pdf option:selected').text(),'mdlid': $('#mdlid option:selected').text()},
+      dataType: 'json',
+      success: function (data) {
+              console.log("findings data",data)
+              document.getElementById("optRisk_Level").value=data.risk,
+              document.getElementById("optLevel").value=data.risk_level,
+              document.getElementById("txtComments").value=data.finding_description
+              document.getElementById("txtResp").value=data.response
+              $mySelect.val(data.validation_element);
+              $mySelect_cat.val(data.validation_category)
+      }
+      });
+    }
+
+    function updateFindings(){
+        $.ajax({
+                url: '/update_response/',
+                data:{'find_ID': $('#findings_ID option:selected').text(),'mdlid': $('#mdlid option:selected').text(),
+            'response':$("#txtResp").val()},
+
+                success: function(data) {
+                    console.log("Update",data)
+                    if(data.updated)
+                        { 
+                        alert('Response Updated sucessfully.')             
+                        }   
+
+                },
+                
+            });
+    }
+ 
+    function getData()
+    {
+      //$("#txtComments").val('');
+      //$("#txtResp").val('');
+      //$("#optRisk_Level").val('High');
+      //$("#optLevel").val('1');
+      //$('#txtAssessment').val('') ; 
+      //$("#txtDate").val(''); 
+      //$('#optValCat').val('');    //Added by Shuvankar dated 2024.03.28
+      /*if($('#optFindings').val()!="-1" && $('#optFindings').val()!="0")
+      {
+        $('#txtAssessment').attr('disabled',true);
+      }
+      else{
+        $('#txtAssessment').attr('disabled',false);        
+      }*/
+      //alert('1')
+      if($('#txtAssessment').val()=="0" || $('#optValCat').val()=="0") return;
+      //alert('2')
+      $("#txtDate").val($("#txttodayDate").val());  
+      $.ajax({ 
+        url: '/getvalFindings/',
+        data:{'Assessment':$('#txtAssessment').val(),'ValCat':$('#optValCat').val()},
+        dataType: 'json',
+        success: function (data) {  
+          //alert(data)
+          if( Object.keys(data.findingData).length>0){ 
+            $("#txtComments").val(data.findingData[0].Finding_Description);
+            $("#optRisk_Level").val(data.findingData[0].Risk);
+            //$('#txtAssessment').val(data.findingData[0].Assessment) ;
+            $("#txtResp").val(data.findingData[0].Response);    
+            //$("#txtDate").val(data.findingData[0].Date);    
+            $("#optLevel").val(data.findingData[0].Risk_Level);   
+          }
+        }
+      });
+    }
+
+    function sendMail()
+    {  
+      $.ajax({ 
+        url: '/sendDevloperMail/',
+        data:{'emailId':$('#txtemail').val()},
+        dataType: 'json',
+        success: function (data) {  
+          if(data.is_taken)
+          { 
+            alert('Mail sent sucessfully.') 
+          }            
+                  
+        }
+        });
+    }
+
+    function saveFindings()
+    { 
+      if($('#txtAssessment').val()=="0" || $('#optValCat').val()=="0" || $("#txtComments").val().length<=0){
+        alert('Please enter all values.');
+      }
+      else{
+        $.ajax({ 
+          url: '/savevalFindings/',
+          data:{'Desc': $("#txtComments").val(),'Risk_Level':$("#optRisk_Level").val(),
+          'Assessment':$('#txtAssessment').val(),'Lvl':$("#optLevel").val(),'ValCat':$('#optValCat').val()},
+          dataType: 'json',
+          success: function (data) {
+            //alert(data.is_taken);
+                  if(data.is_taken)
+                  { 
+                      //$('#optFindings option:last').remove();
+                    
+                      //$('#optFindings').append(new Option(data.findingsId,data.findingsId));
+                      //$('#optFindings').append(new Option("Add New","-1"));      
+                      $("#txtComments").val('');
+                      $("#txtResp").val('');
+                      $("#optRisk_Level").val('3');
+                      $('#txtAssessment').val('0') ; 
+                      $('#optValCat').val('0') ; 
+                      $("#txtDate").val('');                     
+                      //$('#txtAssessment').attr('disabled',true);                     
+                      $("#txtDate").val($("#txttodayDate").val());  
+                      $("#optLevel").val('1');
+                      alert('Findings saved.');
+                  }   
+          }
+          
+          });
+      }
+    } 
+    
+    function saveReportComment()
+    { 
+      $.ajax({ 
+        url: '/savevalFindingsComment/',
+        data:{'comment':  $("#txtReportComments").val()},
+        dataType: 'json',
+        success: function (data) {
+                if(data.is_taken)
+                { 
+                  alert('Comment saved sucessfully.')             
+                }   
+        }
+        });
+    } 
+
+    function getEmail(){ 
+      $('#txtemail').val(''); 
+      if($('#optEmail').val()!='-1' & $('#optEmail').val()!='0'){
+         $('#txtemail').val($('#optEmail').val());
+      }
+      else{
+          $('#txtemail').show();
+          $('#optEmail').hide();
+      }
+  }
+
+  function openmodal(){
+    // $('#exampleModal').modal('toggle');
+  
+    $.ajax({
+        url: "{% url 'adddept' %}",
+        success: function(response){
+            $("#modalContent").html(response);
+            $('#exampleModal').modal('toggle');
+        }
+    });
+        
+  }
+ 
+ </script>
+{% endblock script %} 

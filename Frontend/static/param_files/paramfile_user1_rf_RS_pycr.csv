@@ -1,0 +1,3 @@
+paramName,paramValue
+criterion,['gini']
+max_features,"[5,10]"

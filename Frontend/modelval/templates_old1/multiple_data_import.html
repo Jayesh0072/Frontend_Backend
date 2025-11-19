@@ -1,0 +1,79 @@
+{% extends 'rmsebase_setvar.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="container">
+    <div id="file-input-container" class="row">
+        <div class="col-lg-2" style="margin: 20px;">
+            <input type="file" name="myfile" class="myfile" multiple required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-1" style="margin: 20px;">
+            <button class="btn btn-primary btn-sm" type="button" onclick="addFileInput()">Add</button>
+        </div>
+        <div class="col-lg-1" style="margin: 20px;">
+            <button class="btn btn-success btn-sm" type="button" onclick="uploadFiles()">Upload</button>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block script %}
+<script>
+    function addFileInput() {
+        const container = document.getElementById('file-input-container');
+        const newDiv = document.createElement('div');
+        newDiv.className = 'col-lg-2';
+        newDiv.style.margin = '20px';
+        newDiv.innerHTML = '<input type="file" name="myfile" class="myfile" multiple required>';
+        container.appendChild(newDiv);
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function uploadFiles() {
+        const fileInputs = document.getElementsByClassName('myfile');
+        const formData = new FormData();
+
+        Array.from(fileInputs).forEach(fileInput => {
+            Array.from(fileInput.files).forEach(file => {
+                formData.append('myfile', file);
+            });
+        });
+
+        const csrftoken = getCookie('csrftoken');
+
+        fetch('/multiple_data_import/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        }).then(response => response.json())
+        .then(data => {
+            console.log("data",data);
+            alert('Files uploaded successfully.');
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Error uploading files.');
+        });
+    }
+</script>
+
+{% endblock script %}

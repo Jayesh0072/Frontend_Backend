@@ -1,0 +1,676 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block style %}
+<!-- <link href="{% static 'phoenix-v1.8.0/public/vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet">
+<link href="{% static 'phoenix-v1.8.0/public/vendors/vendors/choices/choices.min.css' %}" rel="stylesheet" /> -->
+<link  rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css'%}">
+{% endblock style %}
+{% block content %}
+<form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+  {% csrf_token %}  
+  <div class="content" data-bs-target="#v-pills"  data-bs-spy="scroll" style="padding-top:0px;">
+  <div class="mt-4">
+    <div class="row g-4">
+      <div class="col-12 col-xl-12 order-1 order-xl-0">
+        <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+          <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                -webkit-border-top-right-radius: 6px;
+                -moz-border-radius-topleft: 6px;
+                -moz-border-radius-topright: 6px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">Tool Registration</h4>
+                </div> 
+          <div class="card-body p-0">
+            
+            <div class="p-4 code-to-copy">
+              <div class="row">
+                <div class="col-sm-auto">
+                  <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                    <div class="nav flex-column nav-pills" id="v-pills">
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Overview</a>
+                      <!-- <a class="nav-link ps-0 ps-sm-3" href="#v-pills-design">Tool Risks</a> -->
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-attributes">Relevant Personnel</a>
+                      <!-- <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedtools">Tool Dependencies</a> -->
+                      <!-- <a class="nav-link ps-0 ps-sm-3" href="#v-pills-tables">Tool Performance Monitoring</a> -->
+                      <!-- <a class="nav-link ps-0 ps-sm-3" href="#v-pills-data">Validation / Annual Review</a> -->
+                      <!-- <a class="nav-link ps-0 ps-sm-3" href="#v-pills-testing">Relevant Documents</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-impl">Relevant Dates</a>  -->
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-home">Overview</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                         
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+                          <div class="row mb-3">
+
+                            <label class="col-sm-4 col-form-label"></label>
+    
+                            <div class="col-sm-2">
+    
+                                <div class="form-check">
+    
+                                <input class="form-check-input" id="rbnew" type="radio" name="rbisnewupdate" value="1" checked="">
+    
+                                <label class="form-check-label" for="rbactive">New</label>
+                                </div>  
+                            </div>
+                            <div class="col-sm-1"> 
+                                <div class="form-check">
+    
+                                <input class="form-check-input" id="rbupdate" type="radio" name="rbisnewupdate" value="0"  href="#" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal">
+                                
+                                <label class="form-check-label" for="rbupdate">Update</label>
+                                </div> 
+                            </div>
+                        </div>
+
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtDepartment">Department</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control form-control-sm" id="txtDepartment" name="txtDepartment" type="text" required placeholder="Department" value="{{dept}}" readonly>
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlFunction">Function</label>
+                            <div class="col-sm-8">    
+                              <select class="js-select form-select" name="ddlFunction" id="ddlFunction" data-hs-tom-select-options='{
+                                "placeholder": "Select task view...",
+                                "hideSearch": true
+                              }'>
+                                <option value="">Select task view</option>
+                                <option value="1">technical</option>
+                                <option value="2">external</option>
+                                <option value="3">organizational</option>
+                              </select>
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtRegDt">Registration Date <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">    
+                              <input class="form-control" id="txtRegDt" name="txtRegDt"  type="text"  placeholder="Registration Date" value="{{regDate}}" readonly/>
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlId">Tool ID <span style="color: red;">*</span></label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlId" name="txtMdlId" type="text" readonly placeholder="Tool ID"/>
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtPrmName">Primary Tool Name <span style="color: red;">*</span></label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtPrmName" name="txtPrmName" type="text"  required/>
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtSecName">Secondary Tool Name</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtSecName"  name ="txtSecName" type="text"   />
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlSource">Tool Source <span style="color: red;">*</span></label>
+                            <div class="col-sm-8">    
+                              <select class="js-select form-select" id="ddlSource" name="ddlSource" data-hs-tom-select-options='{
+                                "placeholder": "Select Tool source...",
+                                "hideSearch": true
+                              }' required>
+                                <option value="">Select Tool source</option>                                 
+                                {% for key, val in Mdl_Src.items  %}  
+                                  <option value="{{val.Mdl_Scr_AID}}">{{val.Mdl_Src_Label}}</option>   
+                                {% endfor %}   
+                              </select>
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlType">Tool Type </label>
+                            <div class="col-sm-8"> 
+                              <div class="tom-select-custom">   
+                                <select class="js-select form-select" id="ddlType" autocomplete="off" name="ddlType" data-hs-tom-select-options='{
+                                  "placeholder": "Select tool types...",
+                                  "hideSearch": true
+                                }'>
+                                  <option value="">Select tool type</option>
+                                  {% for key, val in Mdl_Type.items  %}  
+                                    <option value="{{val.Mdl_Type_AID}}">{{val.Mdl_Type_Label}}</option>   
+                                  {% endfor %} 
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+ 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlAbsct">Tool Abstract </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlAbsct" name="txtMdlAbsct" type="text" name="txtMdlAbsct" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlObj">Objective of Tool </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlObj" name="txtMdlObj" type="text" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlAppl">Application of Tool </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlAppl" type="text" name="txtMdlAppl" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlRiskAnls">Tool Risk Analysis </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlRiskAnls" name="txtMdlRiskAnls" type="text" />
+                            </div>
+                          </div>
+   
+                          <div class="row mb-3">
+                            <label  class="col-sm-4 col-form-label"  for="ddlPrctAddr">Products Addressed </label>
+                            <div class="col-sm-8"> 
+                              <select class="form-select" id="ddlPrctAddr" name="ddlPrctAddr" >
+                                <option value="">Select products addressed </option>
+                                {% for key, val in Prd_Addr.items  %}  
+                                  <option value="{{val.Prd_Addr_AID}}">{{val.Prd_Addr_Label}}</option>   
+                                {% endfor %} 
+                              </select>                              
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <label  class="col-sm-4 col-form-label"  for="ddlUsgFreq">Usage Frequency</label>
+                            <div class="col-sm-8"> 
+                              <select class="form-select" id="ddlUsgFreq" name="ddlUsgFreq">
+                                <option value="">Select usage frequency</option>
+                                {% for key, val in Mdl_Usage_Frq.items  %}  
+                                  <option value="{{val.Mdl_Use_Freq_AID}}">{{val.Mdl_Use_Freq_Label}}</option>   
+                                {% endfor %} 
+                              </select>
+                              
+                            </div>
+                          </div>   
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="display:none;border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-design" style="margin-bottom: 15px;">Tool Risks</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlRisks">Tool Risk</label>
+                            <div class="col-sm-8">    
+                            
+                              <select class="form-select" id="txtMdlRisks" name="txtMdlRisks">
+                                <option value="">Select intrinsic risk</option>
+                                {% for key, val in Intrinsic.items  %}  
+                                  <option value="{{val.Intrinsic_AID}}">{{val.Intrinsic_Label}}</option>   
+                                {% endfor %} 
+                              </select>
+                              <!-- <input class="form-control form-control-sm" id="txtMdlRisks" name="txtMdlRisks" type="text"> -->
+                            </div>
+
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlIntrRisk">Intrinsic Risk</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlIntrRisk" name="ddlIntrRisk">
+                                <option value="">Select intrinsic risk</option>
+                                {% for key, val in Intrinsic.items  %}  
+                                  <option value="{{val.Intrinsic_AID}}">{{val.Intrinsic_Label}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlReliance">Reliance</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlReliance" name="ddlReliance">
+                                <option value="">Select Reliance</option>
+                                {% for key, val in Reliance.items  %}  
+                                  <option value="{{val.Reliance_AID}}">{{val.Reliance_Label}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlMateriality">Materiality</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlMateriality" name="ddlMateriality">
+                                <option value="">Select materiality</option>
+                                {% for key, val in Materiality.items  %}  
+                                  <option value="{{val.Materiality}}">{{val.Materiality_Label}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtRiskMtgn">Risk Mitigation</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtRiskMtgn" name="txtRiskMtgn" type="text"/>
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtFairLndg">Fair Lending</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtFairLndg" name="txtFairLndg" type="text"/>
+                            </div>
+                          </div>   
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-attributes" style="margin-bottom: 15px;">Relevant Personnel</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"  style="margin-top:5px"> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlOwner">Tool Owner/s</label>
+                            <div class="col-sm-8">   
+                              <select class="js-select form-select" id="ddlOwner" name="ddlOwner" data-hs-tom-select-options='{
+                                "placeholder": "Select owner/s...",
+                                "hideSearch": true
+                              }' multiple>  
+                                {% for key, val in Mdl_Owners.items  %}                                   
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlDeveloper">Tool Developer/s</label>
+                            <div class="col-sm-8">    
+                              <select class="js-select form-select" id="ddlDeveloper" name="ddlDeveloper" data-hs-tom-select-options='{
+                                "placeholder": "Select Developer/s...",
+                                "hideSearch": true
+                              }' multiple> 
+                                {% for key, val in Mdl_Owners.items  %}  
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlUser">User/s</label>
+                            <div class="col-sm-8">    
+                              <select class="js-select form-select" id="ddlUser" name="ddlUser" data-hs-tom-select-options='{
+                                "placeholder": "Select User/s...",
+                                "hideSearch": true
+                              }' multiple>  
+                                {% for key, val in Mdl_Owners.items  %}  
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtValidator">Tool Validator/s</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtValidator" name="txtValidator" type="text" readonly/>
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlPrdnSupp">Production Support</label>
+                            <div class="col-sm-8">    
+                              <select class="js-select form-select" id="ddlPrdnSupp" name="ddlPrdnSupp" data-hs-tom-select-options='{
+                                "placeholder": "Select Production Support...",
+                                "hideSearch": true
+                              }' multiple> 
+                                {% for key, val in Mdl_Owners.items  %}  
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>  
+
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  <div style="display:none;border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-relatedtools" style="margin-bottom: 15px;">Tool Dependencies</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6">
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlUpstrmMdl">Upstream Tools</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlUpstrmMdl"name="ddlUpstrmMdl">
+                                <option value="">Select upstream tools</option>
+                                <option value="1">technical</option>
+                                <option value="2">external</option>
+                                <option value="3">organizational</option>
+                              </select>
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlDwstrmMdl">Downstream Tools</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlDwstrmMdl" name="ddlDwstrmMdl">
+                                <option value="">Select downstream tools</option>
+                                <option value="1">technical</option>
+                                <option value="2">external</option>
+                                <option value="3">organizational</option>
+                              </select>
+                            </div>
+                          </div> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-tables" style="margin-bottom: 15px;">Tool Performance Monitoring</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtApproach">Approach</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control form-control-sm" id="txtApproach" name="txtApproach" type="text">
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlMonrFreq">Monitoring Frequency</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlMonrFreq" name="ddlMonrFreq">
+                                <option value="">Select monitoring frequency</option>
+                                <option value="1">Daily</option>
+                                <option value="2">Weekly</option>
+                                <option value="3">Monthly</option>
+                                <option value="4">Quarterly</option>
+                                <option value="5">Semi-Annually</option>
+                                <option value="6">Annually</option>
+                                <option value="7">Custome</option>
+                              </select>
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMonrMtrcs">Monitoring Metrics</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMonrMtrcs" name="txtMonrMtrcs" type="text" />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtTgrEvt">Trigger Event/s</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtTgrEvt" name="txtTgrEvt" type="text" />
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtLstTgrDt">Last Trigger Event Date</label>
+                            <div class="col-sm-3">    
+                              <input class="form-control datetimepicker" id="txtLstTgrDt" name="txtLstTgrDt" type="text" placeholder="mm/dd/yyyy"  data-options='{"disableMobile":true,"dateFormat":"m/d/Y","maxDate":"{{regDate}}"}'  />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtLstTgrMtgnDt">Last Trigger Event Mitigation Date</label>
+                            <div class="col-sm-3">    
+                              <input class="form-control datetimepicker" id="txtLstTgrMtgnDt"  name="txtLstTgrMtgnDt" type="text" placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y","maxDate":"{{regDate}}"}'  />
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtTgrEvtMtgn">Trigger Event Mitigation</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtTgrEvtMtgn" name="txtTgrEvtMtgn" type="text"  />
+                            </div>
+                          </div> 
+
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+                  <div style="display:none;border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-data" style="margin-bottom: 15px;">Validation / Annual Review</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMDD">Tool Development</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMDD" name="txtMDD" type="file" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtUserManual">User Manual</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtUserManual" name="txtUserManual" type="file" />
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlData">Tool Data</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlData" name="txtMdlData" type="file" />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlCode">Tool Code</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlCode" name="txtMdlCode" type="file" />
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtUAT">User Acceptance Testing</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtUAT" name="txtUAT" type="file" />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtTechManual">Technical Manual</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtTechManual" name="txtTechManual" type="file" />
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtOnboardDoc">Onboarding Documents</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtOnboardDoc" name="txtOnboardDoc" type="file" />
+                            </div>
+                          </div> 
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--<div style="display:none;border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-testing" style="margin-bottom: 15px;">Relevant Documents</h4>
+                    <div class="row">
+                        
+                    </div>
+                  </div>
+                  <div style="display:none;border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-impl" style="margin-bottom: 15px;">Relevant Dates</h4>
+                    <div class="row">
+                      
+                    </div>
+                  </div> -->
+                  <div class="col-12 gy-6" style="margin-top: 15px;">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto">
+                        <button class="btn btn-phoenix-primary px-5" type="button" onclick="gotoList()">Cancel</button>
+                      </div>
+                      <div class="col-auto">
+                        <button class="btn btn-primary px-5 px-sm-15" type="submit">Add Tool</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+        </div>
+          </div>
+      </div> 
+    </div>
+  </div> 
+</div>
+
+  </div>
+
+  
+<!-- Added by Shuv Starts (for Project Details pop-up)--> 
+<div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content overflow-hidden">
+      <div class="modal-body p-5 px-md-6">
+        <div class="card shadow-none border border-300 my-5" data-component-card="data-component-card">
+          <div class="card-header p-3 border-bottom border-300 bg-soft" >
+            <div class="row g-3 justify-content-between align-items-end">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" >Update Tool Version</h4>
+                
+              </div>
+              <div class="col col-md-auto">
+                <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                  <button class="btn btn-phoenix-primary me-1 p-2" data-bs-dismiss="modal" type="button">X</button>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="p-4 code-to-copy">
+              <table class="table table1" >                
+                  <tr>
+                    <th scope="row" style="width:40%">Tool</th>
+                    <td>
+                      <select class="form-select" id="ddlToolId" onchange="getToolVersion()"data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}'>
+                      
+                        <option value="">Select tool</option>                                 
+                        {% for key, val in mdlinfo.items  %}  
+                          <option value="{{val.Mdl_Id}}">{{val.Prm_Name}}</option> 
+                          <option value="{{val.Mdl_Id}}">{{val.Sec_Name}}</option>  
+                        {% endfor %}   
+                      </select>
+                    </td>
+                  </tr>                 
+                  <tr>
+                    <th scope="row">Major Version</th>
+                    <td><label class="col-sm-4 col-form-label" id="lblMajorVer"></label></td>                      
+                  </tr>
+                  <tr>
+                    <th scope="row">Minor Version</th>
+                    <td><label class="col-sm-4 col-form-label" id="lblMinorVer"></label></td>
+                  </tr> 
+                 <tr>
+                  <td style="text-align: right;">
+                    <button class="btn btn-sm btn-primary px-6" id="btnUpdateMajor" onclick="updateVersion('0')">Update Major Version</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-primary px-6" id="btnUpdateMinor" onclick="updateVersion('1')">Update Minor Version</button>
+                  </td>
+                 </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+</form>
+                        {% endblock content %}
+    {% block script  %}
+    <!-- <script src="{% static 'phoenix-v1.8.0/public/vendors/jquery-3.2.1.min.js' %}"></script> 
+    <script src="{% static 'phoenix-v1.8.0/src/js/theme/flatpickr.js' %}"></script>
+    <script src="{% static 'phoenix-v1.8.0/public/vendors/choices/choices.min.js' %}"></script> -->
+    <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script> 
+    <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  
+  
+    <!-- JS Front -->
+    <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+
+    <script src="{% static 'Front/dist/assets/vendor/hs-sticky-block/dist/hs-sticky-block.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/hs-scrollspy/dist/hs-scrollspy.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+    <script type='text/javascript' >
+
+$(document).ready(function () {
+  if('{{mdl_id}}' !=''){
+    alert('Tool registred with id {{mdl_id}}.')
+  }
+  HSCore.components.HSTomSelect.init('.js-select') 
+
+});
+
+function validateForm(){
+      if($('#txtPrmName').val().trim().length<=0){
+        alert('Please enter mandatory fields'); 
+        return false;
+      }
+    }
+
+    function getToolVersion(){
+     // console.log($("#ddlToolId").val())
+      $.ajax({
+        url: '/getMdlInfoById/', 
+        data:{ mdlid:$('#ddlToolId').val()},
+        dataType: 'json',   
+        success: function (data) {                 
+            console.log(data.majorVer +','+data.minorVer)
+            $('#lblMajorVer').text(data.majorVer);
+            $('#lblMinorVer').text(data.minorVer);
+        }
+      });
+    }
+
+    function updateVersion(isminor){
+      
+      $.ajax({
+        url: '/updateMdlVersion/', 
+        data:{ mdlid:$('#ddlToolId').val(),isMinor:isminor},
+        dataType: 'json',   
+        success: function (data) {                 
+             
+            $('#txtMdlId').val(data.newMdlId);
+        }
+      });
+      $('#projectsCardViewModal').modal('toggle');
+    }
+
+    function highl(id){
+      
+      $('#'+id).addClass('active');
+    }
+
+    function gotoList(){
+      window.location='{{projectsDetails}}'
+    }
+    </script>
+    {% endblock script  %}

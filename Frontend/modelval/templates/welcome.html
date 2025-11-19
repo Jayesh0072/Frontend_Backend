@@ -1,0 +1,185 @@
+{% extends 'rmsebase.html' %} 
+{% load static %}
+{% url 'home' as home %} 
+{% block content %} 
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>VARA</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+   <!-- <link href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">   -->
+  <script src="{% static 'phoenix-v1.8.0/public/vendors/jquery-3.2.1.min.js' %}"></script> 
+     <script src="{% static 'phoenix-v1.8.0/public/vendors/bootstrap/bootstrap.min.js' %}"></script> 
+   <!-- <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.js' %}"></script>  -->
+   <script>
+     $( document ).ready(function() { 
+      $('#staticBackdropLive').modal({backdrop:'static', keyboard:false},'toggle');
+      $('#staticBackdropLive').modal('toggle');
+    //$('#staticBackdropLive').modal({backdrop:'static', keyboard:false});
+     
+//$('#staticBackdropLive').data('bs.modal').options.backdrop = 'static';
+     });
+
+     function hidemodal(){
+      window.location='{{blank}}'
+      $('#staticBackdropLive').modal('toggle');
+      
+     }
+   
+     function setMdl(){ 
+      $.ajax({
+                    url: '/setVTMdl/', 
+                    data:{ mdlId: $('#ddlModel').val() ,'ddlDataset': JSON.stringify($('#ddlDataset').val()),'ddlDatasetName': $('#ddlDataset option:selected').text()  },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        if (data.is_taken) {
+                        //alert("Updated Successfully.");
+                        window.location='{{home}}'
+                        }
+                    }
+                }); 
+     }
+
+     function getSegments(){ 
+      console.log('ddlDataset')
+      $mySelect = $('#ddlDataset');       
+         
+       $mySelect.empty();
+       var $option = $("<option/>", {
+                       value: "",
+                       text: "All Data"
+                   });
+       $mySelect.append($option); 
+      $.ajax({
+                    url: '/getVTModelsSegments/', 
+                    data:{ mdlId: $('#ddlModel').val() ,'ddlDataset': JSON.stringify($('#ddlDataset').val())  },
+                    dataType: 'json',
+                    success: function (data) {
+                      $.each(data.segLst, function(key, value) { 
+                          var $option = $("<option/>", {
+                              value: value.Query_Rule,
+                              text: value.Rulename
+                          });
+                          $mySelect.append($option);
+                      });
+                    }
+                }); 
+     }
+   </script>
+<style>
+  /* .modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.modal {
+  z-index: 1072!important;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+}
+.fade {
+  transition: opacity .15s linear;
+}
+*, ::after, ::before {
+  box-sizing: border-box;
+} */
+
+ /* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Modal background styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content styling */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    margin-top: 120px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+</style>
+</head>
+
+<body> 
+  <!-- Modal -->
+  <div id="staticBackdropLive" class="modal"  style="display: block;" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLiveLabel">Model Selection</h5>
+        
+        </div>
+        <div class="modal-body"> 
+          <div class="row mb-3 position-relative"> 
+            <label class="col-sm-2 col-form-label" for="txtsection">Model</label>
+
+            <div class="col-sm-8">
+                <select class="form-select" id="ddlModel" name="ddlModel" onchange="getSegments()"  aria-label="Default select example" required>                      
+                     
+                    {% for key, val in mdlLst.items  %} 
+                        <option value="{{val.Mdl_Id}}">{{val.Mdl_Id}}</option>
+                    {% endfor %}  
+                </select> 
+            </div>
+          </div>  
+          <div class="row mb-3 position-relative"> 
+            <label class="col-sm-2 col-form-label" for="txtsection">Dataset</label>
+
+            <div class="col-sm-8">
+                <select class="form-select" id="ddlDataset" name="ddlDataset" aria-label="Default select example" required>                      
+                  <option value="">All Data</option>
+                    {% for key, val in segLst.items  %} 
+                        <option value="{{val.Query_Rule}}">{{val.Rulename}}</option>
+                    {% endfor %}  
+                </select> 
+            </div>
+             
+          </div>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="hidemodal()">Cancel</button> 
+          <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="setMdl()">Select</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+
+</html>
+{% endblock content %} 

@@ -1,0 +1,762 @@
+{% load static %}
+{% url 'login' as login %}
+{% url 'home' as home %} 
+{% url 'viewData' as viewData %} 
+{% url 'viewDataType' as viewDataType %} 
+{% url 'viewNumData' as viewNumData %} 
+{% url 'missingData' as missingData %} 
+{% url 'dataCleaning' as dataCleaning %} 
+{% url 'showCatColFreq' as showCatColFreq %} 
+{% url 'showChartTypes' as showChartTypes %} 
+{% url 'showUniVarChartTypes' as showUniVarChartTypes %}
+{% url 'showSNSChart' as showSNSChart %} 
+{% url 'showCatCountPlot' as showCatCountPlot %} 
+{% url 'showDistPlot' as showDistPlot %} 
+{% url 'showBoxPlot' as showBoxPlot  %} 
+{% url 'showPieChart' as showPieChart %}
+{% url 'pairwise_correlation' as pairwise_correlation %}
+{% url 'vehicleclaim' as vehicleclaim %}
+{% url 'scattred3d' as scattred3d %}
+{% url 'bubblePlot3d' as bubblePlot3d %}
+{% url 'plotinsured_occupations' as plotinsured_occupations %}
+{% url 'plotinsoccuvsincstate' as plotinsoccuvsincstate %}
+{% url 'plotinsoccuvsincstatestacked' as plotinsoccuvsincstatestacked %}
+{% url 'vardistbyfraud' as vardistbyfraud %}
+{% url 'vardistbyfraud2' as vardistbyfraud2 %}
+{% url 'stripplot' as stripplot %}
+{% url 'totalclaim_boxplot' as totalclaim_boxplot %}
+{% url 'showcorrelation' as showcorrelation %}
+{% url 'dist_numevari_catvar' as dist_numevari_catvar %}
+{% url 'dummy_vars' as dummy_vars %}
+{% url 'std_features' as std_features %}
+{% url 'test_multicollinearity' as test_multicollinearity %}
+{% url 'dropfeatures' as dropfeatures %}
+{% url 'detect_outliers' as detect_outliers %}
+{% url 'setScheduler' as setScheduler %}
+{% url 'setProfile' as setProfile %}
+{% url 'renameCols' as renameCols %}
+{% url 'tuneParams' as tuneParams %}
+{% url 'updateData' as updateData %}
+{% url 'randomForest' as randomForest %}
+{% url 'xgBoost' as xgBoost %}
+{% url 'MLP' as MLP %}
+{% url 'GBC' as GBC %}
+{% url 'KNN' as KNN %}
+{% url 'SVM' as SVM %}
+{% url 'BC' as BC %}  
+{% url 'confirmSrc' as confirmSrc %}
+{% url 'resample' as resample %}
+{% url 'dataQuality' as dataQuality  %}
+{% url 'Report' as Report %}
+{% url 'processStatus' as processStatus%}
+{% url 'modelValReq' as modelValReq%}
+{% url 'impCtrl' as impCtrl %}
+{% url 'valFindings' as valFindings %}
+{% url 'documentation'  as documentation%}
+{% url 'runModel' as runModel %}
+{% url 'policies'  as policies%}
+{% url 'contacts' as contacts %}
+{% url 'modelUsage' as modelUsage %}
+{%url 'WIP' as WIP %}
+{% url 'conceptualsoundness' as conceptualsoundness %}
+{% url 'viewConcSnd' as viewConcSnd %}
+{% url 'viewModelUsage' as viewModelUsage %}
+{% url 'showPlotnComm' as showPlotnComm %}
+{% url 'replication' as replication %}
+{% url 'viewDI' as viewDI %}
+{% url 'dataIntegrity' as dataIntegrity %}
+{% url 'skipUpdateData' as skipUpdateData %}
+{% url 'selCols' as selCols %}
+{% url 'importScnData' as importScnData %}
+{% url 'Report' as Report %}
+{% url 'runpycaret' as runpycaret %}
+{% url 'setuppycaret' as setuppycaret %}
+{% url 'cmpmodels' as cmpmodels %}
+{% url 'runBestModel' as runBestModel %}
+{% url 'Models' as Models%}
+{% url 'newquerybuilder' as newquerybuilder%}
+{% url 'query_filter' as query_filter%}
+{% url 'blank' as blank %}
+{% url 'selVTMdl' as selVTMdl %}
+{% url 'model_screen' as model_screen %}
+{% url 'allocate_questions' as allocate_questions %}
+{% url 'QuestionsAllUsers' as Questions %}
+{% url 'addQtnsAllUsers' as addQtns %}
+{% url 'QtnsResp' as QtnsResp %}
+{%url 'dtTypeConversion' as dtTypeConversion%}
+{% url 'newauditallocation' as newauditallocation %}
+{% url 'newauditresponse' as newauditresponse %}
+{% url 'newquestionresponse' as newquestionresponse %}
+{% url 'newquestionallocation' as newquestionallocation %}
+{% url 'logout' as logout %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>PROPE</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="./favicon.ico">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}">
+  <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}" > 
+  <!-- CSS Front Template -->
+
+  <link rel="preload" href="{% static 'Front/dist/assets/css/theme.min.css' %}" data-hs-appearance="default" as="style">
+  <link rel="preload" href="{% static 'Front/dist/assets/css/theme-dark.min.css' %}" data-hs-appearance="dark" as="style">
+
+
+  <style data-hs-appearance-onload-styles>
+    *
+    {
+      transition: unset !important;
+    }
+
+    body
+    {
+      opacity: 0;
+    }
+  </style>
+
+  <script>
+            window.hs_config = {"autopath":"@@autopath","deleteLine":"hs-builder:delete","deleteLine:build":"hs-builder:build-delete","deleteLine:dist":"hs-builder:dist-delete","previewMode":false,"startPath":"/index.html","vars":{"themeFont":"https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap","version":"?v=1.0"},"layoutBuilder":{"extend":{"switcherSupport":true},"header":{"layoutMode":"default","containerMode":"container-fluid"},"sidebarLayout":"default"},"themeAppearance":{"layoutSkin":"default","sidebarSkin":"default","styles":{"colors":{"primary":"#377dff","transparent":"transparent","white":"#fff","dark":"132144","gray":{"100":"#f9fafc","900":"#1e2022"}},"font":"Inter"}},"languageDirection":{"lang":"en"},"skipFilesFromBundle":{"dist":["assets/js/hs.theme-appearance.js","assets/js/hs.theme-appearance-charts.js","assets/js/demo.js"],"build":["assets/css/theme.css","assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside-mini-cache.js","assets/js/demo.js","assets/css/theme-dark.css","assets/css/docs.css","assets/vendor/icon-set/style.css","assets/js/hs.theme-appearance.js","assets/js/hs.theme-appearance-charts.js","node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js","assets/js/demo.js"]},"minifyCSSFiles":["assets/css/theme.css","assets/css/theme-dark.css"],"copyDependencies":{"dist":{"*assets/js/theme-custom.js":""},"build":{"*assets/js/theme-custom.js":"","node_modules/bootstrap-icons/font/*fonts/**":"assets/css"}},"buildFolder":"","replacePathsToCDN":{},"directoryNames":{"src":"./src","dist":"./dist","build":"./build"},"fileNames":{"dist":{"js":"../../static/Front/dist/assets/js/theme.min.js","css":"theme.min.css"},"build":{"css":"theme.min.css","js":"../../static/Front/dist/assets/js/theme.min.js","vendorCSS":"vendor.min.css","vendorJS":"vendor.min.js"}},"fileTypes":"jpg|png|svg|mp4|webm|ogv|json"}
+            window.hs_config.gulpRGBA = (p1) => {
+  const options = p1.split(',')
+  const hex = options[0].toString()
+  const transparent = options[1].toString()
+
+  var c;
+  if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+    c= hex.substring(1).split('');
+    if(c.length== 3){
+      c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c= '0x'+c.join('');
+    return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',' + transparent + ')';
+  }
+  throw new Error('Bad Hex');
+}
+            window.hs_config.gulpDarken = (p1) => {
+  const options = p1.split(',')
+
+  let col = options[0].toString()
+  let amt = -parseInt(options[1])
+  var usePound = false
+
+  if (col[0] == "#") {
+    col = col.slice(1)
+    usePound = true
+  }
+  var num = parseInt(col, 16)
+  var r = (num >> 16) + amt
+  if (r > 255) {
+    r = 255
+  } else if (r < 0) {
+    r = 0
+  }
+  var b = ((num >> 8) & 0x00FF) + amt
+  if (b > 255) {
+    b = 255
+  } else if (b < 0) {
+    b = 0
+  }
+  var g = (num & 0x0000FF) + amt
+  if (g > 255) {
+    g = 255
+  } else if (g < 0) {
+    g = 0
+  }
+  return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16)
+}
+            window.hs_config.gulpLighten = (p1) => {
+  const options = p1.split(',')
+
+  let col = options[0].toString()
+  let amt = parseInt(options[1])
+  var usePound = false
+
+  if (col[0] == "#") {
+    col = col.slice(1)
+    usePound = true
+  }
+  var num = parseInt(col, 16)
+  var r = (num >> 16) + amt
+  if (r > 255) {
+    r = 255
+  } else if (r < 0) {
+    r = 0
+  }
+  var b = ((num >> 8) & 0x00FF) + amt
+  if (b > 255) {
+    b = 255
+  } else if (b < 0) {
+    b = 0
+  }
+  var g = (num & 0x0000FF) + amt
+  if (g > 255) {
+    g = 255
+  } else if (g < 0) {
+    g = 0
+  }
+  return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16)
+}
+            </script>
+</head>
+
+<body class="has-navbar-vertical-aside navbar-vertical-aside-show-xl   footer-offset">
+
+  <script src="{% static 'Front/dist/assets/js/hs.theme-appearance.js' %}"></script> 
+ 
+  <header id="header" class="navbar navbar-expand-lg navbar-fixed navbar-height navbar-container navbar-bordered bg-white">
+    <div class="navbar-nav-wrap">
+      <!-- Logo -->
+      <a class="navbar-brand" href="./index.html" aria-label="Front">
+        <img class="navbar-brand-logo" src="{% static '/images/prope_logo_1.png' %}" alt="PROPE" style="max-width:10rem" data-hs-theme-appearance="default">
+        <img class="navbar-brand-logo-mini" src="{% static '/images/prope_logo_1_short.png' %}" alt="PROPE" data-hs-theme-appearance="default">
+           </a>
+      <!-- End Logo -->
+
+      <div class="navbar-nav-wrap-content-start">
+        <!-- Navbar Vertical Toggle -->
+        <button type="button" class="js-navbar-vertical-aside-toggle-invoker navbar-aside-toggler">
+          <i class="bi-arrow-bar-left navbar-toggler-short-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Collapse"></i>
+          <i class="bi-arrow-bar-right navbar-toggler-full-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Expand"></i>
+        </button>
+
+        <!-- End Navbar Vertical Toggle -->
+
+        <!-- Search Form -->
+        <div class="dropdown ms-2">
+          <!-- Input Group -->
+          <div class="d-none d-lg-block">
+            <div class="input-group input-group-merge input-group-borderless input-group-hover-light navbar-input-group">
+              <div class="input-group-prepend input-group-text">
+                <i class="bi-search"></i>
+              </div>
+
+              <input style="display: none;" type="search" class="js-form-search form-control" placeholder="Search in front" aria-label="Search in front" data-hs-form-search-options='{
+                       "clearIcon": "#clearSearchResultsIcon",
+                       "dropMenuElement": "#searchDropdownMenu",
+                       "dropMenuOffset": 20,
+                       "toggleIconOnFocus": true,
+                       "activeClass": "focus"
+                     }'>
+              <a class="input-group-append input-group-text" href="javascript:;">
+                <i id="clearSearchResultsIcon" class="bi-x-lg" style="display: none;"></i>
+              </a>
+            </div>
+          </div>
+
+          <button class="js-form-search js-form-search-mobile-toggle btn btn-ghost-secondary btn-icon rounded-circle d-lg-none" type="button" data-hs-form-search-options='{
+                       "clearIcon": "#clearSearchResultsIcon",
+                       "dropMenuElement": "#searchDropdownMenu",
+                       "dropMenuOffset": 20,
+                       "toggleIconOnFocus": true,
+                       "activeClass": "focus"
+                     }'>
+            <i class="bi-search"></i>
+          </button>
+          <!-- End Input Group -->
+
+          <!-- Card Search Content -->
+          <div id="searchDropdownMenu" class="hs-form-search-menu-content dropdown-menu dropdown-menu-form-search navbar-dropdown-menu-borderless">
+            <div class="card">
+              <!-- Body -->
+              <div class="card-body-height">
+                <div class="d-lg-none">
+                  <div class="input-group input-group-merge navbar-input-group mb-5">
+                    <div class="input-group-prepend input-group-text">
+                      <i class="bi-search"></i>
+                    </div>
+
+                    <input type="search" class="form-control" placeholder="Search in front" aria-label="Search in front">
+                    <a class="input-group-append input-group-text" href="javascript:;">
+                      <i class="bi-x-lg"></i>
+                    </a>
+                  </div>
+                </div>
+
+                <span class="dropdown-header">Recent searches</span>
+
+                <div class="dropdown-item bg-transparent text-wrap">
+                  <a class="btn btn-soft-dark btn-xs rounded-pill" href="./index.html">
+                    Gulp <i class="bi-search ms-1"></i>
+                  </a>
+                  <a class="btn btn-soft-dark btn-xs rounded-pill" href="./index.html">
+                    Notification panel <i class="bi-search ms-1"></i>
+                  </a>
+                </div>
+
+                <div class="dropdown-divider"></div>
+
+                <span class="dropdown-header">Tutorials</span>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <span class="icon icon-soft-dark icon-xs icon-circle">
+                        <i class="bi-sliders"></i>
+                      </span>
+                    </div>
+
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>How to set up Gulp?</span>
+                    </div>
+                  </div>
+                </a>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <span class="icon icon-soft-dark icon-xs icon-circle">
+                        <i class="bi-paint-bucket"></i>
+                      </span>
+                    </div>
+
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>How to change theme color?</span>
+                    </div>
+                  </div>
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <span class="dropdown-header">Members</span>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <img class="avatar avatar-xs avatar-circle" src="/static/Front/dist/assets/img/160x160/img10.jpg" alt="Image Description">
+                    </div>
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>Amanda Harvey <i class="tio-verified text-primary" data-toggle="tooltip" data-placement="top" title="Top endorsed"></i></span>
+                    </div>
+                  </div>
+                </a>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <img class="avatar avatar-xs avatar-circle" src="/static/Front/dist/assets/img/160x160/img3.jpg" alt="Image Description">
+                    </div>
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>David Harrison</span>
+                    </div>
+                  </div>
+                </a>
+
+                <a class="dropdown-item" href="./index.html">
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                      <div class="avatar avatar-xs avatar-soft-info avatar-circle">
+                        <span class="avatar-initials">A</span>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1 text-truncate ms-2">
+                      <span>Anne Richard</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <!-- End Body -->
+
+              <!-- Footer -->
+              <a class="card-footer text-center" href="./index.html">
+                See all results <i class="bi-chevron-right small"></i>
+              </a>
+              <!-- End Footer -->
+            </div>
+          </div>
+          <!-- End Card Search Content -->
+
+        </div>
+
+        <!-- End Search Form -->
+      </div>
+
+      <div class="navbar-nav-wrap-content-end">
+        <!-- Navbar -->
+        <ul class="navbar-nav"> 
+          <li class="nav-item">
+            <div  id="divModelId1" 
+            style="z-index: 100;   background: var(--phoenix-navbar-vertical-bg-color);">
+          
+            <label class="logo-text ms-2 d-none d-sm-block" style="font-size:16px;border: none; font-weight: 700; color: chocolate; background-color: var(--phoenix-gray-100); padding: 7px; border-radius: 10px;">Model Validation For :  {{request.session.vt_mdl}}. Dataset : {{request.session.vt_datasetname}}  </label>
+     
+       
+          </div>
+          </li>
+          <li class="nav-item d-none d-sm-inline-block">
+            <!-- Activity -->
+            <button class="btn btn-ghost-secondary btn-icon rounded-circle" type="button" onclick="getNotifications()"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasActivityStream" aria-controls="offcanvasActivityStream">
+              <i class="bi-bell"></i>
+            </button>
+            <!-- Activity -->
+          </li>
+
+          <li class="nav-item">
+            <!-- Account -->
+            <div class="dropdown">
+              <a class="navbar-dropdown-account-wrapper" href="javascript:;" id="accountNavbarDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" data-bs-dropdown-animation>
+                <div class="avatar avatar-sm avatar-circle">
+                  <img class="avatar-img" src="/static/images/avatar-rounded.png" alt="Image Description">
+                  <span class="avatar-status avatar-sm-status avatar-status-success"></span>
+                </div>
+              </a>
+
+              <div class="dropdown-menu dropdown-menu-end navbar-dropdown-menu navbar-dropdown-menu-borderless navbar-dropdown-account" aria-labelledby="accountNavbarDropdown" style="width: 16rem;">
+                <div class="dropdown-item-text">
+                  <div class="d-flex align-items-center">
+                    
+                    <div class="flex-grow-1 ms-3">
+                      <h5 class="mb-0">{{request.session.ufirstname}} {{request.session.ulastname}} </h5>
+                      <p class="card-text text-body">{{request.session.uemail}} </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="dropdown-divider"></div> 
+
+                <a class="dropdown-item" href="{{logout}}">Sign out</a>
+              </div>
+            </div>
+            <!-- End Account -->
+          </li>
+        </ul>
+        <!-- End Navbar -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <!-- Navbar Vertical -->
+
+  <aside class="js-navbar-vertical-aside navbar navbar-vertical-aside navbar-vertical navbar-vertical-fixed navbar-expand-xl navbar-bordered bg-white  ">
+    <div class="navbar-vertical-container">
+      <div class="navbar-vertical-footer-offset">
+        <!-- Logo -->
+
+        <a class="navbar-brand" href="#" aria-label="Front">
+          <img class="navbar-brand-logo" src="{% static 'images/prope_logo_1.png' %}" alt="PROPE"   style="height: 40px;max-width:10rem;"  data-hs-theme-appearance="default">
+          <img class="navbar-brand-logo-mini" src="{% static 'images/prope_logo_1_short.png' %}" alt="PROPE" data-hs-theme-appearance="default">
+        </a>
+
+        <!-- End Logo -->
+
+        <!-- Navbar Vertical Toggle -->
+        <button type="button" class="js-navbar-vertical-aside-toggle-invoker navbar-aside-toggler">
+          <i class="bi-arrow-bar-left navbar-toggler-short-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Collapse"></i>
+          <i class="bi-arrow-bar-right navbar-toggler-full-align" data-bs-template='<div class="tooltip d-none d-md-block" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>' data-bs-toggle="tooltip" data-bs-placement="right" title="Expand"></i>
+        </button>
+
+        <!-- End Navbar Vertical Toggle -->
+
+        <!-- Content -->
+        <div class="navbar-vertical-content">
+          <div id="navbarVerticalMenu" class="nav nav-pills nav-vertical card-navbar-nav">
+
+          
+
+            <!-- Collapse -->
+         
+            <div class="nav-item">
+              <a class="nav-link "  href="{{selVTMdl}}" data-placement="left">
+                <img src="{% static '/icons/settings.svg' %}" style="height: 16px; margin-right: 15px;">
+                <span class="nav-link-title">Models</span>
+              </a>
+            </div>
+            <div id="navbarVerticalMenuPagesMenu">
+                <!-- Collapse -->
+                {% if request.session.li_icqqtnfinal == "block" %}
+                <div class="nav-item">
+                    <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuPagesUsersMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuPagesUsersMenu" aria-expanded="false" aria-controls="navbarVerticalMenuPagesUsersMenu">
+                        <img src="{% static '/icons/eye.svg' %}" style="height: 16px; margin-right: 15px;">
+
+                      <span class="nav-link-title">Questions</span>
+                    </a>
+    
+                    <div id="navbarVerticalMenuPagesUsersMenu" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuPagesMenu">
+                      <a class="nav-link "  href="{{Questions}}" >Add Questions</a>
+                      <a class="nav-link "  href="{{allocate_questions}}">Questions Allocation</a>
+                      <a class="nav-link " href="{{QtnsResp}}">Questions Response</a>
+                    </div>
+                </div>
+                {% endif %}
+              
+                <!-- End Collapse -->
+                  
+            </div>
+            <div id="navbarVerticalMenuPagesMenu">
+                <!-- Collapse -->
+                <div class="nav-item">
+                    <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuPagesUsersMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuPagesUsersMenu_data_import" aria-expanded="false" aria-controls="navbarVerticalMenuPagesUsersMenu">
+                        <img src="{% static '/icons/file.svg' %}" style="height: 16px; margin-right: 15px;">
+                      <span class="nav-link-title">Data Import <br> & Preprocessing</span>
+                    </a>
+    
+                    <div id="navbarVerticalMenuPagesUsersMenu_data_import" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuPagesMenu">
+                      <a class="nav-link "  href="{{home}}" >Import & View Data</a>
+                      {% if request.session.Data_Import_Preprocessing == "Yes" %} 
+                      <a class="nav-link "  href="{{dataCleaning}}">Set Target Variable</a>
+                      <a class="nav-link " href="{{updateData}}">Data Correction</a>
+                      {% endif %}
+                    </div>
+                </div>
+              
+                <!-- End Collapse -->
+                  
+            </div>
+            <div id="navbarVerticalMenuPagesMenu">
+                <!-- Collapse -->
+                <div class="nav-item">
+                    <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuPagesUsersMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuPagesUsersMenu_data_desc" aria-expanded="false" aria-controls="navbarVerticalMenuPagesUsersMenu">
+                        <img src="{% static '/icons/eye.svg' %}" style="height: 16px; margin-right: 15px;">
+                      <span class="nav-link-title">Data Description</span>
+                    </a>
+    
+                    <div id="navbarVerticalMenuPagesUsersMenu_data_desc" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuPagesMenu">
+                      <a class="nav-link "  href="{{viewDataType}}" >View Variables by <br/>Type & Count</a>
+                      <a class="nav-link "  href="{{showCatColFreq}}">View Frequency of <br/>Categorical Variable</a>
+                      <a class="nav-link " href="{{viewNumData}}">View Data Statistics <br/>of Numerical Variables</a>
+                      <a class="nav-link " href="{{showcorrelation}}">View Correlation of <br/>Independent Numeric <br/> Variables</a>
+                      <a class="nav-link " href="{{dist_numevari_catvar}}">View Distribution of <br/>Numeric variables for <br/>Selected Categorical Variable</a>
+
+                    </div>
+                </div>
+              
+                <!-- End Collapse -->
+                  
+            </div>
+            <div id="navbarVerticalMenuPagesMenu">
+                <!-- Collapse -->
+                <div class="nav-item">
+                    <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuPagesUsersMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuPagesUsersMenu_data_visual" aria-expanded="false" aria-controls="navbarVerticalMenuPagesUsersMenu">
+                        <img src="{% static '/icons/pie-chart.svg' %}" style="height: 16px; margin-right: 15px;">
+                      <span class="nav-link-title">Data Visualisation</span>
+                    </a>
+    
+                    <div id="navbarVerticalMenuPagesUsersMenu_data_visual" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuPagesMenu">
+                      <a class="nav-link "  href="{{selCols}}" >View Pair Plots</a>
+                      <a class="nav-link "  href="{{showUniVarChartTypes}}">View Univariate Graphs</a>
+                      <a class="nav-link " href="{{showChartTypes}}">View Multivariate Graphs</a>
+                    
+                    </div>
+                </div>
+              
+                <!-- End Collapse -->
+                  
+            </div>
+            {% if request.session.Data_Preparation == "Yes" %}
+            <div class="nav-item">
+              <a class="nav-link " href="{{setuppycaret}}" data-placement="left">
+                <img src="{% static '/icons/cpu.svg' %}" style="height: 16px; margin-right: 15px;">
+                <span class="nav-link-title">Data Preparation</span>
+              </a>
+            </div> 
+            {% endif %}
+            
+            <div id="navbarVerticalMenuPagesMenu">
+                <!-- Collapse -->
+                {%if request.session.ML_Modeling == "Yes" %}
+                <div class="nav-item">
+                    <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuPagesUsersMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuPagesUsersMenu_mlmodeling" aria-expanded="false" aria-controls="navbarVerticalMenuPagesUsersMenu">
+                        <img src="{% static '/icons/codesandbox.svg' %}" style="height: 16px; margin-right: 15px;">
+                      <span class="nav-link-title">ML Modeling</span>
+                    </a>
+    
+                    <div id="navbarVerticalMenuPagesUsersMenu_mlmodeling" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuPagesMenu">
+                      <a class="nav-link "  href="{{cmpmodels}}" >Compare Models</a>
+                      <a class="nav-link "  href="{{runBestModel}}">Run Models</a>
+                      <a class="nav-link " href="{{model_screen}}">Predict</a>
+                    
+                    </div>
+                </div>
+                {% endif %}
+                <!-- End Collapse -->
+                  
+            </div>              
+              <!-- Collapse -->
+              <div class="nav-item">
+                <a class="nav-link dropdown-toggle  collapsed" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuAuthentication" aria-expanded="false" aria-controls="navbarVerticalMenuAuthentication">
+                  <img src="{% static '/icons/check-circle.svg' %}" style="height: 16px; margin-right: 15px;">
+                      <span class="nav-link-title">Model Validation</span>
+                </a>
+
+                <div id="navbarVerticalMenuAuthentication" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenu">
+                  <div id="navbarVerticalMenuAuthenticationMenu">
+                    <!-- Collapse -->
+                    <div class="nav-item">
+                      <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuAuthenticationLoginMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuAuthenticationLoginMenu" aria-expanded="false" aria-controls="navbarVerticalMenuAuthenticationLoginMenu">
+                        Model Performance & <br/>Testing
+                      </a>
+
+                      <div id="navbarVerticalMenuAuthenticationLoginMenu" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuAuthenticationMenu">
+                        <a class="nav-link "  href="{{replication}}">Replication</a>                            
+                        {% if request.session.Implementation_Controls == "Yes" %}
+                        <a class="nav-link "  href="{{impCtrl}}">Implementation & Controls</a>
+                        {% endif %}
+                        {% if request.session.Model_Usage == "Yes" %}
+                        <a class="nav-link "  href="{{modelUsage}}">Model Usage</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <!-- End Collapse -->
+
+                    <!-- Collapse -->
+                    <div class="nav-item">
+                      <a class="nav-link dropdown-toggle " href="#navbarVerticalMenuAuthenticationSignupMenu" role="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalMenuAuthenticationSignupMenu" aria-expanded="false" aria-controls="navbarVerticalMenuAuthenticationSignupMenu">
+                        Governance & Oversight
+                      </a>
+
+                      <div id="navbarVerticalMenuAuthenticationSignupMenu" class="nav-collapse collapse " data-bs-parent="#navbarVerticalMenuAuthenticationMenu">
+                        {% if request.session.is_mrm == "Yes" %}
+                        <a class="nav-link "  href="{{newauditallocation}}">Audit & Regulatory Compliance</a>
+                        <a class="nav-link "  href="{{newquestionallocation}}">Roles & Responsibilities</a>
+                        {% else %}
+                        <a class="nav-link "  href="{{newauditresponse}}">Audit & Regulatory Compliance</a>
+                        <a class="nav-link "  href="{{newquestionresponse}}">Roles & Responsibilities</a>
+                        {% endif %}
+
+                      </div>
+                    </div>
+                    <!-- End Collapse -->
+ 
+                    <a class="nav-link "  href="{{documentation}}">Documentation</a>
+                    {% if request.session.Validation_Findings == "Yes" %}
+                    <a class="nav-link "  href="{{valFindings}}">Validation Findings</a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <!-- End Collapse -->
+            <div class="nav-item">
+              <a class="nav-link " href="{{Report}}" data-placement="left">
+                  <img src="{% static '/icons/file-text.svg' %}" style="height: 16px; margin-right: 15px;">
+                  <span class="nav-link-title">Validation Report</span>
+              </a>
+            </div>
+            
+            <div class="nav-item">
+              <a class="nav-link " href="{{newquerybuilder}}" data-placement="left">
+                  <img src="{% static '/icons/file-text.svg' %}" style="height: 16px; margin-right: 15px;">
+                  <span class="nav-link-title">Query Builder</span>
+              </a>
+          </div>
+          <div class="nav-item">
+              <a class="nav-link " href="{{blank}}" data-placement="left">
+                  <img src="{% static '/icons/database.svg' %}" style="height: 16px; margin-right: 15px;">
+                  <span class="nav-link-title">PROPE</span>
+              </a>
+          </div>
+                <!-- End Collapse -->
+                  
+            </div>
+            
+            <!-- End Collapse -->  
+          </div>
+
+        </div>
+        <!-- End Content -->
+ 
+      </div>
+    </div>
+  </aside>
+   
+  <main id="content" role="main" class="main">
+    <div class="content container-fluid">
+  {% block style %}
+  {% endblock style %}
+  {% block content %}
+  {% endblock content %}
+  {% block script %} 
+      <!-- Jquery JS-->             
+  {% endblock script %}
+    </div>
+</main>
+  <!-- End Navbar Vertical --> 
+  <!-- <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> -->
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+
+ <script src="{% static 'js/notification.js' %}"></script> 
+ <script src="{% static 'js/chatroom.js' %}"></script>
+  <!-- JS Plugins Init. -->
+  <script>
+    (function() {
+      localStorage.removeItem('hs_theme')
+
+      window.onload = function () {
+        
+
+        // INITIALIZATION OF NAVBAR VERTICAL ASIDE
+        // =======================================================
+        new HSSideNav('.js-navbar-vertical-aside').init()
+
+
+        
+
+
+       
+
+       
+      }
+    })()
+  </script>
+
+  <!-- Style Switcher JS -->
+
+  <script>
+      (function () {
+        // STYLE SWITCHER
+        // =======================================================
+        const $dropdownBtn = document.getElementById('selectThemeDropdown') // Dropdowon trigger
+        const $variants = document.querySelectorAll(`[aria-labelledby="selectThemeDropdown"] [data-icon]`) // All items of the dropdown
+
+        // Function to set active style in the dorpdown menu and set icon for dropdown trigger
+        const setActiveStyle = function () {
+          $variants.forEach($item => {
+            if ($item.getAttribute('data-value') === HSThemeAppearance.getOriginalAppearance()) {
+              $dropdownBtn.innerHTML = `<i class="${$item.getAttribute('data-icon')}" />`
+              return $item.classList.add('active')
+            }
+
+            $item.classList.remove('active')
+          })
+        }
+
+        // Add a click event to all items of the dropdown to set the style
+        $variants.forEach(function ($item) {
+          $item.addEventListener('click', function () {
+            HSThemeAppearance.setAppearance($item.getAttribute('data-value'))
+          })
+        })
+
+        // Call the setActiveStyle on load page
+        setActiveStyle()
+
+        // Add event listener on change style to call the setActiveStyle function
+        window.addEventListener('on-hs-appearance-change', function () {
+          setActiveStyle()
+        })
+      })()
+    </script>
+
+  <!-- End Style Switcher JS -->
+</body>
+</html>

@@ -1,0 +1,1553 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block content %} 
+    
+<div class="content" style="padding-top:0px;width:80%;margin-left: 10%"> 
+  {% csrf_token %}
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Performance Monitoring Setup MRM</h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <!-- {{data}} -->
+                <!-- {{freqdata}} -->
+                <ul class="nav nav-underline" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true">Model</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab-profile" role="tab" aria-controls="tab-profile" aria-selected="false" tabindex="-1">Data</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#tab-contact" role="tab" aria-controls="tab-contact" aria-selected="false" tabindex="-1">Business</a></li>
+                  </ul>
+                  <div class="tab-content mt-3" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab-home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Model </label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlFunction" id="mdlid" onchange="gethistorymsg()">
+                                <option value="">Select Model</option>
+                                <!-- <option value="M070100">M070100</option> -->
+                                {% for val in data  %}  
+                                  <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                       
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Frequency </label>
+                            
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlFunction" id="frequency" >
+                                <option value="">Select Frequency</option>
+                                {% for val in freqdata  %}  
+                                  <option value="{{val.frequency_aid}}">{{val.frequency_label}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                        </div> 
+                        <div class="mb-9">
+                            <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                                <div class="table-responsive scrollbar"  style="max-height:300px;">
+                                <table id="tblModelMetric" class="table fs--1 mb-0 border-top border-200">
+                                  <thead>
+                                    <tr> 
+                                      <th class="sort white-space-nowrap align-middle ps-0" scope="col" style="width:5%;">
+                                        <input type="checkbox" id="name1" onclick="selectall()"/> 
+                                      </th>
+                                      <th class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:50%;" >Model Metric</th>
+                                      
+                                      <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Threshold (T)</th> 
+                                      <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Warning T </th>  
+                                      <th  class="sort align-middle ps-3" scope="col"  style="width:10%;">Delete</th>                 
+                                    </tr>
+                                  </thead>
+                                  <tbody class="list" id="tblModelMetric-body">                               
+                                  </tbody>
+                                </table>
+                              </div>
+                            
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1"  href="#"><i class="fa-solid fa-plus me-2"></i>Model Metric</a></div>
+                        </div>
+                        
+                        <div class="col-12 gy-6">
+                            <div class="row g-3 justify-content-end">
+                              <div class="col-auto"> 
+                                <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                              </div>
+                              <div class="col-auto"> 
+                                <input type="button" id="button1" class="btn btn-phoenix-primary px-5" value="Sign Off" disabled/>
+                              </div>
+                              <div class="col-auto">
+                                {% if label %}
+                                <input type="hidden" id="update_id" value="{{id}}" >
+                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                                {% else %}
+                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="connect()" value="Submit" />
+                                {% endif %} 
+                              </div>
+                             
+                            </div>
+                        </div>
+                    </div>
+                    <!--Data Matrics-->
+                    <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
+                      <div class="row">
+                        <label class="col-sm-2 col-form-label" for="ddlFunction">Model </label>
+                        <div class="col-sm-4">
+                          <select class="form-select" name="ddlFunction" id="mdliddata" onchange="selectfeature()">
+                            <option value="">Select Model</option>
+                            <!-- <option value="M070100">M070100</option> -->
+                            {% for val in data_mdlids  %}  
+                              <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>   
+                            {% endfor %} 
+                          </select>
+                        </div>
+                   
+                        <label class="col-sm-2 col-form-label" for="ddlFunction">Frequency </label>
+                        
+                        <div class="col-sm-4">    
+                          <select class="form-select" name="ddlFunction" id="frequencydata" >
+                            <option value="">Select Frequency</option>
+                            {% for val in freqdata  %}  
+                              <option value="{{val.frequency_aid}}">{{val.frequency_label}}</option>   
+                            {% endfor %} 
+                          </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <label class="col-sm-2 col-form-label" for="ddlFunction">Feature </label>
+                      <div class="col-sm-3">
+                        <select class="form-select" name="ddlFunction" id="datafeature" onchange="selectdtype()" >
+                          <option value="">Select Feature</option>
+                          <!-- <option value="M070100">M070100</option> -->  
+                        </select>
+                      </div>
+                 
+                      <label class="col-sm-2 col-form-label" for="ddlFunction">Data Matrics</label>
+                      
+                      <div class="col-sm-3">    
+                        <select class="form-select" name="ddlFunction" id="datametricsdrpdwn" >
+                          <option value="">Select Data Matrics</option>
+                          <!-- {% for val in data_metric  %}  
+                            <option value="{{val.data_aid}}">{{val.data_label}}</option>
+                            <option value="{{val.data_label}}">{{val.data_label}}</option>   
+                          {% endfor %}  -->
+                        </select>
+                      </div>
+                      <input type="button"  class="btn btn-primary px-3 px-sm-3 col-sm-2" onclick="fetchrow()" value="Add Row" />
+                      <!-- <div class="col-sm-3"><input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="fetchrow()" value="Submit" /></div> -->
+                  </div>
+                  <br>
+                  <div class="mb-9">
+                    <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                        <div class="table-responsive scrollbar"  style="max-height:300px;">
+                        <table id="tblDataMetric" class="table fs--1 mb-0 border-top border-200">
+                          <thead>
+                            <tr> 
+                              <th class="sort white-space-nowrap align-middle ps-0" scope="col" style="width:5%;">
+                                <input type="checkbox" id="name3" onclick="selectalldata()"/> 
+                              </th>
+                              <th class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:20%;" >Data Metric</th>
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Feature</th> 
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Threshold (T)</th> 
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Warning T </th>  
+                              <th  class="sort align-middle ps-3" scope="col"  style="width:10%;">Delete</th>                 
+                            </tr>
+                          </thead>
+                          <tbody class="list" id="tblDataMetric-body">                               
+                          </tbody>
+                        </table>
+                      </div>
+                    
+                    </div>
+                </div>
+                  <br>
+                    <div class="row g-3 justify-content-end">
+                        <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="businessmetric()"  href="#"><i class="fa-solid fa-plus me-2"></i>Data Metric</a></div>
+                        <!-- <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="modalmetric()" value="Model Metric" /> -->
+                    </div>
+                    
+                    <div class="col-12 gy-6">
+                        <div class="row g-3 justify-content-end">
+                          <!-- <div class="col-auto">
+                            
+                            <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="modalmetric()" value="Model Metric" />
+                        </div> -->
+                          <div class="col-auto"> 
+                            <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                          </div>
+                          <div class="col-auto"> 
+                            <input type="button" id="button3" class="btn btn-phoenix-primary px-5" value="Sign Off" disabled/>
+                          </div>
+                          <div class="col-auto">
+                            {% if label %}
+                            <input type="hidden" id="update_id" value="{{id}}" >
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                            {% else %}
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="connect_datamatric()" value="Submit" />
+                            {% endif %} 
+                          </div>
+                         
+                        </div>
+                    
+
+                    </div>
+                  
+                  <!--Ends-->
+                    </div>
+                    <!--Business-->
+                    <div class="tab-pane fade" id="tab-contact" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Model </label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlFunction" id="mdlidbus" onchange="gethistorymsgbus()">
+                                <option value="">Select Model</option>
+                                <!-- <option value="M070100">M070100</option> -->
+                                {% for val in BusinessMetric  %}  
+                                  <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                       
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Frequency </label>
+                            
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlFunction" id="frequencybus" >
+                                <option value="">Select Frequency</option>
+                                {% for val in freqdata  %}  
+                                  <option value="{{val.frequency_aid}}">{{val.frequency_label}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                        </div> 
+                        <div class="mb-9">
+                            <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                                <div class="table-responsive scrollbar"  style="max-height:300px;">
+                                <table id="tblModelMetricbus" class="table fs--1 mb-0 border-top border-200">
+                                  <thead>
+                                    <tr> 
+                                      <th class="sort white-space-nowrap align-middle ps-0" scope="col" style="width:5%;">
+                                        <input type="checkbox" id="name2" onclick="selectall()"/> 
+                                      </th>
+                                      <th class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:50%;" >Business Metric</th>
+                                      
+                                      <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Threshold (T)</th> 
+                                      <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Warning T </th>  
+                                      <th  class="sort align-middle ps-3" scope="col"  style="width:10%;">Delete</th>                 
+                                    </tr>
+                                  </thead>
+                                  <tbody class="list" id="tblModelMetricbus-body">                               
+                                  </tbody>
+                                </table>
+                              </div>
+                            
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="businessmetric()"  href="#"><i class="fa-solid fa-plus me-2"></i>Business Metric</a></div>
+                        </div>
+                        
+                        <div class="col-12 gy-6">
+                            <div class="row g-3 justify-content-end">
+                              <div class="col-auto"> 
+                                <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                              </div>
+                              <div class="col-auto"> 
+                                <input type="button" id="button2" class="btn btn-phoenix-primary px-5" value="Sign Off" disabled/>
+                              </div>
+                              <div class="col-auto">
+                                {% if label %}
+                                <input type="hidden" id="update_id" value="{{id}}" >
+                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                                {% else %}
+                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="connectbus()" value="Submit" />
+                                {% endif %} 
+                              </div>
+                             
+                            </div>
+                        </div>
+                    </div>
+                    <!--Business End-->
+                  </div>
+                
+
+                
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+<div class="support-chat-container">
+    <div class="container-fluid support-chat">
+      <div class="card bg-white">
+        <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom">
+          <h5 class="mb-0 d-flex align-items-center gap-2">Discussion Room <span class="fa-solid fa-circle text-success fs--3"></span></h5>
+          <div class="btn-reveal-trigger">
+            <button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex" type="button" id="support-chat-dropdown" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h text-900"></span></button>
+            <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a class="dropdown-item btn-support-chat" href="#!">Close</a> </div>
+          </div>
+        </div>
+        <div class="card-body chat p-0">
+          <div class="d-flex flex-column scrollbar h-100 p-3" id="divMdlPerfMontresp">
+            
+          </div>
+        </div>
+        <div class="card-footer d-flex align-items-center gap-2 border-top ps-3 pe-4 py-3">
+          <div class="d-flex align-items-center flex-1 gap-3 border rounded-pill px-4">
+            <input class="form-control outline-none border-0 flex-1 fs--1 px-0" type="text" id="txtmsg" onkeyup="enableBtn()" placeholder="Write message" />
+            
+          </div>
+          <button id="btnSend" disabled class="btn p-0 border-0 send-btn" onclick="updateResponse()"><span class="fa-solid fa-paper-plane fs--1"></span></button>
+        </div>
+      </div>
+    </div>
+    <button class="btn p-0 border border-200 btn-support-chat btn-chat-close" >
+      <!-- <span class="fs-0 btn-text text-primary text-nowrap">Chat demo</span> -->
+      <span class="text-danger" data-feather="message-square"  style="height: 20px; width: 70px;"></span> 
+      <!-- <span class="fa-solid fa-circle text-success fs--1 ms-2"></span>
+      <span class="fa-solid fa-chevron-down text-primary fs-1"></span> -->
+    </button>
+  </div> 
+  <!--Sign Modal for model-->
+  <div class="modal fade" id="signoffmodal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Decommission Confirmation</h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1 text-white"></span></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-700 lh-lg mb-0">are you sure you want to sign off? </p>
+        </div>
+        <div class="modal-footer">
+          <input   class="btn btn-primary" type="button" onclick="showModal()" value="Yes"/> 
+          <input class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" value="No"/>
+        </div>
+      </div> 
+    </div>
+  </div>
+  <!--End-->
+
+  <!--Sign Modal for Data-->
+  <div class="modal fade" id="signoffmodaldata" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Decommission Confirmation</h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1 text-white"></span></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-700 lh-lg mb-0">are you sure you want to sign off? </p>
+        </div>
+        <div class="modal-footer">
+          <input   class="btn btn-primary" type="button" onclick="showModaldata()" value="Yes"/> 
+          <input class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" value="No"/>
+        </div>
+      </div> 
+    </div>
+  </div>
+  <!--End-->
+
+    <!--Sign Modal for Business KPI-->
+    <div class="modal fade" id="signoffmodalbus" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Decommission Confirmation</h5>
+            <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1 text-white"></span></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-700 lh-lg mb-0">are you sure you want to sign off? </p>
+          </div>
+          <div class="modal-footer">
+            <input   class="btn btn-primary" type="button" onclick="showModalbus()" value="Yes"/> 
+            <input class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" value="No"/>
+          </div>
+        </div> 
+      </div>
+    </div>
+    <!--End-->
+  <!--Business Metrics modal--> 
+  <div id="businessmatrics" class="modal"  style="display: block;" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLiveLabel">Model metrics</h5>
+        
+        </div>
+        <div class="modal-body"> 
+          <div class="row mb-3 position-relative"> 
+            <label class="col-sm-3 col-form-label" for="txtsection">Metric</label>
+
+            <div class="col-sm-8">
+                <input type="text" class="form-control"  id="txtbusmetric"  maxlength="100" required=""> 
+            </div>
+          </div>  
+          <div class="row mb-3 position-relative"> 
+             
+            <div class="row mb-3 position-relative"> 
+              <label class="col-sm-3 col-form-label" for="txtsection">Description</label>
+  
+              <div class="col-sm-8">
+                  <textarea id="busdescription" name="description" rows="4" cols="35">
+                  </textarea>
+              </div>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="hidemodal()">Cancel</button> 
+          <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="savebusinessmetrics()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--************-->
+{% endblock content %}
+{% block script %}
+<script src="{% static 'js/chatroom.js' %}"></script>
+<script type='text/javascript' >
+    function supportChatInit(){    
+      const supportChat = document.querySelector('.support-chat');
+      const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+      const supportChatcontainer = document.querySelector(
+        '.support-chat-container'
+      );
+        supportChatcontainer.classList.add('show');     
+      supportChatBtn.forEach(item => {    
+      
+        item.addEventListener('click', () => {
+          
+          supportChat.classList.toggle('show-chat');
+  
+          // supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+          //   'btn-chat-close'
+          // );
+  
+          supportChatcontainer.classList.add('show');
+           
+        });
+      });
+    };
+  
+
+    $(document).ready(function(){
+          // $('#SelectBackUpUserFor').css('visibility','hidden');
+         supportChatInit(); 
+         $("#businessmatrics").hide()
+      }); 
+ 
+    
+    function gotolist()
+    {
+        window.location='{{showdept}}'
+      
+    }
+
+    function businessmetric(){
+      $("#businessmatrics").modal('toggle')
+    }
+
+    function hidemodal(){
+      window.location='{{PerfMontrSetupMRM}}'
+    }
+
+    function savebusinessmetrics(){
+      debugger;
+      bm_label = $("#txtbusmetric").val()
+      bm_description = $('#busdescription').val()
+      $.ajax({
+              url: '/savebusmetrics/', 
+              data:{bm_label: bm_label,bm_description:bm_description},
+             dataType: 'json',  
+            
+              success: function (data) { 
+                // console.log("---------------data",data) 
+                sendPerfMonmsg($("#txtmsg").val(),$('#lblcurruid').text(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+              }
+          });
+    }
+
+    function enableBtn()
+    {
+      $('#btnSend').prop('disabled',true) 
+      if ($("#txtmsg").val().trim().length>0 && $("#mdlid").val() !="")
+        $('#btnSend').prop('disabled',false)
+    }
+
+    function updateResponse(){
+        id = $("#mdlid").val()
+        room_id = 'Perfm_'+id
+        $.ajax({
+              url: '/addperfromancediscussion/', 
+              data:{room_id: room_id,comment:$("#txtmsg").val()},
+             dataType: 'json',  
+             method:'POST', 
+              success: function (data) {  
+                sendPerfMonmsg($("#txtmsg").val(),$('#lblcurruid').text(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+              }
+          });
+        
+      }
+  
+    var arrQtns=[]
+    function registerclick(id){ 
+      //  
+        if($('#chk_'+id).prop('checked')){ 
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          } 
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name1').prop('checked', false); 
+        }
+        
+    }
+
+    function selectall(){ 
+      var yes = document.getElementById("name1");   
+      // alert("select all")
+      // var check = false;
+      if (yes.checked == true){
+        var ele=document.getElementsByName('chk'); 
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+            ele[i].click(); 
+          }
+      }
+      else{
+        var ele=document.getElementsByName('chk'); 
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].checked=false;  
+          }
+      }
+      
+    }
+    
+    function connect(){ 
+    
+      mdl_id = $("#mdlid").val()
+     
+      
+
+      if($('#mdlid').val()=="") {
+        alert('Please select model.');
+        return
+      }
+      else if($('#frequency').val()==""){
+        alert('Please select frequency.')
+        return
+      }
+
+      else if(arrQtns.length<1){
+        alert('Please select Model Matrics.')
+        return
+      }
+
+      updatedata=[]
+      arrQtns.forEach(i => {
+        if($('#chk_'+i).prop('checked')) {
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["AID"] = i
+          item["Percentage"] = $('#txtper_'+i).val()
+          item["Threshold"] = $('#txtthreshold_'+i).val()
+          item["Warning"] = $('#txtWaring_'+i).val()
+          updatedata.push(item); 
+        } 
+      });  
+      if(updatedata.length>0){
+        $.ajax({
+          url: '/savemodelmatrics/', 
+          data:{ datalist: JSON.stringify(updatedata),mdlId:$('#mdlid').val(),frequency:$('#frequency').val()},
+          dataType: 'json',
+          success: function (data) {  
+              if(data.istaken=="true"){ 
+                // $.each(data.assignTaskLst, function(i, obj) { 
+                //   var select_users = $('#ddlUsers option:selected').toArray().map(item => item.text).join();
+                //   $('#txt_task_'+obj.AID).text(obj.task_id)
+                //   $('#lbl_'+obj.AID).text(select_users)
+                // });
+                alert('Model Matrics Saved successfully') 
+              }
+              else{
+                alert("Something went wrong")
+              }
+          }
+        }); 
+      } 
+    }
+    var arrQtns1=[]
+
+    function registerclickbus(id){
+      debugger;  
+        if($('#bchk_'+id).prop('checked')){ 
+          if(arrQtns1.indexOf(id)<0){
+              arrQtns1.push(id);  
+          } 
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns1.splice(arrQtns1.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name2').prop('checked', false); 
+        }
+        
+    }
+
+    function connectbus(){ 
+    debugger;
+    mdl_id = $("#mdlidbus").val()
+    if($('#mdlidbus').val()=="") {
+      alert('Please select model.');
+      return
+    }
+    else if($('#frequencybus').val()==""){
+      alert('Please select frequency.')
+      return
+    }
+
+    else if(arrQtns1.length<1){
+      alert('Please select Model Matrics.')
+      return
+    }
+
+    updatedata=[]
+    arrQtns1.forEach(i => {
+      if($('#bchk_'+i).prop('checked')) {
+        //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+        item = {}  
+        item["AID"] = i
+        item["Percentage"] = $('#btxtper_'+i).val()
+        item["Threshold"] = $('#btxtthreshold_'+i).val()
+        item["Warning"] = $('#btxtWaring_'+i).val()
+        updatedata.push(item); 
+      } 
+    }); 
+    console.log("updatedata",updatedata)
+    if(updatedata.length>0){
+      debugger;
+      $.ajax({
+        url: '/savebusinessmatrics/', 
+        data:{ datalist: JSON.stringify(updatedata),mdlId:$('#mdlidbus').val(),frequency:$('#frequencybus').val()},
+        dataType: 'json',
+        success: function (data) {  
+          alert(data.msg)
+            // if(data.istaken=="true"){ 
+            //   // $.each(data.assignTaskLst, function(i, obj) { 
+            //   //   var select_users = $('#ddlUsers option:selected').toArray().map(item => item.text).join();
+            //   //   $('#txt_task_'+obj.AID).text(obj.task_id)
+            //   //   $('#lbl_'+obj.AID).text(select_users)
+            //   // });
+            //   alert('Model Matrics Saved successfully') 
+            // }
+            // else{
+            //   alert("Something went wrong")
+            // }
+        }
+      }); 
+    } 
+  }
+
+    $('#button1').on('click', function() { 
+      // $('#signoffmodal').show();
+      $("#signoffmodal").modal('toggle')
+    });
+
+    $('#button2').on('click', function() { 
+      // $('#signoffmodal').show();
+      $("#signoffmodalbus").modal('toggle')
+    });
+
+    $('#button3').on('click', function() { 
+      // $('#signoffmodal').show();
+      $("#signoffmodaldata").modal('toggle')
+    });
+    function showModal() {
+      debugger
+      mdlid = $('#mdlid').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/ApproveModelMatricsData/', 
+          data:{mdl_id:$('#mdlid').val()},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) {  
+            $("#signoffmodal").modal('toggle')
+            alert(data.msg);
+            $('#tblModelMetric-body').empty(); 
+            $('#tblModelMetric tbody').html('');
+            
+          }
+        });
+    }
+
+    function showModalbus() {
+      debugger;
+      mdlid = $('#mdlidbus').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/ApproveBusinessMatricsData/', 
+          data:{mdl_id:$('#mdlidbus').val()},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) {  
+            $("#signoffmodalbus").modal('toggle')
+            alert(data.msg);
+            $('#tblModelMetricbus-body').empty(); 
+            $('#tblModelMetricbus tbody').html('');
+            
+          }
+        });
+    }
+
+    function showModaldata() {
+      debugger;
+      mdlid = $('#mdliddata').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/ApproveDataMatricsData/', 
+          data:{mdl_id:$('#mdliddata').val()},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) {  
+
+            $("#signoffmodaldata").modal('toggle')
+            alert(data.msg);
+            $('#tbldataMetric-body').empty(); 
+            $('#tbldataMetric tbody').html('');
+            
+          }
+        });
+    }
+
+    function gethistorymsg(){
+      var strRows='';
+      $('#button1').prop('disabled', true);
+      id = $("#mdlid").val()
+      $('#divMdlPerfMontresp').empty()  
+      $('#tblModelMetric-body').empty(); 
+      $('#tblModelMetric tbody').html('');
+      if(id !=""){ 
+        $('input[type="text"]').val(''); 
+        $('input[type="checkbox"]').prop("checked",false)
+      $.ajax({
+              url: '/getMdlDataForMRM/', 
+              data:{room_id: 'Perfm_'+id,mdl_id:id},
+             dataType: 'json',  
+              success: function (data) {  
+                $('#tblModelMetric-body').empty(); 
+                arr=data.mmdata 
+                if(data.mo_approved==0){
+                  $('#button1').prop('disabled', true);
+                }
+                else{
+                  $('#button1').prop('disabled', false);
+                }
+                if(data.mmdata.length == 0){
+                  // alert("empty")
+                  $('#button1').prop('disabled', true);
+                }
+                else{
+                  // alert("full")
+                  strRows='';
+                  $.each(data.mmdata, function(key, val) { 
+                    strRows +=' <tr class="position-static"> ';
+                    strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                    strRows +='       <input type="checkbox" name="chk" id="chk_'+ val["metric"] +'" onclick="registerclick('+ val["metric"] +')"/> ';
+                    strRows +='      </td>';
+                    strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                    strRows +='      <div class="row"> ';
+                    strRows +='      <div class="col-sm-7">  '+val["mm_label"];
+                    strRows +='        </div>';
+                    strRows +='        <div class="col-sm-5">  ';
+                    strRows +='        <select class="form-select" name="ddlFunction" id="txtper_'+ val["metric"] +'">';
+                    strRows +='        <option value="percentage">Percentage</option>';
+                    strRows +='        <option value="number">Number</option> ';                                                   
+                    strRows +='        </select>';
+                    strRows +='        </div>';
+                    strRows +='        </div>  ';                                          
+                    strRows +='        </td> ';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+                    strRows +='        <div class="row"> ';
+                    strRows +='         <div class="col-sm-12"> ';
+                    strRows +='        <input type="text" required  class="form-control" id="txtthreshold_'+ val["metric"] +'"/>';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td>';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='        <div class="row"> ';
+                    strRows +='        <div class="col-sm-12"> ';
+                    strRows +='          <input required  type="text"  class="form-control" id="txtWaring_'+ val["metric"] +'"/>';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td> ';
+                    strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='         <div class="row" > ';
+                    strRows +='        <div class="col-sm-12">';
+                    strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td>  ';                        
+                    strRows +='        </tr>  ';
+                    $('#tblModelMetric tbody').append(strRows); 
+                    strRows='';
+                    if(val['threshold']!=null){
+                    $('#txtper_'+val['metric']).val(val['metric_value_type'])
+                    $('#txtthreshold_'+val['metric']).val(val['threshold'])
+                     $('#txtWaring_'+val['metric']).val(val['warning'])
+                     $('#chk_'+val['metric']).prop('checked',true)
+                     arrQtns.push(val['metric'])
+                    }
+                  });
+                 
+                  
+                }
+                //************
+                qtnArr='';
+           $.each(data.data, function(key, val) {  
+            if(val.msgcss=='R')
+            {
+              qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+            }
+            else if(val.msgcss=='S')
+            {
+
+              qtnArr +=' <div class="d-flex chat-message">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+                    qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='</div>';
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+                        qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+            } 
+            
+          });
+           $('#divMdlPerfMontresp').append(qtnArr) 
+           connectWS(id)
+           $('#divMdlPerfMontresp').animate({
+            scrollTop: $('#divMdlPerfMontresp').get(0).scrollHeight
+        }, 200);
+          } 
+          
+          });
+         
+          
+        }
+    }
+
+    function gethistorymsgbus(){
+      debugger;
+      var strRows='';
+      $('#button2').prop('disabled', true);
+      id = $("#mdlidbus").val()
+      $('#divMdlPerfMontresp').empty()  
+      $('#tblModelMetricbus-body').empty(); 
+      $('#tblModelMetricbus tbody').html('');
+      if(id !=""){ 
+        $('input[type="text"]').val(''); 
+        $('input[type="checkbox"]').prop("checked",false)
+        $.ajax({
+              url: '/getBusinessDataForMRM/', 
+              data:{room_id: 'Perfm_'+id,mdl_id:id},
+              dataType: 'json',  
+              success: function (data) {
+                console.log("data",data.bmdata)  
+                $('#tblModelMetricbus-body').empty(); 
+                arr=data.bmdata 
+                if(data.mo_approved==0){
+                  $('#button2').prop('disabled', true);
+                }
+                else{
+                  $('#button2').prop('disabled', false);
+                }
+                if(data.bmdata.length == 0){
+                  // alert("empty")
+                  $('#button2').prop('disabled', true);
+                }
+                else{
+                  // alert("full"+data.mmdata.length);
+                  strRows='';
+                  $.each(data.bmdata, function(key, val) { 
+                    console.log("key",key,"val",val)  
+                    strRows +=' <tr class="position-static"> ';
+                    strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                    strRows +='       <input type="checkbox" name="bkchk" id="bchk_'+ val["metric"] +'" onclick="registerclickbus('+ val["metric"] +')"/> ';
+                    strRows +='      </td>';
+                    strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                    strRows +='      <div class="row"> ';
+                    strRows +='      <div class="col-sm-7">  '+val["bm_label"];
+                    strRows +='        </div>';
+                    strRows +='        <div class="col-sm-5">  ';
+                    strRows +='        <select class="form-select" id="btxtper_'+ val["metric"] +'">';
+                    strRows +='        <option value="percentage">Percentage</option>';
+                    strRows +='        <option value="number">Number</option> ';                                                   
+                    strRows +='        </select>';
+                    strRows +='        </div>';
+                    strRows +='        </div>  ';                                          
+                    strRows +='        </td> ';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+                    strRows +='        <div class="row"> ';
+                    strRows +='         <div class="col-sm-12"> ';
+                    strRows +='        <input type="text" required  class="form-control" id="btxtthreshold_'+ val["metric"] +'"/>';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td>';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='        <div class="row"> ';
+                    strRows +='        <div class="col-sm-12"> ';
+                    strRows +='          <input required  type="text"  class="form-control" id="btxtWaring_'+ val["metric"] +'"/>';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td> ';
+                    strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='         <div class="row" > ';
+                    strRows +='        <div class="col-sm-12">';
+                    strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td>  ';                        
+                    strRows +='        </tr>  ';
+                    $('#tblModelMetricbus tbody').append(strRows); 
+                    strRows='';
+                    if(val['threshold']!=null){
+                    $('#btxtper_'+val['metric']).val(val['metric_value_type'])
+                    $('#btxtthreshold_'+val['metric']).val(val['threshold'])
+                     $('#btxtWaring_'+val['metric']).val(val['warning'])
+                     $('#bchk_'+val['metric']).prop('checked',true)
+                     arrQtns1.push(val['metric'])
+                    }
+                    
+                  });
+                 
+                  
+                }
+                //************
+            qtnArr='';
+            $.each(data.data, function(key, val) {  
+            if(val.msgcss=='R')
+            {
+              qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+            }
+            else if(val.msgcss=='S')
+            {
+
+              qtnArr +=' <div class="d-flex chat-message">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+                    qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='</div>';
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+                        qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+            } 
+            
+          });
+           $('#divMdlPerfMontresp').append(qtnArr)
+           connectWS(id)
+           $('#divMdlPerfMontresp').animate({
+            scrollTop: $('#divMdlPerfMontresp').get(0).scrollHeight
+        }, 200);
+          } 
+          
+          });
+         
+          
+        }
+    }
+
+    // function gethistorymsgdata(){
+    //   debugger;
+    //   var strRows='';
+    //   $('#button3').prop('disabled', true);
+    //   id = $("#mdlidbus").val()
+    //   $('#divMdlPerfMontresp').empty()  
+    //   $('#tblDataMetric-body').empty(); 
+    //   $('#tblDataMetric tbody').html('');
+    //   if(id !=""){ 
+    //     $('input[type="text"]').val(''); 
+    //     $('input[type="checkbox"]').prop("checked",false)
+    //     $.ajax({
+    //           url: '/getDataForMRM/', 
+    //           data:{room_id: 'Perfm_'+id,mdl_id:id},
+    //           dataType: 'json',  
+    //           success: function (data) {
+    //             console.log("data",data.bmdata)  
+    //             $('#tblModelMetricbus-body').empty(); 
+    //             arr=data.bmdata 
+    //             if(data.mo_approved==0){
+    //               $('#button3').prop('disabled', true);
+    //             }
+    //             else{
+    //               $('#button3').prop('disabled', false);
+    //             }
+    //             if(data.bmdata.length == 0){
+    //               // alert("empty")
+    //               $('#button2').prop('disabled', true);
+    //             }
+    //             else{
+    //               // alert("full"+data.mmdata.length);
+    //               strRows='';
+    //               $.each(data.bmdata, function(key, val) { 
+    //                 console.log("key",key,"val",val)  
+    //                 strRows +=' <tr class="position-static"> ';
+    //                 strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+    //                 strRows +='       <input type="checkbox" name="bkchk" id="bchk_'+ val["metric"] +'" onclick="registerclickbus('+ val["metric"] +')"/> ';
+    //                 strRows +='      </td>';
+    //                 strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+    //                 strRows +='      <div class="row"> ';
+    //                 strRows +='      <div class="col-sm-7">  '+val["bm_label"];
+    //                 strRows +='        </div>';
+    //                 strRows +='        <div class="col-sm-5">  ';
+    //                 strRows +='        <select class="form-select" id="btxtper_'+ val["metric"] +'">';
+    //                 strRows +='        <option value="percentage">Percentage</option>';
+    //                 strRows +='        <option value="number">Number</option> ';                                                   
+    //                 strRows +='        </select>';
+    //                 strRows +='        </div>';
+    //                 strRows +='        </div>  ';                                          
+    //                 strRows +='        </td> ';
+    //                 strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+    //                 strRows +='        <div class="row"> ';
+    //                 strRows +='         <div class="col-sm-12"> ';
+    //                 strRows +='        <input type="text" required  class="form-control" id="btxtthreshold_'+ val["metric"] +'"/>';
+    //                 strRows +='        </div>';
+    //                 strRows +='        </div>';
+    //                 strRows +='        </td>';
+    //                 strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+    //                 strRows +='        <div class="row"> ';
+    //                 strRows +='        <div class="col-sm-12"> ';
+    //                 strRows +='          <input required  type="text"  class="form-control" id="btxtWaring_'+ val["metric"] +'"/>';
+    //                 strRows +='        </div>';
+    //                 strRows +='        </div>';
+    //                 strRows +='        </td> ';
+    //                 strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+    //                 strRows +='         <div class="row" > ';
+    //                 strRows +='        <div class="col-sm-12">';
+    //                 strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+    //                 strRows +='        </div>';
+    //                 strRows +='        </div>';
+    //                 strRows +='        </td>  ';                        
+    //                 strRows +='        </tr>  ';
+    //                 $('#tblModelMetricbus tbody').append(strRows); 
+    //                 strRows='';
+    //                 if(val['threshold']!=null){
+    //                 $('#btxtper_'+val['metric']).val(val['metric_value_type'])
+    //                 $('#btxtthreshold_'+val['metric']).val(val['threshold'])
+    //                  $('#btxtWaring_'+val['metric']).val(val['warning'])
+    //                  $('#bchk_'+val['metric']).prop('checked',true)
+    //                  arrQtns1.push(val['metric'])
+    //                 }
+                    
+    //               });
+                 
+                  
+    //             }
+    //             //************
+    //         qtnArr='';
+    //         $.each(data.data, function(key, val) {  
+    //         if(val.msgcss=='R')
+    //         {
+    //           qtnArr +=' <div class="d-flex chat-message">';
+    //           qtnArr +='         <div class="d-flex mb-2 flex-1">';
+    //             qtnArr +='           <div class="w-100 w-xxl-75">';
+    //               qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+    //                 qtnArr +='               <div class="chat-message-content received me-2">';
+    //                   qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+    //                     qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+    //                     qtnArr +='                 </div>';
+    //                     qtnArr +='     </div>         ';                  
+                             
+    //                     qtnArr +='  </div>';
+    //                     qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +='  </div>';
+    //         }
+    //         else if(val.msgcss=='S')
+    //         {
+
+    //           qtnArr +=' <div class="d-flex chat-message">';
+    //             qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+    //             qtnArr +=' <div class="w-100 w-xxl-75">';
+    //               qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+    //               qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+    //                 qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+    //                   qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+    //                   qtnArr +='</div>';
+    //                   qtnArr +='</div>';
+    //               qtnArr +='   <div class="d-none d-sm-flex">';
+    //                 qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+    //                   qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+    //                   qtnArr +='  </div>';
+    //                   qtnArr +=' </div>';
+    //                 qtnArr +=' <div class="chat-message-content me-2">';
+    //                   qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+    //                     qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +='  </div>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +=' <div class="text-end">';
+    //                       qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+    //                       qtnArr +=' </div>';
+    //                       qtnArr +=' </div>';
+    //                       qtnArr +=' </div>';
+    //                       qtnArr +=' </div> ';
+    //         } 
+            
+    //       });
+    //        $('#divMdlPerfMontresp').append(qtnArr)
+    //        connectWS(id)
+    //        $('#divMdlPerfMontresp').animate({
+    //         scrollTop: $('#divMdlPerfMontresp').get(0).scrollHeight
+    //     }, 200);
+    //       } 
+          
+    //       });
+         
+          
+    //     }
+    // }
+
+
+    function selectfeature(){
+      id = $("#mdliddata").val()
+      console.log("id",id)
+      $.ajax({
+          url: '/datamatricsfeatureMRM/', 
+          data:{mdl_id:$('#mdliddata').val()},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("data new",data)
+            // $("#signoffmodal").modal('toggle')
+            // alert(data.msg)
+            var selectElement = $('#datafeature');
+            $.each(data.data, function(index, option) {
+            console.log("check value",option);
+            // Will stop running after "three"
+            selectElement.append('<option value="' + option.type + '">' + option.colName + '</option>');
+          });
+          gethistorymsgdata();  
+          }
+        });
+    }
+
+    function selectdtype(){
+      debugger;
+      dtype = $('#datafeature').val()
+      $.ajax({
+          url: '/selectdataMetric/', 
+          data:{data_types:dtype},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("data Matrics new",data)
+            // $("#signoffmodal").modal('toggle')
+            // alert(data.msg)
+            var selectElement = $('#datametricsdrpdwn');
+            $.each(data.data, function(index, option) {
+            console.log("check value",option);
+            // Will stop running after "three"
+            selectElement.append('<option value="' + option.data_aid + '">' + option.data_label + '</option>');
+          });
+            
+          }
+        });
+
+    }
+
+    function fetchrow(){
+      debugger;
+      datametrics = $('#datametricsdrpdwn').val()
+      datafeature = $('#datafeature').val()
+      var datametricsText = $('#datametricsdrpdwn option:selected').text();
+      var datafeatureText = $('#datafeature option:selected').text();
+      mdl_id = $("#mdliddata").val()
+      console.log('datamatrics',datametrics,'datafeature',datafeature)
+
+      $.ajax({
+          url: '/SaveTempFeatureMatricData/', 
+          data:{mdl_id:mdl_id,feature:datafeatureText,data_matric:datametricsText},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("data",data) 
+            strRows='';
+            strRows +=' <tr class="position-static"> ';
+            strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+            strRows +='       <input type="checkbox" name="datachk" id="datachk_'+ datametrics +'" onchange="dregisterclick('+ datametrics +')"/> ';
+            strRows +='      </td>';
+            strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+            strRows +='      <div class="row"> ';
+            strRows +='      <div class="col-sm-3">  ';
+            strRows +='      <label class="col-sm-2 col-form-label" id="datametricstxt_'+datametrics+'" for="datametricstxt">'+datametricsText+' </label>';
+            strRows +='        </div>';
+            strRows +='        <div class="col-sm-5">  ';
+            // strRows +='        <select class="form-select" name="ddlFunction" id="txtfeature_'+ datafeature +'">';
+            // strRows +='        <option value="percentage">Percentage</option>';
+            // strRows +='        <option value="number">Number</option> ';                                                   
+            // strRows +='        </select>';
+            strRows +='        </div>';
+            strRows +='        </div>  ';                                          
+            strRows +='        </td> ';
+            strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+            strRows +='      <div class="row"> ';
+            strRows +='      <div class="col-sm-3">  ';
+            strRows +='      <label class="col-sm-2 col-form-label" id="datafeaturetxt_'+datametrics+'" for="datafeaturetxt">'+datafeatureText+' </label>';
+            strRows +='        </div>';
+            strRows +='        </div>  ';                                          
+            strRows +='        </td> ';
+            strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+            strRows +='        <div class="row"> ';
+            strRows +='         <div class="col-sm-12"> ';
+            strRows +='        <input type="text" required  class="form-control" value='+data.percentage+' id="dtxtthreshold_'+ datametrics +'"/>';
+            strRows +='        </div>';
+            strRows +='        </div>';
+            strRows +='        </td>';
+            strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+            strRows +='        <div class="row"> ';
+            strRows +='        <div class="col-sm-12"> ';
+            strRows +='          <input required  type="text"  class="form-control" id="dtxtWaring_'+ datametrics +'"/>';
+            strRows +='        </div>';
+            strRows +='        </div>';
+            strRows +='        </td> ';
+            strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+            strRows +='         <div class="row" > ';
+            strRows +='        <div class="col-sm-12">';
+            strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+            strRows +='        </div>';
+            strRows +='        </div>';
+            strRows +='        </td>  ';                        
+            strRows +='        </tr>  ';
+            $('#tblDataMetric tbody').append(strRows);
+            
+          }
+        });
+
+      
+    }
+
+    var arrQtns2=[]
+    function dregisterclick(id){
+          //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+         
+          console.log($('#datachk_'+id).prop('checked'),arrQtns2.indexOf(id),id)
+          if($('#datachk_'+id).prop('checked')){
+            
+            if(arrQtns2.indexOf(id)<0){
+              console.log('inside if')
+                arrQtns2.push(id);  
+            }
+            console.log("arrQtns2",arrQtns2)
+          }
+          else{ // only splice array when item is found
+            
+            arrQtns2.splice(arrQtns2.indexOf(id), 1); // 2nd parameter means remove one item only
+            $('#name2').prop('checked', false);
+            console.log("arrQtns2",arrQtns2) 
+          }
+          
+      }
+
+    function connect_datamatric(){
+      debugger;
+      mdl_id = $("#mdliddata").val()
+      // alert(mdl_id)
+      connectWS(mdl_id)
+
+      if($('#mdliddata').val()=="") {
+        alert('Please select model.');
+        return
+      }
+      else if($('#frequencydata').val()==""){
+        alert('Please select frequency.')
+        return
+      }
+
+      else if(arrQtns2.length<1){
+        alert('Please select Data Matrics.')
+        return
+      }
+
+      updatedata=[]
+      arrQtns2.forEach(i => {
+        if($('#datachk_'+i).prop('checked')) {
+          console.log("i",i)
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["AID"] = i
+          // item["Percentage"] = $('#btxtper_'+i).val()
+          item['feature'] = $('#datafeaturetxt_'+i).text()
+          item['metric'] = i
+          item["Threshold"] = $('#dtxtthreshold_'+i).val()
+          item["Warning"] = $('#dtxtWaring_'+i).val()
+          updatedata.push(item); 
+        }
+        console.log("updatedata",updatedata)
+      }); 
+      if(updatedata.length>0){
+        $.ajax({
+          url: '/savedatamatrics/', 
+          data:{ datalist: JSON.stringify(updatedata),mdlId:$('#mdliddata').val(),frequency:$('#frequencydata').val()},
+          dataType: 'json',
+          success: function (data) {
+            console.log("success data",data)
+            alert(data.msg)
+          }
+        }); 
+      }
+    }
+
+    function gethistorymsgdata(){
+      debugger;
+
+      id = $("#mdliddata").val()
+      $('#divMdlPerfMontresp').empty()
+      if(id !=""){ 
+      $.ajax({
+              url: '/gethistorymsgdata/', 
+              data:{room_id: 'Perfm_'+id,mdl_id:id},
+             dataType: 'json',  
+              success: function (data) { 
+                arr=data.dmdata
+                console.log("---------------data new dmdata",data)
+                // alert(data.Qtns)
+                if(data.dmdata.length == 0){
+                  // alert("empty")
+                  $('#button3').prop('disabled', true);
+                }
+                else{
+                  // alert("full")
+                  console.log("else")
+                  $.each(data.dmdata, function(i, item) {
+                  console.log('i',i,'item',item)
+                  strRows='';
+                  strRows +=' <tr class="position-static"> ';
+                  strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                  strRows +='       <input type="checkbox" name="chk" id="datachk_'+ item['metric'] +'" onclick="dregisterclick('+ item['metric'] +')"/> ';
+                  strRows += '      </td>';
+                  strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                  strRows +='      <div class="row"> ';
+                  strRows +='      <div class="col-sm-3">  ';
+                  strRows +='      <label class="col-sm-2 col-form-label" id="datametricstxt_'+item['metric']+'" for="datametricstxt">'+item['dm_details']['data_label']+' </label>';
+                  strRows +='        </div>';
+                  strRows +='        <div class="col-sm-5">  ';
+                  // strRows +='        <select class="form-select" name="ddlFunction" id="txtfeature_'+ datafeature +'">';
+                  // strRows +='        <option value="percentage">Percentage</option>';
+                  // strRows +='        <option value="number">Number</option> ';                                                   
+                  // strRows +='        </select>';
+                  strRows +='        </div>';
+                  strRows +='        </div>  ';                                          
+                  strRows +='        </td> ';
+                  strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                  strRows +='      <div class="row"> ';
+                  strRows +='      <div class="col-sm-3">  ';
+                  strRows +='      <label class="col-sm-2 col-form-label" id="datafeaturetxt_'+item['metric']+'" for="datafeaturetxt">'+item['feature']+' </label>';
+                  strRows +='        </div>';
+                  strRows +='        </div>  ';                                          
+                  strRows +='        </td> ';
+                  strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+                  strRows +='        <div class="row"> ';
+                  strRows +='         <div class="col-sm-12"> ';
+                  strRows +='        <input type="text" required  class="form-control" value='+item['threshold']+' id="dtxtthreshold_'+ item['metric'] +'"/>';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td>';
+                  strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                  strRows +='        <div class="row"> ';
+                  strRows +='        <div class="col-sm-12"> ';
+                  strRows +='          <input required  type="text"  class="form-control" value='+item['warning']+' id="dtxtWaring_'+ item['metric'] +'"/>';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td> ';
+                  strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                  strRows +='         <div class="row" > ';
+                  strRows +='        <div class="col-sm-12">';
+                  strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td>  ';                        
+                  strRows +='        </tr>  ';
+                  $('#tblDataMetric tbody').append(strRows);
+                  strRows='';
+                  
+                  arrQtns2.push(item['metric'])
+            })
+                  
+            $('#button3').prop('disabled', false);
+            }
+                //************
+                qtnArr='';
+           $.each(data.data, function(key, val) { 
+            console.log("key",key,"val",val.Comment)
+            if(val.msgcss=='R')
+            {
+              qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+            }
+            else if(val.msgcss=='S')
+            {
+
+              qtnArr +=' <div class="d-flex chat-message">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+                    qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='</div>';
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+                        qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+            } 
+            
+          });
+           $('#divMdlPerfMontresp').append(qtnArr)
+           //$("#divRespHeader").attr('style','display:none !important');
+          }
+                //************
+                // sendPerfMonmsg($("#txtmsg").val(),$('#txtuid').val(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+              // }
+          });
+        }
+    }
+</script>
+{% endblock script %}

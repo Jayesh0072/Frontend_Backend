@@ -1,0 +1,12 @@
+﻿Primary_file,Primary_column,Secondary_file,Secondary_column,Mdl_id,validation_cycle,
+file1.csv,A,file2.csv,E,,,
+file1.csv,B,file2.csv,F,,,
+file1.csv,A,file3.csv,X,,,
+file1.csv,B,file3.csv,Y,,,
+,,,,,,
+,,,,,,
+A,B,C,D,,,
+E,F,G,H,,,
+X ,Y,Z,,,,
+,,,,,,
+A,B,C,D ,G,H,Z

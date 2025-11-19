@@ -1,0 +1,208 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<form id="frmCriteria"  class="row g-3 needs-validation" novalidate="">
+  
+<div class="col-12 col-xl-12 order-1 order-xl-0">
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">Set Criteria</h4>
+                </div>
+      <div class="card-body p-0">        
+        <div class="p-4 code-to-copy">
+            <div class="row row-cols-lg-5 g-3 align-items-center"> 
+                <div class="form-floating mb-1"style="width:15%">
+
+                    <select class="form-select" onchange="getQtns()"  name="ddlSection" id="ddlSection" aria-label="Default select example" required>                      
+                        <option value="">Choose</option>   
+                        {% for key, val in qtnSections.items  %} 
+                        <option value="{{val.Section_AID}}">{{val.Section_Label}}</option>
+                        {% endfor %}  
+                    </select>
+                    <label for="floatingInput">Select section</label>
+                </div>
+                
+                <div class="form-floating mb-1" style="width:49%">
+                    <select class="form-select" id="ddlQtns" name="ddlQtns"aria-label="" required> 
+                        
+                    </select>
+                    <label for="floatingInput">Select question</label>
+                </div>
+
+                <div class="form-floating mb-1"  style="width:13%">
+                    <select class="form-select" id="ddlOpt" name="ddlOpt" aria-label="" required>          
+                        <option value="">Choose</option>                 
+                        <option value="=">=</option> 
+                        <option value="&lt;&gt;">&lt;&gt;</option> 
+                    </select>
+                    <label for="floatingInput">Select operator</label>
+                </div>
+
+                <div class="form-floating mb-1"  style="width:12%">
+                    <select class="form-select" id="ddlVal" name="ddlVal" aria-label="" required>
+                        <option value="">Choose</option>                            
+                        <option value="Yes">Yes</option> 
+                        <option value="No">No</option> 
+                    </select>
+                    <label for="floatingInput">Select value</label>
+                </div>
+                 
+                <div class="form-floating mb-1"  style="width:10%">
+
+                <button class="btn btn-primary" type="button" onclick="saveCriteria()">Add</button>
+                </div>
+            </div>
+            <div class="mb-9" style="margin-top: 15px;">
+                <div id="criteria" data-list='{"valueNames":["logical_opt","section","qtn","opt","value"]}'>                  
+                   
+                  <div class="table-responsive scrollbar"  style="max-height:450px;">
+                    <table id="tblCriteria" class="table fs--1 mb-0 border-top border-200">
+                      <thead>
+                        <tr>
+                          
+                          <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="logical_opt" style="width:10%;">Opt</th>
+                          <th class="sort align-middle ps-3" scope="col" data-sort="section" style="width:15%;">Section</th>
+                          <th class="sort align-middle ps-3" scope="col"  data-sort="qtn"  style="width:45%;">Question</th>
+                          <th class="sort align-middle ps-3" scope="col" data-sort="opt" style="width:13%;">Operator</th>
+                          <th class="sort align-middle ps-3" scope="col" data-sort="value" style="width:12%;">Value</th>  
+                          
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="project-list-table-body">
+                        {% for key, val in tempCriteria.items  %} 
+                          <tr class="position-static"> 
+                            <td class="align-middle time white-space-nowrap ps-0 logical_opt py-4"> 
+                                {% if val.rownum != 1 %}
+                                <select class="form-select" id="ddllogicalopt_{{val.rownum}}" aria-label="" required>
+                                                          
+                                    <option value="And">And</option> 
+                                    <option value="Or">Or</option> 
+                                </select>
+                                <input type="text" value="{{val.ROwidx}}"  id="txt_{{val.rownum}}" style="display: none;"/>
+                                {% endif%}
+                            </td>                
+                            <td class="align-middle white-space-nowrap section ps-3 py-4">
+                              {{val.Section}}
+                            </td>
+                            <td class="align-middle white-space-nowrap ps-0  py-4">
+                              
+                             {{val.qtn}}
+                            </td>
+                            <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                              {{val.Operator}}
+                            </td>
+                            <td class="align-middle white-space-nowrap Area ps-3 value py-4">
+                              {{val.Val}}
+                            </td> 
+                          </tr>
+                        {% endfor %}   
+                      </tbody>
+                    </table>
+                  </div>
+                 
+                </div>
+            </div>
+            <div class="row"> 
+                <div class="row mb-3" style="align-content: flex-end;">
+                    <!-- <label class="col-sm-2 col-form-label" for="txtDepartment">Select Model/Tool</label> -->
+                    <div class="col-sm-2" style="display: none;">    
+                        <select class="form-select" id="ddlModelTool"  aria-label="" required>
+                            <!-- <option value="">Choose</option>                             -->
+                            <option selected value="Model">Model</option> 
+                            <option value="Tool">Tool</option> 
+                        </select>
+                    </div>
+                    <div class="col-sm-2" >
+                        <button class="btn btn-primary" type="button" onclick="saveModelTool()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+       </div>
+       </div>   
+    </div>
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>   
+<script type='text/javascript' >
+    function getQtns(){ 
+        var $mySelect = $('#ddlQtns'); 
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option);
+        $.ajax({
+            url: '/getQtnSecWise/', 
+            data:{ section: $('#ddlSection').val()},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log(data.qtns)
+               $.each(data.qtns, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.Question_AID,
+                        text: value.Question_Label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    } 
+
+    function saveCriteria(){  
+        if($('#ddlSection').val()==''||$('#ddlQtns').val()=='' || $('#ddlOpt').val()==''||$('#ddlVal').val()=='') {
+            alert("Please select all values");
+            return false;
+        }
+        $.ajax({
+            url: '/saveCriteria/', 
+            data:{ ddlSection: $('#ddlSection').val(),ddlQtns:$('#ddlQtns').val(),ddlOpt:$('#ddlOpt').val(),ddlVal:$('#ddlVal').val()},
+            dataType: 'json',   
+            success: function (data) {                 
+                if(data.istaken=="true"){ 
+                 $('#frmCriteria').submit(); 
+               }
+                
+            }
+        });
+    }
+
+    function saveModelTool(){  
+        if($('#ddlModelTool').val()=='') {
+            alert("Please select all values");
+            return false;
+        }
+
+        var rowCount = $('#tblCriteria tr').length;
+        console.log(rowCount)
+        var colDataLst=[];
+        for(var i=2;i<rowCount;i++){
+           // console.log('ddllogicalopt_'+i ,', txt ',$('#txt_'+i).val(),', ddl ',$('#ddllogicalopt_'+i).val())
+            item = {} 
+            item[$('#txt_'+i).val()] =$('#ddllogicalopt_'+i).val();
+            colDataLst.push(item); 
+        } 
+        $.ajax({
+            url: '/saveModelTool/', 
+            data:{ logicalOpt: JSON.stringify(colDataLst),modeltool:$('#ddlModelTool').val()},
+            dataType: 'json',   
+            success: function (data) {                 
+                if(data.istaken=="true"){ 
+                 $('#frmCriteria').submit(); 
+               }
+                
+            }
+        });
+    } 
+</script>
+{% endblock script %}

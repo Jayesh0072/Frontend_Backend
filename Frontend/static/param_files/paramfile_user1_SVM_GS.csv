@@ -1,0 +1,14 @@
+paramName,paramValue
+C,"  [svm_search.best_params_['C']*0.8,
+                      svm_search.best_params_['C']*0.9,
+                      svm_search.best_params_['C'],
+                      svm_search.best_params_['C']*1.1,
+                      svm_search.best_params_['C']*1.2]"
+kernel,[svm_search.best_params_['kernel']]
+gamma," [svm_search.best_params_['gamma']*0.8,
+                      svm_search.best_params_['gamma']*0.9,
+                      svm_search.best_params_['gamma'],
+                      svm_search.best_params_['gamma']*1.1,
+                      svm_search.best_params_['gamma']*1.2]"
+probability,[svm_search.best_params_['probability']]
+class_weight,[svm_search.best_params_['class_weight']]

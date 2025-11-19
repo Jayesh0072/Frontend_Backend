@@ -1,0 +1,13 @@
+paramName,paramValue
+loss,[gbc_search.best_params_['loss']]
+criterion,[gbc_search.best_params_['criterion']]
+max_features,[gbc_search.best_params_['max_features']]
+learning_rate,"[gbc_search.best_params_['learning_rate']*0.8,      gbc_search.best_params_['learning_rate'],                gbc_search.best_params_['learning_rate']*1.2]"
+n_estimators,"[max(10, gbc_search.best_params_['n_estimators'] - 10), 
+                                gbc_search.best_params_['n_estimators'] - 5, 
+                                gbc_search.best_params_['n_estimators'], 
+                                gbc_search.best_params_['n_estimators'] + 5,
+                                gbc_search.best_params_['n_estimators'] + 10]"
+max_depth,"[gbc_search.best_params_['max_depth']-(int(89/10)+1),                            
+                            gbc_search.best_params_['max_depth'],                          
+                            gbc_search.best_params_['max_depth']+(int(89/10)+1),] "

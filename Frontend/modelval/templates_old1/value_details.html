@@ -1,0 +1,510 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block style %}
+<style>
+.form-control  {
+ border-color: rgba(37, 46, 70, 0.7);
+}
+ 
+
+  .support-chat-container {
+  display: none;
+  &.show {
+    display: block;
+  }
+}
+.support-chat {
+  position: fixed;
+  bottom: map-get($spacers, 7);
+  right: 0;
+  max-width: 27.87rem;
+  width: 100%;
+  transform: scale(0);
+  opacity: 0;
+  transform-origin: bottom right;
+  z-index: 1045;
+  transition: 0.3s ease-out;
+  padding-bottom: map-get($spacers, 7);
+  .support-chat-start & {
+    right: auto;
+    left: 0;
+    transform-origin: bottom left;
+  }
+  .support-chat-bottom-lg & {
+    bottom: map-get($spacers, 11);
+  }
+  @include media-breakpoint-up(sm) {
+    right: map-get($spacers, 3);
+    .support-chat-start & {
+      left: map-get($spacers, 3);
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    right: map-get($spacers, 5);
+    .support-chat-start & {
+      left: map-get($spacers, 5);
+    }
+  }
+  .card {
+    box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+    .dark & {
+      box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+    }
+  }
+  .card-body {
+    height: 27rem;
+  }
+  &.show-chat {
+    transform: scale(1);
+    opacity: 1;
+  }
+  .send-btn {
+    width: 37.06px;
+    height: 37.06px;
+    border-radius: 50%;
+    color: var(--#{$prefix}primary);
+    &:hover {
+      background-color: var(--#{$prefix}gray-100);
+      color: var(--#{$prefix}primary-500);
+    }
+    &:active {
+      background-color: var(--#{$prefix}gray-200);
+      color: var(--#{$prefix}primary-500);
+    }
+  }
+}
+.support-chat + .btn-support-chat {
+  position: fixed;
+  bottom: map-get($spacers, 6);
+  right: map-get($spacers, 3);
+  width: 9rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--#{$prefix}white) !important;
+  z-index: 1045;
+  border-radius: var(--#{$prefix}border-radius-pill);
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  .dark & {
+    box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+  }
+  .support-chat-start & {
+    right: auto;
+    left: map-get($spacers, 3);
+  }
+  .support-chat-bottom-lg & {
+    bottom: map-get($spacers, 10);
+  }
+  @include media-breakpoint-up(sm) {
+    right: map-get($spacers, 5);
+    .support-chat-start & {
+      left: map-get($spacers, 5);
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    right: map-get($spacers, 7);
+    .support-chat-start & {
+      left: map-get($spacers, 7);
+    }
+  }
+  &:hover {
+    background-color: var(--#{$prefix}gray-100) !important;
+  }
+  .fa-chevron-down {
+    display: none;
+  }
+  &.btn-chat-close {
+    border-radius: 50%;
+    width: 3rem;
+    .btn-text,
+    .fa-circle {
+      display: none;
+    }
+    .fa-chevron-down {
+      display: block;
+    }
+  }
+
+    /* Styling the help button */
+    .help-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    }
+    .help-btn:hover {
+    background-color: #ddd;
+    }
+}
+
+</style>
+{% endblock style %}
+{% block content %} 
+    
+<div class="content" style="padding-top:0px;width:80%;margin-left: 10%"> 
+  {% csrf_token %}
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Field Details </h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <!-- <ul class="nav nav-underline" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true">Model</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab-profile" role="tab" aria-controls="tab-profile" aria-selected="false" tabindex="-1">Data</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#tab-contact" role="tab" aria-controls="tab-contact" aria-selected="false" tabindex="-1">Business</a></li>
+                  </ul> -->
+                  <div class="tab-content mt-3" id="myTabContent">
+                    <!--Model working-->
+                    <div class="tab-pane fade show active" id="tab-home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Department</label>
+                            <div class="col-sm-4">    
+                              <select class="form-select"  id="department" onchange="fetchdata()">
+                                <option value="">Select Department</option>
+                                <!-- <option value="M070100">M070100</option> -->
+                                {% for val in department  %}  
+                                  <option value="{{val.dept_label}}">{{val.dept_label}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                       
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Portfolio </label>
+                            
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlFunction" id="portfolio" onchange="fetchdata()">
+                                <option value="select">Select Portfolio</option>
+                                <option value="MRM_1">MRM_1</option>
+                                <option value="MRM_2">MRM_2</option>
+                                <option value="MRM_3">MRM_3</option>
+                                <option value="MRM_1">MRM_4</option>
+                                <option value="MRM_2">MRM_5</option>
+                                <option value="MRM_3">MRM_6</option>
+                              </select>
+                            </div>
+                        </div> 
+                        <div class="mb-9">
+                            <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                              <!-- {{ModelMatrics}} -->
+                               
+                              <div class="table-responsive scrollbar"  style="max-height:300px;">
+                                <table class="table fs--1 mb-0 border-top border-200">
+                                  <thead>
+                                    <tr> 
+                                      <th style="text-align: center;" class="sort white-space-nowrap align-middle ps-0" scope="col" style="width:5%;">
+                                        <input type="checkbox" id="name1" onclick="selectall()"/> 
+                                      </th>
+                                      <th style="text-align: center;" class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:20%;" >Database Fields</th>
+
+                                       <th  class="sort align-middle ps-3" scope="col"  style="width:10%;">Operators</th>                 
+
+                                      <th style="text-align: center;" class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:20%;" >Excel Field</th>
+                                      
+          
+                                      <th  class="sort align-middle ps-3" scope="col"  style="width:10%;">Value</th>                 
+                                    </tr>
+                                  </thead>
+                                  <!-- <tbody class="list" id="project-list-table-body">
+                                    {% for val in database_field  %}
+                                      
+                                      <tr class="position-static"> 
+                                        <td style="text-align: center;" class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">
+                                          <div class="container" style="place-items: center;">
+                                            <input type="checkbox" name="chk" id="chk_{{val.field_aid}}" style="align-items: center;" onclick="registerclick('{{val.field_aid}}')"/> 
+                                          </div>
+                                        </td>
+
+                                        <td style="text-align: center;" class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">
+                                            <div class="row"> 
+                                                <div class="col-sm-7" style="text-align: center;" >  
+                                                    
+                                                    <input type="text" required  class="form-control" name="txtmodel" style="text-align: center;"  id="databasefield_{{val.field_aid}}"/>
+                                                    
+                                                </div>
+                                            </div>
+                                          </td>
+                                          
+                                        <td style="place-items: center;" class="align-middle white-space-nowrap ps-0  py-4"> 
+                                            <div class="row"> 
+                                                <div class="col-sm-12"> 
+                                                  <div class="container" style="place-items: center;">
+                                                    <input type="text" required  class="form-control" name="txtmodel" style="text-align: center;"  id="excelfield_{{val.field_aid}}"/>
+                                                  </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </td>
+                                      </tr> 
+                                     
+                                      {% endfor %}                                    
+                                  </tbody> -->
+                                  <tbody class="list" id="tblModelMetric-body">                               
+                                </tbody>
+                                </table>
+                              </div>
+                            
+                            </div>
+                        </div>
+                    
+                        <div class="col-12 gy-6">
+                            <div class="row g-3 justify-content-end">
+                              <div class="col-auto"> 
+                                <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="connect()" value="Save" />
+                              </div>
+                              
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <!--end-->  
+                  </div>
+                
+
+                
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>   
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/chatroom.js' %}"></script>
+<script type='text/javascript' >
+    function supportChatInit(){    
+      const supportChat = document.querySelector('.support-chat');
+      const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+      const supportChatcontainer = document.querySelector(
+        '.support-chat-container'
+      );
+        supportChatcontainer.classList.add('show');     
+      supportChatBtn.forEach(item => {    
+      
+        item.addEventListener('click', () => {
+          
+          supportChat.classList.toggle('show-chat');
+  
+          // supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+          //   'btn-chat-close'
+          // );
+  
+          supportChatcontainer.classList.add('show');
+           
+        });
+      });
+    };
+  
+
+    $(document).ready(function(){
+          // $('#SelectBackUpUserFor').css('visibility','hidden');
+         
+         
+      }); 
+
+    function gotolist()
+    {
+        window.location='{{PerfMontrSetup}}'
+        
+    }
+    
+    var arrQtns=[]
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+      //  debugger;
+        if($('#chk_'+id).prop('checked')){ 
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          }
+          console.log("arrQtns",arrQtns)
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name1').prop('checked', false);
+          console.log("arrQtns",arrQtns) 
+        }
+        
+    }
+
+    function selectall(){ 
+      var yes = document.getElementById("name1");  
+      console.log("yes",yes.checked)
+      // alert("select all")
+      // var check = false;
+      if (yes.checked == true){
+        var ele=document.getElementsByName('chk');
+        console.log("ele",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+            ele[i].click(); 
+          }
+      }
+      else{
+        var ele=document.getElementsByName('chk');
+        console.log("ele----------",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].checked=false;  
+          }
+      }
+      
+    }
+
+
+  function connect(){ 
+    debugger
+    
+    if($('#department').val()=="") {
+      alert('Please select department.');
+      return
+    }
+    else if($('#portfolio').val()==""){
+      alert('Please select portfolio.')
+      return
+    }
+
+    else if(arrQtns.length<1){
+      alert('Please select database Field.')
+      return
+    }
+
+    updatedata=[]
+    arrQtns.forEach(i => {
+      if($('#chk_'+i).prop('checked')) {
+        //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+        item = {}  
+        item["Field_AID"] = i
+        item["Excel_Field"] = $('#excelfield_'+i).val()
+        item["Database_Field"] = $('#databasefield_'+i).text()
+        item["Operator"] = $('#operator_'+i).val()
+        item["Value"] = $('#value_'+i).val()
+        updatedata.push(item); 
+      }
+      console.log("updatedata",updatedata)
+    }); 
+
+    if(updatedata.length>0){
+      $.ajax({
+        url: '/savevalue/', 
+        data:{ datalist: JSON.stringify(updatedata),department:$('#department').val(),portfolio:$('#portfolio').val()},
+        dataType: 'json',
+        success: function (data) { 
+            debugger
+            if(data.istaken=="true"){ 
+              alert(data.msg)              
+            }
+            else{
+              alert("Something went wrong")
+            }
+        }
+      }); 
+    } 
+  }
+ 
+    function fetchdata(){
+      debugger;
+      department = $("#department").val()
+      portfolio = $('#portfolio').val()
+      $.ajax({
+              url: '/fetchfielddata/', 
+              data:{department: department,portfolio:portfolio},
+             dataType: 'json',  
+            
+              success: function (data) {
+                debugger 
+                console.log("---------------data",data) 
+                $.each(data.database_field, function(i, item) {
+                    debugger
+                    console.log("i",i,"item",item,item['field_aid'],item['database_fields'])
+                    strRows='';
+                    strRows +=' <tr class="position-static"> ';
+                    strRows +='        <td style="text-align: center;" class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                    strRows +='       <input type="checkbox" name="chk" id="chk_'+ item['field_aid'] +'" onclick="registerclick('+ item['field_aid'] +')"/> ';
+                    strRows +='      </td>';
+                    strRows +='      <td style="text-align: center;" class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                    strRows +='      <div class="row"> ';
+                    strRows +='      <div class="col-sm-12">  ';
+                    strRows +='      <label class="col-sm-12 col-form-label" id="databasefield_'+item['field_aid']+'" for="databasefield_">'+item['database_fields']+' </label>';
+                    strRows +='        </div>';
+                    strRows +='        <div class="col-sm-5">  ';
+                    // strRows +='        <select class="form-select" name="ddlFunction" id="txtfeature_'+ datafeature +'">';
+                    // strRows +='        <option value="percentage">Percentage</option>';
+                    // strRows +='        <option value="number">Number</option> ';                                                   
+                    // strRows +='        </select>';
+                    strRows +='        </div>';
+                    strRows +='        </div>  ';                                          
+                    strRows +='        </td> ';
+                    strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='         <div class="row" > ';
+                    strRows +='        <div class="col-sm-12">';
+                    strRows +='        <select class="form-select" name="operator" id="operator_'+ item['field_aid'] +'">';
+                    strRows +='        <option value="equal_to">=</option>';
+                    strRows +='        <option value="not_equal_to">!=</option>';                                                   
+                    strRows +='        </select>';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td>  '; 
+                    strRows +='      <td style="text-align: center;" class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                    strRows +='      <div class="row"> ';
+                    strRows +='      <div class="col-sm-12">  ';
+                    // strRows +='      <label class="col-sm-12 col-form-label" id="excelfield_'+item['field_aid']+'" for="excelfield">'+item['excel_fields']+' </label>';
+                    strRows +='        <input type="text" required style="text-align: center;"  class="form-control" value="'+item['excel_fields']+'" id="excelfield_'+item['field_aid'] +'"/>';
+                    strRows +='        </div>';
+                    strRows +='        </div>  ';                                          
+                    strRows +='        </td> ';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+                    strRows +='        <div class="row"> ';
+                    strRows +='         <div class="col-sm-12"> ';
+                    strRows +='        <input type="text" required  class="form-control" value="" id="value_'+item['field_aid'] +'"/>';
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td>';
+                    // strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                    // strRows +='        <div class="row"> ';
+                    // strRows +='        <div class="col-sm-12"> ';
+                    // strRows +='          <input required  type="text"  class="form-control" style="text-align: center;"  onkeyup="validatNum(this)" id="dtxtWaring_'+ datametrics +'"/>';
+                    // strRows +='        </div>';
+                    // strRows +='        </div>';
+                    // strRows +='        </td> ';
+                    // strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                    // strRows +='         <div class="row" > ';
+                    // strRows +='        <div class="col-sm-12">';
+                    // strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+                    // strRows +='        </div>';
+                    // strRows +='        </div>';
+                    // strRows +='        </td>  ';                        
+                    strRows +='        </tr>  ';
+                    $('#tblModelMetric-body').append(strRows);
+                    strRows='';
+
+                    
+                })
+
+              }
+          });
+    }
+
+
+
+
+
+</script>
+
+
+{% endblock script %}

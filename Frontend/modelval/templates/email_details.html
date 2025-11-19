@@ -1,0 +1,175 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+    
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    {% csrf_token %}
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+      <div class="card h-50">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Email Details</h4>
+        </div> 
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy">   
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtutype" >Sender Address <span style="color: red;">*</span></label>
+
+                    <div class="col-sm-8">
+
+                        <input class="form-control" onchange="validateEmailOnChange()" value="{{email_settings.senderaddress}}" id="sender_address" type="text" maxlength="100" required=""> 
+
+                    </div>
+                </div> 
+
+                <div class="row mb-3 position-relative">
+                   
+                    
+                    <label class="col-form-label col-sm-4 pt-0">Sender Password <span style="color: red;">*</span></label>
+                    <div class="col-sm-8">
+
+                        <input class="form-control" value="{{email_settings.senderpassword}}" id="sender_password" placeholder="" type="password" maxlength="100" required=""> 
+
+                    </div>
+                </div> 
+                <div class="row mb-3 position-relative">
+
+                    
+                    <label class="col-form-label col-sm-4 pt-0">SMTP Server <span style="color: red;">*</span></label>
+                    <div class="col-sm-8">
+
+                        <input class="form-control" value="{{email_settings.smtpserver}}" id="smtp_server"  type="text" maxlength="100" required=""> 
+
+                    </div>
+                </div> 
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-sm-4 col-form-label" for="txtaddress">Port<span style="color: red;">*</span></label>
+
+                        <div class="col-sm-8">
+
+                        <input class="form-control" value="{{email_settings.port}}" id="port"  type="text" maxlength="100" required=""> 
+                        </div>
+                        
+                    </div>
+                </fieldset> 
+                <div class="row mb-3 position-relative">
+
+            
+                </div>               
+                
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                       
+                        <div class="col-auto"> 
+                          <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" />                          
+                        </div>
+                       
+                      </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+<script type='text/javascript' >
+    var boolShowMenu='{{boolShowMenu}}'
+        if(boolShowMenu==0){
+          $('#divMenu').hide() 
+        }
+        else {
+          $('#divMenu').show()
+        }  
+    
+    function isValidEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    }
+
+    function validateEmailOnChange() {
+        const email = $("#sender_address").val().trim();
+
+        if (!isValidEmail(email)) {
+            alert('Invalid email address.');
+            $("#sender_address").val('').focus();
+        }
+    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Cookie string format is: "name=value"
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
+    function validateform() {
+
+        if (
+            $("#sender_address").val().trim().length < 1 || 
+            $('#sender_password').val().trim().length < 1 || 
+            $('#smtp_server').val().trim().length < 1 || 
+            $('#port').val().trim().length < 1
+        ) {
+            alert('Please enter all mandatory fields.');
+            return false;
+        }
+        
+
+        $.ajax({
+            type: 'POST',
+            url: '/email_details/',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {
+                sender_address: $("#sender_address").val(),
+                sender_password: $('#sender_password').val(),
+                smtp_server: $('#smtp_server').val(),
+                port: $('#port').val()
+            },
+            dataType: 'json',
+            success: function (data) { 
+                alert(data.msg);
+            },
+            error: function (xhr) {
+                alert("Error: " + xhr.responseText);
+            }
+        });
+
+        return false;
+    }
+
+ 
+</script>
+{% endblock script %}

@@ -1,0 +1,831 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block style %}
+<style>
+     table, th, td {
+  border: 0px solid gray;
+  border-collapse: collapse;
+  padding: 0px 5px;
+  vertical-align: top;
+  .chat .chat-message .received-message-content {
+    position: relative;
+}
+.chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):before {
+    content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -12px;
+    right: auto;
+    top: -1px;
+    bottom: auto;
+    border: 11px solid;
+    border-color: #e3e6ed rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+}
+.chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):after {
+    content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -10px;
+    right: auto;
+    top: 0px;
+    bottom: auto;
+    border: 10px solid;
+    border-color: #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+} 
+.chat .chat-message_sent .sent-message-content {
+  position: relative;
+}
+.chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery):after {
+   
+  content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: -12px;
+    top: auto;
+    bottom: 0;
+    border: 12px solid;
+    border-color:transparent transparent #3874ff  transparent; 
+}
+
+}
+</style>
+{% endblock style %}
+{% block content %}
+<form id="forICQQtns"  method="post" action="{{ICQQtnsFinal}}" class="row g-3">
+    {% csrf_token %}
+<div class="content" style="padding-top:0px;width:96%;margin-left: 2%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">MRM Internal Control Questionnaire - Current Rating is {{ICQRating}}</h4>
+            </div>  
+            <div class="card-body p-0">
+            
+                <div class="p-4 code-to-copy"> 
+                    <div class="row mb-3 position-relative" style="display: none;"> 
+                        <label class="col-sm-2 col-form-label" for="txtsection">Section</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-select" id="ddlSection" name="ddlSection" aria-label="Default select example" required>                      
+                                <option selected="" value="">Select section</option>
+                                {% for key, val in sections.items  %} 
+                                    <option value="{{val.section_aid}}">{{val.section_label}}</option> {{val.section_label}}
+                                {% endfor %}  
+                            </select> 
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="button" value="Show" onclick="$('#forICQQtns').submit()" class="btn btn-primary px-5 px-sm-5"/>
+                        </div>
+                    </div>  
+                    <div  style="height: 380px;overflow: auto; padding-left: 25px;padding-inline-start: 25px;">
+                        <div class="row mb-3 position-relative" style="width: 100%;"> 
+                            <table style="color:#3e465b;"> 
+                                <tbody>
+                                    {% for key, val in Qtns.items  %} 
+                                         
+                                        
+                                        {% if  val.Sub_Sub_Section_Label != '' %}
+                                        <tr class="tr_{{val.Section_AID}}"  style="display: none;"> 
+                                            <!-- <td  style="width: 80px;padding-top: 2%;text-align: right;" >       {{ val.qtnNo }} </td>
+                                            <td colspan="3" style="margin-left: 0px;padding-top:2%;">   {{val.Sub_Sub_Section_Label}}  </td> -->
+                                            <td colspan="4">
+                                                <div class="row" style="width: 2300px;"> 
+                                                    <div style="width:65px;text-align: right;">
+                                                        {{ val.qtnNo }} 
+                                                    </div>                                            
+                                                    <div style="width: 300px;">
+                                                        {{val.Sub_Sub_Section_Label}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>                                         
+                                        {% elif   val.Sub_Section_Label != '' %}
+                                        <tr class="tr_{{val.Section_AID}}"  style="display: none;"> 
+                                            <!-- <td  style="width:80px;padding-top: 2%;text-align: right;">       {{ val.qtnNo }} </td>
+                                            <td colspan="3" style="margin-left: 0px;padding-top:2%;">  {{ val.Sub_Section_Label }}    </td> -->
+                                            <td colspan="4">
+                                                <div class="row" style="width: 2300px;"> 
+                                                    <div style="width:65px;text-align: right;">
+                                                        {{ val.qtnNo }} 
+                                                    </div>                                            
+                                                    <div style="width: 300px;">
+                                                        {{val.Sub_Section_Label}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% elif   val.Section_Label != '' %}
+                                            <tr id="tr_{{val.Section_AID}}" style="height: 30px; background-color: #EDE7E6;"> 
+                                                <td colspan="4" style="margin-left: 0px;vertical-align: middle;">   
+                                                    <div class="row position-relative">  
+                                                        <div style='width:17px;'>
+                                                            <i id='exp_{{val.Section_AID}}' class='bi bi-plus-square' style='margin-right:5px;cursor:pointer;' 
+                                                            onclick="hidedata('tr_{{val.Section_AID}}')"></i></div>
+                                                        <div class="col-auto" style="padding-left: 5px; color:#3e465b;">
+                                                            <b>{{val.Section_Label}}</b>
+
+                                                            
+                                                            <i class="bi bi-chat-dots text-primary ms-2" 
+                                                            style="cursor: pointer;" 
+                                                            onclick="openCommentModal('{{val.Section_AID}}')"
+                                                            title="Add Comment"></i>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr  class="tr_{{val.Section_AID}}" >
+                                                <td> <div style="height: 10px;"></div></td>
+                                            </tr>
+                                            <tr class="tr_{{val.Section_AID}}"  style="display: none;">
+                                                <td colspan="4">
+                                                    <div class="row" style="width: 2300px;"> 
+                                                        <div style="width:65px;text-align: right;">
+                                                            Q# 
+                                                        </div>                                            
+                                                        <div style="width: 300px;">
+                                                            Questions
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endif %}                                                               
+                                        
+                                        {% if val.qtnsArr != "" %}
+                                        <tr class="tr_{{val.Section_AID}}" style="display: none;">      
+                                            <!-- <td   style="width: 2%; text-align: right; margin-left: 5px;">{{ val.qtnNo }} </td>                                     
+                                            <td  style="margin-left: 5px;" colspan="3">   {{val.qtnsArr}}</td>   -->
+                                             <td colspan="4">
+                                                <div class="row" style="width: 2300px;">
+                                                    <div style="width:65px;text-align: right;">
+                                                        {{ val.qtnNo }} 
+                                                    </div>                                            
+                                                    <div style="width: 300px;">
+                                                        {{val.qtnsArr}}
+                                                    </div>
+                                                    <div style="width:120px;text-align: center;"> 
+                                                        Yes/No/NA
+                                                        <select style="width: 100px;text-align: center;" id="ddl_yesno_{{val.qtn_aid}}"  onchange="showratings({{val.qtn_aid}})">
+                                                            <option value="">Select</option>   
+                                                            <option value="Yes" {% if val.Rating_Yes_NO == 'Yes' %}selected{% endif %}> Yes</option>    
+                                                            <option value="No" {% if val.Rating_Yes_NO == 'No' %}selected{% endif %}>No</option>
+                                                            <option value="NA" {% if val.Doc_Yes_No == 'NA' %}selected{% endif %}>NA</option>
+                                                        </select>
+                                                    </div>
+                                                    <div style="width:180px;text-align: center;"> 
+                                                        Document References
+                                                        <select style="width: 100px;margin-top:3px;text-align: center;" id="ddl_doc_{{val.qtn_aid}}">
+                                                            <option value="">Select</option> 
+                                                            <option value="Yes" {% if val.Doc_Yes_No == 'Yes' %}selected{% endif %}> Yes</option>    
+                                                            <option value="No" {% if val.Doc_Yes_No == 'No' %}selected{% endif %}>No</option>      
+                                                            <option value="NA" {% if val.Doc_Yes_No == 'NA' %}selected{% endif %}>NA</option>
+                                                        </select>
+                                                    </div>
+                                                    <div style="width:320px;text-align: center;"> 
+                                                        Comments
+                                                        <textarea style="width: 100%;margin-top:3px;" maxlength="500" rows="2" id="txt_comment_{{val.qtn_aid}}">{{val.comments}}</textarea>
+                                                    </div>
+    
+                                                    <div style="width:120px;text-align: center;"> 
+                                                        Inherent Risk 
+                                                        {% if val.Rating_Yes_NO == 'Yes' %}
+                                                        <select style="width: 100px; margin-top:3px;text-align: center;" id="ddl_InherentRisk_{{val.qtn_aid}}" >
+                                                            <option value="select">Select</option> 
+                                                            
+                                                            {% for i in rating_1  %} 
+                                                                
+                                                            <option value="{{i}}" {% if i == val.Inherent_Risk_Rating %}selected{% endif %}> {{i}}</option> 
+                                                            {% endfor %}   
+                                                            
+                                                            
+                                                        </select> 
+                                                        {% else %}
+                                                                <select style="width: 100px;margin-left: -25%;margin-top:3px;text-align: center;" id="ddl_InherentRisk_{{val.qtn_aid}}" disabled>
+                                                                <option value="select">Select</option> 
+                                                                
+                                                                {% for i in rating_1  %} 
+                                                                    
+                                                                <option value="{{i}}" {% if i == val.Inherent_Risk_Rating %}selected{% endif %}> {{i}}</option> 
+                                                                {% endfor %}    
+                                                            </select> 
+                                                        {% endif %}
+                                                    </div>
+                                                    <div style="width:180px;text-align: center;"> 
+                                                        Control Effectiveness 
+                                                        {% if val.Rating_Yes_NO == 'Yes' %}
+                                                            <select style="width: 100px;;margin-top:3px;text-align: center;" id="ddl_ControllEffectiveness_{{val.qtn_aid}}"  onchange="fetchResidual({{val.qtn_aid}})" >
+                                                                <option value="select">Select</option>   
+                                                                {% for i in rating_2  %}
+                                                                <option value="{{i}}" {% if i == val.Control_Effectiveness_Ratings %}selected{% endif %}> {{i}}</option>  
+                                                                
+                                                                {% endfor %} 
+                                                            </select>
+                                                        {% else %}
+                                                            <select style="width: 100px;margin-top:3px;text-align: center;" id="ddl_ControllEffectiveness_{{val.qtn_aid}}"  onchange="fetchResidual({{val.qtn_aid}})" disabled>
+                                                                <option value="select">Select</option>   
+                                                                {% for i in rating_2  %}
+                                                                <option value="{{i}}" {% if i == val.Control_Effectiveness_Ratings %}selected{% endif %}> {{i}}</option>  
+                                                                
+                                                                {% endfor %} 
+                                                            </select>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div style="width:320px;text-align: center;"> 
+                                                        Control Description
+                                                        {% if val.Control_description != None %}
+                                                         <textarea style="width:100% ;margin-top:3px;" maxlength="100" rows="2" id="txt_control_desc_{{val.qtn_aid}}">{{val.Control_description}}</textarea>
+                                                        {% else %}
+                                                            <textarea style="width:100%; margin-top:3px;" maxlength="100" rows="2" id="txt_control_desc_{{val.qtn_aid}}"></textarea>
+                                                        {% endif %}
+                                                    </div>
+    
+                                                    <div style="width:180px;text-align: center;"> 
+                                                        Residual Ratings
+                                                        <select style="width: 100px;margin-top:3px;text-align: center;" id="ddl_Residual_{{val.qtn_aid}}" disabled>
+                                                            <option value="select">Select</option> 
+                                                            {% for i in rating_3  %}  
+                                                            <option value="{{i}}" {% if i == val.Residual_Ratings %}selected{% endif %}> {{i}}</option>  
+                                                                 
+                                                            {% endfor %} 
+                                                        </select>
+                                                    </div>
+    
+                                                    <div style="width:190px;text-align: center;"> 
+                                                        Residual Rating (Manual)
+                                                        <select style="width: 100px;margin-top:3px;text-align: center;" id="ddl_override_Residual_{{val.qtn_aid}}" >
+                                                            <option value="select">Select</option>  
+                                                            {% for i in rating_3  %}  
+                                                            <option value="{{i}}" {% if i == val.override_residual_ratings %}selected{% endif %}> {{i}}</option>   
+                                                            {% endfor %} 
+                                                             
+                                                    </select>
+                                                    </div>
+                                                    <div style="width:320px;text-align: center;"> 
+                                                        Mitigating Factor
+                                                        <textarea style="width: 100%; margin-top:3px;" maxlength="100" rows="2" id="txt_override_comment_{{val.qtn_aid}}">{{val.override_comments}}</textarea>
+                                                    </div>
+                                                </div>
+                                             </td>
+                                            
+                                        </tr>                                  
+                                        <tr  class="tr_{{val.Section_AID}}"  style="display: none;">
+                                        <td colspan="4">
+                                            <div class="row" style="border-top: 1px solid black;margin-bottom:10px;"></div>
+                                        </td>
+                                        </tr>
+                                         {% endif %}                                     
+                                            
+                                    {% endfor %} 
+    
+                                    
+                                </tbody>
+                            </table> 
+                        </div>           
+                    </div>
+
+                    <div class="col-12 gy-6" style="margin-top: 25px;">
+                        <div class="row g-3 justify-content-end">
+                        <div class="col-auto"> 
+                            <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                        </div> 
+                        <div class="col-auto">
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Save" /> 
+                        </div>  
+                        <div class="col-auto">
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="publish()" value="Publish" /> 
+                        </div>  
+                        <div class="col-auto">
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="generetePDF()" value="Report" /> 
+                        </div>                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Single shared modal -->
+<div class="modal fade" id="commentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Response</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        
+        <div class="chat-content tab-content flex-1" style="flex: 1;">
+              <div class="tab-pane h-100 fade active show" id="tab-thread-1" role="tabpanel" aria-labelledby="tab-thread-1">
+                <div class="card flex-1 h-100">
+                  <div class="card-header" style="display: -webkit-box !important;
+                        display: -ms-flexbox !important;
+                        display: flex !important;-webkit-box-pack: justify;
+                        -ms-flex-pack: justify;
+                        justify-content: space-between;
+                        -webkit-box-align: center;
+                        -ms-flex-align: center;
+                        align-items: center;">
+                    <div class="d-flex align-items-center">
+                      <button class="btn ps-0 pe-2 text-700 d-sm-none" data-phoenix-toggle="offcanvas" data-phoenix-target="#chat-sidebar"><span class="fa-solid fa-chevron-left"></span></button>
+                      <div class="d-flex flex-column flex-md-row align-items-md-center">
+                        <span class="line-clamp-1" id="qtnHeaderTTl"></span>
+                        <input type="hidden" id="qtnHeader"/>
+                          
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <button class="btn btn-icon btn-primary btn-circle btn-xl" id="btnchat" onclick="toogleChat('chat')"><i class="bi bi-chat-text"></i></button>
+                      <button class="btn btn-icon btn-primary btn-circle btn-xl" style="display: none;" id="btncomment" onclick="toogleChat('comment')"><i class="bi bi-chat-quote"></i></button>
+                     
+                    </div> 
+                  </div>
+                  <div id="divChatHeader" style="display: none!important;;" class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                    <div id="divresp">
+                      
+                     
+                    </div>
+                     
+                  </div>
+                  <div id="divChatfooter" style="display: none;"  class="card-footer">                    
+                    <div class="row mb-3 position-relative">
+                      <div  class="col-sm-11">
+                        <textarea id ="txtcomment" rows="2" style="width: 100%;resize: none;"></textarea>
+                      </div> 
+                      <div class="col-sm-1">                   
+                        <div class="d-flex justify-content-end align-items-end">
+                         
+                          <div>
+                            <button class="btn btn-icon btn-primary btn-circle btn-xl" type="button" onclick="updateDiscussion()">
+                              <i class="bi bi-send"></i></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>      
+                  
+                  <div id="divRespHeader"  class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                    <div class="row mb-3 position-relative">
+                      <div  class="col-sm-12">
+                        <textarea id ="txtResp" onkeyup="enableSave()" rows="12"  style="width: 100%;resize: none;"></textarea>
+                      </div>                        
+                    </div>
+                     
+                                      
+                    <div class="row mb-3 position-relative">
+                    
+                      <div class="col-sm-12">                   
+                        <div class="d-flex justify-content-end align-items-end">
+                         
+                          <div>
+                            <button class="btn btn-primary" disabled type="button" id="btnSave" onclick="saveComments()">Save
+                              </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div> 
+                </div>
+              </div> 
+            </div> 
+      </div>
+
+      
+     
+
+    </div>
+  </div>
+</div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Submit Data</h5>
+              <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+            </div>
+            <div class="modal-body">
+              <p class="text-700 lh-lg mb-0">Are you sure you want to submit data. Once submitted you can not change the data. </p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" type="button" onclick="submitRatings()">Yes</button>
+              <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script type='text/javascript' >
+    $( document ).ready(function() { 
+    $("#ddlModel").val('{{modelid|safe}}')
+    $('#ddlSection').val('{{sectionid|safe}}')
+});
+    let currentSectionID = null;  
+    function openCommentModal(sectionID) {
+        currentSectionID = sectionID;  
+        console.log("Open modal for section:", sectionID);
+
+        const modalEl = document.getElementById('commentModal');
+        const modal = new bootstrap.Modal(modalEl);
+        
+        modal.show();
+        toogleChat('comment');
+
+        fetch(`/fetch_section_comment/?section_id=${sectionID}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fetched comments:", data);
+
+            // --- handle data_comments ---
+            if (data.data_comments && data.data_comments.length > 0) {
+                // Assuming only one main comment
+                document.getElementById('txtResp').value = data.data_comments[0].comments;
+            }
+            else {
+                console.log("No comment")
+                document.getElementById('txtResp').value ='';
+            }
+        })
+    }
+
+    function enableSave(){ 
+        console.log($("#txtResp").val().length)
+        if($("#txtResp").val().length>0){
+        $("#btnSave").prop("disabled",false)
+        }
+        else{
+        $("#btnSave").prop("disabled",true)
+        }
+    }
+
+  
+   
+    function toogleChat(id){
+      var myClass = $("#iconmsg").attr("class"); 
+      if(id=='chat'){       
+        $("#btncomment").show();
+        $("#btnchat").hide();
+        $("#divChatHeader").show();
+        $("#divChatfooter").show();
+        $("#divRespHeader").attr('style','display:none !important');
+        setQtnHeader(currentSectionID)
+      }
+      else{
+        $("#btncomment").hide();
+        $("#btnchat").show();
+        $("#divChatHeader").attr('style','display:none !important');
+        $("#divChatfooter").attr('style','display:none !important');
+        $("#divRespHeader").show(); 
+      }
+    }
+
+   function setQtnHeader(section_id){
+     
+      $('#qtnHeader').val(header)
+      isupdate=0;
+      $.ajax({
+        url: '/getsectionQtnResp/', 
+        data:{ section_id:section_id},
+        dataType: 'json',   
+        success: function (data) { 
+           
+           qtnArr='';
+           $.each(data.Qtns, function(key, val) { 
+            if(val.msgcss=='R')
+            {
+              qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comments+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+            }
+            else if(val.msgcss=='S')
+            {
+              qtnArr +=' <div class="d-flex chat-message_sent">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1" style="-webkit-box-flex: 1;  -ms-flex: 1;  flex: 1;">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger" >';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+                    qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='</div>';
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white" >';
+                        qtnArr +=' <p class="mb-0">'+val.Comments+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+            } 
+          });
+           $('#divresp').empty().append(qtnArr)
+           document.getElementById('txtcomment').value ='';
+           //$("#divRespHeader").attr('style','display:none !important');
+          }
+        });
+    }
+
+
+    function saveComments() {
+        console.log("saveComments")
+        const comment = $("#txtResp").val();
+        console.log("comment",comment,currentSectionID)
+        if (comment === "") {
+            alert("Please enter a comment.");
+            return;
+        }
+
+        fetch('/section_save_comment/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                para:'comment',
+                section_id: currentSectionID,
+                comments: comment
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("data",data)
+            alert(data.msg);
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('commentModal'));
+            modal.hide();
+        })
+        
+    }
+
+    function updateDiscussion() {
+        console.log("updateDiscussion")
+        
+        fetch('/section_save_comment/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                para:'discussion',
+                section_id: currentSectionID,
+                comments:$("#txtcomment").val()
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("data",data)
+            setQtnHeader(currentSectionID)
+        })
+        
+    }
+    
+
+    // Helper for CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function validateform(){  
+       var colDataLst=[];
+        $.ajax({
+            url: '/getICQSecQtnFinal/', 
+            data:{ ddlModel: $('#ddlModel').val()},
+           dataType: 'json',   
+            success: function (data) { 
+                console.log(data)
+                $.each(data.sections, function(key, value) {                  
+                        
+                        item = {}
+                        if(value.qtn_aid!="" && value.qtn_aid != undefined){
+                        item['qtnId']=value.qtn_aid;
+                        item['ddl_yesno_']=$('#ddl_yesno_'+value.qtn_aid).val();
+                        item['ddl_doc_']='Yes'
+                        item['txt_comment_']=$('#txt_comment_'+value.qtn_aid).val();
+                        } 
+
+                        if($('#ddl_yesno_'+value.qtn_aid).val() =='Yes'){
+                            item['ddl_InherentRisk_']=$('#ddl_InherentRisk_'+value.qtn_aid).val();
+                            item['ddl_ControllEffectiveness_']=$('#ddl_ControllEffectiveness_'+value.qtn_aid).val();
+                            item['ddl_Residual_']=$('#ddl_Residual_'+value.qtn_aid).val();
+                            item['txt_control_desc_']=$('#txt_control_desc_'+value.qtn_aid).val();
+                            item['ddl_override_Residual_'] = $('#ddl_override_Residual_'+value.qtn_aid).val()
+                            item['txt_override_comment_'] = $('#txt_override_comment_'+value.qtn_aid).val()
+                        }
+                        //console.log($('#ddl_yesno_'+value2.Question_AID).val(),$('#ddl_doc_'+value2.Question_AID).val(),$('#txt_comment_'+value2.Question_AID).val());
+                        if(Object.keys(item).length>0){
+                            //console.log('value.qtn_aid is ',value.qtn_aid,item)
+                            colDataLst.push(item); 
+                        }
+                           
+                    
+                });
+                //console.log(JSON.stringify(colDataLst))
+                $.ajax({
+                    url: '/saveICQRatingsFinal/', 
+                    type: "post",
+                    data:{colDataLst : JSON.stringify(colDataLst)  ,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        if (data.is_taken) {
+                        alert("Updated Successfully.");
+                        }
+                    }
+                }); 
+            }
+        });
+    }
+        
+    function generetePDF() {
+        console.log("generetePDF");
+
+        fetch("{% url 'generate_icq_pdf' %}", {
+            method: "GET",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("data", data);
+                alert("PDF Report is generated");
+            } else {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(err => console.error("AJAX Error:", err));
+        }
+
+    function publish(){
+        $.ajax({
+                    url: '/publushICQ/',  
+                    dataType: 'json',
+                    success: function (data) { 
+                        if (data.isvalid) {
+                        alert("Updated Successfully.");
+                        }
+                    }
+                }); 
+    }
+
+    function getSections(){ 
+        var $mySelect,selid ; 
+         
+        $mySelect = $('#ddlSection'); 
+       
+         
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option);
+        $.ajax({
+            url: '/getICQSections/', 
+            data:{ modelid: $('#ddlModel').val()},
+           dataType: 'json',   
+            success: function (data) { 
+                $.each(data.sections, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.section_aid,
+                        text: value.section_label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    }
+
+    function hidedata(id){ 
+        $("."+id).slideToggle()
+        if( $("#exp_"+id.split('_')[1]).attr("class").indexOf('bi-plus-square')>0){
+            $("#exp_"+id.split('_')[1]).removeClass("bi bi-plus-square");
+            $("#exp_"+id.split('_')[1]).addClass("bi bi-dash-square");
+        }
+        else{
+            $("#exp_"+id.split('_')[1]).removeClass("bi bi-dash-square");
+        $("#exp_"+id.split('_')[1]).addClass("bi bi-plus-square");
+         
+        }
+       
+    }
+
+
+    function showratings(id){
+        debugger
+        a = $('#ddl_yesno_'+id).val()
+        if( a == 'Yes'){
+            // Inherent , controleffectiveness ,Residual                                        
+            // ddl_InherentRisk_,ddl_ControllEffectiveness_,ddl_Residual_
+            var inherent = "ddl_InherentRisk_"+id
+            const dropdown = document.getElementById(inherent).disabled = false;
+            // dropdown.disabled = false;
+            // $('#ddl_ControllEffectiveness_'+$("#question_id").val()).hide()
+            var controleffective = "ddl_ControllEffectiveness_"+id
+            const dropdown_1 = document.getElementById(controleffective).disabled = false;
+            // $('#ddl_Residual_'+$("#question_id").val()).hide()
+            // var residual = "ddl_Residual_"+id
+            // const dropdown_2 = document.getElementById(residual).disabled = false;
+        }
+        else{
+            var inherent = "ddl_InherentRisk_"+id
+            const dropdown = document.getElementById(inherent).disabled = true;
+
+            var controleffective = "ddl_ControllEffectiveness_"+id
+            const dropdown_1 = document.getElementById(controleffective).disabled = true;
+            
+            var residual = "ddl_Residual_"+id
+            const dropdown_2 = document.getElementById(residual).disabled = true;
+        }
+
+    }
+
+    function fetchResidual(id){
+        // ddl_InherentRisk_ , ddl_ControllEffectiveness_
+        debugger
+        var inherendRisk = $("#ddl_InherentRisk_"+id).val()
+        var controleffect = $("#ddl_ControllEffectiveness_"+id).val()
+        alert(inherendRisk)
+        $.ajax({
+            url: '/ICQFetchResidualRating/',
+            data:{ inherendRisk: inherendRisk,controleffect:controleffect},  
+            dataType: 'json',
+            success: function (data) {
+                console.log("------------------value new",data)
+                $("#ddl_Residual_"+id).val(data.rating)
+            }
+        }); 
+        
+    }
+
+
+    function gotolist()
+    {
+        window.location='{{blank}}'
+        
+    }
+</script>
+{% endblock script %}

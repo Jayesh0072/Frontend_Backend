@@ -1,0 +1,4 @@
+risk_type,risk_val,reqId
+Materiality,1,1
+Reliance,1,reqId
+Intrinsic_Risk,1,reqId

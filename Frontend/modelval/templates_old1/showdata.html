@@ -1,0 +1,405 @@
+{% extends 'rmsebase.html' %} 
+{% load static %} 
+{% block content %}
+<style>
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+</style>
+ <form method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+  {% csrf_token %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="content container-fluid">
+   
+
+    
+    <!-- Card -->
+    <div class="card mb-3 mb-lg-5">
+      <!-- Header -->
+      {{request.session.Data_Import_Preprocessing}}
+      {% if request.session.Data_Import_Preprocessing == "Yes" %}
+      <div class="row">
+          <div class="col-lg-2" style="margin: 20px;">
+              <input type="file" name="myfile" id="myfile" class="myfile" multiple required>            
+            </div>
+          <div class="col-lg-1" style="margin: 20px;">
+              <button class="btn btn-primary btn-sm"   type="button" onclick="uploadFiles()">Upload</button>
+          </div>
+          <div class="col-2" style="margin: 20px;">
+              <button class="btn btn-primary btn-sm"  {  {isDisabled}} onclick="goNext()" style="margin-left: 4px;"
+              type="button">Next</button>
+          </div>
+        </div>
+        {%endif%}
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title">Data from source</h4>
+            </div>
+          </div>
+        
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                 "columnDefs": [{
+                    "orderable": false
+                  }],
+                 "order": [],
+                 "info": {
+                   "totalQty": "#datatableWithPaginationInfoTotalQty"
+                 },
+                 "search": "#datatableSearch",
+                 "entries": "#datatableEntries",
+                 "pageLength": 10,
+                 "isResponsive": false,
+                 "isShowPaging": false,
+                 "pagination": "datatablePagination"
+               }'>
+          <thead class="thead-light">
+            <tr>
+                <tr>
+                    {% for data in dataTypes %}
+                    <th style='padding-top:10px;padding-bottom:10px;'>
+                        {{data.colName}}
+                    </th>
+                    {% endfor %}
+                </tr>
+          </thead>
+
+          <tbody>
+            {% for k in df %}
+            <tr>
+                {% for key, val in k.items %}
+
+                <td style='padding-top:10px;padding-bottom:10px;'>{{ val }}</td>
+
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+    </div>
+      <!-- Footer -->
+      <div class="card-footer">
+        <!-- Pagination -->
+        <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="me-2">Showing:</span>
+
+              <!-- Select -->
+              <div class="tom-select-custom">
+                <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                          "searchInDropdown": false,
+                          "hideSearch": true
+                        }'>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50" >50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <!-- End Select -->
+
+              <span class="text-secondary me-2">of</span>
+
+              <!-- Pagination Quantity -->
+              <span id="datatableWithPaginationInfoTotalQty"></span>
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-auto">
+            <div class="d-flex justify-content-center justify-content-sm-end">
+              <!-- Pagination -->
+              <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Footer -->
+    <!-- End Card -->
+
+  </div>
+</div>
+
+  {% endblock content %}
+  {%block script%} 
+
+  <!-- JS Global Compulsory  -->
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-form-search/dist/hs-form-search.min.js' %}"></script>
+
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/moment.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/clipboard/dist/clipboard.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script>
+  <script src="{% static 'dataTables.min.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script> 
+
+    // INITIALIZATION OF DATATABLES
+    // =======================================================
+    HSCore.components.HSDatatables.init($('#datatable'), {
+      select: {
+        style: 'multi',     
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+
+    const datatable = HSCore.components.HSDatatables.getItem(0)
+
+    document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+      item.addEventListener('change',function(e) {
+        const elVal = e.target.value,
+    targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+    targetTable = e.target.getAttribute('data-target-table');
+
+    HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+      })
+    })
+  </script>
+
+
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $('#csvData').DataTable({
+            sDom: 'lrtip',
+            "ordering": false,
+            scrollY: 450,
+            scrollX: true,
+            scroller: true,
+            paging: false,
+            info: false
+        });
+    });
+
+    function handleSubmit() {
+  // Get the selected radio button
+  var selectedRadio = document.querySelector('input[name="option"]:checked');
+  if (selectedRadio) {
+    var selectedKey = selectedRadio.value;
+    var selectedLabel = document.querySelector('label[for="' + selectedRadio.id + '"]').textContent;
+    console.log("file_id",selectedKey)
+    console.log("label",selectedLabel)
+    // Send the selected data via AJAX
+    $.ajax({
+      url: '/is_primery_check/',
+      method: 'GET',
+      data: {
+        key: selectedKey,
+        value: selectedLabel
+      },
+      success: function(response) {
+        
+        alert('Preimery set and Data Imported Successfully')
+        console.log('Submission successful:', response);
+        // Close the modal after successful submission
+        document.getElementById('dynamicModal').style.display = 'none';
+      },
+      error: function(error) {
+        console.error("An error occurred during submission:", error);
+      }
+    });
+  }
+}
+
+    function createAndShowModal(data) {
+  // Create the modal container
+  var modal = document.createElement('div');
+  modal.id = 'dynamicModal';
+  modal.className = 'modal';
+  modal.style.display = 'block'; // Show the modal
+
+  // Create the modal content container
+  var modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+
+  // Create the close button
+  var closeButton = document.createElement('span');
+  closeButton.className = 'close';
+  closeButton.innerHTML = '&times;';
+  closeButton.onclick = function() {
+    modal.style.display = 'none';
+  };
+
+  // Create the heading
+  var heading = document.createElement('h2');
+  heading.textContent = 'Select an Option';
+
+  // Append heading and close button to modal content
+  modalContent.appendChild(closeButton);
+  modalContent.appendChild(heading);
+
+  // Create the form
+  var form = document.createElement('form');
+  form.onsubmit = function(event) {
+    event.preventDefault();
+    handleSubmit();
+  };
+
+  // Iterate over the data dictionary to create radio buttons and labels
+  var index = 0;
+  for (var key in data) {
+    if (data.hasOwnProperty(key)) {
+      var value = data[key];
+
+      var div = document.createElement('div');
+      div.style.display = 'flex';
+      div.style.alignItems = 'center';
+      div.style.marginBottom = '10px';
+
+      var radioButton = document.createElement('input');
+      radioButton.type = 'radio';
+      radioButton.id = 'option' + index;
+      radioButton.name = 'option';
+      radioButton.value = key; // Assign the key as the radio button value
+      
+      // Set the first radio button as checked by default
+      // if (index === 0) {
+      //   radioButton.checked = true;
+      // }
+
+      var label = document.createElement('label');
+      label.htmlFor = 'option' + index;
+      label.textContent = value; // Use the value for the label text
+      label.style.marginLeft = '10px';
+
+      div.appendChild(radioButton);
+      div.appendChild(label);
+      form.appendChild(div);
+
+      index++;
+    }
+  }
+
+  // Create the submit button
+  var submitButton = document.createElement('button');
+  submitButton.type = 'submit';
+  submitButton.textContent = 'Submit';
+  submitButton.style.marginTop = '20px';
+
+  // Append the submit button to the form
+  form.appendChild(submitButton);
+
+  // Append the form to modal content
+  modalContent.appendChild(form);
+
+  // Append modal content to the modal
+  modal.appendChild(modalContent);
+
+  // Append the modal to the body
+  document.body.appendChild(modal);
+
+  // Close the modal when clicking anywhere outside of it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  };
+}
+
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function uploadFiles() {
+        debugger
+        const fileInputs = document.getElementsByClassName('myfile');
+        const formData = new FormData();
+
+        Array.from(fileInputs).forEach(fileInput => {
+            Array.from(fileInput.files).forEach(file => {
+                formData.append('myfile', file);
+            });
+        });
+
+        const csrftoken = getCookie('csrftoken');
+
+        fetch('/home/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        }).then(response => response.json())
+        .then(data => {
+            console.log("data",data);
+            console.log("data['file_names_ids']",data['file_names_ids']);
+            createAndShowModal(data['file_names_ids']);
+            // alert('Files uploaded successfully.');
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Error uploading files.');
+        });
+    }
+
+
+    function validateForm() {
+        var fileName = $("#myfile").val();
+
+        if (fileName) { // returns true if the string is not empty
+            // alert(fileName + " was selected");
+        } else { // no file was selected
+            alert("Please select a file.");
+            return false;
+        }
+    }
+
+    function goNext() {
+        window.location = "{% url 'dataCleaning' %}"
+    } 
+</script>
+  {%endblock script %}

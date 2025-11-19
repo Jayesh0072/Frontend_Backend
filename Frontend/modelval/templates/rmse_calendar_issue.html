@@ -1,0 +1,422 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block content %} 
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/fullcalendar/main.min.css' %}">
+<div class="row align-items-center mb-5" >
+  <div class="col">
+    <h3 class="mb-0"> </h3> 
+  </div>
+  <!-- End Col -->
+
+  <div class="col-auto">
+   
+    <ul class="nav nav-segment" id="projectsTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="grid-tab" data-bs-toggle="tab" href="#grid" role="tab" aria-controls="grid" aria-selected="true" title="Calendar view">
+          <i class="bi bi-calendar3  fs-4"></i>
+        </a>
+      </li> 
+      <li class="nav-item">
+        <a class="nav-link" id="grid-row" data-bs-toggle="tab" href="#rows" role="tab" aria-controls="row" aria-selected="true" title="Table view">
+          <i class="bi bi-card-list fs-4"></i>
+        </a>
+      </li> 
+    </ul> 
+  </div> 
+            <div class="col-sm-auto">
+              <a class="btn btn-primary"   href="{{issue_registrartion}}">
+                <i class="bi-plus-lg me-1"></i> Add New
+              </a>
+            </div>
+             
+  <!-- End Col -->
+</div>
+<!-- End Filter -->
+
+<!-- Tab Content --> 
+<div class="tab-content" id="projectsTabContent">
+  <div class="tab-pane fade show active" id="grid" role="tabpanel" aria-labelledby="grid-tab">
+    <div class="row">
+      <div style="height: 100%;" id='calendar' class="fullcalendar-custom"></div>     
+    </div>
+    <!-- End Row -->
+  </div> 
+  <div class="tab-pane fade" id="rows" role="tabpanel" aria-labelledby="rows-tab">
+      <!-- Card -->
+    <div class="card mb-3 mb-lg-5"> 
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title">Issues(Brief summary of all Issues)</h4>
+
+              
+            </div>
+          </div> 
+
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+      <div id="div_issuesummary" > 
+                        
+        <div class="card-header">
+          <div class="row justify-content-between align-items-center flex-grow-1">
+            <div class="col-md">
+              <div class="d-flex justify-content-between align-items-center"> 
+                <!-- Datatable Info -->
+                <div id="datatableCounterInfo" style="display: none;">
+                  <div class="d-flex align-items-center">
+                    <span class="fs-6 me-3">
+                      <span id="datatableCounter">0</span>
+                      Selected
+                    </span>
+                    <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                      <i class="tio-delete-outlined"></i> Delete
+                    </a>
+                  </div>
+                </div>
+                <!-- End Datatable Info -->
+              </div>
+            </div>
+            <!-- End Col -->
+            <div class="col-auto">
+              <!-- Filter -->
+              <div class="row align-items-sm-center">
+                <div class="col-sm-auto">
+                  <div class="row align-items-center gx-0">
+                    <div class="col">
+                      <span class="text-secondary me-2">Approval Status:</span>
+                    </div>
+                    <!-- End Col -->
+
+                    <div class="col-auto">
+                      <!-- Select -->
+                      <div class="tom-select-custom tom-select-custom-end">
+                        <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="4" data-target-table="datatable_Issue" autocomplete="off" data-hs-tom-select-options='{
+                                  "searchInDropdown": false,
+                                  "hideSearch": true,
+                                  "dropdownWidth": "10rem"
+                                }'>
+                          <option value="null" selected>All</option>
+                          <option value="Pending">Pending</option>
+                          <option value="Approved">Approved</option>
+                          <option value="Provisional Approval">Provisional Approval</option>
+                          <option value="Not Approved">Not Approved</option>
+                        </select>
+                      </div>
+                      <!-- End Select -->
+                    </div>
+                    <!-- End Col -->
+                  </div>
+                  <!-- End Row -->
+                </div>
+                <!-- End Col -->
+
+                <div class="col-sm-auto">
+                  <div class="row align-items-center gx-0">
+                    <div class="col">
+                      <span class="text-secondary me-2">Priority :</span>
+                    </div>
+                    <!-- End Col -->
+
+                    <div class="col-auto">
+                      <!-- Select -->
+                      <div class="tom-select-custom tom-select-custom-end">
+                        <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_Issue" autocomplete="off" data-hs-tom-select-options='{
+                                  "searchInDropdown": false,
+                                  "hideSearch": true,
+                                  "dropdownWidth": "10rem"
+                                }'>
+                          <option value="null" selected>All</option>
+                          <option value="Low">Low</option>
+                          <option value="Medium">Medium</option>
+                          <option value="High">High</option>
+                        </select>
+                      </div>
+                      <!-- End Select -->
+                    </div>
+                    <!-- End Col -->
+                  </div>
+                  <!-- End Row -->
+                </div>
+                <!-- End Col -->
+
+                <div class="col-md">
+                  <form>
+                    <!-- Search -->
+                    <div class="input-group input-group-merge input-group-flush">
+                      <div class="input-group-prepend input-group-text">
+                        <i class="bi-search"></i>
+                      </div>
+                      <input id="datatableSearch_Issue" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                    </div>
+                    <!-- End Search -->
+                  </form>
+                </div> 
+              </div>
+              <!-- End Filter -->
+            </div>
+            <!-- End Col -->
+          </div>
+          <!-- End Row -->
+        </div>
+        <!-- End Header -->
+
+        <!-- Table -->
+        <div class="table-responsive datatable-custom">
+          <table id="datatable_Issue" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                  "columnDefs": [{
+                      "targets": [0],
+                      "orderable": false
+                    }],
+                  "order": [],
+                  "info": {
+                    "totalQty": "#datatableWithPaginationInfoTotalQty_Issue"
+                  },
+                  "search": "#datatableSearch_Issue",
+                  "entries": "#datatableEntries_Issue",
+                  "pageLength": 5,
+                  "isResponsive": false,
+                  "isShowPaging": false,
+                  "pagination": "datatablePagination_Issue"
+                }'>
+                <thead class="thead-light">
+                  <tr>
+                    <th></th>
+                    <th>Issue ID</th>
+                    <th>End Date</th>                
+                    <th>Priority</th>
+                    <th>Approval Status</th>
+                    <th>Originator</th>
+                    <th>Assignee</th>
+                    <th>Approver</th>
+                    <th>Task Function</th>
+                    <th>Task Type</th>
+                    <th>Completion Status</th>
+                    
+                  
+                   
+                  </tr>
+                </thead>
+      
+                <tbody>
+                  {% for key, val in issueList.items  %}             
+                      <tr class="position-static">
+                        <td >
+                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                          <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                        </td>
+                        <td>
+                          
+                          <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectIssues('{{val.Issue_ID}}','{{val.U_Role}}')" >{{val.Issue_ID}}</a>
+                        </td>
+                        <td>                                
+                          {{val.end_dt}}
+                        </td> 
+                        <td> 
+                          {%if val.Issue_Priority_Label == "High" %}
+                            <h5><span class="badge bg-soft-danger text-danger"  style="font-size: inherit;">High</span></h5>
+                          {%elif val.Issue_Priority_Label == "Medium" %}
+                              <h5><span class="badge bg-soft-warning  text-warning"  style="font-size: inherit;">Medium</span></h5>
+                          {%elif val.Issue_Priority_Label == "Low" %}
+                              <h5><span class="badge bg-soft-success  text-success" style="font-size: inherit;">Low</span></h5>
+                          {% endif %}
+                        </td>
+                        <td style="text-wrap: wrap;">
+                          {{val.Issue_ApprovalStatus_Label}} 
+                        </td>
+                        <td style="text-wrap: wrap;">                      
+                          {{val.originators}}</a>
+                        </td>
+                        <td style="text-wrap: wrap;">                      
+                          {{val.Assignees}}</a>
+                        </td>
+                        <td style="text-wrap: wrap;">                      
+                          {{val.Approvers}}</a>
+                        </td>
+                        <td>
+                          {{val.Issue_Function_Label}}
+                        </td>
+                        <td>
+                        {{val.Issue_Type_label}}
+                        </td>
+                        <td> 
+                        {{val.Completion_Status}}
+                        </td>
+                        
+                      </tr>
+                  {% endfor %}   
+                </tbody>
+              </table>
+        </div>
+        <!-- End Table -->
+
+        <!-- Footer -->
+        <div class="card-footer">
+          <!-- Pagination -->
+          <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+            <div class="col-sm mb-2 mb-sm-0">
+              <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+                <span class="me-2">Showing:</span>
+
+                <!-- Select -->
+                <div class="tom-select-custom">
+                  <select id="datatableEntries_Issue" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                            "searchInDropdown": false,
+                            "hideSearch": true
+                          }'>
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50" >50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+                <!-- End Select -->
+
+                <span class="text-secondary me-2">of</span>
+
+                <!-- Pagination Quantity -->
+                <span id="datatableWithPaginationInfoTotalQty_Issue"></span>
+              </div>
+            </div>
+            <!-- End Col -->
+
+            <div class="col-sm-auto">
+              <div class="d-flex justify-content-center justify-content-sm-end">
+                <!-- Pagination -->
+                <nav id="datatablePagination_Issue" aria-label="Activity pagination"></nav>
+              </div>
+            </div>
+            <!-- End Col -->
+          </div>
+          <!-- End Pagination -->
+        </div>
+        <!-- End Footer -->
+    </div> 
+    </div> 
+  </div>
+</div>
+<!-- End Tab Content -->
+
+  {%endblock content %}
+  {% block script %}  
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>  
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/fullcalendar/main.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/hs-fullcalendar-filter/dist/hs-fullcalendar-filter.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+
+ <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+ 
+<script type='text/javascript' > 
+HSCore.components.HSDatatables.init($('#datatable_Issue'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+
+    const datatable = HSCore.components.HSDatatables.getItem(0)
+
+  document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+    item.addEventListener('change',function(e) {
+      const elVal = e.target.value,
+  targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+  targetTable = e.target.getAttribute('data-target-table');
+
+  HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+    })
+  })
+          function redirectIssues(id,role){ 
+        console.log(id,',',role,(role=='Assigned'))
+        if(role=='Assigned'){ 
+          console.log('inside if')
+          document.location.href = "/issue_assignee?id=" +id;
+          
+        }
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var eventlist = '{{all_data_lst| safe }}';
+      eventlist = JSON.parse(eventlist)  
+
+      console.log("event",eventlist)
+      HSCore.components.HSFullCalendar.init('#calendar', { 
+    headerToolbar: {
+      left: "prev,next today",
+      center: "title",
+      right: ""
+    },
+    editable: true,
+          
+    events: eventlist,
+          eventClick: info => { 
+              $.ajax({
+                      url: '/checkUserRole_Issue/', 
+                      data:{mdl_id:info.event._def.title},
+                      dataType: 'json',   
+                      success: function (data) {  
+                          if(data.role=="Assignee")
+                              window.location= "/issue_assignee/?id="+info.event._def.title;                                   
+                          else if(data.role=="Approver"){
+                              document.location.href = "/issue_approver/?id=" +info.event._def.title;
+                          }
+                          else if(data.role=="Originator"){
+                              document.location.href = "/edit_issue/" +info.event._def.title+"/";
+                          }
+                          else{
+                              document.location.href = "/issue_approver_data?id=" +info.event._def.title;
+                          }
+                          
+                          
+                      }
+                  });           
+          },
+           
+          eventMouseLeave: function(info) {
+              $(info.el).css('z-index', 8); 
+          },
+
+  })
+      
+
+  HSCore.components.HSTomSelect.init('#changeView', {
+    hideSearch: true
+  })
+
+  const selectInstance = HSCore.components.HSTomSelect.getItem('changeView')
+
+  selectInstance.on('change', (val) => {
+    fullcalendarWithSelect.changeView(val)
+  })
+  });
+</script>
+{%endblock script %}

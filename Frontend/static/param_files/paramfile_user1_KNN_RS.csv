@@ -1,0 +1,5 @@
+paramName,paramValue
+n_neighbors,"[int(89/20), int(89/15), int(89/10), int(89/5)]"
+weights,"['uniform', 'distance']"
+algorithm,"['auto', 'ball_tree', 'kd_tree', 'brute']"
+p,"[1, 2]"

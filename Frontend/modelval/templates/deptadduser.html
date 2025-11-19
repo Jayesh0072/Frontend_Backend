@@ -1,0 +1,246 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<form id="formuser" class="row g-3">
+    
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+         
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtuname">Username</label>
+
+                    <div class="col-sm-8">
+
+                        <input class="form-control" id="txtuname" type="text" required="" maxlength="20" onblur="checkUsername()">
+                        <!-- <div class="invalid-tooltip">Please choose a unique and valid username.</div> -->
+                    </div>
+                </div>
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">Department</label>
+                    <div class="col-sm-8">
+                    <select class="form-select" id="ddldept" onchange="getReportsto()" disabled aria-label="Default select example" required>                      
+                        <option  value="0">Select Department</option>
+                        {% for key, val in dept.items  %} 
+                         <option value="{{val.Dept_AID}}">{{val.Dept_Label}}</option>
+                        {% endfor %} 
+                    </select>
+                    <div class="invalid-tooltip">Please choose a department.</div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">User Type</label>
+                    <div class="col-sm-8">
+
+                    <select class="form-select" id="ddlutype" onchange="getReportsto()" aria-label="Default select example" required>
+                      
+                        <option selected="" value="">Select User Type</option>
+                        {% for key, val in utype.items  %} 
+                         <option value="{{val.UC_AID}}">{{val.UC_Label}}</option>
+                        {% endfor %}
+                        <!-- <option value="1">Owner</option>
+                        <option value="2">Developer</option>
+                        <option value="3">Validator</option> -->
+                    </select>
+                    <div class="invalid-tooltip">Please choose a user type.</div>
+                    </div>
+                </div>
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">Reports To</label>
+                    <div class="col-sm-8">
+                    <select class="form-select" id="ddlreportsto" aria-label="Default select example">                      
+                         
+                    </select>
+                    <div class="invalid-tooltip">Please choose a department.</div>
+                    </div>
+                </div>
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtfname">First Name</label>
+
+                    <div class="col-sm-8">
+
+                    <input class="form-control" id="txtfname" maxlength="20" type="text" required=""> 
+                    <div class="invalid-tooltip">Please enter first name.</div>
+                    </div>
+                </div>
+
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtlname">Last Name</label>
+
+                    <div class="col-sm-8">
+
+                    <input class="form-control" id="txtlname"  maxlength="20" type="text" required>
+                    <div class="invalid-tooltip">Please enter last name.</div>
+                    </div>
+                </div>
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label"  for="txtemail">Email address</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="txtemail" type="email" maxlength="30" placeholder="name@example.com" required />
+                        <div class="invalid-tooltip">Please enter email address.</div>
+                    </div>
+                </div>
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-form-label col-sm-4 pt-0">Active Status</label>
+
+                        <div class="col-sm-2">
+
+                            <div class="form-check">
+
+                            <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1" checked="">
+
+                            <label class="form-check-label" for="rbactive">Active</label>
+                            </div>  
+                        </div>
+                        <div class="col-sm-1"> 
+                            <div class="form-check">
+
+                            <input class="form-check-input" id="rbinactive" type="radio" name="rbactivests" value="0">
+
+                            <label class="form-check-label" for="rbinactive">Inactive</label>
+                            </div> 
+                        </div>
+                    </div>
+                </fieldset>
+                <!-- <div class="row mb-3">
+
+                    <label class="col-form-label col-sm-4 pt-0">Profile Image</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="file" id="profilepic" formnovalidate="formnovalidate" />
+                    </div>
+                </div>  -->
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto">
+                        <button class="btn btn-phoenix-primary px-5"  type="button" onclick="gotolist()">Cancel</button>
+                      </div>
+                      <div class="col-auto">
+                        <button class="btn btn-primary px-5 px-sm-5" type="button" onclick="validateform()">Add</button> 
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    $(document).ready(function(){
+        $("input#txtuname").on({
+            keydown: function(e) {
+                if (e.which === 32)
+                return false;
+            },
+            change: function() {
+                this.value = this.value.replace(/\s/g, "");                
+            }
+            });
+        console.log("{{dept_head}}");
+        $('#ddldept').val({{dept_head}})
+    });
+
+    function validateform(){
+     //   var strv=$("#formuser").validate(); 
+     console.log( ' $("#ddldept").val() ',$("#ddldept").val())
+        if($('#txtuname').val()=='' || $('#ddlutype').val()=='' ||  $('#txtfname').val()=='' || 
+        $('#txtlname').val()=='' || $('#txtemail').val()=='')
+        {
+            alert('Please fill all the values.')
+            return false;
+        }
+         
+
+        $.ajax({
+            url: '/addUser/', 
+            data:{'reportsto':$("#ddlreportsto").val(),'dept_aid': $("#ddldept").val(),uname: $("#txtuname").val(),utype: $("#ddlutype").val(),fname: $('#txtfname').val(),lname: $('#txtlname').val(),email:$('#txtemail').val() ,activests:$('input[name="rbactivests"]:checked').val()},
+           dataType: 'json',   
+            success: function (data) { 
+                console.log(data.isvalid,(data.isvalid=='true'))
+               if(data.isvalid=='true'){
+                alert('User Created Succcessfully.')
+                // alert(data.msg)
+               }
+               else
+               {
+                alert('Error while creating user.')
+                // alert(data.msg)
+               }
+            }
+        });
+    }
+
+    function checkUsername(){ 
+        var username =$("#txtuname").val();
+        var isValid = /^[a-zA-Z0-9 _ @]*$/.test(username);
+        var length = username.length;
+        if (isValid && (length > 4) && (length < 20))
+            console.log('valid username')
+        else{
+            alert('invalid username')
+            $("#txtuname").val(''),
+            $("#txtuname").focus();
+            return;
+        }
+            
+
+        $.ajax({
+            url: '/checkValue/', 
+            data:{val: $("#txtuname").val(),'tbl':'users' },
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.cnt!='0'){
+                $("#txtuname").val('')
+                alert('User name already exists.')
+               }
+               
+            }
+        });
+    }
+
+    function getReportsto(){ 
+        var $mySelect = $('#ddlreportsto'); 
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "null",
+                        text: "Select"
+                    });
+        $mySelect.append($option);
+        $.ajax({
+            url: '/getReportsTo/', 
+            data:{uc_aid: $("#ddlutype").val(),'dept_aid': $("#ddldept").val()},
+           dataType: 'json',   
+            success: function (data) { 
+                
+                $.each(data.reportsto, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.u_aid,
+                        text: value.u_name
+                    });
+                    $mySelect.append($option);
+                });
+               
+            }
+        }); 
+    }
+
+    function gotolist(){
+        window.location='{{userAddedBy}}';
+    }
+</script>
+{% endblock script %}

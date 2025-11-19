@@ -1,0 +1,158 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+    {% csrf_token %}  
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">{{actPage}}</h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtutype">Category <span style="color: red;">*</span></label>
+
+                    <div class="col-sm-8">
+
+                        <input class="form-control" value="{{label}}" id="txtcategry" type="text" maxlength="100" required=""> 
+
+                    </div>
+                </div> 
+                <fieldset>
+                    <div class="row mb-3">
+
+                        <label class="col-form-label col-sm-4 pt-0">Active Status?</label>
+                        <div class="col-sm-2">
+                            <div class="form-check">
+                            {% if activestatus == 1 %}
+                            <input  class="form-check-input" id="rbinactive" type="radio" name="rbismrm" checked="" value="1">
+                            {% else %}
+                            <input class="form-check-input" id="rbinactive" type="radio" name="rbismrm" value="1">  
+                            {% endif %}      
+                            <label class="form-check-label" for="rbinactive">Yes</label>
+                            </div> 
+                        </div>
+                        <div class="col-sm-2">
+
+                            <div class="form-check">
+                            {% if activestatus == 0 %}
+                            <input class="form-check-input" checked=""id="rbactive" type="radio" name="rbismrm" value="0">
+                            {% else %}
+                            <input class="form-check-input" id="rbactive" type="radio" name="rbismrm" value="0">
+                            {% endif %}
+                            <label class="form-check-label" for="rbactive">No</label>
+                            </div>  
+                        </div>
+                        
+                    </div>
+                </fieldset>  
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtdesc">Description</label>
+
+                    <div class="col-sm-8">
+
+                    <textarea class="form-control" id="txtdesc" type="text" maxlength="150">{{desc}} </textarea>
+                    </div>
+                </div>           
+                 
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        {% if label %}
+                        <input type="hidden" id="update_id" value="{{id}}" >
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                        {% else %}
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" />
+                        {% endif %} 
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    function validateform(){
+        debugger 
+        if($("#txtcategry").val().trim().length<1){
+            alert('Plese enter Element.');
+            return false;
+        }
+        // $.ajax({
+        //     url: '/addfindvalelement/', 
+        //     data:{update_id:$("#update_id").val(),element: $("#txtelement").val(),desc:$('#txtdesc').val(),activestatus:$('input[name="rbismrm"]:checked').val()},
+        //    dataType: 'json',   
+        //    method:'POST',
+        //     success: function (data) { 
+        //         alert(data.msg)
+        //     }
+        // });
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val(); 
+        var x = new XMLHttpRequest();
+        x.open("POST","/addfindcategory/",true); 
+        x.setRequestHeader( "X-CSRFToken",csrftoken); 
+        var fd = new FormData();    
+        // fd.append("filename", file,filename);
+        fd.append("category", $("#txtcategry").val());
+        fd.append("desc", $('#txtdesc').val());
+        fd.append("activestatus", $('input[name="rbismrm"]:checked').val());
+        fd.append("update_id",$('#update_id').val());
+
+        x.send(fd);
+        x.onreadystatechange = function () { 
+            console.log("readyState",x.readyState,"status",x.status)
+            if (x.readyState == 4 && x.status == 200) {
+                debugger;
+                var json = JSON.parse(x.responseText);
+                console.log(json)
+                alert(json.msg)
+                    
+            }
+            
+        }
+
+
+    }
+
+    // function checkUsername(){ 
+    //     $.ajax({
+    //         url: '/checkValue/', 
+    //         data:{val: $("#txtelement").val(),'tbl':'dept' },
+    //        dataType: 'json',   
+    //         success: function (data) { 
+    //            if(data.cnt!='0'){
+    //             $("#txtdept").val('')
+    //             alert('Department already exists.')
+    //             $("#txtdept").focus()
+    //            }
+               
+    //         }
+    //     });
+    // }
+
+    function gotolist()
+    {
+        window.location='{{showfindcategory}}'
+        
+    }
+</script>
+{% endblock script %}

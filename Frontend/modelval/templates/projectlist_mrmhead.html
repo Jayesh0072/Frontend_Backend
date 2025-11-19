@@ -1,0 +1,719 @@
+{% extends 'index.html' %} 
+{% load static %} 
+{% block content %}
+<style>
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+</style>
+ 
+
+<!-- Added by Shuv Starts (for Project Details pop-up)-->
+<div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scrollingLongModalLabel2">Model Info</h5>
+        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+      </div>
+      <div class="modal-body p-5 px-md-6">
+        <table class="table table1" >
+          <tr id="trpubldate">
+            <th scope="row" style="width:40%">Date of Publishing Validation Report</th>
+            <td><label id='lblpublishDate'></label></td>
+          </tr>                 
+          <tr id="trrptlink">
+            <th scope="row">Validation Report</th>
+            <td><a id="hrefReport"  target="_blank"><label id='lblVRReportlink'></label></a></td>                      
+          </tr>        
+          <tr>
+            <th scope="row" style="width:40%">Department</th>
+            <td><label id='lblDept'></label></td>
+          </tr>                 
+          <tr>
+            <th scope="row">Function</th>
+            <td><label id='lblFunc'></label></td>                      
+          </tr>
+          <tr>
+            <th scope="row">Registration Date</th>
+            <td><label id='lblRegDate'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Id</th>
+            <td><label id='lblMdlId'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Primary Model Name </th>
+            <td><label id='lblPrmNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Secondary Model Name </th>
+            <td><label id='lblSecNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Source  </th>
+            <td><label id='lblMdlSrc'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Model Type  </th>
+            <td><label id='lblMdlType'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Abstract</th>
+            <td><label id='lblMdlAbsct'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Objective of Model</th>
+            <td><label id='lblMdlObj'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Application of Model</th>
+            <td><label id='lblApplMdl'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Risk Analysis </th>
+            <td><label id='lblMdlRiskAnlz'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Products Addressed </th>
+            <td><label id='lblPrdAddr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Usage Frequency </th>
+            <td><label id='lblSsageFreq'></label></td>
+          </tr>
+          <!-- risk tab started -->
+          <tr>
+            <th scope="row">Model Risk </th>
+            <td><label id='lblMdlRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Intrinsic Risk </th>
+            <td><label id='lblIntrRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Reliance</th>
+            <td><label id='lblReliance'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Materiality</th>
+            <td><label id='lblMateriality'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Risk Mitigation </th>
+            <td><label id='lblRiskMiti'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Fair Lending</th>
+            <td><label id='lblFairLendg'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Owner/s</th>
+            <td><label id='lblOwner'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Developer/s</th>
+            <td><label id='lblDevlopers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">User/s</th>
+            <td><label id='lblUsers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Production Support</th>
+            <td><label id='lblPrdnSupp'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Upstream Models</th>
+            <td><label id='lblupstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Downstream Models</th>
+            <td><label id='lbldwstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Approach</th>
+            <td><label id='lblApproach'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Frequency</th>
+            <td><label id='lblMonFreq'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Metrics</th>
+            <td><label id='lblMonMtrc'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event/s </th>
+            <td><label id='lblTriggerEve'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Date  </th>
+            <td><label id='lblLastTgrDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Mitigation Date </th>
+            <td><label id='lblMitgDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event Mitigation  </th>
+            <td><label id='lblMitiEv'></label></td>
+          </tr>
+          <!-- risk tab ended --> 
+      </table>
+      </div>
+      <div class="modal-footer">
+        <!-- <a class="nav-link" href="http://3.131.88.246:8000" target="_blank" data-bs-toggle="" aria-expanded="false">           
+          <button class="btn btn-sm btn-primary px-6">Validate Model</button>
+        </a>
+        <a class="nav-link" href="#" data-bs-toggle="" aria-expanded="false">           
+          <button class="btn btn-sm btn-primary px-6">Version History</button>
+        </a> -->
+        <button class="btn btn-outline-primary" type="button" onclick="assignValidation()">Assign Validation </button>
+        <button class="btn btn-outline-primary" type="button" id="btnEdit" style="display: none;" onclick="approveEdit()">Approve Edit Access </button>
+        <button class="btn btn-outline-primary" type="button" id="btnApprove" style="display: none;" onclick="showEdit()">Approve Updated Changes </button>
+        <!-- <button class="btn btn-outline-primary" type="button" id="btnDecomm" style="display: none;" onclick="showDecomm()">Decommission</button> -->
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+{% csrf_token %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="card h-100">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;    
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Model Inventory</h4>
+        </div>
+  <div class="card-body">
+  <div class="mb-9">
+    <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"],"page":10,"pagination":true}'>
+       
+      <div class="row g-3 justify-content-between align-items-end mb-4">
+         
+        <div class="col-12 col-sm-auto">
+          <div class="d-flex align-items-center">
+            <div class="search-box me-3">
+              <div class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                <input class="form-control search-input search" type="search" placeholder="Search model" aria-label="Search" />
+                <span class="fas fa-search search-box-icon"></span>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+        {% if canAdd == "1"%}
+        <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" href="{{getCriteria}}"><i class="fa-solid fa-plus me-2"></i>Add New</a></div>
+        {% endif %}
+      </div> 
+      <div class="table-responsive" >
+        
+        <table class="table table-sm fs--1 mb-0">
+          <thead>
+            <tr>
+              <th class="white-space-nowrap align-middle ps-0" scope="col" style="width:8%;"></th>
+              <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:12%;text-align: center;">Model ID</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:12%;text-align: center;">Primary Model Name</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Type" style="width:12%;text-align: center;">Model Source</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Area" style="width:12%;text-align: center;">Model Type</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Internal_Vendor" style="width:12%;text-align: center;">Model Risk</th>
+              <!-- <th class="sort align-middle ps-3" scope="col" data-sort="Status" style="width:12%;text-align: center;">Intrinsic Risk</th>
+              <th class="sort align-middle text-end" scope="col" data-sort="Approval_Status" style="width:12%;text-align: center;">Materiality</th> -->
+            </tr>
+          </thead>  
+          <tbody class="list" id="project-list-table-body">
+            {% for key, val in modelinfo.items  %}             
+              <tr class="position-static">
+                 
+                <td class="align-middle time white-space-nowrap ps-0 py-4">                  
+                  
+                  <span class="nav-link-icon" style="padding-right: 5px;"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                  {% if val.canDecomm == "Yes" %}
+                    <span class="nav-link-icon" data-toggle="tooltip" title="Decommision"><span id="sp_decomm_{{val.Mdl_Id}}" onclick="showComment('{{val.Mdl_Id}}','{{val.Is_Decomm}}')" style="cursor: pointer;" class="{{val.decommcss}}" data-feather="eye-off"></span></span>
+                  {%else%}
+                    <span class="nav-link-icon" data-toggle="tooltip" title="Decommision"><span class="{{val.decommcss}}" data-feather="eye-off"></span></span>
+                  {%endif%}
+                  <img src='\static\images\documents.png'  title="Documents" style='cursor:pointer;' onclick="showDocs('{{val.Mdl_Id}}')"/>
+                </td>
+                <td class="align-middle time white-space ps-0 Model_ID py-4" style="text-align: center;">
+                 
+                  <a class="text-decoration-none fw-bold fs-0"  href="#"  onclick="showModala('{{val.Mdl_Id}}','{{val.canDecomm}}','{{val.Is_Decomm}}','{{val.canEdit}}','{{val.tempexists}}')"  >{{val.Mdl_Id}}</a>
+                </td>
+                <td class="align-middle white-space Process_Name ps-3 py-4" style="text-align: center;">
+                  {{val.Prm_Name}}
+                </td>
+                <td class="align-middle white-space Type ps-3 py-4" style="text-align: center;">
+                  {{val.Mdl_Src_Label}}
+                </td>
+                <td class="align-middle  white-space Area ps-3 py-4" style="text-align: center;">
+                  {{val.Mdl_Type_Label}}
+                </td>
+                <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4" style="text-align: center;">
+                  {%if val.Mdl_Risk_Label == "High" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                  {%elif val.Mdl_Risk_Label == "Medium" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                  {%elif val.Mdl_Risk_Label == "Low" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                  {% endif %}
+                </td>
+                <!-- <td class="align-middle white-space-nowrap ps-3 Status" style="text-align: center;"> 
+                  {%if val.Intrinsic_Label == "High" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                  {%elif val.Intrinsic_Label == "Medium" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                  {%elif val.Intrinsic_Label == "Low" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                  {% endif %}
+                </td>
+                <td class="align-middle white-space-nowrap text-end Approval_Status" style="text-align: center;">
+                  
+                  {%if val.Materiality_Label == "High" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                  {%elif val.Materiality_Label == "Medium" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                  {%elif val.Materiality_Label == "Low" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                  {% endif %}
+                </td>  -->
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+        <div class="d-flex">
+          <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+        </div>
+        <div class="d-flex">
+          <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+          <ul class="mb-0 pagination"></ul>
+          <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+        </div>
+      </div>
+    </div>
+  </div> 
+  </div>
+  </div>
+</div>
+<div id="divComment" class="modal fade"    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLiveLabel">Decommission</h5>        
+      </div>
+      <div class="modal-body"> 
+        <div class="row mb-3 position-relative">
+          <div style="width:100%;margin-bottom: 10px;" id="txtownercomment"> 
+              <!-- <textarea id="txtownercomment" rows="5" disabled style="resize: none; border:1px solid black;width:100%;" ></textarea> -->
+         </div> 
+          <div class="col-sm-12">        
+              <input type="file" name="myfile" id="myfile" value="{{file_name}}" required>  
+              </div>        
+           
+        </div>   
+          <div style="width:100%">
+            <input type="hidden" id="decommSts"/>
+              <input type="text" id="txtmdlid" style="display: none;"/>
+              <textarea id="txtcomment" rows="5" style="resize: none; border:1px solid black;width:100%;" ></textarea>
+         </div> 
+      </div>
+  <div class="modal-footer"> 
+    <button type="button" class="btn btn-phoenix-primary px-5" onclick="$('#divComment').modal('toggle');">Close</button>
+      <button type="button"  class="btn btn-primary px-5 px-sm-5" onclick="upload_file()">Save</button>
+      
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Decommission Confirmation</h5>
+        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1 text-white"></span></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-700 lh-lg mb-0">There are incomplete tasks or issues for this model. Do you want to Proceed? </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" onclick="showDecommModal()">Yes</button>
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="divDocs" tabindex="-1" aria-labelledby="divDocs" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scrollingLongModalLabel2">Model Documents</h5>
+        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+      </div>
+      <div class="modal-body p-5 px-md-6">
+    <div class="row form-group"> 
+  <div class="table-responsive table--no-card m-b-40"> 
+      <table id="tbldocs" class="table table-borderless table-striped table-earning">
+          <thead>
+              <tr> 
+                  <th style="padding: 10px 0px 10px 10px;">Document Type</th> 
+                  <th style="padding: 10px 0px 10px 10px;">Document Name</th>  
+              </tr>
+          </thead>  
+          <tbody>
+             
+              {% for key, data in modelDocs.items %} 
+                  <tr> 
+                          <td>
+                              <div style="display: flex;">
+                                  <div style="margin-right: 10px;">{{data.Mdl_Doc_Type}}</div>   
+                                  <!-- <div class="blob" id="div_{{data.docIdx}}" title="View Comments" onclick="showdocCom(this.id,'{{data.docref}}')"></div> -->
+                              </div>
+                          </td>     
+                      <td><a href="\static\document_files\{{selectedMdl}}\{{data.Mdl_Doc_Name}}"  target="_blank">{{data.Mdl_Doc_Name}}</a></td>                                                                                             
+                        
+                  </tr> 
+              {% endfor %} 
+          </tbody>
+         </table>
+  </div>
+</div>
+</div>
+<div class="modal-footer"> 
+<button class="btn btn-outline-primary" type="button" id="btnOk"  data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div> 
+
+                        {% endblock content %}
+  {%block script%}
+  <script type="text/javascript" >
+    function showModala(id,canDecom,decomSts,canEdit,tempexists){
+   
+      if(canDecom=="Yes"){
+        $('#btnDecomm').show()
+      }
+      else{
+        $('#btnDecomm').hide()
+      }
+      if(canEdit=="Yes" && tempexists=='No'){
+        $('#btnEdit').show()
+      }
+      else{
+        $('#btnEdit').hide()
+      }
+      if(tempexists!='No'){
+        $('#btnApprove').show()
+      }
+      else{
+        $('#btnApprove').hide()
+      }
+      $("#txtmdlid").val(id);
+      $('#decommSts').val(decomSts);
+      $('#lblDept').text('');
+      $('#lblFunc').text('');
+      $('#lblRegDate').text('');
+      $('#lblMdlId').text('');
+      $('#lblPrmNm').text('');
+      $('#lblSecNm').text('');
+      $('#lblMdlSrc').text('');
+      $('#lblMdlType').text('');
+      $('#lblMdlAbsct').text('');
+      $('#lblMdlObj').text('');
+      $('#lblApplMdl').text('');
+      $('#lblMdlRiskAnlz').text('');
+      $('#lblPrdAddr').text('');
+      $('#lblSsageFreq').text('');
+      //risk tab starts
+      $('#lblMdlRisk').text('');
+      $('#lblIntrRisk').text('');
+      $('#lblReliance').text('');
+      $('#lblMateriality').text('');
+      $('#lblRiskMiti').text('');
+      $('#lblFairLendg').text('');
+      $('#lblDevlopers').text('');
+      $('#lblUsers').text('');
+      $('#lblPrdnSupp').text('');
+      
+      //relevant users ends
+      //dependencies starts
+      $('#lblupstr').text('');
+      $('#lbldwstr').text('');
+      $('#lblApproach').text('');
+      $('#lblMonFreq').text('');
+      $('#lblMonMtrc').text('');
+      $('#lblTriggerEve').text('');
+      $('#lblLastTgrDt').text('');
+      $('#lblMitgDt').text('');
+      $('#lblMitiEv').text(''); 
+      $('#lblOwner').text('');
+      $.ajax({
+            url: '/getMdlDetailsById/', 
+            data:{ mdlId: id},
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.istaken=='true'){
+               // $('#tblMaster tr:last').after('<tr><td>'+$("#txtopt").val()+'</td><td>'+$("#txtdesc").val()+'</td></tr>');
+               
+               //console.log(data.mdldata[0].Mdl_Src_Label,',' +' id is '+data.mdldata.Mdl_Id)
+               if(data.isvrpublished!='no'){
+                $('#lblpublishDate').text(data.isvrpublished);
+               $("#hrefReport").attr("href", "/static/media/ValidationReport_"+id+".pdf")
+               $('#lblVRReportlink').text("ValidationReport_"+id+".pdf");
+               $("#trpubldate").show();
+                $("#trrptlink").show();
+               }
+               else  {
+                $("#trpubldate").hide();
+                $("#trrptlink").hide();
+               }
+               $('#lblDept').text(data.mdldata[0].Dept_Label);
+               $('#lblFunc').text(data.mdldata[0].Mdl_Fncn_Label);
+               $('#lblRegDate').text(data.mdldata[0].regdate);
+               $('#lblMdlId').text(data.mdldata[0].Mdl_Id);
+               $('#lblPrmNm').text(data.mdldata[0].Prm_Name);
+               $('#lblSecNm').text(data.mdldata[0].Sec_Name);
+               $('#lblMdlSrc').text(data.mdldata[0].Mdl_Src_Label);
+               $('#lblMdlType').text(data.mdldata[0].Mdl_Type_Label);
+               $('#lblMdlAbsct').text(data.mdldata[0].Mdl_Absct);
+               $('#lblMdlObj').text(data.mdldata[0].Mdl_objective);
+               $('#lblApplMdl').text(data.mdldata[0].Mdl_Appl);
+               $('#lblMdlRiskAnlz').text(data.mdldata[0].Mdl_Risk_Ansl);
+               $('#lblPrdAddr').text(data.mdldata[0].Prd_Addr_Label);
+               $('#lblSsageFreq').text(data.mdldata[0].Mdl_Use_Freq_Label);
+               //risk tab starts
+               $('#lblMdlRisk').text(data.mdldata[0].Mdl_Risk_Label);
+               $('#lblIntrRisk').text(data.mdldata[0].Intrinsic_Label);
+               $('#lblReliance').text(data.mdldata[0].Reliance_Label);
+               $('#lblMateriality').text(data.mdldata[0].Materiality_Label);
+               $('#lblRiskMiti').text(data.mdldata[0].Risk_Mtgn);
+               $('#lblFairLendg').text(data.mdldata[0].Fair_Lndg);
+               $('#lblDevlopers').text(data.Developer);
+               $('#lblUsers').text(data.User);
+               $('#lblPrdnSupp').text(data.PrdnSupport);
+               $('#lblOwner').text(data.Owner);
+
+               
+               //relevant users ends
+               //dependencies starts
+               $('#lblupstr').text('');
+               $('#lbldwstr').text('');
+               if(Object.keys(data.dependencies).length>0){
+                $('#lblupstr').text(data.dependencies[0].Mdl_Dwstream_Label);
+                $('#lbldwstr').text(data.dependencies[0].Mdl_Upstream_Label);
+               }
+               //dependencies ends
+
+               //perfomance monitoring start
+               $('#lblApproach').text('');
+                $('#lblMonFreq').text('');
+                $('#lblMonMtrc').text('');
+                $('#lblTriggerEve').text('');
+                $('#lblLastTgrDt').text('');
+                $('#lblMitgDt').text('');
+                $('#lblMitiEv').text(''); 
+               if(Object.keys(data.PerformMon).length>0){
+                $('#lblApproach').text(data.PerformMon[0].Approach);
+                $('#lblMonFreq').text(data.PerformMon[0].Mdl_Montr_Freq_Label);
+                $('#lblMonMtrc').text(data.PerformMon[0].Monr_Mtrcs);
+                $('#lblTriggerEve').text(data.PerformMon[0].Tgr_Evt);
+                $('#lblLastTgrDt').text(data.PerformMon[0].Lst_Tgr_Dt);
+                $('#lblMitgDt').text(data.PerformMon[0].Lst_Tgr_Mtgn_Dt);
+                $('#lblMitiEv').text(data.PerformMon[0].Tgr_Evt_Mtgn); 
+               }
+               $('#projectsCardViewModal').modal('toggle');
+               //perfomance monitoring ends
+
+               }
+               else
+               {
+                 
+               }
+            }
+        });
+      
+    }
+   
+    function showComment(id,decomSts)
+    {   
+      $("#txtmdlid").val(id);
+      $('#decommSts').val(decomSts);
+      $("#txtownercomment").empty()
+      $.ajax({
+            url: '/checkPendingTasksIssues/', 
+            data:{ mdl_id: id},
+           dataType: 'json',   
+            success: function (data) { 
+              console.log(data.decommdoc,data.checkPending)
+               if(data.checkPending=='0'){
+                if(data.decommdoc[0].decomm_file!=''){
+                  $("#txtownercomment").html("Owner's  comment : "+data.decommdoc[0].decomm_comment_owner+"<br> Uploaded file : <a href='/static/document_files/"+id+"/"+id+"_"+data.decommdoc[0].decomm_file +"' style='color:black;width:20px'   target='_blank'>"+data.decommdoc[0].decomm_file)
+                }
+                else{
+                  $("#txtownercomment").html("Owner's  comment :"+data.decommdoc[0].decomm_comment_owner+"<br> ")
+                }
+                
+                $("#divComment").modal('toggle')
+               }
+               else{
+                if(data.decommdoc[0].decomm_file!=''){
+                  $("#txtownercomment").html("Owner's  comment : "+data.decommdoc[0].decomm_comment_owner+"<br> Uploaded file : <a href='/static/document_files/"+id+"/"+id+"_"+data.decommdoc[0].decomm_file +"' style='color:black;width:20px'   target='_blank'>"+data.decommdoc[0].decomm_file)
+                }
+                else{
+                  $("#txtownercomment").html("Owner's  comment :"+data.decommdoc[0].decomm_comment_owner+"<br> ")
+                }
+                $("#staticBackdrop").modal('toggle')
+               }
+              }
+      });     
+    }
+
+    function approveEdit(){
+      mdl_id = $("#txtmdlid").val(); 
+      console.log('mdl_id ',mdl_id)
+          if(mdl_id !=''){
+            // alert("ok")
+              // alert('Tool registred with id {{mdl_id}}.')
+            $.ajax({
+            url: '/issubmit/', 
+            data:{ is_submit:0,mdl_id:mdl_id},
+            dataType: 'json',   
+            success: function (data) { 
+              if (data.isvalid == 'false'){
+                
+              }  
+              else{
+                alert("Request approved successfully.")
+              }              
+              $('#btnEdit').hide() 
+              // $('#submit').prop('disabled', true);
+              
+            }
+          });
+        }
+    }
+    function showEdit(){ 
+      window.location='/tempdetails?mdlId='+ $("#txtmdlid").val()
+      
+    }
+    
+    function showDecomm()
+    {    
+      $("#projectsCardViewModal").modal('toggle')
+      $.ajax({
+            url: '/checkPendingTasksIssues/', 
+            data:{ mdl_id: $("#txtmdlid").val()},
+           dataType: 'json',   
+            success: function (data) { 
+              console.log('data is ',data)
+               if(data.checkPending=='0'){
+               
+                $("#divComment").modal('toggle')
+               }
+               else{
+                $("#staticBackdrop").modal('toggle')
+               }
+              }
+      });     
+    }
+
+
+    function showDecommModal(){
+      $("#staticBackdrop").modal('toggle')
+      $("#divComment").modal('toggle')
+
+    }
+
+    function upload_file() {
+    if($('#myfile').val().length>0){
+    var file  = document.getElementById('myfile').files[0]; 
+    var filename = file .name;   
+
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val(); 
+    var x = new XMLHttpRequest();
+    x.open("POST","/uploadDecommDoc/",true); 
+    x.setRequestHeader( "X-CSRFToken",csrftoken); 
+    //x.send('{"comment":"'+comment+'"}');
+    var fd = new FormData();
+    
+    fd.append("filename", file,filename);
+    fd.append("filenm", filename);
+    fd.append("mdl_id", $("#txtmdlid").val());
+    fd.append("comment", $("#txtcomment").val() );
+    fd.append("decommSts", $('#decommSts').val());
+    x.send(fd);
+    x.onreadystatechange = function () { 
+        if (x.readyState == 4 && x.status == 200) {           
+            $('#myfile').val('');
+            //$("#sp_decomm_"+$("#txtmdlid").val()).css("pointer-events", "none");
+            $("#sp_decomm_"+$("#txtmdlid").val()).addClass("text-warning")
+            var i = JSON.parse(x.responseText);          
+            sendNotification('Request Decommission|'+i.notification_trigger,i.from,i.to,i.thread_id);
+        }
+    }
+  }
+  else{
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val(); 
+    var x = new XMLHttpRequest();
+    x.open("POST","/uploadDecommDoc/",true); 
+    x.setRequestHeader( "X-CSRFToken",csrftoken); 
+    //x.send('{"comment":"'+comment+'"}');
+    var fd = new FormData(); 
+    fd.append("mdl_id", $("#txtmdlid").val());
+    fd.append("comment", $("#txtcomment").val() );
+    fd.append("decommSts", $('#decommSts').val());
+    x.send(fd);
+    x.onreadystatechange = function () { 
+        if (x.readyState == 4 && x.status == 200) {
+            var i = JSON.parse(x.responseText);          
+            sendNotification('Request Decommission|'+i.notification_trigger,i.from,i.to,i.thread_id);
+            $('#myfile').val('');
+            //$("#sp_decomm_"+$("#txtmdlid").val()).css("pointer-events", "none");
+            $("#sp_decomm_"+$("#txtmdlid").val()).addClass("text-warning") ;          
+            
+        }
+        $('#divComment').modal('toggle');
+    }
+  }
+}
+    
+
+function assignValidation(){
+  mdl_id = $("#txtmdlid").val()
+  window.location='{% url "reqValidation" %}?mdl_id='+mdl_id;
+}
+function showDocs(id){
+  $('#tbldocs').find('tbody').empty(); 
+    $.ajax({
+      url: '/getMdlDocs/', 
+      data:{ mdl_id: id},
+      dataType: 'json',   
+      success: function (data) { 
+        $.each(data.docs, function(key, val) { 
+          console.log(val.Mdl_Doc_Type+','+val.Mdl_Doc_Name)
+          myRow='<tr> <td><div style="display: flex;"> <div style="margin-right: 10px;">'+val.Mdl_Doc_Type+'</div> </div> </td>  <td><a href="\\static\\document_files\\'+data.mdl_id+'\\'+val.Mdl_Doc_Name +'"  target="_blank">'+val.Mdl_Doc_Name +'</a></td>  </tr> '
+          $('#tbldocs').find('tbody').append(myRow);
+        });
+      $("#divDocs").modal('toggle')
+      }
+    });
+  }
+  </script>
+  {%endblock script %}

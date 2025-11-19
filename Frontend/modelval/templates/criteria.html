@@ -1,0 +1,125 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block content %}
+<form id="frmCriteria"  class="row g-3 needs-validation" novalidate="">
+  
+<div class="col-12 col-xl-12 order-1 order-xl-0">
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">Select Model/Tool</h4>
+                </div> 
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy">
+            {% for key, val in criteria.items  %} 
+                {% if val.addseclbl == "add" %}        
+                <div class="row mb-1 position-relative">
+
+                    <label class="col-sm- col-form-label" for="txtsection"> {{val.section_label}}</label>
+     
+                </div>  
+                       
+                  
+                {%else%} 
+                {% endif %} 
+            <div class="row mb-1 position-relative"> 
+                <label class="col-sm-1 col-form-label"></label>
+                <div class="col-sm-6">
+                    {{val.Question_Label}}
+                    
+                </div>
+                <div class="col-sm-1">
+    
+                    <div class="form-check">
+
+                    <input class="form-check-input" id="rb_{{val.Question_AID}}_yes" onclick="registerclick({{val.Question_AID}})" type="radio" name="rb_{{val.Question_AID}}" value="Yes">
+
+                    <label class="form-check-label" >Yes</label>
+                    </div>  
+                </div>
+                <div class="col-sm-1"> 
+                    <div class="form-check">
+
+                    <input class="form-check-input" id="rb_{{val.Question_AID}}_no" onclick="registerclick({{val.Question_AID}})"  type="radio" name="rb_{{val.Question_AID}}" value="No">
+
+                    <label class="form-check-label">No</label>
+                    </div> 
+                </div>
+            </div>  
+       
+            {% endfor %}  
+            <div class="row" style="margin-top: 0.5rem;"> 
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label" for="txtDepartment">Select Model/Tool</label>
+                    <div class="col-sm-2">    
+                        <select class="form-select" id="ddlModelTool"  aria-label="" required>
+                            <!-- <option value="">Choose</option>                             -->
+                            <option value="Model">Model</option> 
+                            <option value="Tool" selected>Tool</option> 
+                        </select>
+                    </div>
+                    <div class="col-sm-2" >
+                        <button class="btn btn-primary" type="button" onclick="gotoRegistration()">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    </div>
+    </div>
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    var arrQtns=[]
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+        if(arrQtns.indexOf(id)<0)
+            arrQtns.push(id); 
+        var colDataLst=[];
+        item = {} 
+        arrQtns.forEach(element => {
+           // console.log(element +', '+$('input[name="rb_'+ element +'"]:checked').val())
+            
+            //item[element] =$('input[name="rb_'+ element +'"]:checked').val();
+            colDataLst.push($('input[name="rb_'+ element +'"]:checked').val()); 
+        });
+      //  console.log(item)
+        
+        $.ajax({
+            url: '/GetIsModel/', 
+            data:{ criteria: JSON.stringify(colDataLst),qtns: JSON.stringify(arrQtns)},
+            dataType: 'json',   
+            success: function (data) {                 
+                if(data.istaken=="true"){ 
+                 //$('#frmCriteria').submit(); 
+                 if(data.isModel==true){
+                    $('#ddlModelTool').val('Model')
+                 }
+                 else
+                 { 
+                    $('#ddlModelTool').val('Tool') 
+                 }
+               }
+                
+            }
+        });
+    } 
+    
+    function gotoRegistration(){
+        if($('#ddlModelTool').val()=='Model'){
+            window.location='{{addmodel}}';
+        }
+        else{
+            window.location='{{addtool}}';
+        }
+    }
+</script>
+{% endblock script %}

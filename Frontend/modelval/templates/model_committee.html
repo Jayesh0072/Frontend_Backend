@@ -1,0 +1,114 @@
+{% extends 'adminbase.html' %}  
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="content container-fluid">
+    <!-- Page Header -->
+  
+    <!-- End Page Header -->
+
+
+    <!-- Card -->
+    <div class="card mb-3 mb-lg-5">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title">Model Governance Committee</h4>
+
+              
+            </div>
+          </div>
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <form id="myForm">
+            <table id="datatable" class="table table-borderless">
+            <thead class="thead-light">
+                <tr>
+                <th>Department Head</th>
+                <th>Is Member</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in department_head %}
+                <tr>
+                    <td>
+                    {{i.u_fname}} {{i.u_lname}} {{i.dept_label}}
+                    <input type="hidden" name="u_aid" value="{{i.u_aid}}">
+                    </td>
+                    <td>
+                    <label>
+                    <input type="radio" name="is_member_{{i.u_aid}}" value="Yes"
+                            {% if i.u_aid in selected_user_ids %}checked{% endif %}> Yes
+                    </label>
+                    <label>
+                    <input type="radio" name="is_member_{{i.u_aid}}" value="No"
+                    {% if i.u_aid not in selected_user_ids %}checked{% endif %}> No
+                    </label>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            <div class="card-footer">
+
+             <button type="submit" class="btn btn-primary">Submit</button>
+
+            </div>
+        </form>
+       </div>
+
+      <!-- End Table -->
+    </div>
+    <!-- End Card -->
+
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock content %}
+
+{%  block script %}  
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>   
+
+<script type="text/javascript">   
+
+    $("#myForm").on("submit", function(e) {
+        e.preventDefault(); 
+
+        let data = {};
+
+        $("input[type=hidden][name=u_aid]").each(function() {
+            let u_aid = $(this).val();
+            let selected = $(`input[name=is_member_${u_aid}]:checked`).val() || null;
+            data[u_aid] = selected;
+        });
+
+        console.log(data);  
+
+        
+        $.ajax({
+            url: "{% url 'model_committee' %}", 
+            type: "POST",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                members: JSON.stringify(data)
+            },
+            success: function(response) {
+                alert("Saved successfully!");
+            }
+        });
+    });
+
+</script>
+{% endblock script %} 

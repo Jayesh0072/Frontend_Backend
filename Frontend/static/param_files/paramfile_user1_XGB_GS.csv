@@ -1,0 +1,9 @@
+paramName,paramValue
+objective,['binary:logistic']
+colsample_bytree,"[xgb_search.best_params_['colsample_bytree']*0.8,                                   xgb_search.best_params_['colsample_bytree'],                                   xgb_search.best_params_['colsample_bytree']*1.2]"
+learning_rate,"[xgb_search.best_params_['learning_rate']*0.8,                                   xgb_search.best_params_['learning_rate'],                                   xgb_search.best_params_['learning_rate']*1.2]"
+max_depth,"[xgb_search.best_params_['max_depth']-2,                                   xgb_search.best_params_['max_depth'],                                   xgb_search.best_params_['max_depth']+2]"
+lambda,"[xgb_search.best_params_['lambda']-2,                                   xgb_search.best_params_['lambda'],                                   xgb_search.best_params_['lambda']+2]"
+n_estimators,"[xgb_search.best_params_['n_estimators']-10,                                   xgb_search.best_params_['n_estimators'],                                   xgb_search.best_params_['n_estimators']+10]"
+missing,[-999]
+seed,[123]

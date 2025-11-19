@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    #mytextarea {
+  height: 00px;
+  /*edit this*/
+}
+    .accordion-button::after {
+        display: none;
+    }
+
+    #datepicker,#datepicker_end_date{
+        width: 180px;
+    }
+
+    #datepicker,#datepicker_end_date>span:hover {
+        cursor: pointer;
+    }
+</style>
+<link href="vendors/flatpickr/flatpickr.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/quill/dist/quill.snow.css' %}">
+
+
+<div>
+    <form onsubmit="submit_function()" id="target" method="post" enctype="multipart/form-data" class="form-horizontal"
+        >
+        {% csrf_token %}
+
+        <div class="content" data-bs-target="#v-pills"  data-bs-spy="scroll" style="padding-top:0px;">
+            <div class="mt-4">
+              <div class="row g-4">
+                <div class="col-12 col-xl-12 order-1 order-xl-0">
+                  <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+                    
+                    <div class="card-body p-0">
+                      
+                      <div class="p-4 code-to-copy">
+                        <div class="row">
+                          <div class="col-sm-auto">
+                            <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                              <div class="nav flex-column nav-pills" id="v-pills">
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Issue Overview</a>
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedmodels">Issue Summary</a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm">
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-home">Overview</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row g-3 mb-6" style="margin-top:5px">
+                                    
+                                    <div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Issue IDS <span style="color: red;">*</span> 
+                                            </div>
+                                            <select name="select_issue" id="select_issue" onclick="get_issue_ID_data()" style="margin-bottom:15px;width:50%;margin-left: 15px" class="form-select" aria-label="Default select example"> 
+                                                <option selected>Select Issue ID</option>
+                                                {% for i in issue_relevant_obj %}
+                                                <option class="dropdown-item" value="{{i.issue_id}}">{{i.issue_id}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Department <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="department" name="department"
+                                                    class="form-control-sm form-control" value="{{department_obj.dept_label}}"
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Originator <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly type="text" id="originator" name="originator"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Issue Function <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="issue_function_label" name="issue_function_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Registration Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+        
+                                                <input readonly class="form-control" name="reg_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="reg_date" type="datetime"
+                                                 placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/>
+        
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Issue Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="issue_type_label" name="issue_type_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Sub Issue Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="sub_issue_type_label" name="sub_issue_type_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Priority <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="issue_priority_label" name="issue_priority_label"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                End Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly class="form-control" name="end_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="end_date" type="text"
+                                                placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'/>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Completion Status <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input type="number" id="completion_status" name="completion_status"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                     />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Approval Status<span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="approval_status" name="approval_status"
+                                                    class="form-control-sm form-control" value=""
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div> 
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Issue Summary</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row form-group">
+                                        <input type="hidden" id="task_summery_check" name="issue_summery_check" value="True">
+                                        <div class="col col-md-4">
+                                            Issue Summary
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                           <div class="quill-custom">
+                                                <div style="min-height: 15rem;margin-bottom: 20px;" id="editor_summ"></div>
+                                                <input type="hidden"  name="issue_summery_comments" id="issue_summery_comments">
+                                                
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Issue Requirements
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="quill-custom">
+                                                <div style="min-height: 15rem;margin-bottom: 20px" id="editor_req"></div>
+                                                <input type="hidden" name="issue_requirements_comments" id="issue_requirements_comments">
+                                                
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Assignee comments <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="quill-custom">
+                                                <div style="min-height: 15rem;margin-bottom: 20px" id="editor_assignee"></div>
+                                                <input type="hidden"  name="issue_assignee_comments" id="issue_assignee_comments">
+                                                
+                                              </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-12 gy-6" style="margin-top: 15px;">
+                              <div class="row g-3 justify-content-end">
+                                <div class="col-auto">
+                                  <button class="btn btn-phoenix-primary px-5" type="button">Cancel</button>
+                                </div>
+                                <div class="col-auto">
+                                  <button class="btn btn-primary px-5 px-sm-15" id="save_issue" type="button" onclick="saveChanges()">Save</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+                </div> 
+              </div>
+            </div> 
+          </div>
+          
+            </div>
+    </form>
+</div>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  
+  
+<!-- JS Front -->
+<script src="{% static 'Front/dist/assets/vendor/quill/dist/quill.min.js' %}"></script>
+
+<script src="{% static 'Front/dist/assets/vendor/hs-sticky-block/dist/hs-sticky-block.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/hs-scrollspy/dist/hs-scrollspy.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+
+
+
+ <!-- JS Plugins Init. -->
+ <script>
+    (function() {
+      // INITIALIZATION OF QUILLJS EDITOR
+      // =======================================================
+      HSCore.components.HSQuill.init('.js-quill')
+    })();
+  </script>
+  <script>
+    var toolbarOptions=[
+            ["bold", "italic", "underline", "strike", "link", "blockquote", "code",  {"list": "bullet"}]
+          ]
+
+   
+    var quill_assignee = new Quill('#editor_assignee', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_req = new Quill('#editor_req', {
+        theme: 'snow',
+        readOnly: true,
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_summ = new Quill('#editor_summ', {
+        theme: 'snow',
+        readOnly: true,
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    </script>
+
+
+<script>
+     $(document).ready(function(){ 
+        $('#select_issue').val('{{issueid}}')
+        get_issue_ID_data();
+    })
+    function saveChanges() {
+       console.log("assignee comments",quill_assignee.root.innerHTML)
+       $.ajax({ 
+           type:'POST',
+           url: "{% url 'issue_update_summery_data' %}",
+           data:{'issue_id':$('#select_issue option:selected').text(),'assignee_comments':quill_assignee.root.innerHTML,
+                 completion_status:$('#completion_status').val(),
+               'csrfmiddlewaretoken': '{{ csrf_token }}'},
+           dataType: 'json',
+           success: function (data) {  
+               console.log('data',data)  
+             //notification code
+               console.log("assignee data",data.issue_assignee_lst)
+               originatorid=data.originatorid
+               issue_id=data.issue_id  
+               console.log('issue_id',issue_id)
+   
+            //    issue_assignee_thread_lst=JSON.parse(data.issue_assignee_thread_lst)
+            //    issue_assignee_thread_lst.forEach(i => {
+            //        sendNotification('Issue Updated|Issue id is updated.'.replace('id', issue_id),i.from,i.to,i.thread_id);
+               
+            //    });
+               
+               alert("Issue updated successfully.")
+   
+           }
+           });
+   
+       
+   }
+   
+   function submit_function()
+   {
+       alert("Data Updated Successfully")
+   
+   }
+   
+   function get_issue_ID_data()
+       {  
+         $.ajax({ 
+           type:'GET',
+           url: "{% url 'get_issue_ID_data' %}",
+           data:{'id':$('#select_issue option:selected').text()},
+           dataType: 'json',
+           success: function (data) {  
+             console.log('data',data)  
+             console.log('data',typeof(data))
+             document.getElementById("department").value=data.department
+             document.getElementById("originator").value=data.originator
+             document.getElementById("issue_function_label").value=data.issue_function_label
+             document.getElementById("reg_date").value=data.reg_date
+             document.getElementById("issue_type_label").value=data.issue_type_label
+             document.getElementById("sub_issue_type_label").value=data.sub_issue_type_label
+             document.getElementById("issue_priority_label").value=data.issue_priority_label
+             document.getElementById("end_date").value=data.end_date
+             document.getElementById("completion_status").value=data.completion_status
+             document.getElementById("approval_status").value=data.issue_approvalstatus_label
+   
+            console.log("issue summery",data.issue_summery)
+   
+            quill_summ.root.innerHTML = data.issue_summery;
+            quill_req.root.innerHTML = data.issue_req;
+            quill_assignee.root.innerHTML = data.issue_assignee;
+   
+           //   $('#issue_summery').val(data.issue_summery)
+           // var editor = tinymce.get('issue_summery'); // id equals your textarea id
+           // editor.mode.set("readonly");
+   
+             
+           //   $('#issue_req').val(data.issue_req)
+           //    var editor = tinymce.get('issue_req'); // id equals your textarea id
+           //  editor.mode.set("readonly");
+          
+   
+           //   var str4 = data.issue_assignee.replace(/\n|\r/g, "");
+           //   $('#assi_comments').val(data.task_assignee)
+           //   var editor = tinymce.get('assi_comments'); // id equals your textarea id
+           //   editor.mode.set("readonly");
+   
+         
+             
+           //   console.log("req",data.task_req)
+           }
+           });
+       }
+       
+       
+   </script>
+
+
+{% endblock content %}

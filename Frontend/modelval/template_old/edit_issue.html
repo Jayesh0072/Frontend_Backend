@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    #mytextarea {
+  height: 00px;
+  /*edit this*/
+}
+    .accordion-button::after {
+        display: none;
+    }
+
+    #datepicker,#datepicker_end_date{
+        width: 180px;
+    }
+
+    #datepicker,#datepicker_end_date>span:hover {
+        cursor: pointer;
+    }
+</style>
+<link href="vendors/flatpickr/flatpickr.min.css" rel="stylesheet" />
+
+<div>
+    <form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal"
+        >
+        {% csrf_token %}
+
+        <div class="content" data-bs-target="#v-pills"  data-bs-spy="scroll" style="padding-top:0px;">
+            <div class="mt-4">
+              <div class="row g-4">
+                <div class="col-12 col-xl-12 order-1 order-xl-0">
+                  <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+                    
+                    <div class="card-body p-0">
+                      
+                      <div class="p-4 code-to-copy">
+                        <div class="row">
+                          <div class="col-sm-auto">
+                            <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                              <div class="nav flex-column nav-pills" id="v-pills">
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Issue Overview</a>
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-design">Relevant Personnel</a>
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-attributes">Relevant Dependencies</a>
+                                <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedmodels">Issue Summary</a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm">
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-home">Overview</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row g-3 mb-6" style="margin-top:5px">
+                                    
+                                    <div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Issue ID<span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="issue_id" name="issue_id"
+                                                class="form-control-sm form-control" value="{{issue_id}}"
+                                                style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                required />
+                                            </div>
+                                           
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Department <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input readonly type="text" id="department" name="department"
+                                                    class="form-control-sm form-control" value="{{department}}"
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Originator <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input readonly type="text" id="originator" name="originator"
+                                                    class="form-control-sm form-control" value="{{originator}}"
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Issue Function <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <select name="issue_function_label" id="issue_function_label" style="width: 100%;font-size: 12pt;margin-bottom:15px" class="form-select" aria-label="Default select example" required> 
+                                                
+                                                {% if issue_function_label %}
+                                                <option value="{{issue_function}}">{{issue_function_label}}</option>
+                                                {% endif %}
+                                                {% for i in issue_function_objs %}
+                                                {% if issue_function_label != i.issue_function_label %}
+                                                <option class="dropdown-item" value="{{i.issue_function_aid}}">{{i.issue_function_label}}</option>
+                                                {% endif %}                                                   
+                                                {% endfor %}
+                                            </select>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4"> 
+                                                Registration Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+        
+                                                <input value="{{reg_date}}" class="form-control datetimepicker" name="reg_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="reg_date"
+                                                 placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' required/>
+        
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                             Issue Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <div class="coldata-12 col-md-8">
+                                                    <input readonly type="text" id="issue_type_label" name="issue_type_label"
+                                                        class="form-control-sm form-control" value="{{issue_type_label}}"
+                                                        style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                        required />
+                                                </div>   
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Sub Issue Type <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <select name="sub_issue_type_label" id="sub_issue_type_label" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example" required>
+                                                    {% if sub_issue_type_label %}
+                                                    <option value="{{sub_issue_type}}">{{sub_issue_type_label}}</option>
+                                                    {% endif %}
+                                                    {% for i in sub_issue_type_objs %}
+                                                    {% if sub_issue_type_label != i.sub_issue_type_label %}
+                                                    <option class="dropdown-item" value="{{i.sub_issue_type_aid}}">{{i.sub_issue_type_label}}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Priority <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <select name="issue_priority_label" id="issue_priority_label" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example" required> 
+                                    
+                                                    {% if issue_priority_label %}
+                                                    <option value="{{priority}}">{{issue_priority_label}}</option>
+                                                    {% endif %}
+                                                    {% for i in issue_priority_objs %}
+                                                    {% if issue_priority_label != i.issue_priority_label %}
+                                                    <option class="dropdown-item" value="{{i.issue_priority_aid}}">{{i.issue_priority_label}}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                End Date
+                                                <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <input value="{{end_date}}" readonly class="form-control datetimepicker" name="end_date" style="width: 100%;font-size: 12pt;margin-bottom:15px" id="end_date" type="text"
+                                                placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' required/>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Completion Status <span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <input type="number" id="completion_status" name="completion_status"
+                                                    class="form-control-sm form-control" value="{{completion_status}}"
+                                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                                     required/>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-4">
+                                                Approval Status<span style="color: red;">*</span>
+                                            </div>
+                                            <div class="coldata-12 col-md-8">
+                                                <select required name="approval_status" id="approval_status" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example" required> 
+                                                    {% if approval_status_label %}
+                                                    <option value="{{approval_status}}">{{approval_status_label}}</option>
+                                                    {% endif %}
+                                                    {% for i in issue_approval_master_objs %} 
+                                                    {% if approval_status_label != i.issue_approvalstatus_label %}
+                                                    <option class="dropdown-item" value="{{i.issue_approvalstatus_aid}}">{{i.issue_approvalstatus_label}}</option>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div> 
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                                <h4 id="v-pills-design" style="margin-bottom: 15px;">Relevant Personnel</h4>
+                                <div class="row">
+                                  <div class="col-xl-12">
+                                      <div class="row form-group">
+                                          <input type="hidden" id="issue_relevant_personnel_check" name="issue_relevant_personnel_check" value="True">
+                                          <div class="col col-md-4">
+                                              Originator <span style="color: red;">*</span>
+                                          </div>
+                                          <div class="col-12 col-md-8">
+                                              <input readonly type="text" id="txtModelVersion" name="issue_originator_relevant"
+                                                  class="form-control-sm form-control" value="{{originator_name}}"
+                                                  style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                  />
+                                          </div>
+                                      </div>
+                                      <div class="row form-group">
+                                          <div class="col col-md-4">
+                                              Assigned to <span style="color: red;">*</span>
+                                          </div>
+                                          <div class="col-12 col-md-8" style="margin-bottom: 2%;">
+                                              <!-- <select multiple name="assigned_to" id="assigned_to" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example">  -->
+                                                  <select name="issue_assigned_to" id="issue_assigned_to" style="margin-bottom:15px;width:50%;" class="form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' required> 
+                                                    {% if assignee_user_obj %}   
+                                                   
+                                                    {% for i in assignee_user_obj %}
+                                                    <option  {{i.selected}} class="dropdown-item" value="{{i.u_aid}}">{{i.first_name}} {{i.last_name}}</option>
+                                                    {% endfor %}
+                                                  
+                                                    {% endif %}
+                                              </select>
+                                          </div>
+                                      </div>
+                                      <div class="row form-group">
+                                          <div class="col col-md-4">
+                                              Approved by <span style="color: red;">*</span>
+                                          </div>
+                                          <div class="col-12 col-md-8">
+                                              <!-- <select multiple name="approved_by" id="approved_by" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example">  -->
+                                              <select class="form-select" name="issue_approved_by" id="issue_approved_by" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' required>    
+                                                 {% if approver_user_obj %}
+                                                {% for i in approver_user_obj %}
+                                                    <option  {{i.selected}} class="dropdown-item" value="{{i.u_aid}}">{{i.first_name}} {{i.last_name}}</option>
+                                                {% endfor %}
+                                               
+                                                {% endif %}
+                                              </select>
+                                          </div>
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                                <h4 id="v-pills-attributes" style="margin-bottom: 15px;">Relevant Dependencies</h4>
+                                <div class="row">
+                                  <div class="col-xl-12">
+                                      <div class="row form-group">
+                                          <div class="col col-md-4">
+                                              Historical Dependency <span style="color: red;">*</span>
+                                          </div>
+                                          <div class="col-12 col-md-8">
+                                              <input type="text" id="txtModelVersion" name="historical_dependency"
+                                                  class="form-control-sm form-control" value=""
+                                                  style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                  required/>
+                                          </div>
+                                      </div>
+                                      <div class="row form-group">
+                                          <div class="col col-md-4">
+                                              Current Dependency <span style="color: red;">*</span>
+                                          </div>
+                                          <div class="col-12 col-md-8">
+                                              <input type="text" id="txtModelVersion" name="current_dependency"
+                                                  class="form-control-sm form-control" value=""
+                                                  style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                  required/>
+                                          </div>
+                                      </div>
+                                      <div class="row form-group">
+                                          <div class="col col-md-4">
+                                              Sub-Issue Dependency <span style="color: red;">*</span>
+                                          </div>
+                                          <div class="col-12 col-md-8">
+                                              <input type="text" id="txtModelVersion" name="sub_task_dependency"
+                                                  class="form-control-sm form-control" value=""
+                                                  style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                                  required/>
+                                          </div>
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                              <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Issue Summary</h4>
+                              <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="row form-group">
+                                        <input type="hidden" id="task_summery_check" name="task_summery_check" value="True">
+                                        <div class="col col-md-4">
+                                            Issue Summary <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="mb-3">
+                                                <textarea name="issue_summery" id="issue_summery" class="tinymce" name="content" data-tinymce="{}" required>{{issue_summery}}</textarea>
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            Issue Requirements <span style="color: red;">*</span>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <div class="mb-3">
+                                                <textarea name="issue_req" id ="issue_req" class="tinymce" name="content" data-tinymce="{}" required>{{issue_req}}</textarea>
+                                              </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-12 gy-6" style="margin-top: 15px;">
+                              <div class="row g-3 justify-content-end">
+                                <div class="col-auto">
+                                  <button class="btn btn-phoenix-primary px-5" type="button">Cancel</ittabutton>
+                                </div>
+                                <div class="col-auto">
+                                  <button class="btn btn-primary px-5 px-sm-15" type="submit">Save</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+                </div> 
+              </div>
+            </div> 
+          </div>
+          
+            </div>
+    </form>
+</div>
+{% block script %}
+<script src="assets/js/flatpickr.js"></script>
+<script>
+
+</script>
+{% endblock script %}
+{% endblock content %}

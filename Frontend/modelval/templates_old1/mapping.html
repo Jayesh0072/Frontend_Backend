@@ -1,0 +1,260 @@
+{% extends 'rmsebase_setvar.html' %}
+{% load static %}
+
+{% block style %}
+
+
+{% endblock style %}
+
+
+{% block content %}
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-12">
+                    <div class ="row" style="margin-bottom: 10px;">
+                        <div class="col-2" style="padding: 10px;">
+                            Select File
+                        </div>
+                        <div class="col-3">
+                            <select class="form-control" onchange="get_columns()" name="select_file_1" id="select_file_1">
+                                <option value="">select</option>
+                                {% for i in doc %} 
+                                <option value="{{i.file_name}}">{{i.file_name}}</option>    
+                                {% endfor %}           
+                            </select>
+                        </div>
+                        <div class="col-2" style="padding: 10px;">
+                            Select File
+                        </div>
+                        <div class="col-3">
+                            <select class="form-control" onchange="get_columns_DV()" name="select_file_2" id="select_file_2">
+                                <option value="">select</option>
+      
+                                {% for i in doc2 %}
+                                {% if i.data_import == i.file_name %}
+                                <option style="color: brown;" value="DI_{{i.file_name}}">{{i.file_name}} DataImport</option>    
+                                {% elif i.data_validator == i.file_name %}
+                                <option style="color: rgb(42, 165, 56);" value="Val_{{i.file_name}}">{{i.file_name}} Validator</option>    
+                                {% else %}
+                                <option value="{{i.file_name}}">{{i.file_name}}</option>
+                                {% endif %}  
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" id="hiddenField" name="hiddenField" value="">
+                        </div>
+                    </div>
+                    <div class ="row" style="margin-bottom: 10px;">
+                        <div class="col-2" style="padding: 10px;">
+                            Select Columns
+                        </div>
+                        <div class="col-3">
+                            <div class="select-container">
+                                <select id="dropdown_file_1" onchange="transferOptions()" style="width: 100%;" name="dropdown_file_1" multiple size="5">
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-2" style="padding: 10px;">
+                            Select Columns
+                        </div>
+                        <div class="col-3">
+                            <div class="select-container">
+                                <select id="dropdown_file_2" onchange="transferOptions2()" style="width: 100%;" name="dropdown_file_2" multiple size="5">
+                                    
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class ="row" style="margin-bottom: 10px;">
+                        <div class="col-2" style="padding: 10px;">
+                            Mapping
+                        </div>
+                        <div class="col-3">
+                            <div class="select-container">
+                                <select id="targetDropdown" style="width: 100%;" name="targetDropdown" multiple size="5">
+                                    
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-2" style="padding: 10px;">
+                            Mapping
+                        </div>
+                        <div class="col-3">
+                            <div class="select-container">
+                                <select id="targetDropdown2" style="width: 100%;" name="targetDropdown2" multiple></select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class ="row" style="margin-bottom: 10px;">
+                        <div class="col-2" style="padding: 10px;">
+                            <button class="btn btn-primary" onclick="saveOptions()" style="margin-left: 480px;">Save</button>                       
+                         </div>
+                         <div class="col-2" style="padding: 10px;">
+                            <button class="btn btn-primary" onclick="MergedOptions()" style="margin-left: 480px;">Merged</button>
+                         </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+</div> 
+
+{% endblock content %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+function saveOptions() {
+    const targetDropdown = document.getElementById('targetDropdown');
+    const targetDropdown2 = document.getElementById('targetDropdown2');
+
+    // Get the values from both dropdowns
+    const selectedData1 = Array.from(targetDropdown.options).map(option => option.value);
+    const selectedData2 = Array.from(targetDropdown2.options).map(option => option.value);
+
+    // // Merge the data
+    // const mergedData = [...selectedData1, ...selectedData2];
+
+    primery_file=$('#select_file_1 option:selected').val()
+    secondarey_file=$('#select_file_2 option:selected').val()
+
+    console.log(' selectedData1', selectedData1);
+    console.log(' selectedData2', selectedData2);
+    file_id=document.getElementById('hiddenField').value;
+    console.log('file_id', file_id);
+
+    var queryString = $.param({ 'selectedData1': selectedData1,'selectedData2':selectedData2 ,'primery_file':primery_file,'secondarey_file':secondarey_file});
+    // AJAX request to send data to the server
+    $.ajax({
+        url: '/save_mapping/', // Change this to your server URL
+        type: 'GET',
+        contentType: 'application/json',
+        data: queryString,
+        success: function(response) {
+            console.log('Options saved successfully:', response);
+            alert('Mapping Done');
+        },
+        error: function(error) {
+            console.error('Error saving options:', error);
+            alert('Error saving options.');
+        }
+    });
+}
+
+function MergedOptions(){
+    debugger;
+    $.ajax({
+        url: '/mergedfile2/', // Change this to your server URL
+        type: 'GET',
+        contentType: 'application/json',
+        // data: queryString,
+        success: function(response) {
+            debugger;
+            console.log('Document Merged successfully:', response);
+            alert(response.msg);
+        },
+        error: function(error) {
+            console.error('Error saving options:', error);
+            alert('Error Merged Not Properly.');
+        }
+    });
+}
+function transferOptions() {
+    const sourceDropdown = document.getElementById('dropdown_file_1');
+    const targetDropdown = document.getElementById('targetDropdown');
+
+    // Get selected options from the source dropdown
+    const selectedOptions = Array.from(sourceDropdown.options)
+                                    .filter(option => option.selected);
+
+    // Add selected options to the target dropdown if they are not already present
+    selectedOptions.forEach(option => {
+        if (!Array.from(targetDropdown.options).some(opt => opt.value === option.value)) {
+            const newOption = document.createElement('option');
+            newOption.value = option.value;
+            newOption.text = option.text;
+            targetDropdown.add(newOption);
+        }
+
+        // Remove the option from the source dropdown
+        option.remove();
+    });
+}
+
+function transferOptions2() {
+    const sourceDropdown = document.getElementById('dropdown_file_2');
+    const targetDropdown = document.getElementById('targetDropdown2');
+
+    // Get selected options from the source dropdown
+    const selectedOptions = Array.from(sourceDropdown.options)
+                                    .filter(option => option.selected);
+
+    // Add selected options to the target dropdown if they are not already present
+    selectedOptions.forEach(option => {
+        if (!Array.from(targetDropdown.options).some(opt => opt.value === option.value)) {
+            const newOption = document.createElement('option');
+            newOption.value = option.value;
+            newOption.text = option.text;
+            targetDropdown.add(newOption);
+        }
+
+        // Remove the option from the source dropdown
+        option.remove();
+    });
+}
+
+function get_columns_DV(){
+    console.log("get_columns_DV")
+    $.ajax({
+        url: '/get_columns_DV/',
+        data: {'file_name':$('#select_file_2 option:selected').val()},
+        // data:objectDataString,
+        dataType: 'json',
+        success: function (data) {
+            console.log("data",data)
+            console.log("data",data['file_id'])
+            document.getElementById('hiddenField').value = data['file_id'];
+
+            var dropdown = $('#dropdown_file_2');
+            dropdown.empty();
+            data['columns_data'].forEach(function (item) {
+                var option = $('<option></option>').attr('value', item).text(item);
+                dropdown.append(option);
+            });
+            
+        }   
+    });
+}
+
+function get_columns(){
+    console.log("get_columns")
+    $.ajax({
+        url: '/get_colums_mapping/',
+        data: {'file_name':$('#select_file_1 option:selected').val()},
+        // data:objectDataString,
+        dataType: 'json',
+        success: function (data) {
+            console.log("data",data)
+            var dropdown = $('#dropdown_file_1');
+            dropdown.empty();
+            data.forEach(function (item) {
+                var option = $('<option></option>').attr('value', item).text(item);
+                dropdown.append(option);
+            });
+            
+        }   
+    });
+}
+
+
+</script>
+
+{% endblock script %}

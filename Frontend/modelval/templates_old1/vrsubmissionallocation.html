@@ -1,0 +1,239 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+
+<form id="formuser" class="row g-3">
+    {% csrf_token %}
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Draft Validation Report Submission Assignment</h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">Model</label>
+                    
+                    <div class="col-sm-8">
+                    <select class="form-select" id="mdlsel" onchange="checkUtype()"  aria-label="Default select example" >     
+                        <option value="null">Select Model</option>
+                        {% for val in data  %} 
+                            {{val}}
+                            <option value="{{val}}">{{val}}</option>
+                        {% endfor %} 
+                    </select>  
+                    <div class="invalid-tooltip">Please choose a department.</div>
+                    </div>
+                </div>
+
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="inputPassword3">Uusers</label>
+                    <div class="col-sm-8">
+                    <select class="form-select" id="ddlusers"  aria-label="Default select example" multiple>     
+                         
+                    </select>
+                    <div class="invalid-tooltip">Please choose a department.</div>
+                    </div>
+                </div>
+
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto">
+                        <button class="btn btn-phoenix-primary px-5" type="button" onclick="gotolist()">Cancel</button>
+                      </div>
+                      <div class="col-auto">
+                        <!-- {% if u_name %} 
+                        <input type="hidden" id="update_id" value="{{id}}" >
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                        {% else %} -->
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" />
+                        {% endif %}
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    $(document).ready(function(){ 
+        // $('#SelectBackUpUserFor').css('visibility','hidden');
+        
+    });
+
+    
+    function validateform(){
+     //   var strv=$("#formuser").validate();
+     mdl_id = $("#mdlsel").val();
+     u_type = $("#ddlusers").val();
+     enddate = $("#enddate").val()
+     console.log('mdl_id',mdl_id,'u type',u_type,'enddate',enddate)
+
+     debugger; 
+        // $.ajax({
+        //     url: '/vrsuballocationsave/', 
+        //     data:{mdl_id:mdl_id,u_type:u_type,enddate:enddate},
+        //    dataType: 'json',   
+        //    method:'POST',
+        //     success: function (data) { 
+        //         alert(data.msg)
+        //     //    if(data.isvalid=='true'){
+        //     //     alert('User Created Succcessfully.')
+        //     //    }
+        //     //    else if(data.isvalid=='update'){
+        //     //     alert('User updated successfully.')
+        //     //    }
+        //     //    else
+        //     //    {
+        //     //     alert('Error while creating user.')
+        //     //    }
+        //     }
+        // });
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val(); 
+        var x = new XMLHttpRequest();
+        x.open("POST","/vrsuballocationsave/",true); 
+        x.setRequestHeader( "X-CSRFToken",csrftoken); 
+        var fd = new FormData();    
+        fd.append("mdl_id", $("#mdlsel").val());
+        fd.append("u_type", $("#ddlusers").val());
+        fd.append("enddate", $("#enddate").val());
+
+        x.send(fd);
+        x.onreadystatechange = function () { 
+            console.log("readyState",x.readyState,"status",x.status)
+            if (x.readyState == 4 && x.status == 200) {
+                 
+                var json = JSON.parse(x.responseText);
+                console.log(json)
+                alert(json.msg)
+                    
+            }
+            
+        }
+    }
+
+    function checkUtype(){ 
+        mdl_id=$("#mdlsel").val() 
+        debugger;
+        var $mySelect=$("#ddlusers");
+        $mySelect.empty(); 
+        $.ajax({
+            url: '/checkutype1/', 
+            data:{mdl_id: $("#mdlsel").val()},
+           dataType: 'json',   
+            success: function (data) { 
+              console.log(data)
+              $.each(data.users, function(key, value) { 
+                
+                    var $option = $("<option/>", {
+                        value: value.U_AID,
+                        text: value.U_FName
+                    });
+                    $mySelect.append($option);
+                });
+                owner=[];
+                $.each(data.owner, function(key, value) { 
+                    console.log("key",key,"value",value)
+                    owner.push(value.u_aid) 
+                                       
+                });
+                $.each(data.validator, function(key, value) { 
+                    console.log("value",value)
+                    owner.push(value.u_aid)                    
+                });
+                $mySelect.val(owner)
+            }
+        });
+    }
+    // var reportsto='{{reportsto| safe }}';
+    // console.log("reports_to",reports_to)
+
+    var reports_to= $('#reports_to_data').val() 
+    function getReportsto(){ 
+        var $mySelect = $('#ddlreportsto'); 
+        // var reports_to= $('#reports_to_data')
+        // console.log("reports_to",reports_to)
+
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "null",
+                        text: "Select"
+                    });
+        $mySelect.append($option);
+        $.ajax({
+            url: '/getReportsTo/', 
+            data:{uc_aid: $("#ddlutype").val(),'dept_aid': $("#ddldept").val()},
+           dataType: 'json',   
+            success: function (data) { 
+                // if(reports_to){
+
+                // }
+                console.log("data",data)
+                $.each(data.reportsto, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.u_aid,
+                        text: value.u_name
+                    });
+                    $mySelect.append($option);
+                });
+               
+            }
+        }); 
+    }
+
+    function gotolist(){
+        window.location='{{blank}}';
+    }
+
+    function validateEmail(){
+        $.ajax({
+            url: '/checkValue/', 
+            data:{val: $("#txtemail").val(),dept: $("#ddldept").val(),utype: $("#ddlutype").val(),'tbl':'email' },
+           dataType: 'json',   
+            success: function (data) { 
+                console.log(data)
+               if(data.cnt!='0'){
+                $("#txtemail").val('')
+                alert('Email already exists.')
+               }
+               
+            }
+        });
+    }
+
+    function GetBackUpData(){
+        debugger;
+        $.ajax({
+            url: '/BackupFor_userdetails/', 
+            data:{backupforid: $("#ddlBackupFor").val() },
+            dataType: 'json',   
+            success: function (data) { 
+                console.log(data)
+                var $mySelect = $('#ddlreportsto'); 
+                $mySelect.empty();
+                var $option = $("<option/>", {
+                                value: data.reportsto,
+                                text:data.reports_to_user
+                            });
+                $mySelect.append($option); 
+                $("#ddldept").val(data.u_depart_id);               
+                $("#ddlutype").val(data.u_type_id);                
+            }
+        });
+    }
+</script>
+{% endblock script %}

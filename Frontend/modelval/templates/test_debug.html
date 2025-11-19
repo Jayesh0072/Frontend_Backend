@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Model Info Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+    th { background: #f2f2f2; }
+    h2 { margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+  <!-- Model Info Table -->
+ {% for chart in chart_paths %}
+  <img src="{{ chart }}" style="width:700px; height:700px;">
+{% endfor %}
+
+
+  <div class="{% if not forloop.first %}page-break{% endif %} table-responsive datatable-custom">
+    <h2>Model Info Report</h2>
+    <table id="datatable_UA"
+           class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+           data-hs-datatables-options='{
+             "columnDefs": [{ "targets": [0], "orderable": false }],
+             "order": [],
+             "info": { "totalQty": "#datatableWithPaginationInfoTotalQty" },
+             "search": "#datatableSearch",
+             "entries": "#datatableEntries",
+             "pageLength": 5,
+             "isResponsive": false,
+             "isShowPaging": false,
+             "pagination": "datatablePagination"
+           }'>
+      <thead class="thead-light">
+        <tr>
+          <th>Model ID</th>
+          <th>Primary Model Name</th>
+          <th>Model Source</th>
+          <th>Model Type</th>
+          <th>Model Risk</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, val in modelinfo.items %}
+        <tr>
+          <td>
+            <a class="text-decoration-none fw-bold fs-0"
+               
+               onclick="gotoDetaile('{{val.Mdl_Id}}')">
+              {{val.Mdl_Id}}
+            </a>
+          </td>
+          <td>{{val.Prm_Name}}</td>
+          <td>{{val.Mdl_Src_Label}}</td>
+          <td>{{val.Mdl_Type_Label}}</td>
+          <td>
+            {% if val.Mdl_Risk_Label == "High" %}
+              <h5><span class="badge bg-soft-danger text-danger">High</span></h5>
+            {% elif val.Mdl_Risk_Label == "Medium" %}
+              <h5><span class="badge bg-soft-warning text-warning">Medium</span></h5>
+            {% elif val.Mdl_Risk_Label == "Low" %}
+              <h5><span class="badge bg-soft-success text-success">Low</span></h5>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Validation Findings Section -->
+  
+  <div class="{% if not forloop.first %}page-break{% endif %} collapse code-collapse collapse show">
+    <div class="bg-white border-300">
+      <div class="row">
+        <h2>Validation Findings</h2>
+        <h3>Validation Element</h3>
+        <!-- Findings by Elements -->
+        <div id="div_finsingsbyElemets" class="table-responsive datatable-custom">
+          <table id="datatable_finsingsbyElemets"
+                 class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                 data-hs-datatables-options='{"order": []}'>
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 40%;">Validation Element</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('3','','')">High</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('2','','')">Medium</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('1','','')">Low</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('0','','')">Mitigated</th>
+                <th style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, val in findingsByElements.items %}
+              <tr>
+                <td>{{val.Validation_Element}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('3','{{val.Validation_Element}}','')">{{val.High}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('2','{{val.Validation_Element}}','')">{{val.Medium}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('1','{{val.Validation_Element}}','')">{{val.Low}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('0','{{val.Validation_Element}}','')">{{val.Mitigated}}</td>
+                <td style="text-align: right;">{{val.Total}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        
+        
+        <!-- Findings by Category -->
+        <div id="div__finsingsbyCategory" class="{% if not forloop.first %}page-break{% endif %} table-responsive datatable-custom">
+          <h3>Category</h3>
+          <table id="datatable_finsingsbyCategory"
+                 class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                 data-hs-datatables-options='{"order": []}'>
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 40%;">Category</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('3','','')">High</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('2','','')">Medium</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('1','')">Low</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('0','','')">Mitigated</th>
+                <th style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, val in findingsCntByCategory.items %}
+              <tr>
+                <td>{{val.Validation_Category}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('3','','{{val.Validation_Category}}')">{{val.High}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('2','','{{val.Validation_Category}}')">{{val.Medium}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('1','','{{val.Validation_Category}}')">{{val.Low}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('0','{{val.Validation_Category}}','')">{{val.Mitigated}}</td>
+                <td style="text-align: right;">{{val.Total}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        
+        <!-- Findings by Dependency -->
+        <div id="div_Dependency" class="{% if not forloop.first %}page-break{% endif %} table-responsive datatable-custom">
+          <h3>Dependency </h3>
+          <table id="datatable_Dependency"
+                 class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                 data-hs-datatables-options='{"order": []}'>
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 40%;">Category</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('3','','Upstream Model')">High</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('2','','Upstream Model')">Medium</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('1','','Upstream Model')">Low</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('0','','Upstream Model')">Mitigated</th>
+                <th style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, val in findingsByUpstreamMdl.items %}
+              <tr>
+                <td>{{val.Validation_Category}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('3','','{{val.Validation_Category}}')">{{val.High}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('2','','{{val.Validation_Category}}')">{{val.Medium}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('1','','{{val.Validation_Category}}')">{{val.Low}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('0','{{val.Validation_Element}}','')">{{val.Mitigated}}</td>
+                <td style="text-align: right;">{{val.Total}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        
+        <!-- Findings Summary --> 
+        <div id="div_FindingsSummary" class="{% if not forloop.first %}page-break{% endif %} table-responsive datatable-custom">
+          <h3>Summary </h3>
+          <table id="datatable_FindingsSummary"
+                 class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                 data-hs-datatables-options='{"order": []}'>
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 40%;">Model</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('3','','Summary')">High</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('2','','Summary')">Medium</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('1','','Summary')">Low</th>
+                <th style="cursor: pointer; text-align: right;" onclick="showFindings('0','','Summary')">Mitigated</th>
+                <th style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, val in findingsCntByMdls.items %}
+              <tr>
+                <td style="cursor: pointer;" onclick="showFindings('','{{val.mdl_id}}','Summary')">{{val.prm_name}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('3','{{val.mdl_id}}','Summary')">{{val.High}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('2','{{val.mdl_id}}','Summary')">{{val.Medium}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('1','{{val.mdl_id}}','Summary')">{{val.Low}}</td>
+                <td style="text-align: right; cursor: pointer;" onclick="showFindings('0','{{val.mdl_id}}','Summary')">{{val.Mitigated}}</td>
+                <td style="text-align: right;">{{val.Total}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

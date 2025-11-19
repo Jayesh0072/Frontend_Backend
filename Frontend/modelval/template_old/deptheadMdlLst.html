@@ -1,0 +1,365 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<style>
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+</style>
+ 
+
+<!-- Added by Shuv Starts (for Project Details pop-up)-->
+<div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scrollingLongModalLabel2">Model Info</h5>
+        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+      </div>
+      <div class="modal-body p-5 px-md-6">
+        <table class="table table1" >
+                
+          <tr>
+            <th scope="row" style="width:40%">Department</th>
+            <td><label id='lblDept'></label></td>
+          </tr>                 
+          <tr>
+            <th scope="row">Function</th>
+            <td><label id='lblFunc'></label></td>                      
+          </tr>
+          <tr>
+            <th scope="row">Registration Data</th>
+            <td><label id='lblRegDate'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Id</th>
+            <td><label id='lblMdlId'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Primary Model Name </th>
+            <td><label id='lblPrmNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Secondary Model Name </th>
+            <td><label id='lblSecNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Source  </th>
+            <td><label id='lblMdlSrc'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Model Type  </th>
+            <td><label id='lblMdlType'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Abstract</th>
+            <td><label id='lblMdlAbsct'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Objective of Model</th>
+            <td><label id='lblMdlObj'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Application of Model</th>
+            <td><label id='lblApplMdl'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Risk Analysis </th>
+            <td><label id='lblMdlRiskAnlz'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Products Addressed </th>
+            <td><label id='lblPrdAddr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Usage Frequency </th>
+            <td><label id='lblSsageFreq'></label></td>
+          </tr>
+          <!-- risk tab started -->
+          <tr>
+            <th scope="row">Model Risk </th>
+            <td><label id='lblMdlRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Intrinsic Risk </th>
+            <td><label id='lblIntrRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Reliance</th>
+            <td><label id='lblReliance'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Materiality</th>
+            <td><label id='lblMateriality'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Risk Mitigation </th>
+            <td><label id='lblRiskMiti'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Fair Lending</th>
+            <td><label id='lblFairLendg'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Owner/s</th>
+            <td><label id='lblOwner'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Developer/s</th>
+            <td><label id='lblDevlopers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">User/s</th>
+            <td><label id='lblUsers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Production Support</th>
+            <td><label id='lblPrdnSupp'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Upstream Models</th>
+            <td><label id='lblupstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Downstream Models</th>
+            <td><label id='lbldwstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Approach</th>
+            <td><label id='lblApproach'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Frequency</th>
+            <td><label id='lblMonFreq'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Metrics</th>
+            <td><label id='lblMonMtrc'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event/s </th>
+            <td><label id='lblTriggerEve'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Date  </th>
+            <td><label id='lblLastTgrDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Mitigation Date </th>
+            <td><label id='lblMitgDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event Mitigation  </th>
+            <td><label id='lblMitiEv'></label></td>
+          </tr>
+          <!-- risk tab ended --> 
+      </table>
+      </div>
+      <div class="modal-footer">
+        <!-- <a class="nav-link" href="http://3.131.88.246:8000" target="_blank" data-bs-toggle="" aria-expanded="false">           
+          <button class="btn btn-sm btn-primary px-6">Validate Model</button>
+        </a>
+        <a class="nav-link" href="#" data-bs-toggle="" aria-expanded="false">           
+          <button class="btn btn-sm btn-primary px-6">Version History</button>
+        </a> -->
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+
+<div class="content" style="padding-top:0px;"> 
+  
+  <div class="mb-9">
+    <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"],"page":10,"pagination":true}'>
+       
+      <div class="row g-3 justify-content-between align-items-end mb-4">
+         
+        <div class="col-12 col-sm-auto">
+          <div class="d-flex align-items-center">
+            <div class="search-box me-3">
+              <div class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                <input class="form-control search-input search" type="search" placeholder="Search model" aria-label="Search" />
+                <span class="fas fa-search search-box-icon"></span>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+        {% if canAdd == "1"%}
+        <div class="col"><a class="btn btn-primary px-5" href="{{getCriteria}}"><i class="fa-solid fa-plus me-2"></i>Add New</a></div>
+        {% endif %}
+      </div> 
+      <div class="table-responsive" >
+        
+        <table class="table table-sm fs--1 mb-0">
+          <thead>
+            <tr>
+              <th class="white-space-nowrap align-middle ps-0" scope="col" style="width:12%;"></th>
+              <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:12%;text-align: center;">Model ID</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:12%;text-align: center;">Primary Model Name</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Type" style="width:12%;text-align: center;">Model Source</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Area" style="width:12%;text-align: center;">Model Type</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Internal_Vendor" style="width:12%;text-align: center;">Model Risk</th>
+              <th class="sort align-middle ps-3" scope="col" data-sort="Status" style="width:12%;text-align: center;">Intrinsic Risk</th>
+              <th class="sort align-middle text-end" scope="col" data-sort="Approval_Status" style="width:12%;text-align: center;">Materiality</th>
+            </tr>
+          </thead>  
+          <tbody class="list" id="project-list-table-body">
+            {% for key, val in modelinfo.items  %}             
+              <tr class="position-static">
+                <td class="align-middle time white-space-nowrap ps-0 py-4">
+                  <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                  <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                  <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                </td>
+                <td class="align-middle time white-space ps-0 Model_ID py-4" style="text-align: center;">
+                  
+                  <a class="text-decoration-none fw-bold fs-0"  href="#"  onclick="showModala('{{val.Mdl_Id}}')" >{{val.Mdl_Id}}</a>
+                </td>
+                <td class="align-middle white-space Process_Name ps-3 py-4" style="text-align: center;">
+                  {{val.Prm_Name}}
+                </td>
+                <td class="align-middle white-space Type ps-3 py-4" style="text-align: center;">
+                  {{val.Mdl_Src_Label}}
+                </td>
+                <td class="align-middle  white-space Area ps-3 py-4" style="text-align: center;">
+                  {{val.Mdl_Type_Label}}
+                </td>
+                <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4" style="text-align: center;">
+                  {%if val.Mdl_Risk_Label == "High" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                  {%elif val.Mdl_Risk_Label == "Medium" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                  {%elif val.Mdl_Risk_Label == "Low" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                  {% endif %}
+                </td>
+                <td class="align-middle white-space-nowrap ps-3 Status" style="text-align: center;"> 
+                  {%if val.Intrinsic_Label == "High" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                  {%elif val.Intrinsic_Label == "Medium" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                  {%elif val.Intrinsic_Label == "Low" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                  {% endif %}
+                </td>
+                <td class="align-middle white-space-nowrap text-end Approval_Status" style="text-align: center;">
+                  
+                  {%if val.Materiality_Label == "High" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                  {%elif val.Materiality_Label == "Medium" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                  {%elif val.Materiality_Label == "Low" %}
+                      <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                  {% endif %}
+                </td> 
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+        <div class="d-flex">
+          <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+        </div>
+        <div class="d-flex">
+          <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+          <ul class="mb-0 pagination"></ul>
+          <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+        </div>
+      </div>
+    </div>
+  </div> 
+  </div>
+                        {% endblock content %}
+  {%block script%}
+  <script type="text/javascript" >
+    function showModala(id){
+      
+      $.ajax({
+            url: '/getMdlDetailsById/', 
+            data:{ mdlId: id},
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.istaken=='true'){
+               // $('#tblMaster tr:last').after('<tr><td>'+$("#txtopt").val()+'</td><td>'+$("#txtdesc").val()+'</td></tr>');
+               $('#projectsCardViewModal').modal('toggle');
+               //console.log(data.mdldata[0].Mdl_Src_Label,',' +' id is '+data.mdldata.Mdl_Id)
+               //console.log(data);
+               $('#lblDept').text(data.mdldata[0].Dept_Label);
+               $('#lblFunc').text(data.mdldata[0].Mdl_Fncn_Label);
+               $('#lblRegDate').text(data.mdldata[0].regdate);
+               $('#lblMdlId').text(data.mdldata[0].Mdl_Id);
+               $('#lblPrmNm').text(data.mdldata[0].Prm_Name);
+               $('#lblSecNm').text(data.mdldata[0].Sec_Name);
+               $('#lblMdlSrc').text(data.mdldata[0].Mdl_Src_Label);
+               $('#lblMdlType').text(data.mdldata[0].Mdl_Type_Label);
+               $('#lblMdlAbsct').text(data.mdldata[0].Mdl_Absct);
+               $('#lblMdlObj').text(data.mdldata[0].Mdl_objective);
+               $('#lblApplMdl').text(data.mdldata[0].Mdl_Appl);
+               $('#lblMdlRiskAnlz').text(data.mdldata[0].Mdl_Risk_Ansl);
+               $('#lblPrdAddr').text(data.mdldata[0].Prd_Addr_Label);
+               $('#lblSsageFreq').text(data.mdldata[0].Mdl_Use_Freq_Label);
+               //risk tab starts
+               $('#lblMdlRisk').text(data.mdldata[0].Mdl_Risk_Label);
+               $('#lblIntrRisk').text(data.mdldata[0].Intrinsic_Label);
+               $('#lblReliance').text(data.mdldata[0].Reliance_Label);
+               $('#lblMateriality').text(data.mdldata[0].Materiality_Label);
+               $('#lblRiskMiti').text(data.mdldata[0].Risk_Mtgn);
+               $('#lblFairLendg').text(data.mdldata[0].Fair_Lndg);
+               $('#lblDevlopers').text(data.Developer);
+               $('#lblUsers').text(data.User);
+               $('#lblPrdnSupp').text(data.PrdnSupport);
+               
+               //relevant users ends
+               //dependencies starts
+               $('#lblupstr').text('');
+               $('#lbldwstr').text('');
+               if(Object.keys(data.dependencies).length>0){
+                $('#lblupstr').text(data.dependencies[0].Mdl_Dwstream_Label);
+                $('#lbldwstr').text(data.dependencies[0].Mdl_Upstream_Label);
+               }
+               //dependencies ends
+
+               //perfomance monitoring start
+               $('#lblApproach').text('');
+                $('#lblMonFreq').text('');
+                $('#lblMonMtrc').text('');
+                $('#lblTriggerEve').text('');
+                $('#lblLastTgrDt').text('');
+                $('#lblMitgDt').text('');
+                $('#lblMitiEv').text(''); 
+               if(Object.keys(data.PerformMon).length>0){
+                $('#lblApproach').text(data.PerformMon[0].Approach);
+                $('#lblMonFreq').text(data.PerformMon[0].Mdl_Montr_Freq_Label);
+                $('#lblMonMtrc').text(data.PerformMon[0].Monr_Mtrcs);
+                $('#lblTriggerEve').text(data.PerformMon[0].Tgr_Evt);
+                $('#lblLastTgrDt').text(data.PerformMon[0].Lst_Tgr_Dt);
+                $('#lblMitgDt').text(data.PerformMon[0].Lst_Tgr_Mtgn_Dt);
+                $('#lblMitiEv').text(data.PerformMon[0].Tgr_Evt_Mtgn); 
+               }
+               //perfomance monitoring ends
+
+               }
+               else
+               {
+                 
+               }
+            }
+        });
+      
+    }
+   
+  </script>
+  {%endblock script %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %} 
+{% block style %}
+
+{% endblock style %}
+<head>
+    <title>Plotly Chart</title>
+</head>
+
+
+{% block content %}
+<body>
+    <h2>Chart</h2>
+    <div id="chart"></div>
+</body>
+{% endblock content%}
+
+{% block script %}
+ <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // Get chart data from Django
+        var fig = {{ fig_json|safe }};
+        {% comment %} Plotly.newPlot('chart', fig.data, fig.layout); {% endcomment %}
+        Plotly.newPlot('chart', fig.data, fig.layout, {
+        displayModeBar: true,
+        responsive: true,
+        scrollZoom: true
+        }).then(function() {
+        // 👇 This ensures the icons get resized *after* the toolbar renders
+        setTimeout(() => {
+            document.querySelectorAll('.modebar-btn svg').forEach(el => {
+            el.style.width = '28px';
+            el.style.height = '28px';
+            });
+        }, 10);
+        });
+        // Add click event
+        var chartDiv = document.getElementById('chart');
+        chartDiv.on('plotly_click', function(data) {
+            var point = data.points[0];
+            alert("Clicked on Task: " + point.y +
+                  "\nStart: " + point.x);
+        });
+    </script>
+{% endblock script %}

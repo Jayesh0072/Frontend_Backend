@@ -1,0 +1,689 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+<div class="card h-100">
+  <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-topright: 6px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;">
+    <h4 style="color:#3e465b; padding:10px 20px">Approve Edit</h4>
+  </div>
+  <div class="card-body">
+  <div id="tableExample" class="mb-9">
+    <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"]}'>
+       
+      <div class="row g-3 justify-content-between align-items-end mb-4">
+         
+       
+        <!-- <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" href="{{addnewuser}}"><i class="fa-solid fa-plus me-2"></i>Add New</a></div> -->
+      </div> 
+      <div class="table-responsive"  style="max-height:450px;">
+        <table  class="table table-sm fs--1 mb-0"> <!--  class="table fs--1 mb-0 border-top border-200"> -->
+          <tr>
+            <th>Model Field</th>
+            <th>Existing Value</th>
+            <th>Updated Value</th>
+            <th>Approve</th>
+          </tr>
+            <!-- <tr>
+                <th scope="row" style="width:40%">Department</th>
+                <td><label id='lblDept'></label></td>
+                <td><label id='lblDept1'></label></td>
+                
+              </tr>                  -->
+              <tr  id="Func" >
+                <th scope="row">Function</th>
+                <td><label id='lblFunc'></label></td> 
+                <td><label id='lblFunc1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Func','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <!-- <tr>
+                <th scope="row">Registration Date</th>
+                <td><label id='lblRegDate'></label></td>
+                <td><label id='lblRegDate1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Reg_Dt','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr>
+                <th scope="row">Id</th>
+                <td><label id='lblMdlId'></label></td>
+                <td><label id='lblMdlId1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Mdl_Id','Temp_Mdl_OverView')"/> </td>
+              </tr> -->
+              <tr   id="Prm_Name">
+                <th scope="row">Primary Model Name </th>
+                <td><label id='lblPrmNm'></label></td>
+                <td><label id='lblPrmNm1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Prm_Name','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr  id="Sec_Name">
+                <th scope="row">Secondary Model Name </th>
+                <td><label id='lblSecNm'></label></td>
+                <td><label id='lblSecNm1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Sec_Name','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr  id="Mdl_Source">
+                <th scope="row">Model Source  </th>
+                <td><label id='lblMdlSrc'></label></td>
+                <td><label id='lblMdlSrc1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Mdl_Source','Temp_Mdl_OverView')"/> </td>
+              </tr> 
+              <tr id="Mdl_Type">
+                <th scope="row">Model Type  </th>
+                <td><label id='lblMdlType'></label></td>
+                <td><label id='lblMdlType1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve"   onclick="update('Mdl_Type','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr  id="Mdl_Absct">
+                <th scope="row">Model Abstract</th>
+                <td><label id='lblMdlAbsct'></label></td>
+                <td><label id='lblMdlAbsct1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Mdl_Absct','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr id="Mdl_objective">
+                <th scope="row">Objective of Model</th>
+                <td><label id='lblMdlObj'></label></td>
+                <td><label id='lblMdlObj1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve"  onclick="update('Mdl_objective','Temp_Mdl_OverView')"/> </td>
+              </tr> 
+              <tr  id="Mdl_Appl">
+                <th scope="row">Application of Model</th>
+                <td><label id='lblApplMdl'></label></td>
+                <td><label id='lblApplMdl1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Mdl_Appl','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr id="Mdl_Risk_Anls">
+                <th scope="row">Model Risk Analysis </th>
+                <td><label id='lblMdlRiskAnlz'></label></td>
+                <td><label id='lblMdlRiskAnlz1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve"  onclick="update('Mdl_Risk_Anls','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr  id="PrctAddr">
+                <th scope="row">Products Addressed </th>
+                <td><label id='lblPrdAddr'></label></td>
+                <td><label id='lblPrdAddr1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('PrctAddr','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <tr  id ="UsgFreq">
+                <th scope="row">Usage Frequency </th>
+                <td><label id='lblSsageFreq'></label></td>
+                <td><label id='lblSsageFreq1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('UsgFreq','Temp_Mdl_OverView')"/> </td>
+              </tr>
+              <!-- risk tab started -->
+              <tr id="Mdl_Risks">
+                <th scope="row">Model Risk </th>
+                <td><label id='lblMdlRisk'></label></td>
+                <td><label id='lblMdlRisk1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve"  onclick="update('Mdl_Risks','Temp_Mdl_Risks')"/> </td>
+              </tr>
+              <tr id="Intr_Risk" >
+                <th scope="row">Intrinsic Risk </th>
+                <td><label id='lblIntrRisk'></label></td>
+                <td><label id='lblIntrRisk1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Intr_Risk','Temp_Mdl_Risks')"/> </td>
+              </tr>
+              <tr id="Reliance" >
+                <th scope="row">Reliance</th>
+                <td><label id='lblReliance'></label></td>
+                <td><label id='lblReliance1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Reliance','Temp_Mdl_Risks')"/> </td>
+              </tr>
+              <tr  id="Materiality">
+                <th scope="row">Materiality</th>
+                <td><label id='lblMateriality'></label></td>
+                <td><label id='lblMateriality1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Materiality','Temp_Mdl_Risks')"/> </td>
+              </tr>
+              <tr id="Risk_Mtgn" >
+                <th scope="row">Risk Mitigation </th>
+                <td><label id='lblRiskMiti'></label></td>
+                <td><label id='lblRiskMiti1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Risk_Mtgn','Temp_Mdl_Risks')"/> </td>
+              </tr>
+              <tr id="Fair_Lndg" >
+                <th scope="row">Fair Lending</th>
+                <td><label id='lblFairLendg'></label></td>
+                <td><label id='lblFairLendg1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Fair_Lndg','Temp_Mdl_Risks')"/> </td>
+              </tr>
+              <tr>
+                <th scope="row">Model Owner/s</th>
+                <td><label id='lblOwner'></label></td>
+                <td><label id='lblOwner1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" id="Owner" onclick="update('','Temp_Mdl_Relevant_personnel')"/> </td>
+              </tr>
+              <tr>
+                <th scope="row">Model Developer/s</th>
+                <td><label id='lblDevlopers'></label></td>
+                <td><label id='lblDevlopers1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" id="Devloper" onclick="update('','Temp_Mdl_Relevant_personnel')"/> </td>
+              </tr>
+              <tr class="User" >
+                <th scope="row">User/s</th>
+                <td><label id='lblUsers'></label></td>
+                <td><label id='lblUsers1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('','Temp_Mdl_Relevant_personnel')"/> </td>
+              </tr>
+              <tr class="PrdnSup">
+                <th class="PrdnSup" scope="row">Production Support</th>
+                <td class="PrdnSup"> <label id='lblPrdnSupp'></label></td>
+                <td class="PrdnSup"><label id='lblPrdnSupp1'></label></td>
+                <td class="PrdnSup"><input class="btn btn-outline-primary" type="button" value="Approve"  onclick="update('','Temp_Mdl_Relevant_personnel')"/> </td>
+              </tr>
+              <tr  id="UpstrmMdl">
+                <th scope="row">Upstream Models</th>
+                <td><label id='lblupstr'></label></td>
+                <td><label id='lblupstr1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('UpstrmMdl','Temp_Mdl_Dependencies')"/> </td>
+              </tr>
+              <tr  id="DwstrmMdl" >
+                <th scope="row">Downstream Models</th>
+                <td><label id='lbldwstr'></label></td>
+                <td><label id='lbldwstr1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve"onclick="update('DwstrmMdl','Temp_Mdl_Dependencies')"/> </td>
+              </tr>
+              <tr id="Approach" >
+                <th scope="row">Approach</th>
+                <td><label id='lblApproach'></label></td>
+                <td><label id='lblApproach1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" onclick="update('Approach','Temp_Mdl_Performance_Monitor')" value="Approve"/> </td>
+              </tr>
+              <tr id="Monr_Freq">
+                <th scope="row">Monitoring Frequency</th>
+                <td><label id='lblMonFreq'></label></td>
+                <td><label id='lblMonFreq1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button"  value="Approve" onclick="update('Monr_Freq','Temp_Mdl_Performance_Monitor')"/> </td>
+              </tr>
+              <tr  id="Monr_Mtrcs">
+                <th scope="row">Monitoring Metrics</th>
+                <td><label id='lblMonMtrc'></label></td>
+                <td><label id='lblMonMtrc1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Monr_Mtrcs','Temp_Mdl_Performance_Monitor')"/> </td>
+              </tr>
+              <tr  id="Tgr_Evt">
+                <th scope="row">Trigger Event/s </th>
+                <td><label id='lblTriggerEve'></label></td>
+                <td><label id='lblTriggerEve1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Tgr_Evt','Temp_Mdl_Performance_Monitor')"/> </td>
+              </tr>
+              <tr  id="Lst_Tgr_Dt">
+                <th scope="row">Last Trigger Event Date  </th>
+                <td><label id='lblLastTgrDt'></label></td>
+                <td><label id='lblLastTgrDt1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve" onclick="update('Lst_Tgr_Dt','Temp_Mdl_Performance_Monitor')"/> </td>
+              </tr>
+              <tr id="Lst_Tgr_Mtgn_Dt">
+                <th scope="row">Last Trigger Event Mitigation Date </th>
+                <td><label id='lblMitgDt'></label></td>
+                <td><label id='lblMitgDt1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve"  onclick="update('Lst_Tgr_Mtgn_Dt','Temp_Mdl_Performance_Monitor')"/> </td>
+              </tr>
+              <tr id="Tgr_Evt_Mtgn">
+                <th scope="row">Trigger Event Mitigation  </th>
+                <td><label id='lblMitiEv'></label></td>
+                <td><label id='lblMitiEv1'></label></td>
+                <td><input class="btn btn-outline-primary" type="button" value="Approve"  onclick="update('Tgr_Evt_Mtgn','Temp_Mdl_Performance_Monitor')"/> </td>
+              </tr>
+              <button class="btn btn-outline-primary" class="btn btn-outline-primary" type="button" value="Approve" id="btnEdit" style="display: none;" onclick="showedittemp('{{val.Mdl_Id}}','{{val.canDecomm}}','{{val.Is_Decomm}}','{{val.canEdit}}')">Approve Edit</button>
+              <button class="btn btn-outline-primary" class="btn btn-outline-primary" type="button" value="Approve" id="btnDecomm" style="display: none;" onclick="showDecomm()">Decommission</button>
+              <!-- <button class="btn btn-outline-primary" class="btn btn-outline-primary" type="button" value="Approve" data-bs-dismiss="modal">Cancel</button> -->
+        </table>
+      </div>
+     
+    </div>
+  </div> 
+  </div> </div></div>
+{% endblock content %}
+{%block script%}
+<script>
+$(document).ready(function () {
+showedittemp('{{mdlId}}')
+});
+
+function update(colname,tblname){
+    // alert(colname+tblname)
+    $.ajax({
+          url: '/ApproveEdit/', 
+          data:{ mdlId: '{{mdlId}}',colname:colname,tblname:tblname},
+         dataType: 'json',   
+          success: function (data) {
+            console.log("data ",data) 
+            if(data.istaken=='true')
+            {
+              alert('Updated successfully.')
+            }
+          }
+    })
+}
+
+function showedittemp(mdl_id){
+     
+   
+    // alert("work in progress bar")
+    // alert(canEdit)
+   
+    $('#lblDept').text('');
+    $('#lblFunc').text('');
+    $('#lblRegDate').text('');
+    $('#lblMdlId').text('');
+    $('#lblPrmNm').text('');
+    $('#lblSecNm').text('');
+    $('#lblMdlSrc').text('');
+    $('#lblMdlType').text('');
+    $('#lblMdlAbsct').text('');
+    $('#lblMdlObj').text('');
+    $('#lblApplMdl').text('');
+    $('#lblMdlRiskAnlz').text('');
+    $('#lblPrdAddr').text('');
+    $('#lblSsageFreq').text('');
+    //risk tab starts
+    $('#lblMdlRisk').text('');
+    $('#lblIntrRisk').text('');
+    $('#lblReliance').text('');
+    $('#lblMateriality').text('');
+    $('#lblRiskMiti').text('');
+    $('#lblFairLendg').text('');
+    $('#lblDevlopers').text('');
+    $('#lblUsers').text('');
+    $('#lblPrdnSupp').text('');
+    
+    //relevant users ends
+    //dependencies starts
+    $('#lblupstr').text('');
+    $('#lbldwstr').text('');
+    $('#lblApproach').text('');
+    $('#lblMonFreq').text('');
+    $('#lblMonMtrc').text('');
+    $('#lblTriggerEve').text('');
+    $('#lblLastTgrDt').text('');
+    $('#lblMitgDt').text('');
+    $('#lblMitiEv').text(''); 
+    $('#lblOwner').text('');
+
+    //Temp Data----------------------------------
+    $('#lblDept1').text('');
+    $('#lblFunc1').text('');
+    $('#lblRegDate1').text('');
+    $('#lblMdlId1').text('');
+    $('#lblPrmNm1').text('');
+    $('#lblSecNm1').text('');
+    $('#lblMdlSrc1').text('');
+    $('#lblMdlType1').text('');
+    $('#lblMdlAbsct1').text('');
+    $('#lblMdlObj1').text('');
+    $('#lblApplMdl1').text('');
+    $('#lblMdlRiskAnlz1').text('');
+    $('#lblPrdAddr1').text('');
+    $('#lblSsageFreq1').text('');
+    //risk tab starts
+    $('#lblMdlRisk1').text('');
+    $('#lblIntrRisk1').text('');
+    $('#lblReliance1').text('');
+    $('#lblMateriality1').text('');
+    $('#lblRiskMiti1').text('');
+    $('#lblFairLendg1').text('');
+    $('#lblDevlopers1').text('');
+    $('#lblUsers1').text('');
+    $('#lblPrdnSupp1').text('');
+    
+    //relevant users ends
+    //dependencies starts
+    $('#lblupstr1').text('');
+    $('#lbldwstr1').text('');
+    $('#lblApproach1').text('');
+    $('#lblMonFreq1').text('');
+    $('#lblMonMtrc1').text('');
+    $('#lblTriggerEve1').text('');
+    $('#lblLastTgrDt1').text('');
+    $('#lblMitgDt1').text('');
+    $('#lblMitiEv1').text(''); 
+    $('#lblOwner1').text('');
+    $.ajax({
+          url: '/getTempMdlDetailsById/', 
+          data:{ mdlId: mdl_id},
+         dataType: 'json',   
+          success: function (data) {
+            console.log("data ",data) 
+             if(data.istaken=='true'){
+             // $('#tblMaster tr:last').after('<tr><td>'+$("#txtopt").val()+'</td><td>'+$("#txtdesc").val()+'</td></tr>');
+            //  $('#projectsCardViewModaltemp').modal('toggle');
+             //console.log(data.mdldata[0].Mdl_Src_Label,',' +' id is '+data.mdldata.Mdl_Id)
+             //console.log(data);
+             $('#lblDept').text(data.mdldata[0].Dept_Label)
+             $('#lblFunc').text(data.mdldata[0].Mdl_Fncn_Label);
+             $('#lblRegDate').text(data.mdldata[0].regdate);
+             $('#lblMdlId').text(data.mdldata[0].Mdl_Id);
+             $('#lblPrmNm').text(data.mdldata[0].Prm_Name);
+             $('#lblSecNm').text(data.mdldata[0].Sec_Name);
+             $('#lblMdlSrc').text(data.mdldata[0].Mdl_Src_Label);
+             $('#lblMdlType').text(data.mdldata[0].Mdl_Type_Label);
+             $('#lblMdlAbsct').text(data.mdldata[0].Mdl_Absct);
+             $('#lblMdlObj').text(data.mdldata[0].Mdl_objective);
+             $('#lblApplMdl').text(data.mdldata[0].Mdl_Appl);
+             $('#lblMdlRiskAnlz').text(data.mdldata[0].Mdl_Risk_Ansl);
+             $('#lblPrdAddr').text(data.mdldata[0].Prd_Addr_Label);
+             $('#lblSsageFreq').text(data.mdldata[0].Mdl_Use_Freq_Label);
+             //risk tab starts
+             $('#lblMdlRisk').text(data.mdldata[0].Mdl_Risk_Label);
+             $('#lblIntrRisk').text(data.mdldata[0].Intrinsic_Label);
+             $('#lblReliance').text(data.mdldata[0].Reliance_Label);
+             $('#lblMateriality').text(data.mdldata[0].Materiality_Label);
+             $('#lblRiskMiti').text(data.mdldata[0].Risk_Mtgn);
+             $('#lblFairLendg').text(data.mdldata[0].Fair_Lndg);
+             $('#lblDevlopers').text(data.Developer);
+             $('#lblUsers').text(data.User);
+             $('#lblPrdnSupp').text(data.PrdnSupport);
+             $('#lblOwner').text(data.Owner);
+
+             
+             //relevant users ends
+             //dependencies starts
+             $('#lblupstr').text('');
+             $('#lbldwstr').text('');
+             if(Object.keys(data.dependencies).length>0){
+              $('#lblupstr').text(data.dependencies[0].Mdl_Dwstream_Label);
+              $('#lbldwstr').text(data.dependencies[0].Mdl_Upstream_Label);
+             }
+             //dependencies ends
+
+             //perfomance monitoring start
+             $('#lblApproach').text('');
+              $('#lblMonFreq').text('');
+              $('#lblMonMtrc').text('');
+              $('#lblTriggerEve').text('');
+              $('#lblLastTgrDt').text('');
+              $('#lblMitgDt').text('');
+              $('#lblMitiEv').text(''); 
+             if(Object.keys(data.PerformMon).length>0){
+              $('#lblApproach').text(data.PerformMon[0].Approach);
+              $('#lblMonFreq').text(data.PerformMon[0].Mdl_Montr_Freq_Label);
+              $('#lblMonMtrc').text(data.PerformMon[0].Monr_Mtrcs);
+              $('#lblTriggerEve').text(data.PerformMon[0].Tgr_Evt);
+              $('#lblLastTgrDt').text(data.PerformMon[0].Lst_Tgr_Dt);
+              $('#lblMitgDt').text(data.PerformMon[0].Lst_Tgr_Mtgn_Dt);
+              $('#lblMitiEv').text(data.PerformMon[0].Tgr_Evt_Mtgn); 
+             }
+             //perfomance monitoring ends
+
+             //Temp data 
+             $('#lblDept1').text(data.temp_mdldata[0].Dept_Label)
+             $('#lblFunc1').text(data.temp_mdldata[0].Mdl_Fncn_Label);
+             if(data.temp_mdldata[0].Mdl_Fncn_Label==data.mdldata[0].Mdl_Fncn_Label)
+             {
+                $("#Func").hide()
+             }
+             else{
+                $("#Func").show()
+             }
+             $('#lblRegDate1').text(data.temp_mdldata[0].regdate);
+             $('#lblMdlId1').text(data.temp_mdldata[0].Mdl_Id);
+             $('#lblPrmNm1').text(data.temp_mdldata[0].Prm_Name);
+             if(data.temp_mdldata[0].Prm_Name==data.mdldata[0].Prm_Name)
+             {
+                $("#Prm_Name").hide()
+             }
+             else{
+                $("#Prm_Name").show()
+             }
+             $('#lblSecNm1').text(data.temp_mdldata[0].Sec_Name);
+             if(data.temp_mdldata[0].Sec_Name==data.mdldata[0].Sec_Name)
+             {
+                $("#Sec_Name").hide()
+             }
+             else{
+                $("#Sec_Name").show()
+             }
+             $('#lblMdlSrc1').text(data.temp_mdldata[0].Mdl_Src_Label);
+             if(data.temp_mdldata[0].Mdl_Src_Label==data.mdldata[0].Mdl_Src_Label)
+             {
+                $("#Mdl_Source").hide()
+             }
+             else{
+                $("#Mdl_Source").show()
+             }
+             $('#lblMdlType1').text(data.temp_mdldata[0].Mdl_Type_Label);
+             if(data.temp_mdldata[0].Mdl_Type_Label==data.mdldata[0].Mdl_Type_Label)
+             {
+                $("#Mdl_Type").hide()
+             }
+             else{
+                $("#Mdl_Type").show()
+             }
+             $('#lblMdlAbsct1').text(data.temp_mdldata[0].Mdl_Absct);
+             if(data.temp_mdldata[0].Mdl_Absct==data.mdldata[0].Mdl_Absct)
+             {
+                $("#Mdl_Absct").hide()
+             }
+             else{
+                $("#Mdl_Absct").show()
+             }
+             $('#lblMdlObj1').text(data.temp_mdldata[0].Mdl_objective);
+             if(data.temp_mdldata[0].Mdl_objective==data.mdldata[0].Mdl_objective)
+             {
+                $("#Mdl_objective").hide()
+             }
+             else{
+                $("#Mdl_objective").show()
+             }
+             $('#lblApplMdl1').text(data.temp_mdldata[0].Mdl_Appl);
+             if(data.temp_mdldata[0].Mdl_Appl==data.mdldata[0].Mdl_Appl)
+             {
+                $("#Mdl_Appl").hide()
+             }
+             else{
+                $("#Mdl_Appl").show()
+             }
+             $('#lblMdlRiskAnlz1').text(data.temp_mdldata[0].Mdl_Risk_Ansl);
+             if(data.temp_mdldata[0].Mdl_Risk_Ansl==data.mdldata[0].Mdl_Risk_Ansl)
+             {
+                $("#Mdl_Risk_Anls").hide()
+             }
+             else{
+                $("#Mdl_Risk_Anls").show()
+             }
+             $('#lblPrdAddr1').text(data.temp_mdldata[0].Prd_Addr_Label);
+             if(data.temp_mdldata[0].Prd_Addr_Label==data.mdldata[0].Prd_Addr_Label)
+             {
+                $("#PrctAddr").hide()
+             }
+             else{
+                $("#PrctAddr").show()
+             }
+             $('#lblSsageFreq1').text(data.temp_mdldata[0].Mdl_Use_Freq_Label);
+             if(data.temp_mdldata[0].Mdl_Use_Freq_Label==data.mdldata[0].Mdl_Use_Freq_Label)
+             {
+                $("#UsgFreq").hide()
+             }
+             else{
+                $("#UsgFreq").show()
+             }
+             //risk tab starts
+             $('#lblMdlRisk1').text(data.temp_mdldata[0].Mdl_Risk_Label);
+             if(data.temp_mdldata[0].Mdl_Risk_Label==data.mdldata[0].Mdl_Risk_Label)
+             {
+                $("#Mdl_Risks").hide()
+             }
+             else{
+                $("#Mdl_Risks").show()
+             }
+             $('#lblIntrRisk1').text(data.temp_mdldata[0].Intrinsic_Label);
+             if(data.temp_mdldata[0].Intrinsic_Label==data.mdldata[0].Intrinsic_Label)
+             {
+                $("#Intr_Risk").hide()
+             }
+             else{
+                $("#Intr_Risk").show()
+             }
+             $('#lblReliance1').text(data.temp_mdldata[0].Reliance_Label);
+             if(data.temp_mdldata[0].Reliance_Label==data.mdldata[0].Reliance_Label)
+             {
+                $("#Reliance").hide()
+             }
+             else{
+                $("#Reliance").show()
+             }
+             $('#lblMateriality1').text(data.temp_mdldata[0].Materiality_Label);
+             if(data.temp_mdldata[0].Materiality_Label==data.mdldata[0].Materiality_Label)
+             {
+                $("#Materiality").hide()
+             }
+             else{
+                $("#Materiality").show()
+             }
+             $('#lblRiskMiti1').text(data.temp_mdldata[0].Risk_Mtgn);
+             if(data.temp_mdldata[0].Risk_Mtgn==data.mdldata[0].Risk_Mtgn)
+             {
+                $("#Risk_Mtgn").hide()
+             }
+             else{
+                $("#Risk_Mtgn").show()
+             }
+             $('#lblFairLendg1').text(data.temp_mdldata[0].Fair_Lndg);
+             if(data.temp_mdldata[0].Fair_Lndg==data.mdldata[0].Fair_Lndg)
+             {
+                $("#Fair_Lndg").hide()
+             }
+             else{
+                $("#Fair_Lndg").show()
+             }
+             $('#lblDevlopers1').text(data.temp_Developer);
+             if(data.temp_Developer==data.Developer)
+             {
+                $("#Devloper").hide()
+             }
+             else{
+                $("#Devloper").show()
+             }
+             $('#lblUsers1').text(data.temp_User);
+             if(data.temp_User==data.User)
+             {
+                $(".User").hide()
+             }
+             else{
+                $(".User").show()
+             }
+             $('#lblPrdnSupp1').text(data.temp_PrdnSupport);
+             if(data.temp_PrdnSupport==data.PrdnSupport)
+             {
+                $(".PrdnSup").hide()
+             }
+             else{
+                $(".PrdnSup").show()
+             }
+             $('#lblOwner1').text(data.temp_Owner);
+             if(data.temp_Owner==data.Owner)
+             {
+                $("#Owner").hide()
+             }
+             else{
+                $("#Owner").show()
+             }
+
+             
+             //relevant users ends
+             //dependencies starts
+             $('#lblupstr1').text('');
+             $('#lbldwstr1').text('');
+             if(Object.keys(data.dependencies).length>0){
+              $('#lbldwstr1').text(data.temp_dependencies[0].Mdl_Dwstream_Label);
+              if(data.temp_dependencies[0].Mdl_Dwstream_Label==data.dependencies[0].Mdl_Dwstream_Label)
+              {
+                  $("#DwstrmMdl").hide()
+              }
+              else{
+                  $("#DwstrmMdl").show()
+              }
+              $('#lblupstr1').text(data.dependencies[0].Mdl_Upstream_Label);
+              if(data.temp_dependencies[0].Mdl_Upstream_Label==data.dependencies[0].Mdl_Upstream_Label)
+              {
+                  $("#UpstrmMdl").hide()
+              }
+              else{
+                  $("#UpstrmMdl").show()
+              }
+             }
+             //dependencies ends
+
+             //perfomance monitoring start
+             $('#lblApproach1').text('');
+              $('#lblMonFreq1').text('');
+              $('#lblMonMtrc1').text('');
+              $('#lblTriggerEve1').text('');
+              $('#lblLastTgrDt1').text('');
+              $('#lblMitgDt1').text('');
+              $('#lblMitiEv1').text(''); 
+             if(Object.keys(data.temp_PerformMon).length>0){
+              $('#lblApproach1').text(data.temp_PerformMon[0].Approach);
+              if(data.temp_PerformMon[0].Approach==data.PerformMon[0].Approach)
+              {
+                  $("#Approach").hide()
+              }
+              else{
+                  $("#Approach").show()
+              }
+              $('#lblMonFreq1').text(data.temp_PerformMon[0].Mdl_Montr_Freq_Label);
+              if(data.temp_PerformMon[0].Mdl_Montr_Freq_Label==data.PerformMon[0].Mdl_Montr_Freq_Label)
+              {
+                  $("#Monr_Freq").hide()
+              }
+              else{
+                  $("#Monr_Freq").show()
+              }
+              $('#lblMonMtrc1').text(data.temp_PerformMon[0].Monr_Mtrcs);
+              if(data.temp_PerformMon[0].Monr_Mtrcs==data.PerformMon[0].Monr_Mtrcs)
+              {
+                  $("#Monr_Mtrcs").hide()
+              }
+              else{
+                  $("#Monr_Mtrcs").show()
+              }
+              $('#lblTriggerEve1').text(data.temp_PerformMon[0].Tgr_Evt);
+              if(data.temp_PerformMon[0].Tgr_Evt==data.PerformMon[0].Tgr_Evt)
+              {
+                  $("#Tgr_Evt").hide()
+              }
+              else{
+                  $("#Tgr_Evt").show()
+              }
+              $('#lblLastTgrDt1').text(data.temp_PerformMon[0].Lst_Tgr_Dt);
+              if(data.temp_PerformMon[0].Lst_Tgr_Dt==data.PerformMon[0].Lst_Tgr_Dt)
+              {
+                  $("#Lst_Tgr_Dt").hide()
+              }
+              else{
+                  $("#Lst_Tgr_Dt").show()
+              }
+              $('#lblMitgDt1').text(data.temp_PerformMon[0].Lst_Tgr_Mtgn_Dt);
+              if(data.temp_PerformMon[0].Lst_Tgr_Mtgn_Dt==data.PerformMon[0].Lst_Tgr_Mtgn_Dt)
+              {
+                  $("#Lst_Tgr_Mtgn_Dt").hide()
+              }
+              else{
+                  $("#Lst_Tgr_Mtgn_Dt").show()
+              }
+              $('#lblMitiEv1').text(data.temp_PerformMon[0].Tgr_Evt_Mtgn); 
+              if(data.temp_PerformMon[0].Tgr_Evt_Mtgn==data.PerformMon[0].Tgr_Evt_Mtgn)
+              {
+                  $("#Tgr_Evt_Mtgn").hide()
+              }
+              else{
+                  $("#Tgr_Evt_Mtgn").show()
+              }
+             }
+             //perfomance monitoring ends
+             
+
+             }
+             else
+             {
+               
+             }
+          }
+      });
+    
+  }
+</script>
+{%endblock script %}

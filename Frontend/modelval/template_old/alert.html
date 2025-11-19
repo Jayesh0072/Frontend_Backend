@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<script src="{% static 'tinymce/js/tinymce/tinymce.min.js' %}"></script>
+
+
+<div class="card p-3" style="max-width:60rem;">
+    <form action="{% url 'alert' %}" id="target" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-xl-12">
+            <div class="row g-3 mb-6" style="margin-top:5px">
+                <h4 id="v-pills-home">Alert</h4>
+                <div>
+                    <div class="row form-group">
+                        <div class="col col-md-4">
+                            Author <span style="color: red;">*</span>
+                        </div>
+                        <div class="coldata-12 col-md-6">
+                            <input readonly type="text" id="author" name="author"
+                                class="form-control-sm form-control" value="{{recipient_name}}"
+                                style="width: 100%;font-size: 12pt;margin-bottom:15px" required />
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-4">
+                            Recipient <span style="color: red;">*</span>
+                        </div>
+                        <div class="col-12 col-md-6" style="margin-bottom: 2%;">
+                                <select name="recipient" id="recipient" style="margin-bottom:15px;width:50%;" class="form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}'> 
+                                {% for i in users_obj %}
+                                <option class="dropdown-item" value="{{i.u_aid}}">{{i.u_fname |add:' '| add:i.u_lname}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row form-group">
+                        <div class="col col-md-4">
+                            Date
+                            <span style="color: red;">*</span>
+                        </div>
+                        <div class="col-12 col-md-8">
+
+                            <input class="form-control datetimepicker" name="alert_date"
+                                style="margin-bottom:15px;width:30%;" id="alert_date" type="datetime"
+                                placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' />
+
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-4">
+                            # of Days Prior<span style="color: red;">*</span>
+                        </div>
+                        <div class="col-12 col-md-8">
+
+                            <select name="days_prior" id="days_prior"
+                                style="margin-bottom:15px;width:50%;" class="form-select"
+                                aria-label="Default select example">
+                                <option selected>Select Days</option>
+                                <option class="dropdown-item" value="7 days">7 Days</option>
+                                <option class="dropdown-item" value="15 days">15 Days</option>
+                                <option class="dropdown-item" value="30 days">30 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-4">
+                            Periodic<span style="color: red;">*</span>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <select name="period" id="period" style="margin-bottom:15px;width:50%;"
+                                class="form-select" aria-label="Default select example">
+                                <option selected>Select Period</option>
+                                <option class="dropdown-item" value="weekly">Weekly</option>
+                                <option class="dropdown-item" value="once in 15 days">Once in 15 days</option>
+                                <option class="dropdown-item" value="once in 30 days">Once in 30 days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-4">
+                            Comments <span style="color: red;">*</span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="mb-3">
+                                <textarea name="alert_comments" class="tinymce" name="content" data-tinymce="{}"></textarea>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="col-12 gy-6" style="margin-top: 15px;">
+                        <div class="row g-3 justify-content-end">
+                          <div class="col-auto">
+                            <button class="btn btn-primary" onclick="submit_function()" type="submit">Add Alert</button>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+
+{% endblock content %}

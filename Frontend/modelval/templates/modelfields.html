@@ -1,0 +1,481 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="content container-fluid">
+    <!-- Page Header -->
+  
+    <!-- End Page Header -->
+
+
+    <!-- Card -->
+    <div class="card mb-3 mb-lg-5">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title">Model Fields</h4>
+
+              
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <!-- Filter -->
+            <div class="row align-items-sm-center">
+              <div class="col-sm-auto">
+                <div class="row align-items-center gx-0">
+                  <div class="col">
+                    <span class="text-secondary me-2">Model Fields:</span>
+                  </div>
+                  <!-- End Col -->
+
+                  <div class="col-auto">
+                    <!-- Select -->
+                    <div class="tom-select-custom tom-select-custom-end">
+                      <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="1" data-target-table="datatable" autocomplete="off" data-hs-tom-select-options='{
+                                "searchInDropdown": false,
+                                "hideSearch": true,
+                                "dropdownWidth": "10rem"
+                              }'>
+                        <option value="null" selected>All</option>
+                        {% for val in fields_obj  %}
+                          <option value="{{val.fields_name}}">{{val.fields_name}}</option>
+                        {% endfor %}   
+                        <!-- <option value="MRMedited">MRMedited</option>
+                        <option value="Credit">Credit</option>
+                        <option value="Fraud">Fraud</option> -->
+                      </select>
+                    </div>
+                    <!-- End Select -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+
+              
+              <div class="col-md">
+                <form>
+                  <!-- Search -->
+                  <div class="input-group input-group-merge input-group-flush">
+                    <div class="input-group-prepend input-group-text">
+                      <i class="bi-search"></i>
+                    </div>
+                    <input id="datatableSearch" type="search" class="form-control" placeholder="Search users" aria-label="Search users">
+                  </div>
+                  <!-- End Search -->
+                </form>
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Filter -->
+          </div>
+          <!-- End Col -->
+          
+            <!--Add New-->
+            <div class="col-sm-auto">
+              <a class="btn btn-primary" href="#" onclick="adddata()">
+                <i class="bi-plus-lg me-1"></i> Update
+              </a>
+            </div>
+            <!--End Add New-->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                 "columnDefs": [{
+                    "targets": [1],
+                    "orderable": false
+                  }],
+                 "order": [],
+                 "info": {
+                   "totalQty": "#datatableWithPaginationInfoTotalQty"
+                 },
+                 "search": "#datatableSearch",
+                 "entries": "#datatableEntries",
+                 "pageLength": 10,
+                 "isResponsive": false,
+                 "isShowPaging": false,
+                 "pagination": "datatablePagination"
+               }'>
+          <thead class="thead-light">
+            <tr>
+              
+              <th>Field Name</th>
+              <th>Field Label</th>
+              <th>Is Mandatory</th>
+              <th>Is Visible</th>
+            
+             
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for val in fields_obj  %} 
+              <tr class="position-static"> 
+                <td>
+                  
+                   <input type="checkbox" name="chk" id="chk_{{val.field_id}}" onclick="registerclick('{{val.field_id}}')"/> 
+                </td>
+                <td> 
+                 <input type="text" id="txt_field_{{val.field_id}}" style="border: none; background-color: transparent;" value="{{val.fields_name}}" readonly/>
+                 <input type="hidden" id="hdn_{{val.field_id}}" value="{{val.fields_name}}">
+                </td>
+                <td> 
+                    <input type="text" id="txt_lbl_{{val.field_id}}" style="border: none; background-color: transparent;" value="{{val.field_label}}" contenteditable="true"/>
+                    <input type="hidden" id="hdn_{{val.field_label}}" value="{{val.fields_name}}">
+                </td>
+                <!-- <td class="align-middle white-space-nowrap ps-3 py-4">
+                  <input class="form-check-input" id="rbro_{{val.R_AID}}" onchange="enablechk(true,'{{val.R_AID}}')" type="radio" name="rb_{{val.R_AID}}" value="ro">
+                </td>
+                <td class="align-middle white-space-nowrap ps-3 py-4">
+                  <input class="form-check-input" id="rbrw_{{val.R_AID}}" onchange="enablechk(false,'{{val.R_AID}}')"  type="radio" name="rb_{{val.R_AID}}" value="rw">
+                </td>   -->
+                <td>
+                 
+                  {% if val.is_mandatory == True %}
+                    <input id="chk_mandatory_{{val.field_id}}"   checked type="checkbox" >
+                  {%else%}                     
+                    <input  id="chk_mandatory_{{val.field_id}}"     type="checkbox" >
+                   {%endif%} 
+                </td>
+                <td>
+                  {% if val.is_visible == True %}
+                  <input  id="chk_visible_{{val.field_id}}" checked  type="checkbox" >
+                  {%else%}                     
+                  <input  id="chk_visible_{{val.field_id}}"  type="checkbox" >
+                 {%endif%} 
+                </td>
+                <!-- <td>
+                    <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="updatefields('{{val.field_id}}','{{val.field_label}}')"  ></i>Update</a>
+                    </div>
+                </td> -->
+                <!-- <td class="align-middle white-space-nowrap ps-3 Status">
+                  <input class="form-check-input res" id="chkdelete_{{val.R_AID}}" name="chk" type="checkbox" disabled>
+                </td>  -->
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <!-- Pagination -->
+        <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="me-2">Showing:</span>
+
+              <!-- Select -->
+              <div class="tom-select-custom">
+                <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                          "searchInDropdown": false,
+                          "hideSearch": true
+                        }'>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50" >50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <!-- End Select -->
+
+              <span class="text-secondary me-2">of</span>
+
+              <!-- Pagination Quantity -->
+              <span id="datatableWithPaginationInfoTotalQty"></span>
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-auto">
+            <div class="d-flex justify-content-center justify-content-sm-end">
+              <!-- Pagination -->
+              <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Footer -->
+    </div>
+    <!-- End Card -->
+
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock content %}
+{% block script %}
+
+  <!-- JS Global Compulsory  -->
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-form-search/dist/hs-form-search.min.js' %}"></script>
+
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/moment.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/clipboard/dist/clipboard.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script> 
+
+    // INITIALIZATION OF DATATABLES
+    // =======================================================
+    HSCore.components.HSDatatables.init($('#datatable'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+
+    const datatable = HSCore.components.HSDatatables.getItem(0)
+
+    document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+      item.addEventListener('change',function(e) {
+        const elVal = e.target.value,
+    targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+    targetTable = e.target.getAttribute('data-target-table');
+
+    HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+      })
+    })
+  </script>
+
+<script type='text/javascript' >
+  var arrQtns=[]
+    function registerclick(id){
+        //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+        var yes = document.getElementById("chk_"+id);  
+        console.log("yes",yes.checked)
+        if($('#chk_'+id).prop('checked')){
+          $('#rbro_'+id).prop('checked', true);  
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+          }
+        }
+        else{ // only splice array when item is found
+           
+          arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+          $('#name1').prop('checked', false);
+        }
+    }
+    var arrQtns=[]
+    function updatefields(id,label){
+        debugger;
+        alert("id"+id+label)
+        // label = document.getElementById(label).value;
+        // console.log('label',label)
+        // if($('#chk_'+id).prop('checked')){ 
+          if(arrQtns.indexOf(id)<0){
+              arrQtns.push(id);  
+              console.log("array",arrQtns)
+          }
+        // }
+        else{ // only splice array when item is found
+            
+            arrQtns.splice(arrQtns.indexOf(id), 1); // 2nd parameter means remove one item only
+            $('#name1').prop('checked', false); 
+            }
+    }
+
+    function selectall1()
+    { 
+      var yes = document.getElementById("name1");  
+      console.log("yes",yes.checked)
+      if (yes.checked == true){
+        console.log("yess")
+        var ele=document.getElementsByName('chk');
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].click();  
+        }  
+      }
+      else{
+        var ele=document.getElementsByName('chk');
+        console.log("ele----------",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+           ele[i].checked=false;  // ele[i].checked=false;
+     
+          }
+      }
+          
+    }
+
+    function adddata(){  
+      debugger
+      if(arrQtns.length<1){
+        alert('Please select fields(s).')
+        return
+      }
+
+      updatedata=[]
+      arrQtns.forEach(i => {
+        console.log("i ",i,$('#chk_'+i).prop('checked'))
+        if($('#chk_'+i).prop('checked')) {
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item["AID"] = i;
+          item["fieldlbl"]= $("#txt_lbl_"+i).val();
+          item["mandatory"]= $("#chk_mandatory_"+i).prop('checked');
+          item["visible"]= $("#chk_visible_"+i).prop('checked'); 
+          if (item["fieldlbl"].length == 0){
+            console.log("value empty")
+          }
+          else{
+            updatedata.push(item);
+          }
+        //   updatedata.push(item); 
+        }
+    
+      });
+      console.log('updatedata ',updatedata)
+      
+    //   if(updatedata.length>0){
+    //     $.ajax({
+    //       url: '/updateuseraccess/', 
+    //       data:{ datalist: JSON.stringify(updatedata),uc:$('#ddlutype').val()  },
+    //       dataType: 'json',
+    //       success: function (data) { 
+    //           if(data.istaken=="true"){
+    //             alert('User access granted for selected utilities and rights.')
+    //           }
+    //       }
+    //     }); 
+    //   }  
+
+    if(updatedata.length>0){
+        $.ajax({
+          url: '/updateFields/', 
+          data:{ datalist: JSON.stringify(updatedata)  },
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){
+                alert('Data updated.')
+              }
+          }
+        }); 
+      }  
+       
+    }  
+
+    function selectall()
+    {
+      debugger;
+      alert("select all")
+      // var chk = $('#name1').val()
+      var yes = document.getElementById("name1");  
+      console.log("yes",yes.checked)
+      // var ele=document.getElementsByName('chk');
+      // for(var i=0; i<ele.length; i++){  
+      //   if(ele[i].type=='checkbox')  
+      //       ele[i].checked=true;  
+      // }    
+    }
+
+    function deSelectall(){  
+      var ele=document.getElementsByName('chk');  
+      for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].checked=false;              
+      }  
+    }      
+    function getdata()
+      {    
+        $('#lstRes').find('input:checkbox').prop('checked', false);    
+        $('input[type="radio"]').prop('checked', false);  
+        $('.res').each(function() { 
+            $(this).prop('disabled', true); 
+        });
+        arrQtns=[]
+        $.ajax({
+          url: '/getUCAccessData/', 
+          data:{uc:$('#ddlutype').val()  },
+          dataType: 'json',
+          success: function (data) {  
+              if(data.istaken=="true"){
+                $.each(data.ucdata, function(i, obj) { 
+                  enablechk(true,obj.R_AID)
+                  arrQtns.push(obj.R_AID);  
+                  $('#chk_'+obj.R_AID).prop('checked', true);
+                  $("input[name=rb_"+obj.R_AID +"][value=" + obj.UA_Perm + "]").prop('checked', true);
+                  $('#chkadd_'+obj.R_AID).prop('checked', obj.UA_Add);
+                  $('#chkedit_'+obj.R_AID).prop('checked', obj.UA_Edit);
+                  $('#chkdelete_'+obj.R_AID).prop('checked', obj.UA_Delete);
+                  if(obj.UA_Perm=='rw'){ 
+                    enablechk(false,obj.R_AID)
+                  } 
+                });
+                  
+              }
+          }
+        });
+
+      }
+
+    function enablechk(val,id){ 
+      $('#chkadd_'+id).prop('disabled',val);
+      $('#chkedit_'+id).prop('disabled',val);
+      $('#chkdelete_'+id).prop('disabled',val);
+      if(val==false){
+        $('#chkadd_'+id).prop('checked', true);
+        $('#chkedit_'+id).prop('checked', true);
+      }
+      else{
+        $('#chkadd_'+id).prop('checked', false);
+        $('#chkedit_'+id).prop('checked', false);
+        $('#chkdelete_'+id).prop('checked', false);
+      }
+    }
+</script>
+{% endblock script %}

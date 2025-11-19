@@ -1,0 +1,1195 @@
+ 
+
+{% extends 'base_dashbFL.html' %} 
+ 
+{% load static %} 
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'map/dist/leaflet.css' %}"> 
+<link rel="stylesheet" href="{% static 'map/walid.css' %}"> 
+<link rel="stylesheet" href="{% static 'map/src/Icon.Label.css' %}">
+<style>
+  
+</style> 
+
+{% endblock style %} 
+{% block script %} 
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBp5L42mktkpiyBVnEINjXJ2HYJ84KmjLI&loading=async&libraries=maps&callback=initMap"></script>
+<script>
+  
+  //var greenIcon = new LeafIcon({ iconUrl: '/static/Front/dist/assets/svg/svgs/map-pin.svg' });
+  //var greenIcon1 = new LeafIcon({ iconUrl: '/static/Front/dist/assets/svg/svgs/map-pin.svg' });
+  //var greenIcon2 = new LeafIcon({ iconUrl: '/static/map/Marker/leaf-shadow.png' });
+
+  let map;
+  var markers = [];
+  var markersB = [];
+  var markersPB = [];
+  var SelectedFilterVal='';
+  //var bounds = new google.maps.LatLngBounds(); 
+
+	async function initMap() {
+		const { Map } = await google.maps.importLibrary("maps");
+		map = new Map(document.getElementById("map"), {
+			center: { lat: 38.7182996, lng: -99.8049274 },
+			zoom: 4,
+      streetViewControl: false,
+      mapTypeControl: false,
+      mapTypeId: google.maps.MapTypeId.roadmap
+		});   
+
+    const USA_1 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/AL_AR_AZ_CA.kml', map: map });
+    const USA_2 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/CO_CT_DE_FL.kml', map: map });
+    const USA_3 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/GA_IA_ID_IL.kml', map: map });
+    const USA_4 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/IN_KS_KY_LA.kml', map: map });
+    const USA_5 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MA_MD_ME_MI_MN.kml', map: map });
+    const USA_6 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MO_MS_MT_NC_ND.kml', map: map });
+    const USA_7 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NE_NH_NJ_NM_NV.kml', map: map });
+    const USA_8 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NY_OH_OK_OR_PA.kml', map: map });
+    const USA_9 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/RI_SC_SD_TN_TX.kml', map: map });
+    const USA_10 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/UT_VA_VT_WI_WV_WY.kml', map: map });
+    const USA_11 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/MI.kml', map: map });
+    const USA_12 = new google.maps.KmlLayer({ url: 'https://www.prescio.com/USA/NC.kml', map: map });
+
+    StateMarkers('');	   
+	}
+
+  initMap();
+
+  function LegendVisible(filterCol){
+  $("#dv_loans, #dv_eth, #dv_race, #dv_Gender, #dv_Age, #dv_income").css("display", "none");
+  if(filterCol==""){
+    $("#dv_loans").css("display", "block");
+  }
+  else if(filterCol=="derived_ethnicity"){
+    $("#dv_eth").css("display", "block");
+  }
+  else if(filterCol=="derived_race"){
+    $("#dv_race").css("display", "block");
+  }
+  else if(filterCol=="derived_sex"){
+    $("#dv_Gender").css("display", "block");
+  }
+  else if(filterCol=="applicant_age"){
+    $("#dv_Age").css("display", "block");          
+  }
+  else if(filterCol=="tract_to_msa_income_percentage"){
+    $("#dv_income").css("display", "block");
+  }
+}
+
+function StateMarkers(filterCol){
+  SelectedFilterVal=filterCol;
+  clearMarkers('');
+  LegendVisible(filterCol);
+  //Bank Icons
+  var icon_bank_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/bank/blue.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_bank_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/bank/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 1 icons
+  var icon_type1_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 2 icons
+  var icon_type2_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 3 icons
+  var icon_type3_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 4 icons
+  var icon_type4_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_cyan = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/cyan.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 5 icons
+  var icon_type5_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 6 icons
+  var icon_type6_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  
+  $.ajax({
+    url: '/modelval/get_Bank_lat_long_state/', 
+    data:{ 'activity_year':'2023','peer':'y','filter_col':filterCol},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data State ', data.StateLatLong)
+      $.each(data.StateLatLong, function(i, obj) {              
+        ////console.log(obj.state +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        if(SelectedFilterVal==""){
+          iconName=icon_type6_blue;
+        }
+        else if(SelectedFilterVal=="derived_ethnicity"){
+          //Not Hispanic or Latino,Free Form Text Only,Hispanic or Latino,Joint,Ethnicity Not Available
+          if(obj.FilVal=="Not Hispanic or Latino") iconName=icon_type1_yellow;
+          else if(obj.FilVal=="Free Form Text Only") iconName=icon_type1_blue;
+          else if(obj.FilVal=="Hispanic or Latino") iconName=icon_type1_gray;
+          else if(obj.FilVal=="Joint") iconName=icon_type1_green;
+          else if(obj.FilVal=="Ethnicity Not Available") iconName=icon_type1_orange;
+        }
+        else if(SelectedFilterVal=="derived_race"){
+          //Free Form Text Only,Black or African American,American Indian or Alaska Native,White,
+          //Native Hawaiian or Other Pacific Islander,2 or more minority races,Joint,Race Not Available,Asian
+          if(obj.FilVal=="Free Form Text Only") iconName=icon_type2_black;
+          else if(obj.FilVal=="Black or African American") iconName=icon_type2_blue;
+          else if(obj.FilVal=="American Indian or Alaska Native,White") iconName=icon_type2_gray;
+          else if(obj.FilVal=="Native Hawaiian or Other Pacific Islander") iconName=icon_type2_green;
+          else if(obj.FilVal=="2 or more minority races") iconName=icon_type2_red;
+          else if(obj.FilVal=="Joint") iconName=icon_type2_orange;
+          else if(obj.FilVal=="Race Not Available") iconName=icon_type2_purple;
+          else if(obj.FilVal=="Asian") iconName=icon_type2_yellow;
+        }
+        else if(SelectedFilterVal=="derived_sex"){
+          //Male,Female,Joint,Sex Not Available
+          if(obj.FilVal=="Male") iconName=icon_type3_red;
+          else if(obj.FilVal=="Female") iconName=icon_type3_green;
+          else if(obj.FilVal=="Joint") iconName=icon_type3_purple;
+          else if(obj.FilVal=="Sex Not Available") iconName=icon_type3_yellow;
+        }
+        else if(SelectedFilterVal=="applicant_age"){
+          //45-54,65-74,>74,<25,55-64,8888,35-44,25-34
+          if(obj.FilVal=="<25") iconName=icon_type4_blue;
+          else if(obj.FilVal=="25-34") iconName=icon_type4_cyan;
+          else if(obj.FilVal=="35-44") iconName=icon_type4_gray;
+          else if(obj.FilVal=="45-54") iconName=icon_type4_green;
+          else if(obj.FilVal=="55-64") iconName=icon_type4_orange;
+          else if(obj.FilVal=="65-74") iconName=icon_type4_purple;
+          else if(obj.FilVal==">74") iconName=icon_type4_red;
+          else if(obj.FilVal=="8888") iconName=icon_type4_yellow;
+          
+        }
+        else if(SelectedFilterVal=="tract_to_msa_income_percentage"){
+          if(obj.incomegroup=="Low") iconName=icon_type5_red;
+          else if(obj.incomegroup=="MOD") iconName=icon_type5_orange;
+          else if(obj.incomegroup=="Middle") iconName=icon_type5_yellow;
+          else if(obj.incomegroup=="Upper") iconName=icon_type5_green;
+        }
+        markers[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: iconName,
+            html:obj.state+' : '+obj.RowCnt,
+            animation : google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'state');    
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });         
+          countyMarkers(obj.state);         
+          //infowindow.open(map);
+        }); 
+      }); 
+
+      console.log('Bank Address State ',data.BankBranches)
+      $.each(data.BankBranches, function(i, objB) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objB.B_Lat, objB.B_Long);
+        markersB[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank_blue,
+            html:objB.B_Address+' : '+objB.B_City+' : '+objB.B_State+' : '+objB.B_Zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markersB[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); 
+
+      console.log('Peer Bank Address State ',data.PeerBankBranches)
+      $.each(data.PeerBankBranches, function(i, objP) {    
+        //console.log('peer state:'+objP.PB_Lat+':'+objP.PB_Long)          ;
+        var myLatLngB = new google.maps.LatLng(objP.PB_Lat, objP.PB_Long);
+        markersPB[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank_yellow,
+            html:objP.PB_Bank+' : '+objP.PB_Branch+' : '+objP.PB_Address+' : '+objP.PB_City+' : '+objP.PB_state+' : '+objP.PB_Zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markersPB[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); 
+    }
+  });
+  //ScalePanMap('state'); 
+}
+
+function countyMarkers(stateNm){ 
+  //SelectedFilterVal=''; 
+  clearMarkers('');
+  LegendVisible(SelectedFilterVal);
+  //Bank Icons
+  var icon_bank_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/bank/blue.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_bank_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/bank/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 1 icons
+  var icon_type1_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type1_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-1/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 2 icons
+  var icon_type2_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type2_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-2/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 3 icons
+  var icon_type3_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type3_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-3/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 4 icons
+  var icon_type4_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_cyan = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/cyan.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type4_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-4/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 5 icons
+  var icon_type5_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type5_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-5/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  //Type 6 icons
+  var icon_type6_black = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_blue = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_gray = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/gray.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_green = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_purple = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/purple.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_red = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_type6_yellow = {
+    url: '/static/Front/dist/assets/svg/svgs/type-6/yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+
+  $.ajax({
+    url: '/modelval/get_Bank_lat_long_county/', 
+    data:{ 'activity_year':'2023','peer':'n','State':stateNm,'filter_col':SelectedFilterVal},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data County', data)
+      $.each(data.CountyLatLong, function(i, obj) {              
+        //console.log(obj.CountyName +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        if(SelectedFilterVal==""){
+          iconName=icon_type6_blue;
+        }
+        else if(SelectedFilterVal=="derived_ethnicity"){
+          //Not Hispanic or Latino,Free Form Text Only,Hispanic or Latino,Joint,Ethnicity Not Available
+          if(obj.FilVal=="Not Hispanic or Latino") iconName=icon_type1_yellow;
+          else if(obj.FilVal=="Free Form Text Only") iconName=icon_type1_blue;
+          else if(obj.FilVal=="Hispanic or Latino") iconName=icon_type1_gray;
+          else if(obj.FilVal=="Joint") iconName=icon_type1_green;
+          else if(obj.FilVal=="Ethnicity Not Available") iconName=icon_type1_orange;
+        }
+        else if(SelectedFilterVal=="derived_race"){
+          //Free Form Text Only,Black or African American,American Indian or Alaska Native,White,
+          //Native Hawaiian or Other Pacific Islander,2 or more minority races,Joint,Race Not Available,Asian
+          if(obj.FilVal=="Free Form Text Only") iconName=icon_type2_black;
+          else if(obj.FilVal=="Black or African American") iconName=icon_type2_blue;
+          else if(obj.FilVal=="American Indian or Alaska Native,White") iconName=icon_type2_gray;
+          else if(obj.FilVal=="Native Hawaiian or Other Pacific Islander") iconName=icon_type2_green;
+          else if(obj.FilVal=="2 or more minority races") iconName=icon_type2_red;
+          else if(obj.FilVal=="Joint") iconName=icon_type2_orange;
+          else if(obj.FilVal=="Race Not Available") iconName=icon_type2_purple;
+          else if(obj.FilVal=="Asian") iconName=icon_type2_yellow;
+        }
+        else if(SelectedFilterVal=="derived_sex"){
+          //Male,Female,Joint,Sex Not Available
+          if(obj.FilVal=="Male") iconName=icon_type3_red;
+          else if(obj.FilVal=="Female") iconName=icon_type3_green;
+          else if(obj.FilVal=="Joint") iconName=icon_type3_purple;
+          else if(obj.FilVal=="Sex Not Available") iconName=icon_type3_yellow;
+        }
+        else if(SelectedFilterVal=="applicant_age"){
+          //45-54,65-74,>74,<25,55-64,8888,35-44,25-34
+          if(obj.FilVal=="<25") iconName=icon_type4_blue;
+          else if(obj.FilVal=="25-34") iconName=icon_type4_cyan;
+          else if(obj.FilVal=="35-44") iconName=icon_type4_gray;
+          else if(obj.FilVal=="45-54") iconName=icon_type4_green;
+          else if(obj.FilVal=="55-64") iconName=icon_type4_orange;
+          else if(obj.FilVal=="65-74") iconName=icon_type4_purple;
+          else if(obj.FilVal==">74") iconName=icon_type4_red;
+          else if(obj.FilVal=="8888") iconName=icon_type4_yellow;
+        }
+        else if(SelectedFilterVal=="tract_to_msa_income_percentage"){
+          //Low,MOD,Middle,Upper
+          if(obj.incomegroup=="Low") iconName=icon_type5_red;
+          else if(obj.incomegroup=="MOD") iconName=icon_type5_orange;
+          else if(obj.incomegroup=="Middle") iconName=icon_type5_yellow;
+          else if(obj.incomegroup=="Upper") iconName=icon_type5_green;
+        }
+        markers[i] = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          icon: iconName,            
+          html:obj.CountyName+' : '+obj.RowCnt,
+          animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'county');
+        var ismove = true;
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });          
+          infowindow.open(map);
+        });        
+      }); 
+
+      console.log('Bank Address County ',data)
+      $.each(data.BankBranches, function(i, objB) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objB.B_Lat, objB.B_Long);
+        markersB[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank_blue,
+            html:objB.B_Address+' : '+objB.B_City+' : '+objB.B_State+' : '+objB.B_Zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markersB[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); 
+
+      console.log('Peer Bank Address County ',data)
+      $.each(data.PeerBankBranches, function(i, objP) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objP.PB_Lat, objP.PB_Long);
+        markersPB[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank_yellow,
+            html:objP.PB_Bank+' : '+objP.PB_Branch+' : '+objP.PB_Address+' : '+objP.PB_City+' : '+objP.PB_state+' : '+objP.PB_Zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markersPB[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      });
+
+    },
+    error: function() { 
+      //alert('error'); 
+    } 
+  });
+  //ScalePanMap('county');
+}
+
+function getIconName(filter_col,filterval){
+  var icon="icon_1";
+  if(filter_col=="derived_ethnicity"){
+    //Not Hispanic or Latino,Free Form Text Only,Hispanic or Latino,Joint,Ethnicity Not Available
+    if(filterval=="Not Hispanic or Latino") iconName=icon_1;
+    else if(filterval=="Free Form Text Only") iconName=icon_2;
+    else if(filterval=="Hispanic or Latino") iconName=icon_3;
+    else if(filterval=="Joint") iconName=icon_4;
+    else if(filterval=="Ethnicity Not Available") iconName=icon_5;
+  }
+  else if(filter_col=="derived_race"){
+
+  }
+  else if(filter_col=="derived_sex"){
+
+  }
+  else if(filter_col=="applicant_age"){
+
+  }
+  else if(filter_col=="tract_to_msa_income_percentage"){
+
+  }  
+  return iconName;
+}
+
+
+function clearMarkers(category='') {
+  //alert(len(category));
+  for(var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  for(var j = 0; j < markersB.length; j++) {
+    markersB[j].setMap(null);
+  }
+  for(var k = 0; k < markersPB.length; k++) {
+    markersPB[k].setMap(null);
+  }
+  /*for(var i = 0; i < markers.length; i++) {
+    if(category.length==0){
+      markers[i].setMap(null);
+    }
+    else{
+      if (markers[i].get('category') == category) {
+        markers[i].setMap(null);
+      }
+    }
+  }*/
+}
+
+function ScalePanMap(category){
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < markers.length; i++) {
+    if(markers[i].get('category') == category){
+      bounds.extend(markers[i]);
+    }
+  }
+  //map.fitBounds(bounds);
+  //map.panToBounds(bounds); 
+}
+
+function ShowHideLegend(){   
+    $("#LegendModal").modal('toggle')
+} 
+
+
+</script> 
+
+{% endblock script %}
+
+{% block content %}
+<div class="content" style="padding-top:0px;">   
+  <div class="row">
+    <div class="col-sm-6">  
+      <input type="radio" id="chk_def" onchange="StateMarkers('')" checked="checked" name="rb_Filter" /> Loans  
+      <input type="radio" id="chk_eth" onchange="StateMarkers('derived_ethnicity')" name="rb_Filter" style="margin-left: 10px;;"/> Ethnicity   
+      <input type="radio" id="chk_rac" onchange="StateMarkers('derived_race')" name="rb_Filter" style="margin-left: 10px;;"/> Race 
+      <input type="radio" id="chk_gen" onchange="StateMarkers('derived_sex')" name="rb_Filter" style="margin-left: 10px;;"/> Gender 
+      <input type="radio" id="chk_age" onchange="StateMarkers('applicant_age')" name="rb_Filter" style="margin-left: 10px;;"/> Applicant Age 
+      <input type="radio" id="chk_inc" onchange="StateMarkers('tract_to_msa_income_percentage')" name="rb_Filter" style="margin-left: 10px;"/> Income-Group
+    </div>
+    <div class="col-sm-3">  
+      <input type="button" style="float: right;" class="btn btn-primary" id="btn-reset" value="Show Legend" onclick="ShowHideLegend()"/>
+    </div>
+    <div class="col-sm-3" >  
+      <input type="button" style="width: 180px; float: left;" class="btn btn-primary" id="btn-reset" value="Back to SateLevel" onclick="StateMarkers(SelectedFilterVal)"/>
+    </div> 
+  </div> 
+
+  <div class="row">
+    <div class="col-sm-12" >             
+      <div id="map" style="width: 100%; height: 600px; border:solid 1px #c3c3c3"></div>
+            
+    </div>  
+  </div> 
+
+</div> 
+ 
+    
+<!-- Modal -->
+<div class="modal fade" id="LegendModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="LegendModalLabel">Map Pointers Legend</h5>            
+      </div>
+      <div class="modal-body">
+        <div id="dv_loans" style="display: none;">
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Loans by Bank</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-6/blue.svg" alt="Loans by Bank" />
+            </div>
+            <div class="col-sm-2">
+            </div>              
+          </div>           
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Bank Branches</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/bank/blue.svg" alt="Bank Branches" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Peer Bank Branches</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/bank/yellow.svg" alt="Peer Bank Branches" />
+            </div>             
+          </div>
+        </div>
+        <div id="dv_eth" style="display: none;">
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-12" style="margin-top:12px;">  
+              <h4>Ethnicity</h4>
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Not Hispanic or Latino</label>
+            </div>
+            <div class="col-sm-1"> 
+              <img src="/static/Front/dist/assets/svg/svgs/type-1/yellow.svg" alt="Not Hispanic or Latino" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Free Form Text Only</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-1/blue.svg" alt="Free Form Text Only" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Hispanic or Latino</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-1/gray.svg" alt="Hispanic or Latino" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Joint</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-1/green.svg" alt="Joint" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Race Not Available</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-1/purple.svg" alt="Race Not Available" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Asian</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-1/orange.svg" alt="Asian" />
+            </div>
+          </div>
+        </div>
+        <div id="dv_race" style="display: none;">
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-12" style="margin-top:12px;">  
+              <h4>Race</h4>
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Free Form Text Only</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/black.svg" alt="Free Form Text Only" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Black or African American</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/blue.svg" alt="Black or African American" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>American Indian or Alaska Native,White</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/gray.svg" alt="American Indian or Alaska Native,White" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Native Hawaiian or Other Pacific Islander</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/green.svg" alt="Native Hawaiian or Other Pacific Islander" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>2 or more minority races</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/red.svg" alt="2 or more minority races" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Joint</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/orange.svg" alt="Joint" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Race Not Available</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/purple.svg" alt="Race Not Available" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Asian</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-2/yellow.svg" alt="Asian" />
+            </div>
+          </div>
+        </div>
+        <div id="dv_Gender" style="display: none;">
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-12" style="margin-top:12px;">  
+              <h4>Gender</h4>
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Male</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-3/red.svg" alt="Male" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Female</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-3/green.svg" alt="Female" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Joint</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-3/purple.svg" alt="Joint" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Sex Not Available</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-3/yellow.svg" alt="Sex Not Available" />
+            </div>
+          </div>
+        </div>  
+        <div id="dv_Age" style="display: none;">
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-12" style="margin-top:12px;">  
+              <h4>Applicant Age</h4>
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label><25</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/red.svg" alt="<25" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>25-34</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/cyan.svg" alt="25-34" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>35-44</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/gray.svg" alt="35-44" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>45-54</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/green.svg" alt="45-54" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>55-64</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/orange.svg" alt="55-64" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>65-74</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/purple.svg" alt="65-74" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>>74</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/red.svg" alt=">74" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>8888</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-4/yellow.svg" alt="8888" />
+            </div>
+          </div>
+        </div>
+        <div id="dv_income" style="display: none;">
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-12" style="margin-top:12px;">  
+              <h4>Income Group</h4>
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Low</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-5/red.svg" alt="Low" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>MOD</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-5/orange.svg" alt="MOD" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:2px;">
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Middle</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-5/yellow.svg" alt="Middle" />
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-4" style="margin-top:12px;">  
+              <label>Upper</label>
+            </div>
+            <div class="col-sm-1">  
+              <img src="/static/Front/dist/assets/svg/svgs/type-5/green.svg" alt="Upper" />
+            </div>
+          </div>
+        </div>  
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" onclick="ShowHideLegend()">Close</button>           
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div> 
+</div>
+  
+
+{% endblock content %}

@@ -1,0 +1,222 @@
+{% extends 'rmsebase.html' %} 
+{% load static %} 
+{% block content %} 
+<form method="POST" action="{{skipUpdateData}}?name=missingvals">
+    {% csrf_token %}
+<div class="row">   
+    <div class="col-lg-12">
+        <div> 
+            <table>
+                <tr>
+                    <td>
+                        <h4 class="title-2 m-b-25">Data Correction</h4>
+                    </td>
+                    <td>
+                        <div class="m-b-25">&nbsp;(Use this utility to correct source data with desired data.)</div>
+                    </td>
+                </tr>
+            </table>             
+        </div> 
+        
+        <!-- <div id="tableExample" data-list="{'valueNames':['name','email'],'page':5,'pagination':true}"> -->
+            <div class="table-responsive" style="height: 400px;overflow: scroll;">
+              <table id="missingData" class="table table-sm fs--1 mb-0">
+                <thead>
+                  <tr>
+                    <th class="sort border-top ps-3">Column</th>
+                    <th class="sort border-top" >Select</th> 
+                  </tr>
+                </thead>
+                <tbody class="list">
+                   
+                    {% for data in dataTypes %}
+                    <tr> 
+                        <td style='padding-top:10px;padding-bottom:10px;'>
+                            {{data.colName}}
+                        </td>
+                        <td style='padding-top:10px;padding-bottom:10px;'>
+                            <input type="radio" id="chk_{{data.idx}}" name="rbTarget" onclick="getColVals('{{data.idx}}')"/>
+                        </td>                                            
+                    </tr>
+                    {% endfor %}
+                   </tbody>
+              </table>
+            </div> 
+        <!-- </div> -->
+        
+       
+        <div style="height:25px;"></div>
+        <div class="table-responsive" style="height: 150px;overflow: scroll;">
+            <table id="colData" class="table table-sm fs--1 mb-0">
+        <!-- <div class="table-responsive table--no-card m-b-40">
+            <table id="colData" class="table table-borderless table-striped table-earning"> -->
+            <thead>
+                <tr>
+                    <th style='padding-top:10px;padding-bottom:10px;'>Data Value</th>
+                    <th style='padding-top:10px;padding-bottom:10px;'>Replace With</th> 
+                </tr>
+            </thead>  
+            <tbody>    
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+</div> 
+<!--<div class="row" style="display: flex; justify-content: flex-end"> 
+    <button type="button" class="btn btn-primary btn-sm"  onclick="getMissingvalues()">Update</button>
+    <button  class="btn btn-primary btn-sm"  {{isDisabled}}  onclick="goNext()" style="margin-left: 10px;" type="button">Next</button>
+    <button type="submit" class="btn btn-primary btn-sm" style="margin: 0px 10px;" >Skip</button>
+</div>-->
+<div class="card-footer">
+    <div class="col-12 gy-6">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <button type="button" class="btn btn-primary px-5" onclick="getMissingvalues()">Update</button>
+            </div>
+            <div class="col-auto">
+                <button type="button" {{isDisabled}} class="btn btn-primary px-5" onclick="goNext()">Next</button>
+            </div>
+            <div class="col-auto">
+                <button type="submit" {{isDisabled}} class="btn btn-primary px-5">Skip</button>
+            </div>
+        </div>  
+    </div>
+</div>
+
+</form> 
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script type='text/javascript' >
+    var myTable;
+    var colDtTbl;
+    var colname='';
+    $(document).ready( function () { 
+    $('#liDataV').click(function(){
+    $('#sub_sub_menu').hide();
+    });
+    myTable=$('#missingData').DataTable({
+    sDom: 'lrtip',
+    "ordering": false,
+    scrollY: 300, 
+    scroller: true,
+    paging:         false,
+    info:false
+    });
+
+    /* $('#missingData').on('click', 'td', function() {
+    alert('row clicked');
+    }) */
+    /*$('#missingData').on('click', 'tr',function (e) { 
+    alert(myTable.row( this ).data()[0]);
+
+    });*/
+
+    } );
+
+    function getColVals(id)
+    {
+       // alert(id.split('chk_')[1]);
+       console.log('id ',id)
+       colnm='';
+       myTable.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+        console.log('inside myTable')
+        console.log('rowIdx ',rowIdx,',',id,',',rowIdx==id)
+            if(rowIdx==id){
+                var data = this.data();
+                colnm=data[0];
+            }
+            
+            } );
+            console.log('colnm ' ,colnm)
+        $('#colData').DataTable().destroy();
+        $("#colData").empty();
+        $.ajax({
+            url: '/ajax/getUpdatedColVals/', 
+            data:{ colName: colnm ,file_id:"{{file_id}}" },
+            dataType: 'json',
+            success: function (data) {
+                //console.log(data);    
+                colname=colnm;
+                var appendHeaderData1='';
+                var appendBodyData='',
+                appendHeaderData1='<thead><tr><th class="align-middle ps-3 name">Data value</th>';
+                appendHeaderData1=appendHeaderData1 + '<th class="align-middle  name">Replace with</th></tr></thead>';
+                appendBodyData='<tbody>'
+                var irow=0;    
+                var irow=0;
+                $.each(data.ctData,function(key,val){ 
+                    appendBodyData=appendBodyData+'<tr>';
+                    appendBodyData=appendBodyData+'<td class="align-middle ps-3 name">'+key+'</td>'; 
+                    appendBodyData=appendBodyData+'<td class="align-middle name"><input type="text" id="txt_'+irow+'" style="border:1px solid black"/> </td>';                    
+                    appendBodyData=appendBodyData+'</tr>';   
+                    irow++;             
+                });
+                appendBodyData=appendBodyData+'</tbody>';   
+                $('#colData').append(appendHeaderData1+appendBodyData); 
+                colDtTbl=$('#colData').DataTable({
+                    sDom: 'lrtip', 
+                    "ordering": false,
+                    scrollY: 150,
+                    scrollX: true,
+                    scroller: true,
+                    paging:false,
+                    info:false
+                    });
+                }
+        }); 
+    }
+
+
+    function getMissingvalues(){  
+        var updatedData='';
+        // myTable.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+        // var data = this.data(); // able to fetch the data.
+        // var row = this.node(); 
+        // if($('#chk_'+data[0]).prop('checked')==true){      
+        //     updatedData = data[0];  
+        // }
+        // } ); 
+        updatedData = colname
+
+        var colDataLst=[];
+        var irow=0;
+        colDtTbl.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            var data = this.data(); // able to fetch the data.
+            var row = this.node();
+            item = {}
+        //item ["column"] = data[0];
+        
+        //item ["value"] = $('#txt_'+data[0]).val();
+        item [data[0]] = $('#txt_'+irow).val();
+        irow++;
+            colDataLst.push(item); 
+        } ); 
+        //console.log(colDataLst)
+        $.ajax({
+            url: '/ajax/updateColData/', 
+            data:{ delcolList: updatedData,colDataLst : JSON.stringify(colDataLst)  },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                if (data.is_taken) {
+                alert("Updated Successfully.");
+                }
+            }
+        }); 
+    }
+
+    function goNext(){
+        window.location="{% url 'viewDataType' %}"
+     } 
+     
+</script>
+{% endblock script %}

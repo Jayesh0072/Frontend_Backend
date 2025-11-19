@@ -1,0 +1,1543 @@
+{% extends 'base_dashbFL.html' %} 
+{% load static %} 
+{% block style %} 
+ 
+<link rel="stylesheet" href="{% static 'node_modules/dist/css/query-builder.default.min.css' %}"> 
+ <script src="{% static 'node_modules/dist/js/query-builder.standalone.min.js' %}" ></script> 
+  <link href="{% static 'node_modules/datepicker/bootstrap-datepicker.min.css' %}" rel="stylesheet"> 
+  <link href="{% static 'node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css' %}"  rel="stylesheet"> 
+ 
+   <style> 
+   
+   .glyphicon {
+  position: relative!important;
+  top: 1px!important;
+  display: inline-block!important;
+  font-family: 'Glyphicons Halflings'!important;
+  font-style: normal!important;
+  font-weight: 400!important;
+  line-height: 1!important;
+  -webkit-font-smoothing: antialiased!important;
+  -moz-osx-font-smoothing: grayscale!important;
+}
+.glyphicon-plus-sign:before{content:"\e081"}
+.glyphicon-sort:before {
+ content:"\e150"
+} 
+.glyphicon-remove:before{content:"\e014"}
+.glyphicon-remove-sign:before
+{content:"\e083"}
+
+.glyphicon-sort-by-alphabet:before {
+ content:"\e151"
+}
+.glyphicon-sort-by-alphabet-alt:before {
+ content:"\e152"
+}
+.glyphicon-sort-by-order:before {
+ content:"\e153"
+}
+.glyphicon-sort-by-order-alt:before {
+ content:"\e154"
+}
+.glyphicon-sort-by-attributes:before {
+ content:"\e155"
+}
+.glyphicon-sort-by-attributes-alt:before {
+ content:"\e156"
+}
+ .form-inline .form-control {
+  display: inline-block  ; 
+  width: auto !important; 
+  vertical-align: middle !important; 
+}
+.form-control {
+  display: block ;
+  width: 100%!important; 
+  height: 34px  !important; 
+  padding: 6px 12px !important; 
+  font-size: 14px !important; 
+  font-weight: normal;
+  line-height: 1.42857143 !important; 
+  color: #555!important;
+  background-color: #fff!important;
+  background-image: none!important;
+  border: 1px solid #ccc!important;
+  border-radius: 4px!important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s!important;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+}
+#builder{
+  /* width:80%; */
+  display:block;
+  margin: 0 auto;
+}
+#buttons{
+text-align:center
+}
+h1,#query{
+  text-align:center;
+  font-family:'Whitney SSM', sans-serif;
+}
+p{
+  font-family:'Whitney SSM', sans-serif;
+  color:white !important; 
+  font-size:20px; 
+}
+
+#query{
+  font-size:18px
+}
+
+.query-builder .rules-group-container{
+  /* background-color:#19A7C1; */
+background-color:transparent;
+}
+
+.query-builder .rules-group-header {
+  margin-bottom: 10px;
+} 
+
+.pull-right {
+  float: right !important;
+}
+.btn-group, .btn-group-vertical {
+  position: relative !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.rule
+.query-builder form-inline{
+    /* background-color:#19A7C1;
+     */
+     background-color:transparent;
+
+}
+.rules-list{
+    /* background-color:#19A7C1; */
+    background-color:transparent;
+
+}
+
+/* .btn-primary{
+  background-color:silver
+} */
+
+.btn{
+  font-size:13px;
+  font-family:'Whitney SSM', sans-serif;
+
+
+}
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary{
+    background-color:olvie
+}
+
+.rule-container{
+  background-color:AntiqueWhite
+}
+
+.form-control{
+    font-family:'Whitney SSM', sans-serif;
+}
+
+.btn-xs {
+  padding: 1px 5px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px!important;
+}
+
+.btn {
+  display: inline-block !important;
+  padding: 6px 12px!important;
+  margin-bottom: 0!important;
+  font-size: 14px !important;;
+  font-weight: 400 !important;;
+  line-height: 1.42857143 !important;;
+  text-align: center !important;;
+  white-space: nowrap !important;;
+  vertical-align: middle !important;;
+  -ms-touch-action: manipulation !important;;
+  touch-action: manipulation !important;;
+  cursor: pointer !important;;
+  -webkit-user-select: none !important;;
+  -moz-user-select: none !important;;
+  -ms-user-select: none !important;;
+  user-select: none !important;;
+  background-image: none !important;;
+  border: 1px solid transparent !important;;
+    border-top-color: transparent !important;;
+    border-right-color: transparent !important;;
+    border-bottom-color: transparent !important;;
+    border-left-color: transparent !important;;
+  border-radius: 4px !important;;
+}
+
+.btn btn-xs btn-success{
+  background-color: #5cb85c !important 
+}
+
+.btn-xs, .btn-group-xs > .btn {
+  padding: 1px 5px !important;;
+  font-size: 12px !important;;
+  line-height: 1.5 !important;;
+  border-radius: 3px !important;;
+    border-top-right-radius: 3px !important;;
+    border-bottom-right-radius: 3px !important;;
+}
+
+.btn-success {
+  color: #fff !important;
+  background-color: #5cb85c !important;
+  border-color: #4cae4c !important;
+}
+
+.btn-success,.btn-danger {
+  background-color: #5cb85c !important 
+}
+.btn-danger {
+  color: #fff !important;
+  background-color: #d9534f !important;
+  border-color: #d43f3a !important;
+}
+
+.btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
+  background-color: #337ab7 !important;
+  border-color: #2e6da4 !important;
+}
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  filter: alpha(opacity=65) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  opacity: .65 !important;
+}
+
+#btn-set{
+    background-color:#19A7C1 !important;
+    font-size:20px !important;
+    border: none !important;
+  padding: 1px 50px !important;
+  text-decoration: none !important;
+      -webkit-transition-duration: 0.4s !important; /* Safari */
+    transition-duration: 0.4s !important;
+  border-radius: 0 !important;
+}
+
+/* #btn-set:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#btn-reset:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#btn-get-sql:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+} */
+
+hr {
+    border: none;
+    height: 1px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #333; /* Modern Browsers */
+    width:50%
+}
+
+input{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family:'Whitney SSM', sans-serif;
+  
+}
+
+#selectDiv{
+  display:inline-block;
+}
+.tooltip {
+ position:absolute;
+ z-index:1070;
+ display:block;
+ font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ font-size:12px;
+ font-weight:400;
+ line-height:1.4;
+ visibility:visible;
+ filter:alpha(opacity=0);
+ opacity:0
+}
+.tooltip.in {
+ filter:alpha(opacity=90);
+ opacity:.9
+}
+.tooltip.top {
+ padding:5px 0;
+ margin-top:-3px
+}
+.tooltip.right {
+ padding:0 5px;
+ margin-left:3px
+}
+.tooltip.bottom {
+ padding:5px 0;
+ margin-top:3px
+}
+.tooltip.left {
+ padding:0 5px;
+ margin-left:-3px
+}
+.tooltip-inner {
+ max-width:200px!important;
+ padding:3px 8px !important;
+ color:#fff !important;
+ text-align:center!important;
+ text-decoration:none!important;
+ background-color:#000!important;
+ border-radius:4px!important;
+}
+.tooltip-arrow {
+ position:absolute !important;
+ width:0 !important;
+ height:0 !important;
+ border-color:transparent !important;
+ border-style:solid
+}
+.tooltip.top .tooltip-arrow {
+ bottom:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-left .tooltip-arrow {
+ right:5px !important;
+ bottom:0 !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-right .tooltip-arrow {
+ bottom:0 !important;
+ left:5px !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.right .tooltip-arrow {
+ top:50% !important;
+ left:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 5px 5px 0 !important;
+ border-right-color:#000
+}
+.tooltip.left .tooltip-arrow {
+ top:50% !important;
+ right:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 0 5px 5px !important;
+ border-left-color:#000
+}
+.tooltip.bottom .tooltip-arrow {
+ top:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-left .tooltip-arrow {
+ top:0 !important;
+ right:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-right .tooltip-arrow {
+ top:0 !important;
+ left:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+</style>
+<style>
+  @font-face {
+ font-family:'Glyphicons Halflings';
+ src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot" %}');
+  src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix" %}') format("embedded-opentype") ,  
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.woff" %}') format("woff") ,
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.ttf" %}') format("truetype"),
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular" %}') format("svg") 
+}
+</style>
+<style>
+
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+.row-cols-md-8 > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
+  .btn-primary-panes{
+   /* border-radius: 50%;*/
+  width: 3rem; 
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f2f3f6!important;
+  z-index: 1045;
+  /* border-radius: 1px; */
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  font-size:1.4rem;
+  }
+
+  
+  .btn-primary-panes:active {
+  background-color:  #f2f3f6!important;
+  color: red;
+}
+
+</style>
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/fixedColumns.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/dataTables.scroller.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.css' %}">
+{% endblock style %}
+{% block content %}
+<div class="navbar-nav-wrap-content-start"  style="z-index: 100; position:absolute; top:0px; width:28px; height:82px; padding:5px; background-color: transparent;position: fixed;"> 
+  <!-- <div class="border border-start-0">
+    <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" style="color:#377dff" data-bs-target="#divPane">
+       <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><i class="bi-tv fs-1" style="font-size: 1.6rem;"></i></span>
+    </a>   
+   </div> -->
+</div>
+ 
+<!-- pop-up for control class -->
+<div id="divControlClassSel"  style="width: 500px; left:50%; margin-left: -250px;" class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Control Class</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div  id="divArrCols" class="modal-body bg-100 " style="max-height: 200px;overflow-x: auto;"> 
+        
+    
+            
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divControlClassSel').modal('toggle')">Cancel</button> 
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="addRow()">Add</button>
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="OptionSelected()">Save</button>
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for control class -->
+
+<!-- pop-up for fliter -->
+<div id="divFilterSel"   class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content modal-xl">
+    <div class="modal-content  bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Filters</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3 position-relative"  >
+          
+          <div class="col-sm-1" style="margin-left: 10px; ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-get-mongo" value="Show"/>
+          </div>  
+          <div class="col-sm-1" style="margin-left: 10px;  ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-reset" value="Clear"/>
+          </div>      
+          <div class="col-sm-1" style="margin-left: 10px;  ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-save" value="Save"/>
+          </div>   
+        </div>
+        <div class="row mb-3 position-relative"  >
+          
+          <div class="col-sm-8" style="margin-left: 10px;width: 65%;">
+            <div id="builder" ></div>  
+          </div>
+          <div class="col-sm-4">
+            <div class="position-relative mb-sm-4 mb-xl-0">
+              <div id="charttest" style="min-height:390px;width:100%"></div>
+            </div>
+          </div>
+      </div> 
+          
+          
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divFilterSel').modal('toggle')">Cancel</button> 
+         
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for control class -->
+
+
+<div class="content" style="padding-top:0px;">   
+    <!-- Page Header -->
+    <div class="page-header">      
+      <div class="js-nav-scroller hs-nav-scroller-horizontal"> 
+
+        <ul class="nav nav-tabs page-header-tabs" id="projectsTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" id="Marketing" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Marketing" role="tab" aria-controls="Marketing" aria-selected="true">Marketing</a>
+          </li>                   
+          <li class="nav-item" style="display: {{is_DA}};">
+            <a class="nav-link" id="Underwriting" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Underwriting" role="tab" aria-controls="Underwriting" aria-selected="true">Underwriting</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" id="Pricing" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Pricing" role="tab" aria-controls="Pricing" aria-selected="true">Pricing</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" id="Redlining" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Redlining" role="tab" aria-controls="Redlining" aria-selected="true">Redlining</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" id="Steering" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Steering" role="tab" aria-controls="Steering" aria-selected="true">Steering</a>
+          </li>
+          <li class="nav-item" > 
+            <a class="nav-link active" id="MatchedPair" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#MatchedPair" role="tab" aria-controls="MatchedPair" aria-selected="true">Matched Pair</a>
+          </li>
+          <li class="nav-item"style="display: {{is_DA}};"> 
+            <a class="nav-link" id="Exceptions" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Exceptions" role="tab" aria-controls="Exceptions" aria-selected="true">Exceptions</a>
+          </li>
+        </ul>
+      </div>
+      <!-- End Nav -->
+    </div>
+    <div class="tab-content" id="projectsTabContent">
+      <div class="tab-pane fade show active" id="MatchedPair" role="tabpanel" aria-labelledby="MatchedPair">
+        <div class="row">
+          <div class="col-sm-2" style="width:15%"> 
+            <button id="btnSelCtrlCls"  class="btn btn-primary px-5" onclick="$('#divControlClassSel').modal('toggle')" >Set Control Class</button>
+          </div>
+          <div class="col-sm-1"> 
+            <button id="btnSelFilters"  class="btn btn-primary px-5" onclick="$('#divFilterSel').modal('toggle')" >Filters</button>
+          </div> 
+     
+        </div>    
+        <div class="row" style="margin-top:10px;margin-bottom: 10px;">
+            <div class="col-sm-12" style="text-align: center;">
+              <h4><label id="lblfilterSelected"> {{filterSelected}}</label> </h4>
+            </div>
+        </div>       
+       
+        <div class="row">
+          <hr>
+        </div> 
+        <div class="row" style="height: 525px;overflow:scroll;"> 
+          <div class="accordion" id="accordionExample"> 
+            <div class="accordion-item">
+              <div class="accordion-header" id="headingOne">
+                <a class="accordion-button" role="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  Matched Pair Records
+                </a>
+              </div>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" >
+                <div class="accordion-body">
+                  <div class="row" >
+                    <div id="div_mdlsummary"> 
+                      <!-- Header -->
+                        <div class=" ">
+                          <div class="row justify-content-between align-items-center flex-grow-1">
+                            <div class="col-md">
+                              <div class="d-flex justify-content-between align-items-center">  
+                              </div>
+                            </div>
+                            <!-- End Col --> 
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                      <!-- End Header -->
+                      <!-- Table -->
+                        <div class="table-responsive datatable-custom" style="max-height: 150px;overflow-y:scroll; min-height: 100px;">
+                          <table id="datatable_UA" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                                  "columnDefs": [{
+                                      "targets": [0],
+                                      "orderable": false
+                                    }],
+                                  "order": [],
+                                  "info": {
+                                    "totalQty": "#datatableWithPaginationInfoTotalQty"
+                                  },
+                                  "search": "#datatableSearch",
+                                  "entries": "#datatableEntries",
+                                  "pageLength": 5,
+                                  "isResponsive": false,
+                                  "isShowPaging": false,
+                                  "pagination": "datatablePagination"
+                                }'>
+                            <thead class="thead-light">
+                              <tr style="max-height: 50px;"> 
+                                <th class="text-center">Select</th>
+                                {% for col in colList %}  
+                                  {% if col != 'unique_id' %}
+                                    <th  style="min-width: 400px;">
+                                      <div class="row">
+                                        <div class="col-sm-1" style="width:40px;">
+                                          <input type="checkbox" id="{{col}}"  name="chk_col_selection"/>
+                                        </div>
+                                        <div class="col-auto text-wrap" >
+                                          {{col}}
+                                        </div>
+                                      </div>
+                                    </th>  
+                                  {% endif %}
+                                {% endfor %}               
+                              </tr>
+                            </thead>
+          
+                            <tbody>
+                              <tr>         
+                                {% for k in gridData %}
+                                  <tr>
+                                   
+                                    {% for key, val in k.items %}
+                                      {% if key == 'unique_id'%}
+                                        <td class="text-center">              
+                                          <input type="radio" id="{{val}}" onchange="getMatchedPairs(this.id)" name="rb_Filter" style="margin-left: 10px;;"/>  
+                                        </td> 
+                                      {% else %}
+                                        <td class="text-center"> {{ val }}</td>
+                                      {% endif %}
+
+                                    {% endfor %}
+                                  </tr>
+                                {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      <!-- End Table -->
+          
+                      
+                     </div>
+                  </div>
+                  <div class="row" >
+                    <div> 
+                      <!-- Header -->
+                        <div class=" ">
+                          <div class="row justify-content-between align-items-center flex-grow-1">
+                            <div class="col-md">
+                              <div class="d-flex justify-content-between align-items-center">  
+                              </div>
+                            </div>
+                            <!-- End Col --> 
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                      <!-- End Header -->
+                      <!-- Table -->
+                        <div class="table-responsive datatable-custom" style="max-height: 150px;overflow-y:scroll; min-height: 100px;">
+                          <table id="tbldocs" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                                  "columnDefs": [{
+                                      "targets": [0],
+                                      "orderable": false
+                                    }],
+                                  "order": [],
+                                  "info": {
+                                    "totalQty": "#datatableWithPaginationInfoTotalQty"
+                                  },
+                                  "search": "#datatableSearch",
+                                  "entries": "#datatableEntries",
+                                  "pageLength": 5,
+                                  "isResponsive": false,
+                                  "isShowPaging": false,
+                                  "pagination": "datatablePagination"
+                                }'>
+                            <thead class="thead-light">
+                              <tr style="max-height: 50px;"> 
+                                
+                            </thead>
+          
+                            <tbody>
+                               
+                            </tbody>
+                          </table>
+                        </div>
+                      <!-- End Table -->
+          
+                      
+                     </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item"> 
+              <div class="accordion-header" id="headingTwo">
+                <a class="accordion-button" role="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                  Denial Categories
+                </a>
+              </div>
+              <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" >
+                <div class="accordion-body">
+                  <div class="row" style="margin-top:10px">
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Denial for Income</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Denial for LTV</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Denial for Purpose</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Denial for Reason</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Denial for Loan Amount</h4>  
+                    </div> 
+                  </div>
+                  <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:100%;height:100%;">
+                        <canvas id="TtlAppEthnicity" style="width:100%;height: 100%;"></canvas>
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <div style="width:100%;height:100%;">
+                        <canvas id="AIREthnicity" style="width:100%;height: 100%;" ></canvas>
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:100%;height:100%;"> 
+                          <canvas id="DOREthnicity" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <div style="width:100%;height:100%;"> 
+                        <canvas id="ApprlRateEthnicity"  style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3"  style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <div style="width:100%;height:100%;"> 
+                        <canvas id="DenialRateEthnicity" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>                    
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+ 
+
+    </div>
+</div>
+<!-- End Content -->
+  </div> 
+</div>
+ <!-- Modal for enlarged chart --> 
+<div id="chartModal"   class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content modal">
+    <div class="modal-content  bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Filters</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3 position-relative" style="width:400px;height: 400px;" >
+          <canvas id="modalChart" style="width:350px;height: 350px;"></canvas>  
+        </div>       
+          
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#chartModal').modal('toggle')">Cancel</button> 
+         
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for large chart  -->
+ 
+<div class="modal fade" id="LegendModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="LegendModalLabel">Map Pointers Legend</h5>            
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top:2px;">
+          <div class="col-sm-6" >  
+            <label></label>
+          </div>
+          <div class="col-sm-6">
+            <img src="./assets/svg/svgs/map-icon1/map-pin-red.svg" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" onclick="ShowHideLegend()">Close</button>           
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="MergedMapModal" width="90%" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="MergedMapLabel">Combined Bank and Peer Group Map</h5>            
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top:2px;">
+          <div class="col-sm-12" >  
+            <div id="mapMerged" style="width: 100%; height: 800px; border:solid 1px #c3c3c3"></div>
+          </div>             
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" onclick="ShowHideLegend()">Close</button>           
+      </div>
+    </div>
+  </div>
+</div>
+
+  {% endblock content %}
+  {% block script %} 
+  
+ 
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+   
+
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script> 
+  
+ 
+  
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.js' %}"></script> 
+
+<script src="{% static 'node_modules/chosenjs/chosen.jquery.js' %}"></script> 
+ <script src="{% static 'node_modules/bootstrap-select-1.13.14/dist/js/bootstrap-select.js' %}"></script>  
+<script src="{% static 'node_modules/bootbox/bootbox.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-slider/dist/bootstrap-slider.min.js' %}"></script>
+<script src="{% static 'node_modules/selectize/dist/js/standalone/selectize.js' %}"></script>
+
+<script src="{% static 'node_modules/sql-parser-mistic/browser/sql-parser.js' %}"></script>
+<script src="{% static 'node_modules/interactjs/dist/interact.min.js' %}"></script>  
+ <script src="{% static 'node_modules/dist/js/newQB.js' %}" ></script> 
+<script src="{% static 'node_modules/datepicker/bootstrap-datepicker.min.js' %}" ></script> 
+<script src="{% static 'phoenix-v1.8.0/public/vendors/echarts/echarts.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+<script>
+   
+   columnsArr=[] 
+      var columns = []
+ var colum = {{querybldrcols|safe}};
+
+ $(document).ready(function(){  
+  getMatchedPairDeials();
+  HSCore.components.HSTomSelect.init('.js-select')
+    $.each(colum, function(key, value) {
+         
+         item={};
+         item['id']=value.dbColName;
+         item['label']=value.colName;
+         item['type']=value.dataType;
+         if(value.valueLst.length>0){
+           item['values'] = value.valueLst;
+           item['input']='select'; 
+         } 
+         columnsArr.push(item)
+       }) 
+     
+// Fix for Bootstrap Datepicker
+$('#builder').on('afterUpdateRuleValue.queryBuilder', function(e, rule) {
+ if (rule.filter.plugin === 'datepicker') {
+   rule.$el.find('.rule-value-container input').datepicker('update');
+ }
+});
+
+ $('#builder').queryBuilder({
+  
+   plugins: [
+   'sortable',
+ ],
+
+ filters:columnsArr
+});
+
+//When rules changed :
+$('#builder').on('getRules.queryBuilder.filter', function(e) {
+ //console.log(e.value);
+});
+
+
+   $('#btn-get-mongo').on('click', function() { 
+     var result = $('#builder').queryBuilder('getSQL')
+     if (!$.isEmptyObject(result)) { 
+       $("#divquery").val(result.sql)
+         $.ajax({
+           url: '/modelval/query_filter_sql/', 
+           // data:objectDataString,
+           data:{'objectDataString':result.sql},
+           dataType: 'json',   
+           success: function (data) { 
+              if(data.isvalid=='true'){ 
+               charttest(parseInt(data.all_count)-parseInt(data.filter_cnt),data.filter_cnt);
+              }
+              else
+              {
+               alert('Error while adding Function.')
+              }
+           }
+       });
+       }
+     });
+
+     $('#btn-reset').on('click', function() {
+       $('#builder').queryBuilder('reset');
+     });
+
+
+     $('#btn-get-sql').on('click', function() {       
+       var result = $('#builder').queryBuilder('getSQL')
+
+       if (!$.isEmptyObject(result)) { 
+         // console.log(JSON.stringify(result, null, 2))  
+         $("#divquery").val(result.sql)
+         $('#staticBackdropLive').modal('toggle');
+         
+       }
+       var colum = '{{col_list|safe}}';
+       var strQuery='';
+       const data = colum;
+       // const data = ["red", "blue", "green", "yellow", "purple", "orange", "black", "white", "brown"];
+       const autocomplete = document.getElementById("divquery");
+       const resultsHTML = document.getElementById("results");
+
+       autocomplete.oninput = function () {
+         let results = [];
+         const userInput = this.value;
+         resultsHTML.innerHTML = "";
+         if (userInput.length > 0) {
+           results = getResults(userInput);
+           resultsHTML.style.display = "block";
+           for (i = 0; i < results.length; i++) {
+             resultsHTML.innerHTML += "<li>" + results[i] + "</li>";
+           }
+         }
+       };
+
+       function getResults(input) {     
+         input = input.toUpperCase()
+         inputarr=input.split(' ') 
+         input=inputarr[inputarr.length-1]
+         const results = [];
+         for (i = 0; i < data.length; i++) {
+           if (input === data[i].slice(0, input.length).toUpperCase()) { 
+
+             results.push(data[i]);
+           }
+         }  
+         return results;
+       }
+
+       resultsHTML.onclick = function (event) { 
+         $("#divquery").focus();
+         inputarr=autocomplete.value.split(' ') 
+         inputarr[inputarr.length-1]= ''; 
+         const setValue = event.target.innerText;
+         
+         autocomplete.value =inputarr.join(' ')+ " '"+setValue+"'";
+         this.innerHTML = "";
+       };
+
+
+
+     });
+
+   
+     $('#btn-save').on('click', function() { 
+      var result = $('#builder').queryBuilder('getSQL')
+     if (!$.isEmptyObject(result)) { 
+       $("#divquery").val(result.sql)
+         $.ajax({
+           url: '/modelval/save_filter_sql/', 
+           // data:objectDataString,
+           data:{'objectDataString':result.sql,'utiltity':'MatchedPair'},
+           dataType: 'json',   
+           success: function (data) { 
+              if(data.is_taken =='true'){
+                getAIR();
+                $('#divFilterSel').modal('toggle')
+              }
+           }
+       });
+       }
+     
+     })
+
+     $('#btn-set-sql').on('click', function() { 
+       try {
+         input_val = $( "#divquery" ).val() 
+         $('#builder').queryBuilder('setRulesFromSQL', input_val);
+         $('#btn-get-mongo').click()
+       }
+       catch(err) {
+         alert("Invalid statement")
+       }
+       
+     });
+
+    
+  })
+   
+  function getMatchedPairDeials(id){  
+    var lstColorArray=['#0dcaf0', '#fd7e14','#ffc107','#dc3545','#198754','#0d6efd','#FFFF00','#FF00FF']
+    var arrLTVLbl=[];
+    var arrLTV=[];
+    var arrLoanPurpsbl=[];
+    var arrLoanPurps=[];    
+    $.ajax({
+        url: '{{getMatchedPairs_Denials}}', 
+        data:{'selectedId':id,'activity_year':'2023','prohb_cls':'combined_loan_to_value_ratio'},
+        dataType: 'json',   
+        success: function (data) { 
+          $.each(data.data.denials, function(i, obj) {              
+            arrLTVLbl.push(obj.ClsLbl); 
+            arrLTV.push(obj.denied)  ;   
+           });
+          var chartLTV = Chart.getChart("AIREthnicity"); // <canvas> id 
+          if (chartLTV != undefined) {
+            chartLTV.destroy();
+          }
+           var ctxLTV = document.getElementById("AIREthnicity").getContext('2d');
+          var chartLTV = new Chart(ctxLTV, {
+            type: 'bar',
+            data: {
+            labels:arrLTVLbl,
+            datasets: [{ 
+            
+            backgroundColor: lstColorArray,
+            data: arrLTV
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales: {
+              x: { 
+              ticks: {
+              display: false
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            });		
+             
+        }
+    });
+    var arrEthnicityTtlAppl=[];
+    var arrEthnicityLbl=[];
+    $.ajax({
+        url: '{{getMatchedPairs_Denials}}', 
+        data:{'selectedId':id,'activity_year':'2023','prohb_cls':'income'},
+        dataType: 'json',   
+        success: function (data) {  
+          $.each(data.data.denials, function(i, obj) {              
+            arrEthnicityLbl.push(obj.ClsLbl); 
+            arrEthnicityTtlAppl.push(obj.denied)  ;   
+           });
+          let chartTtlAppEthnicity = Chart.getChart("TtlAppEthnicity"); // <canvas> id 
+          if (chartTtlAppEthnicity != undefined) {
+            chartTtlAppEthnicity.destroy();
+          }
+           var ctxTtlAppEthnicity = document.getElementById("TtlAppEthnicity").getContext('2d');
+           var charTtlAppEthnicity  = new Chart(ctxTtlAppEthnicity , {
+            type: 'bar',
+            data: {
+            labels:arrEthnicityLbl,
+            datasets: [{ 
+            
+            backgroundColor: lstColorArray,
+            data: arrEthnicityTtlAppl
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales: {
+              x: { 
+              ticks: {
+              display: false
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            });		
+            
+           
+          
+        }
+    });
+
+    $.ajax({
+        url: '{{getMatchedPairs_Denials}}', 
+        data:{'selectedId':id,'activity_year':'2023','prohb_cls':'loan_purpose'},
+        dataType: 'json',   
+        success: function (data) { 
+          $.each(data.data.denials, function(i, obj) {              
+            arrLoanPurpsbl.push(obj.ClsLbl); 
+            arrLoanPurps.push(obj.denied)  ;   
+           });
+          var chartLTV = Chart.getChart("DOREthnicity"); // <canvas> id 
+          if (chartLTV != undefined) {
+            chartLTV.destroy();
+          }
+           var ctxLTV = document.getElementById("DOREthnicity").getContext('2d');
+          var chartLTV = new Chart(ctxLTV, {
+            type: 'bar',
+            data: {
+            labels:arrLoanPurpsbl,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrLoanPurps
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales: {
+              x: { 
+              ticks: {
+              display: false
+              }
+            }
+            },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            });
+       
+          
+        }
+    });
+
+    var arrDenialResnLbl=[];
+    var arrDenialResn=[];
+    $.ajax({
+        url: '{{getMatchedPairs_Denials}}', 
+        data:{'selectedId':id,'activity_year':'2023','prohb_cls':'denial_reason_1'},
+        dataType: 'json',   
+        success: function (data) {  
+          $.each(data.data.denials, function(i, obj) {              
+            arrDenialResnLbl.push(obj.ClsLbl); 
+            arrDenialResn.push(obj.denied)  ;   
+           });
+          var chartLTV = Chart.getChart("ApprlRateEthnicity"); // <canvas> id 
+          if (chartLTV != undefined) {
+            chartLTV.destroy();
+          }
+           var ctxLTV = document.getElementById("ApprlRateEthnicity").getContext('2d');
+          var chartLTV = new Chart(ctxLTV, {
+            type: 'bar',
+            data: {
+            labels:arrDenialResnLbl,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrDenialResn
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales: {
+              x: { 
+              ticks: {
+              display: false
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            });
+           
+        }
+    }); 
+    var arrLoanAmntLbl=[];
+    var arrLoanAmnt=[];
+    $.ajax({
+        url: '{{getMatchedPairs_Denials}}', 
+        data:{'selectedId':id,'activity_year':'2023','prohb_cls':'loan_amount'},
+        dataType: 'json',   
+        success: function (data) {  
+          //
+          $.each(data.data.denials, function(i, obj) {              
+            arrLoanAmntLbl.push(obj.ClsLbl); 
+            arrLoanAmnt.push(obj.denied)  ;   
+           });
+          var chartLTV = Chart.getChart("DenialRateEthnicity"); // <canvas> id 
+          if (chartLTV != undefined) {
+            chartLTV.destroy();
+          }
+           var ctxLTV = document.getElementById("DenialRateEthnicity").getContext('2d');
+          var chartLTV = new Chart(ctxLTV, {
+            type: 'bar',
+            data: {
+            labels:arrLoanAmntLbl,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrLoanAmnt
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales: {
+              x: { 
+              ticks: {
+              display: false
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            });
+       
+          
+        }
+    });
+
+    
+  }
+  function getMatchedPairs(id){  
+    var colselection=[];
+    var ele=document.getElementsByName('chk_col_selection'); 
+    for(var i=0; i<ele.length; i++){  
+      if(ele[i].type=='checkbox')  
+          if(ele[i].checked){
+            colselection.push(ele[i].id)
+          }
+      } 
+      $('#tbldocs').find('thead').empty(); 
+    $('#tbldocs').find('tbody').empty(); 
+    $.ajax({
+        url: '{{getMatchedPairs}}', 
+        data:{'selectedId':id,'activity_year':'2023','colselection':colselection},
+        dataType: 'json',   
+        success: function (data) {  
+          
+          $.each(data.data, function(i, val) { 
+            if(i==0){
+              myRow='<tr> '
+              for (var key in val)
+              {
+                myRow +='<td class="text-center">'+key +'</td>';
+              }
+              myRow +='</tr>'; 
+              $('#tbldocs').find('thead').append(myRow);             
+            }
+            myRow='<tr> '
+              for (var key in val)
+              {
+                myRow +='<td class="text-center">'+ val[key] +'</td>';
+              }
+              myRow +='</tr>'; 
+              $('#tbldocs').find('tbody').append(myRow);
+            
+            // myRow='<tr> <td class="text-center">'+val.derived_ethnicity+'  </td>  <td class="text-center">'+val.derived_race +' </td> <td class="text-center">'+val.derived_sex+'  </td>  <td class="text-center">'+val.applicant_age +' </td> </tr> '
+            // $('#tbldocs').find('tbody').append(myRow);
+          });
+          
+        }
+    });
+  }
+      function charttest(x,y){
+      var chartDom = document.getElementById('charttest');
+  var myChart = echarts.init(chartDom);
+  var option;
+ 
+
+option = {
+  title: {
+    text: 'Total Records '+(parseInt(x)+parseInt(y)),
+     
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    show:false
+  },
+  series: [
+    { 
+      type: 'pie',
+      radius: '50%',
+      label: {
+        show: true,
+        formatter(param) {
+          // correct the percentage
+          return param.name + '  (' + param.data.value + ')';
+        }
+      },
+      data: [
+        { value: y, name: 'Matching' },
+        { value: x, name: 'Not Macthing' }, 
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+    option && myChart.setOption(option);
+    myChart.on('click', params => {   
+        var result = $('#builder').queryBuilder('getMongo'); 
+        var objectDataString = JSON.stringify(result, null, 2);
+        objectDataString='{"$and": [ {"file_id":{{file_id}}},'+objectDataString+']}';
+        //document.location.href = "/viewFiltredDataType?objectDataString=" +JSON.stringify(objectDataString);
+        $.ajax({
+            url: '/viewFiltredDataType/', 
+            data:{'objectDataString':JSON.stringify(objectDataString),segment: params.name},
+            // data:objectDataString,
+            dataType: 'json',   
+            success: function (data) {  
+               if(data.isvalid=='true'){
+                alert("successfully save")
+               }
+               else
+               {
+                alert('Error while adding Function.')
+               }
+            }
+          });
+      })
+
+    }
+ 
+    var tabSelected='MatchedPair' 
+    var rowIdx=1;
+    $('#divArrCols').empty()
+    addRow(); 
+     
+    
+    function getDistVals(id){ 
+      $('#ddlColVal_'+id.split('_')[1]).empty()
+      $.ajax({
+        url: '/modelval/getDistinct_Col_Val/', 
+        data:{'colName':$('#'+id).val(),'activity_year':'2023'},
+        dataType: 'json',   
+        success: function (data) { 
+           
+          if(Object.keys(data.arrCols).length ==1 && data.arrCols[0].distVals =="UserInput"){
+            $('#txtColVal_'+id.split('_')[1]).show()
+            $('#ddlColVal_'+id.split('_')[1]).hide()
+          }
+          else{
+            $.each(data.arrCols, function(i, obj) {             
+              $('#ddlColVal_'+id.split('_')[1])
+            .append($('<option>', { value : obj.distVals })
+            .text(obj.distVals));
+              // strRow+=' <option value="'+obj.ColumnName+'">'+obj.ColumnName+'</option>'
+            });
+            $('#txtColVal_'+id.split('_')[1]).hide()
+            $('#ddlColVal_'+id.split('_')[1]).show()
+            $('#txtColVal_'+id.split('_')[1]).val($("#ddlColVal_"+id.split('_')[1]).val());
+          }
+          
+        }
+      });
+    }
+
+
+
+    function OptionSelected(){
+      
+      updatedata=[]
+      for (var i=1;i<rowIdx;i++){ 
+        item = {}  
+          item["Col_Nm"] =$('#ddlColNm_'+i).val();
+          item["Col_Oprtr"]=$('#ddlOprtr_'+i).val()
+          item["Col_Val"] =$('#txtColVal_'+i).val();
+          updatedata.push(item); 
+      }
+      if(updatedata.length>0){
+        $.ajax({
+          url: '/modelval/updateCtrl_Class/', 
+          data:{ datalist: JSON.stringify(updatedata),'selctedTab':tabSelected},
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){
+                alert('Saved Successfully.');
+                getMatchedPairDeials();
+                $('#divControlClassSel').modal('toggle');
+              }
+          }
+        }); 
+      }  
+    }
+    
+    function getTabIdx(id){      
+      if(id=='Underwriting'){ 
+        window.location='/modelval/getUnderwriting_Dashb_Varwise'
+      }
+      else if(id=='Marketing'){ 
+        window.location='{{getMarketing_Dashb_Varwise}}'
+      }
+      else if(id=='Steering'){ 
+        window.location='{{getSteering_Dashb_Varwise}}'
+      }
+      else if(id=='Pricing'){ 
+        window.location='{{getPricing_Dashb_Varwise}}'
+      }
+      else if(id=='Redlining'){ 
+        window.location='{{getRedlining_Dashb_Varwise}}'
+      }
+    }
+
+    function setColVal(rowIdx){
+      $('#txtColVal_'+rowIdx).val($("#ddlColVal_"+rowIdx).val());
+    }
+
+    function filterPeerGrpData()
+    { 
+      $.ajax({
+          url: '/modelval/updatePeerGroup/', 
+          data:{ peergroups:$('#ddlPeer').val(),'selctedTab':'MatchedPair'},
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){  
+                getAIR(); 
+              }
+          }
+        });
+    }
+    
+    function addRow(){
+      var arrList={{ctrl_cols|safe}};  
+      strRow='';
+      strRow+=' <div class="row" style="margin-top: 1rem;">';
+      strRow+='     <label class="col-sm-2 col-form-label" for="txtRegDt"> Column </label> ';
+      strRow+='     <div class="col-sm-4">     ';
+      strRow+='      <select id="ddlColNm_'+rowIdx+'" onchange="getDistVals(this.id)" class="form-select" data-choices="data-choices"> ';
+        $.each(arrList, function(i, obj) {   
+        strRow+=' <option value="'+obj.Database_Fields+'">'+obj.ColumnName+'</option>'
+      });
+
+      strRow+='       </select> ';
+      strRow+='     </div>    ';
+      strRow+='     <div class="col-sm-2">     ';
+      strRow+='      <select id="ddlOprtr_'+rowIdx+'" class="form-select" data-choices="data-choices" style="width:70px;"> ';
+      strRow+=' <option value="=" selected>=</option>'  
+      strRow+=' <option value="<>"><></option>'  
+      strRow+=' <option value=">">></option>'  
+      strRow+=' <option value=">=">>=</option>'  
+      strRow+=' <option value="<"><</option>'  
+      strRow+=' <option value="<="><=</option>'  
+      strRow+='      </select>';
+      strRow+='  </div>  ';   
+      strRow+='     <div class="col-sm-4">     ';
+      strRow+='      <select id="ddlColVal_'+rowIdx+'" onchange="setColVal('+rowIdx+')" class="form-select" data-choices="data-choices" > ';
+  
+      strRow+='      </select> <input type="text" id="txtColVal_'+rowIdx+'" class="form-control" style="display:none;"/>';
+      strRow+='  </div>  ';                        
+      strRow+='   </div> ';
+      $('#divArrCols').append(strRow)
+      rowIdx+=1;
+    }
+
+    function getAIR(){   
+   
+        }
+    </script>
+  {%endblock script %}

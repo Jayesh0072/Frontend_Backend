@@ -1,0 +1,106 @@
+{% extends 'adminbase.html' %}  
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="card h-100">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Add Audit Regulatory Compliance</h4>
+        </div>
+  <div class="card-body">
+  <div class="mb-9">
+    <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"]}'>
+       
+      <div class="row g-3 justify-content-between align-items-end mb-4">
+         
+        <div class="col-12 col-sm-auto">
+          <div class="d-flex align-items-center">
+            <div class="search-box me-3">
+              <div class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                <input class="form-control search-input search" type="search" placeholder="Search Function" aria-label="Search" />
+                <span class="fas fa-search search-box-icon"></span>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+        <div   class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" href="{{newauditregcompl}}"><i class="fa-solid fa-plus me-2"></i>Add New</a></div>
+      </div> 
+      <div class="table-responsive scrollbar" >
+        <table class="table fs--1 mb-0 border-top border-200">
+          <thead>
+            <tr>
+              <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:15%;">Question</th>
+             
+              <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:20%;">Description</th> 
+
+              <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:20%;">Active Status</th> 
+
+              <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:20%;">Is Global?</th> 
+
+              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Edit</th> 
+              
+            </tr>
+          </thead>
+          <tbody class="list" id="project-list-table-body">
+            {% for val in cmplobj %} 
+              <tr class="position-static"> 
+                <td class="align-middle white-space-nowrap ps-0 Model_ID py-4">
+                  
+                   {{val.question_text}} 
+                </td>
+                <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                  {{val.description}}
+                </td> 
+                <td class="align-middle white-space-nowrap ps-0 Model_ID py-4">
+                  
+                    <!-- {{val.is_active}} -->
+                    {% if val.is_active == 1 %}
+                    Active
+                    {% else %}
+                    Inactive
+                    {% endif %} 
+                </td>
+                <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                    <!-- {{val.is_global}} -->
+                    {% if val.is_global == 1 %}
+                    Yes
+                    {% else %}
+                    No
+                    {% endif %} 
+                    </td> 
+                <td><a href="{% url 'editauditregcompl' val.compl_aid %}"><span class="badge badge-phoenix fs--2 badge-phoenix-success"><span class="badge-label">Edit</span><span class="ms-1" data-feather="edit-3" style=""></span></span></a></td>  
+                  <!-- <td>
+                    <div class="font-sans-serif btn-reveal-trigger position-static">
+                      <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                      <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                        
+                      </div>
+                    </div>
+                  </td> -->
+              </tr>
+            {% endfor %}   
+          </tbody>
+        </table>
+      </div>
+      <!-- <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+        <div class="d-flex">
+          <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+        </div>
+        <div class="d-flex">
+          <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+          <ul class="mb-0 pagination"></ul>
+          <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+        </div>
+      </div> -->
+    </div>
+  </div> 
+  </div>
+  </div>
+  </div>
+  
+{% endblock content %}

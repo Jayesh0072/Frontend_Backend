@@ -1,0 +1,1313 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<style>
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+</style>
+<div class="border border-start-0" style="z-index: 100; position:absolute; left:0;top:143px; width:28px; height:82px; padding:5px; background: var(--phoenix-navbar-vertical-bg-color);">
+  <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" data-bs-target="#divPane">
+     <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><span data-feather="monitor"></span></span>
+  </a>
+  <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Add Task"><span  data-feather="flag"></span></span>
+  <span class="nav-link-icon"  data-toggle="tooltip" title="Add Activity"><span data-feather="activity"></span></span>
+
+ </div>
+ 
+ <div id="divPane" class="modal fade"  tabindex="-1" aria-hidden="true">
+  <!-- style="border-right: 1px solid var(--phoenix-navbar-footer-border-color);border-bottom: 1px solid var(--phoenix-navbar-footer-border-color); position:absolute; left:28px; top:62px; width:200px; height:82px; padding:5px;background: var(--phoenix-navbar-vertical-bg-color);"> -->
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Items</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 px-6 py-0">
+        <div class="row gx-14" style="padding-left: 2rem;padding-bottom: 0.5rem;">
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkmodelprogress" type="checkbox" value=""  onchange="showpanes()" checked=""/>
+            <label class="form-check-label" for="chkmodelprogress">Model Progress</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkmodelprogress2" type="checkbox" value="" onchange="showpanes()"/>
+            <label class="form-check-label" for="chkmodelprogress2">Model Source /Approval Status</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkmodel" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkmodel">Models</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkupcoming" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkupcoming">Upcoming</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkactivity" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkactivity">Tasks</label>
+           </div>
+         
+        </div>
+      </div>
+    </div>
+  </div> 
+ 
+  
+ </div>
+<div class="content" style="padding-top:0px;">
+
+  
+    
+    <div class="row mb-3 gy-6">
+      <div class="col-12 col-xxl-2">
+        <div class="row align-items-center g-3 g-xxl-0 h-100 align-content-between">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-books text-primary-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">{{modelttl}}</h2><span class="fs-1 fw-semi-bold text-900">Models</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Awating processing</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-users-alt text-success-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">{{toolCnt}}</h2><span class="fs-1 fw-semi-bold text-900">Tools</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Working hard</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-invoice text-warning-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">{{taskCnt}}</h2><span class="fs-1 fw-semi-bold text-900">Tasks</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Soon to be cleared</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-refresh text-danger-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">{{icqratings}}</h2><span class="fs-1 fw-semi-bold text-900">{{icq_exp}}</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Fresh start</p> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+    <div id="divmodelProgress" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300">
+       
+        <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-12 col-md">
+                  <h4 class="text-900 mb-0" data-anchor="data-anchor">  Model Progress </h4>
+                </div>
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code" role="button" 
+                    aria-controls="basic-example-code" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+                <div class="collapse code-collapse collapse show" id="basic-example-code">
+                  <div class="bg-white border-300">
+                    <div class="row">
+                      <div class="col-12 col-xl-7 col-xxl-6">
+                        <div class="row g-3 mb-3">
+                          <div class="col-12 col-md-6">
+                            <h3 class="text-1100 text-nowrap">Model Type</h3>
+                            <!-- <p class="text-700 mb-md-7">Newly found and yet to be solved</p> -->
+                            <div class="d-flex align-items-center justify-content-between">
+                              <p class="mb-0 fw-bold">Type</p>
+                              <p class="mb-0 fs--1">Total count <span class="fw-bold">{{modelttl}}</span></p>
+                            </div>
+                            <hr class="bg-200 mb-2 mt-2" />
+                            {% for key, val in modeltypes.items  %}                            
+                            <div class="d-flex align-items-center mb-1">
+                              <span class="d-inline-block bg-{{val.color}} bullet-item me-2"></span>
+                              <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">{{val.Mdl_Type_Label}}</p>
+                              <h5 class="mb-0 text-900">{{val.cnt}}</h5>
+                            </div>
+                            {% endfor %}
+                            
+                            <!-- <button class="btn btn-outline-primary mt-5" >Add pane<span class="fas fa-angle-right ms-2 fs--2 text-center"></span></button> -->
+                          </div>
+                          <div class="col-12 col-md-6" >
+                            <div class="position-relative mb-sm-4 mb-xl-0">
+                              <div class="echart-issue-chart" style="min-height:390px;width:100%"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12 col-xl-5 col-xxl-6">
+                        <h3>Model Risk Tier </h3> 
+                        <div class="echart-zero-burnout-chart" style="min-height:320px;width:100%"></div>
+                      </div>
+                    </div>
+                  </div>
+              </div> 
+            </div>
+          </div>
+          <!-- <div class="col-12 col-md-6" >
+            <div class="position-relative mb-sm-4 mb-xl-0">
+              <div id="charttest" style="min-height:390px;width:100%"></div>
+            </div>
+          </div> -->
+         <!-- <div class="col-12 col-xl-7 col-xxl-6">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <h3 class="text-1100 text-nowrap">Project Progress</h3> 
+              <div class="d-flex align-items-center justify-content-between">
+                <p class="mb-0 fw-bold">Issue type </p>
+                <p class="mb-0 fs--1">Total count <span class="fw-bold">257</span></p>
+              </div>
+              <hr class="bg-200 mb-2 mt-2" />
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-info-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Product design</p>
+                <h5 class="mb-0 text-900">78</h5>
+              </div>
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-warning-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Development</p>
+                <h5 class="mb-0 text-900">63</h5>
+              </div>
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-danger-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">QA & Testing</p>
+                <h5 class="mb-0 text-900">56</h5>
+              </div>
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-success-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Customer queries</p>
+                <h5 class="mb-0 text-900">36</h5>
+              </div>
+              <div class="d-flex align-items-center"><span class="d-inline-block bg-primary bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">R & D</p>
+                <h5 class="mb-0 text-900">24</h5>
+              </div>
+              <button class="btn btn-outline-primary mt-5">See Details<span class="fas fa-angle-right ms-2 fs--2 text-center"></span></button>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="position-relative mb-sm-4 mb-xl-0">
+                <div class="echart-issue-chart" style="min-height:390px;width:100%"></div>
+              </div>
+            </div>
+          </div>
+        </div> --> 
+    </div>
+    <div id="divmodelProgress2" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300" style="margin-top:1rem;">
+       
+      <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+          <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+            <div class="row g-3 justify-content-between align-items-center">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" data-anchor="data-anchor">Model Source/Approval Status </h4>
+              </div>
+              <div class="col col-md-auto">
+                <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                 
+                  <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code2" role="button" 
+                  aria-controls="basic-example-code2" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                  <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="basic-example-code2">
+                <div class="bg-white border-300">
+                  <div class="row">
+                    <div class="col-12 col-xl-6 col-xxl-6">
+                      <h3>Model Source </h3> 
+                      <div class="echart-zero-burnout-chart2" style="min-height:320px;width:100%"></div>
+                    </div> 
+                    <div class="col-12 col-xl-6 col-xxl-6">
+                      <h3>Approval Status </h3> 
+                      <div class="echart-zero-burnout-chart3" style="min-height:320px;width:100%"></div>
+                    </div>
+                  </div>
+                </div>
+            </div> 
+          </div>
+        </div> 
+  </div>
+
+
+<!-- Added by Shuv Starts (for Project Details pop-up)-->
+<div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scrollingLongModalLabel2">Model Info</h5>
+        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+      </div>
+      <div class="modal-body p-5 px-md-6">
+        <table class="table table1" >
+                
+          <tr>
+            <th scope="row" style="width:40%">Department</th>
+            <td><label id='lblDept'></label></td>
+          </tr>                 
+          <tr>
+            <th scope="row">Function</th>
+            <td><label id='lblFunc'></label></td>                      
+          </tr>
+          <tr>
+            <th scope="row">Registration Data</th>
+            <td><label id='lblRegDate'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Id</th>
+            <td><label id='lblMdlId'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Primary Model Name </th>
+            <td><label id='lblPrmNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Secondary Model Name </th>
+            <td><label id='lblSecNm'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Source  </th>
+            <td><label id='lblMdlSrc'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Model Type  </th>
+            <td><label id='lblMdlType'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Abstract</th>
+            <td><label id='lblMdlAbsct'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Objective of Model</th>
+            <td><label id='lblMdlObj'></label></td>
+          </tr> 
+          <tr>
+            <th scope="row">Application of Model</th>
+            <td><label id='lblApplMdl'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Risk Analysis </th>
+            <td><label id='lblMdlRiskAnlz'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Products Addressed </th>
+            <td><label id='lblPrdAddr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Usage Frequency </th>
+            <td><label id='lblSsageFreq'></label></td>
+          </tr>
+          <!-- risk tab started -->
+          <tr>
+            <th scope="row">Model Risk </th>
+            <td><label id='lblMdlRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Intrinsic Risk </th>
+            <td><label id='lblIntrRisk'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Reliance</th>
+            <td><label id='lblReliance'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Materiality</th>
+            <td><label id='lblMateriality'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Risk Mitigation </th>
+            <td><label id='lblRiskMiti'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Fair Lending</th>
+            <td><label id='lblFairLendg'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Owner/s</th>
+            <td><label id='lblOwner'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Model Developer/s</th>
+            <td><label id='lblDevlopers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">User/s</th>
+            <td><label id='lblUsers'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Production Support</th>
+            <td><label id='lblPrdnSupp'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Upstream Models</th>
+            <td><label id='lblupstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Downstream Models</th>
+            <td><label id='lbldwstr'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Approach</th>
+            <td><label id='lblApproach'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Frequency</th>
+            <td><label id='lblMonFreq'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Monitoring Metrics</th>
+            <td><label id='lblMonMtrc'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event/s </th>
+            <td><label id='lblTriggerEve'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Date  </th>
+            <td><label id='lblLastTgrDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Trigger Event Mitigation Date </th>
+            <td><label id='lblMitgDt'></label></td>
+          </tr>
+          <tr>
+            <th scope="row">Trigger Event Mitigation  </th>
+            <td><label id='lblMitiEv'></label></td>
+          </tr>
+          <!-- risk tab ended --> 
+      </table>
+      </div>
+      <div class="modal-footer"> 
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+
+    <div  id="divmodels" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Models <span style="font-size: medium;">(Brief summary of all models)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-projectSummary" role="button" 
+                    aria-controls="pnl-projectSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+                <div class="collapse code-collapse collapse show" id="pnl-projectSummary">
+                  <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"],"page":5,"pagination":true}'>
+                    <div class="table-responsive scrollbar" >
+                      <table class="table fs--1 mb-0 border-top border-200">
+                        <thead>
+                          <tr>
+                            <th class="white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:8%;"></th>
+                            <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:8%;">Model ID</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:30%;">Primary Model</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Type" style="width:10%;">Model Source</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Area" style="width:15%;">Model Type</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Internal_Vendor" style="width:12%;">Model Risk</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Status" style="width:9%;">Intrinsic Risk</th>
+                            <th class="sort align-middle text-end" scope="col" data-sort="Approval_Status" style="width:10%;">Materiality</th>
+                          </tr>
+                        </thead>  
+                        <tbody class="list" id="project-list-table-body">
+                          {% for key, val in modelinfo.items  %}             
+                            <tr class="position-static">
+                              <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4">
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                                <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                              </td>
+                              <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4">
+                                
+                                <a class="text-decoration-none fw-bold fs-0" href="#" onclick="showModala('{{val.Mdl_Id}}')" >{{val.Mdl_Id}}</a>
+                              </td>
+                              <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                                {{val.Prm_Name}}
+                              </td>
+                              <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                                {{val.Mdl_Src_Label}} 
+                              </td>
+                              <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                                {{val.Mdl_Type_Label}}
+                              </td>
+                              <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                                {%if val.Mdl_Risk_Label == "High" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                                {%elif val.Mdl_Risk_Label == "Medium" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                                {%elif val.Mdl_Risk_Label == "Low" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                                {% endif %}
+                              </td>
+                              <td class="align-middle white-space-nowrap ps-3 Status"> 
+                                {%if val.Intrinsic_Label == "High" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                                {%elif val.Intrinsic_Label == "Medium" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                                {%elif val.Intrinsic_Label == "Low" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                                {% endif %}
+                              </td>
+                              <td class="align-middle white-space-nowrap text-end Approval_Status">                                
+                                {%if val.Materiality_Label == "High" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                                {%elif val.Materiality_Label == "Medium" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                                {%elif val.Materiality_Label == "Low" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                                {% endif %}
+                              </td> 
+                            </tr>
+                          {% endfor %}   
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+                      <div class="d-flex">
+                        <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                      </div>
+                      <div class="d-flex">
+                        <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                        <ul class="mb-0 pagination"></ul>
+                        <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>  
+              </div>  
+        </div>
+      </div>
+    </div>
+    <div  id="divTasks" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Tasks <span style="font-size: medium;">(Brief summary of all tasks)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-tasksSummary" role="button" 
+                    aria-controls="pnl-tasksSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+                <div class="collapse code-collapse collapse show" id="pnl-tasksSummary">
+                  <div id="projectSummary" data-list='{"valueNames":["U_Role","Task_ID","Department","Originator","Task_Function_Label","Registration_Date","Task_Type_label","Sub_Task_Type","Task_Priority_Label","end_dt","Completion_Status","Task_ApprovalStatus_Label"],"page":5,"pagination":true}'>
+                    <div class="table-responsive scrollbar" >
+                      <table class="table fs--1 mb-0 border-top border-200">
+                        <thead>
+                          <tr>
+                            <th class="white-space-nowrap align-middle ps-0" scope="col" data-sort="Task_ID" style="width:8%;"></th>
+                            <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Task_ID" style="width:8%;">Task ID</th>
+                            <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="U_Role" style="width:8%;">Role</th>                            
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_Priority_Label" style="width:30%;">Priority</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_ApprovalStatus_Label" style="width:10%;">Approval Status</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_Function_Label" style="width:15%;">Task Function</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_Type_label" style="width:12%;">Task Type</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Completion_Status" style="width:9%;">Completion Status</th>
+                            <th class="sort align-middle text-end" scope="col" data-sort="end_dt" style="width:10%;">End Date</th>
+                          </tr>
+                        </thead>  
+                        <tbody class="list" id="project-list-table-body">
+                          {% for key, val in taskLst.items  %}             
+                            <tr class="position-static">
+                              <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4">
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                                <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                              </td>
+                              <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4">
+                                
+                                <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectTasks('{{val.Task_ID}}','{{val.U_Role}}')" >{{val.Task_ID}}</a>
+                              </td>
+                              <td class="align-middle time white-space-nowrap ps-0 U_Role py-4">
+                                
+                                {{val.U_Role}}</a>
+                              </td>
+                              <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                                
+                                {%if val.Task_Priority_Label == "High" %}
+                                  <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                                {%elif val.Task_Priority_Label == "Medium" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                                {%elif val.Task_Priority_Label == "Low" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                                {% endif %}
+                              </td>
+                              <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                                {{val.Task_ApprovalStatus_Label}} 
+                              </td>
+                              <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                                {{val.Task_Function_Label}}
+                              </td>
+                              <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                               {{val.Task_Type_label}}
+                              </td>
+                              <td class="align-middle white-space-nowrap ps-3 Status"> 
+                              {{val.Completion_Status}}
+                              </td>
+                              <td class="align-middle white-space-nowrap text-end Approval_Status">                                
+                               {{val.end_dt}}
+                              </td> 
+                            </tr>
+                          {% endfor %}   
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+                      <div class="d-flex">
+                        <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                      </div>
+                      <div class="d-flex">
+                        <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                        <ul class="mb-0 pagination"></ul>
+                        <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>  
+              </div>  
+        </div>
+      </div>
+    </div>
+
+    <div  id="divIssues" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Issues <span style="font-size: medium;">(Brief summary of all Issues)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-issueSummary" role="button" 
+                    aria-controls="pnl-issueSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+                <div class="collapse code-collapse collapse show" id="pnl-issueSummary">
+                  <div id="projectSummary" data-list='{"valueNames":["U_Role","Issue_ID","Department","Originator","Task_Function_Label","Registration_Date","Task_Type_label","Sub_Task_Type","Task_Priority_Label","end_dt","Completion_Status","Task_ApprovalStatus_Label"],"page":5,"pagination":true}'>
+                    <div class="table-responsive scrollbar" >
+                      <table class="table fs--1 mb-0 border-top border-200">
+                        <thead>
+                          <tr>
+                            <th class="white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;"></th>
+                            <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;">Issue ID</th>
+                            <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="U_Role" style="width:8%;">Role</th>                            
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_Priority_Label" style="width:30%;">Priority</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_ApprovalStatus_Label" style="width:10%;">Approval Status</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_Function_Label" style="width:15%;">Task Function</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Task_Type_label" style="width:12%;">Task Type</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Completion_Status" style="width:9%;">Completion Status</th>
+                            <th class="sort align-middle text-end" scope="col" data-sort="end_dt" style="width:10%;">End Date</th>
+                          </tr>
+                        </thead>  
+                        <tbody class="list" id="project-list-table-body">
+                          {% for key, val in issueList.items  %}             
+                            <tr class="position-static">
+                              <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                                <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                              </td>
+                              <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                                
+                                <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectIssues('{{val.Issue_ID}}','{{val.U_Role}}')" >{{val.Issue_ID}}</a>
+                              </td>
+                              <td class="align-middle time white-space-nowrap ps-0 U_Role py-4">
+                                
+                                {{val.U_Role}}</a>
+                              </td>
+                              <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                                
+                                {%if val.Issue_Priority_Label == "High" %}
+                                  <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5>
+                                {%elif val.Issue_Priority_Label == "Medium" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5>
+                                {%elif val.Issue_Priority_Label == "Low" %}
+                                    <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5>
+                                {% endif %}
+                              </td>
+                              <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                                {{val.Issue_ApprovalStatus_Label}} 
+                              </td>
+                              <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                                {{val.Issue_Function_Label}}
+                              </td>
+                              <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                               {{val.Issue_Type_label}}
+                              </td>
+                              <td class="align-middle white-space-nowrap ps-3 Status"> 
+                              {{val.Completion_Status}}
+                              </td>
+                              <td class="align-middle white-space-nowrap text-end Approval_Status">                                
+                               {{val.end_dt}}
+                              </td> 
+                            </tr>
+                          {% endfor %}   
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+                      <div class="d-flex">
+                        <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                      </div>
+                      <div class="d-flex">
+                        <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                        <ul class="mb-0 pagination"></ul>
+                        <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+            </div>  
+              </div>  
+        </div>
+      </div>
+    </div>
+    <div  id="divAudit" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Audit Trail <span style="font-size: medium;">(Latest activities)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-auditSummary" role="button" 
+                    aria-controls="pnl-auditSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="pnl-auditSummary">
+                <div class="timeline-vertical timeline-with-details">
+                  {% for activity in activity_lst %}
+                  <div class="timeline-item position-relative" style="margin-left: 30%;">
+                    <div class="row g-md-3">
+                      <div class="col-12 col-md-auto d-flex">
+                        <div class="timeline-item-date order-1 order-md-0 me-md-4">
+                          <!-- <p class="fs--2 fw-semi-bold text-600 text-end">01 DEC, 2022<br class="d-none d-md-block" /> 10:30 AM</p> -->
+                          <p class="fs--2 fw-semi-bold text-600 text-end" id="addon">{{activity.date}}<br class="d-none d-md-block" /> {{activity.time}}</p>
+                        </div>
+                        <div class="timeline-item-bar position-md-relative me-3 me-md-0 border-400">
+                          <div class="icon-item icon-item-sm rounded-7 shadow-none bg-primary-100">
+                            <span style="cursor: pointer;" title="View All"  onclick="viewAll('{{ activity.refference_id }}','{{activity.activity_details}}')" 
+                            class="fa-solid fa-clipboard-check text-primary-600 fs--1 dark__text-primary-600"></span></div>
+                            {%if activity.is_last == "No" %}                            
+                              <span class="timeline-bar border-end border-dashed border-400"></span>                            
+                            {%endif %}
+                            
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="timeline-item-content ps-6 ps-md-3">
+                          <h5 class="fs--1 lh-sm" style="cursor: pointer;" id="activity_trigger" title="View Details" onclick="activitytrail('{{ activity.refference_id }}','{{activity.activity_details}}')" >{{ activity.refference_id }} - {{activity.activity_trigger}}</h5>
+                          <p class="fs--1">by <span class="fw-semi-bold text-primary" id="user">{{activity.user}}</span></p>
+                          <!-- <p class="fs--1 text-800 mb-5">{{activity.activity_details}}</p> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  
+                  {% endfor %}
+
+                </div>
+              </div>
+            </div>  
+              </div>  
+        </div>
+      </div>
+    </div> 
+   
+  </div>
+
+  <div class="modal fade" id="divActivityDetails" tabindex="-1" aria-labelledby="divActivityDetails" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scrollingLongModalLabel2">Activity Details</h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+        </div>
+        <div class="modal-body p-5 px-md-6">
+          <p id="txtActivityDetails"></p>
+          <input type="hidden" id="hdnactivityid"/>
+        </div>
+        <div class="modal-footer"> 
+          <button class="btn btn-outline-primary" type="button" onclick="viewAll()">View All</button>
+          <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock content %}
+  {% block script %}
+  <script type='text/javascript' >
+    var mdlType=[]
+
+    function charttest(){
+      var chartDom = document.getElementById('charttest');
+  var myChart = echarts.init(chartDom);
+  var option;
+  const { getColor, getData, resize } = window.phoenix.utils;
+  console.log('colors are ', getColor('info'),
+          getColor('info-300'),
+          getColor('warning-300'),
+          getColor('danger-300'),
+          getColor('success-300'),
+          getColor('primary'))
+  option = {
+    tooltip: {
+      trigger: 'item'
+    },
+    series: [
+      {
+        name: 'Access From',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 40,
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: [
+          { value: 80, name: 'Complete' },
+          { value: 20, name: 'Pending' }
+        ]
+      }
+    ]
+    };
+
+    option && myChart.setOption(option);
+
+    }
+    $(function() {
+    console.log( "ready!" );
+    showpanes() 
+    //charttest();
+     // Executes when the HTML document is loaded and the DOM is ready
+    var riskcnt= {{mdlRiskCnt|safe}};
+   
+    var modeltypes={{modeltypes|safe}}; 
+    $.each(modeltypes, function(i, obj) {
+      //use obj.id and obj.name here, for example:
+      item = {}  
+      item['value'] = obj.cnt;
+      item['name'] = obj.Mdl_Type_Label;
+      mdlType.push(item)
+    }); 
+ 
+    var mdlSrc={{srcCnt|safe}}; 
+    console.log('mdlSrc is ',mdlSrc)
+    // import * as echarts from 'echarts';
+    const { merge } = window._;
+
+  // form config.js
+  const echartSetOption = (chart, userOptions, getDefaultOptions) => {
+      const themeController = document.body;
+      // Merge user options with lodash
+      chart.setOption(merge(getDefaultOptions(), userOptions));
+
+      themeController.addEventListener(
+        'clickControl',
+        ({ detail: { control } }) => {
+          if (control === 'phoenixTheme') {
+            chart.setOption(window._.merge(getDefaultOptions(), userOptions));
+          }
+        }
+      );
+
+      chart.on('click', params => {  
+        //console.log(params.seriesType + ',' + params.seriesName + ','+params.name)
+      
+
+        // Construct the full URL with "id"
+        document.location.href = "/projectsDetails?ty=" +params.seriesType+"&colnm="+params.name+"&chartnm="+params.seriesName;
+      })
+  };
+// -------------------end config.js--------------------
+
+const resizeEcharts = () => {
+  const $echarts = document.querySelectorAll('[data-echart-responsive]');
+
+  if ($echarts.length > 0) {
+    $echarts.forEach(item => {
+      const echartInstance = echarts.getInstanceByDom(item);
+      echartInstance?.resize();
+    });
+  }
+};
+
+const navbarVerticalToggle = document.querySelector('.navbar-vertical-toggle');
+navbarVerticalToggle &&
+  navbarVerticalToggle.addEventListener('navbar.vertical.toggle', e => {
+    return resizeEcharts();
+  }); 
+
+/* -------------------------------------------------------------------------- */
+/*                             Echarts Total Sales                            */
+/* -------------------------------------------------------------------------- */
+
+const issuesDiscoveredChartInit = () => {
+  const { getColor, getData, resize } = window.phoenix.utils;
+  const issuesDiscoveredChartEl = document.querySelector('.echart-issue-chart');
+
+  if (issuesDiscoveredChartEl) {
+    const userOptions = getData(issuesDiscoveredChartEl, 'echarts');
+    const chart = window.echarts.init(issuesDiscoveredChartEl);
+
+    const getDefaultOptions = () => ({
+      color: [
+        getColor('info'),
+        getColor('info-300'),
+        getColor('warning-300'),
+        getColor('danger-300'),
+        getColor('success-300'),
+        getColor('primary')
+      ],
+      tooltip: {
+        trigger: 'item'
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+
+      series: [
+        {
+          name: '',
+          type: 'pie',
+          radius: ['55%', '90%'],
+          startAngle: 30,
+          avoidLabelOverlap: false,
+          // label: {
+          //   show: false,
+          //   position: 'center'
+          // },
+
+          label: {
+            show: false,
+            position: 'center',
+            formatter: '{x|{d}%} \n {y|{b}}',
+            rich: {
+              x: {
+                fontSize: 31.25,
+                fontWeight: 800,
+                color: getColor('gray-700'),
+                padding: [0, 0, 5, 15]
+              },
+              y: {
+                fontSize: 12.8,
+                color: getColor('gray-700'),
+                fontWeight: 600
+              }
+            }
+          },
+          emphasis: {
+            label: {
+              show: true
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data:mdlType
+        }
+      ],
+      grid: {
+        bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        containLabel: false
+      }
+    });
+
+    echartSetOption(chart, userOptions, getDefaultOptions);
+
+    resize(() => {
+      chart.resize();
+    });
+  }
+};
+
+/* -------------------------------------------------------------------------- */
+/*                             Echarts Total Sales                            */
+/* -------------------------------------------------------------------------- */
+
+const zeroBurnOutChartInit = () => {
+  const { getColor, getData, resize, getPastDates } = window.phoenix.utils;
+  const $zeroBurnOutChartEl = document.querySelector(
+    '.echart-zero-burnout-chart'
+  );
+
+  const $zeroBurnOutChartE2 = document.querySelector(
+    '.echart-zero-burnout-chart2'
+  );
+ 
+
+  if ($zeroBurnOutChartEl) {
+    const userOptions = getData($zeroBurnOutChartEl, 'echarts');
+    const chart = window.echarts.init($zeroBurnOutChartEl);
+
+    const getDefaultOptions = () => ({
+      color: [  
+        getColor('info'),
+        getColor('warning')
+      ],
+      tooltip: {
+        trigger: 'item', 
+      }, 
+      xAxis: {
+        type: 'category',
+        data: ['High', 'Medium','Low',  'None'],
+        triggerEvent: true
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          name:'Model Risk Tier',
+          data: riskcnt,//[3, 1, 7, 19],
+          type: 'bar',
+          showBackground: true,
+          emphasis: {
+            focus: 'series'
+          },
+          backgroundStyle: {
+            color: 'rgba(180, 180, 180, 0.2)'
+          }
+        }
+      ],
+      grid: {
+        right: 5,
+        left: 0,
+        bottom: '15%',
+        top: 20,
+        containLabel: true
+      }
+    });
+
+    echartSetOption(chart, userOptions, getDefaultOptions);
+
+    resize(() => {
+      chart.resize();
+    });
+  }
+
+  if ($zeroBurnOutChartE2) {
+    const userOptions = getData($zeroBurnOutChartE2, 'echarts');
+    const chart = window.echarts.init($zeroBurnOutChartE2);
+
+    const getDefaultOptions = () => ({
+      color: [  
+        getColor('info'),
+        getColor('warning')
+      ],
+      tooltip: {
+        trigger: 'item', 
+      }, 
+      xAxis: {
+        type: 'category',
+        data: ['Internal', 'Legacy','Vendor'],
+        triggerEvent: true
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          name:'Model Source',
+          data: mdlSrc,//[3, 1, 7, 19],
+          type: 'bar',
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180, 180, 180, 0.2)'
+          }
+        }
+      ],
+      grid: {
+        right: 5,
+        left: 0,
+        bottom: '15%',
+        top: 20,
+        containLabel: true
+      }
+    });
+
+    echartSetOption(chart, userOptions, getDefaultOptions);
+
+    resize(() => {
+      chart.resize();
+    });
+  }
+
+  
+};
+
+const { docReady } = window.phoenix.utils;
+
+docReady(zeroBurnOutChartInit);
+docReady(issuesDiscoveredChartInit);
+});
+
+    function showpanes(){
+         
+        if ($('#chkmodelprogress').prop('checked')) {
+            $('#divmodelProgress').show();
+            localStorage.setItem('chkmodelprogress', 'checked');
+        } else {
+            $('#divmodelProgress').hide();
+            localStorage.setItem('chkmodelprogress', 'unchecked');
+        } 
+        
+        if ($('#chkmodel').prop('checked')) {
+            $('#divmodels').show();
+        } else {
+            $('#divmodels').hide();
+        } 
+
+        if ($('#chkupcoming').prop('checked')) {
+            $('#divupcoming').show();
+        } else {
+            $('#divupcoming').hide();
+        } 
+
+        if ($('#chkactivity').prop('checked')) {
+            $('#divtask').show();
+        } else {
+            $('#divtask').hide();
+        } 
+
+        if ($('#chkmodelprogress2').prop('checked')) {
+            $('#divmodelProgress2').show();
+        } else {
+            $('#divmodelProgress2').hide();
+        }  
+    }
+    function showDetails()
+    {
+      window.location='{{projectsDetails}}'
+    }
+    function showModala(id){
+      $('#lblDept').text('');
+      $('#lblFunc').text('');
+      $('#lblRegDate').text('');
+      $('#lblMdlId').text('');
+      $('#lblPrmNm').text('');
+      $('#lblSecNm').text('');
+      $('#lblMdlSrc').text('');
+      $('#lblMdlType').text('');
+      $('#lblMdlAbsct').text('');
+      $('#lblMdlObj').text('');
+      $('#lblApplMdl').text('');
+      $('#lblMdlRiskAnlz').text('');
+      $('#lblPrdAddr').text('');
+      $('#lblSsageFreq').text('');
+      //risk tab starts
+      $('#lblMdlRisk').text('');
+      $('#lblIntrRisk').text('');
+      $('#lblReliance').text('');
+      $('#lblMateriality').text('');
+      $('#lblRiskMiti').text('');
+      $('#lblFairLendg').text('');
+      $('#lblDevlopers').text('');
+      $('#lblUsers').text('');
+      $('#lblPrdnSupp').text('');
+      
+      //relevant users ends
+      //dependencies starts
+      $('#lblupstr').text('');
+      $('#lbldwstr').text('');
+      $('#lblApproach').text('');
+                $('#lblMonFreq').text('');
+                $('#lblMonMtrc').text('');
+                $('#lblTriggerEve').text('');
+                $('#lblLastTgrDt').text('');
+                $('#lblMitgDt').text('');
+                $('#lblMitiEv').text(''); 
+      $.ajax({
+            url: '/getMdlDetailsById/', 
+            data:{ mdlId: id},
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.istaken=='true'){
+               // $('#tblMaster tr:last').after('<tr><td>'+$("#txtopt").val()+'</td><td>'+$("#txtdesc").val()+'</td></tr>');
+               $('#projectsCardViewModal').modal('toggle');
+               //console.log(data.mdldata[0].Mdl_Src_Label,',' +' id is '+data.mdldata.Mdl_Id)
+               console.log(data);
+               $('#lblDept').text(data.mdldata[0].Dept_Label);
+               $('#lblFunc').text(data.mdldata[0].Mdl_Fncn_Label);
+               $('#lblRegDate').text(data.mdldata[0].regdate);
+               $('#lblMdlId').text(data.mdldata[0].Mdl_Id);
+               $('#lblPrmNm').text(data.mdldata[0].Prm_Name);
+               $('#lblSecNm').text(data.mdldata[0].Sec_Name);
+               $('#lblMdlSrc').text(data.mdldata[0].Mdl_Src_Label);
+               $('#lblMdlType').text(data.mdldata[0].Mdl_Type_Label);
+               $('#lblMdlAbsct').text(data.mdldata[0].Mdl_Absct);
+               $('#lblMdlObj').text(data.mdldata[0].Mdl_objective);
+               $('#lblApplMdl').text(data.mdldata[0].Mdl_Appl);
+               $('#lblMdlRiskAnlz').text(data.mdldata[0].Mdl_Risk_Ansl);
+               $('#lblPrdAddr').text(data.mdldata[0].Prd_Addr_Label);
+               $('#lblSsageFreq').text(data.mdldata[0].Mdl_Use_Freq_Label);
+               //risk tab starts
+               $('#lblMdlRisk').text(data.mdldata[0].Mdl_Risk_Label);
+               $('#lblIntrRisk').text(data.mdldata[0].Intrinsic_Label);
+               $('#lblReliance').text(data.mdldata[0].Reliance_Label);
+               $('#lblMateriality').text(data.mdldata[0].Materiality_Label);
+               $('#lblRiskMiti').text(data.mdldata[0].Risk_Mtgn);
+               $('#lblFairLendg').text(data.mdldata[0].Fair_Lndg);
+               
+               
+               $('#lblOwner').text('');
+               $('#lblDevlopers').text('');
+               $('#lblUsers').text('');
+               $('#lblPrdnSupp').text('');
+
+               $('#lblOwner').text(data.Owner);
+               $('#lblDevlopers').text(data.Developer);
+               $('#lblUsers').text(data.User);
+               $('#lblPrdnSupp').text(data.PrdnSupport);
+               
+               //relevant users ends
+               //dependencies starts
+               $('#lblupstr').text('');
+               $('#lbldwstr').text('');
+               if(Object.keys(data.dependencies).length>0){
+                $('#lblupstr').text(data.dependencies[0].Mdl_Dwstream_Label);
+                $('#lbldwstr').text(data.dependencies[0].Mdl_Upstream_Label);
+               }
+               //dependencies ends
+
+               //perfomance monitoring start
+               $('#lblApproach').text('');
+                $('#lblMonFreq').text('');
+                $('#lblMonMtrc').text('');
+                $('#lblTriggerEve').text('');
+                $('#lblLastTgrDt').text('');
+                $('#lblMitgDt').text('');
+                $('#lblMitiEv').text(''); 
+               if(Object.keys(data.PerformMon).length>0){
+                $('#lblApproach').text(data.PerformMon[0].Approach);
+                $('#lblMonFreq').text(data.PerformMon[0].Mdl_Montr_Freq_Label);
+                $('#lblMonMtrc').text(data.PerformMon[0].Monr_Mtrcs);
+                $('#lblTriggerEve').text(data.PerformMon[0].Tgr_Evt);
+                $('#lblLastTgrDt').text(data.PerformMon[0].Lst_Tgr_Dt);
+                $('#lblMitgDt').text(data.PerformMon[0].Lst_Tgr_Mtgn_Dt);
+                $('#lblMitiEv').text(data.PerformMon[0].Tgr_Evt_Mtgn); 
+               }
+               //perfomance monitoring ends
+
+               }
+               else
+               {
+                 
+               }
+            }
+        });
+      
+    }
+   
+
+    function redirectTasks(id,role){
+      console.log(id,',',role,(role=='Assigned'))
+      if(role=='Assigned'){ 
+        console.log('inside if')
+        document.location.href = "/task_assignee?id=" +id;
+        
+      }
+      else if(role=='For Approval'){ 
+        document.location.href = "/task_approver?id=" +id;
+      }
+    }
+
+    function redirectIssues(id,role){
+      console.log(id,',',role,(role=='Assigned'))
+      if(role=='Assigned'){ 
+        console.log('inside if')
+        document.location.href = "/issue_assignee?id=" +id;
+        
+      }
+      else if(role=='For Approval'){ 
+        document.location.href = "/issue_approver?id=" +id;
+      }
+    }
+
+    function activitytrail(refference_id,activityDetails){
+      $('#txtActivityDetails').text(activityDetails)
+      $('#hdnactivityid').val(refference_id);
+$("#divActivityDetails").modal('toggle')
+//document.location.href = "/activitytrail?selectSection=" +refference_id;
+
+}
+
+function viewAll(id)
+{
+  document.location.href = "/activitytrail?selectSection=" +id;
+}
+    
+  </script>
+  {%endblock script %}

@@ -1,0 +1,277 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block style %}
+<style>
+     table, th, td {
+  border: 0px solid gray;
+  border-collapse: collapse;
+  padding: 0px 5px;
+  vertical-align: top;
+}
+</style>
+{% endblock style %}
+{% block content %}
+<form id="forICQQtns"  method="post" action="{{ICQQtnsFinal}}" class="row g-3">
+    {% csrf_token %}
+<div class="content" style="padding-top:0px;width:96%;margin-left: 2%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">MRM Internal Control Questionnaire - Current Rating is {{ICQRating}}</h4>
+            </div>  
+            <div class="card-body p-0">
+            
+                <div class="p-4 code-to-copy"> 
+                    <div class="row mb-3 position-relative" style="display: none;">
+
+                        <!-- <label class="col-sm-2 col-form-label" for="txtsection">Model</label>
+
+                        <div class="col-sm-3"> 
+                            <select class="form-select" onchange="getSections()" id="ddlModel" name="ddlModel" aria-label="Default select example" required>                      
+                                <option selected="" value="">Select Model</option>
+                                {% for key, val in models.items  %} 
+                                <option value="{{val.Model_Id}}">{{val.Model_Id}}</option>
+                                {% endfor %}  
+                            </select> 
+
+                        </div> -->
+                        <label class="col-sm-2 col-form-label" for="txtsection">Section</label>
+
+                        <div class="col-sm-8">
+                            <select class="form-select" id="ddlSection" name="ddlSection" aria-label="Default select example" required>                      
+                                <option selected="" value="">Select section</option>
+                                {% for key, val in sections.items  %} 
+                                    <option value="{{val.section_aid}}">{{val.section_label}}</option>
+                                {% endfor %}  
+                            </select> 
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="button" value="Show" onclick="$('#forICQQtns').submit()" class="btn btn-primary px-5 px-sm-5"/>
+                        </div>
+                    </div>  
+                    <div  style="height: 380px;overflow: auto; padding-left: 25px;padding-inline-start: 25px;">
+                        <div class="row mb-3 position-relative" style="width: 100%;">
+                            
+                            <table style="color:#3e465b;"> 
+                                <tbody>
+                                    {% for key, val in Qtns.items  %} 
+                                         
+                                        
+                                        {% if  val.Sub_Sub_Section_Label != '' %}
+                                        <tr class="tr_{{val.Section_AID}}"  style="display: none;"> 
+                                            <td  style="margin-left: 0px;" >       {{ val.qtnNo }} </td>
+                                            <td colspan="4" style="margin-left: 0px;">   {{val.Sub_Sub_Section_Label}}  </td>
+                                        </tr>                                         
+                                        {% elif   val.Sub_Section_Label != '' %}
+                                        <tr class="tr_{{val.Section_AID}}"  style="display: none;"> 
+                                            <td  style="margin-left: 0px;">       {{ val.qtnNo }} </td>
+                                            <td colspan="4" style="margin-left: 0px;">  {{ val.Sub_Section_Label }}    </td>
+                                        </tr>
+                                        {% elif   val.Section_Label != '' %}
+                                            <tr id="tr_{{val.Section_AID}}" style="height: 30px; background-color: #EDE7E6;">
+                                                <td colspan="5" style="margin-left: 0px; vertical-align: middle;">   
+                                                    <div class="row position-relative">  
+                                                        <div style='width:17px;'>
+                                                            <i id='exp_{{val.Section_AID}}' class='far fa-plus-square' style='margin-right:5px;cursor:pointer;' 
+                                                            onclick="hidedata('tr_{{val.Section_AID}}')"></i></div>
+                                                        <div class="col-auto" style="padding-left: 5px;color:#3e465b;" ><b>{{val.Section_Label}}</b></div> 
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td> <div style="height: 10px;"></div></td>
+                                            </tr>
+                                            <tr class="tr_{{val.Section_AID}}"  style="display: none;">
+                                                <th width="7%" style="vertical-align: top;text-align: center;" >Q #</th>
+                                                <th width="35%" style="vertical-align: top;text-align: center;" >Questions</th>
+                                                <th  width="10%" style="vertical-align: top;text-align: center;">Yes/No/NA</th>
+                                                <th  width="10%" style="vertical-align: top;text-align: center;">Document References</th>
+                                                <th  width="38%" style="vertical-align: top;text-align: center;">Comments</th> 
+                                            </tr>
+                                        {% endif %}                                                               
+                                        
+                                        {% if val.qtnsArr != "" %}
+                                        <tr class="tr_{{val.Section_AID}}" style="display: none;">      
+                                            <td style="margin-left: 5px;">{{ val.qtnNo }} </td>                                     
+                                            <td style="margin-left: 5px;">   {{val.qtnsArr}}</td>  
+                                            <td style="vertical-align: top">
+                                                <select style="width: 94%;margin-left: 3%;margin-top:3px;text-align: center;" id="ddl_yesno_{{val.qtn_aid}}">
+                                                    <option value="">Select</option>   
+                                                    <option value="Yes" {% if val.Rating_Yes_NO == 'Yes' %}selected{% endif %}> Yes</option>    
+                                                    <option value="No" {% if val.Rating_Yes_NO == 'No' %}selected{% endif %}>No</option>
+                                                    <option value="NA" {% if val.Doc_Yes_No == 'NA' %}selected{% endif %}>NA</option>
+                                                </select>
+                                            </td>
+                                            <td style="vertical-align: top">
+                                                <select style="width: 94%;margin-left: 3%;margin-top:3px;text-align: center;" id="ddl_doc_{{val.qtn_aid}}">
+                                                    <option value="">Select</option> 
+                                                    <option value="Yes" {% if val.Doc_Yes_No == 'Yes' %}selected{% endif %}> Yes</option>    
+                                                    <option value="No" {% if val.Doc_Yes_No == 'No' %}selected{% endif %}>No</option>      
+                                                    <option value="NA" {% if val.Doc_Yes_No == 'NA' %}selected{% endif %}>NA</option>
+                                            </select>
+                                            </td>
+                                            <td style="vertical-align:top">
+                                                <textarea style="width: 94%;margin-left: 3%;margin-top:3px;" maxlength="500" rows="2" id="txt_comment_{{val.qtn_aid}}">{{val.comments}}</textarea>
+                                            </td>    
+                                        </tr>
+                                         {% endif %} 
+                                            
+                                    {% endfor %} 
+                                </tbody>
+                            </table> 
+                        </div>           
+                    </div>
+
+                    <div class="col-12 gy-6" style="margin-top: 15px;">
+                        <div class="row g-3 justify-content-end">
+                        <div class="col-auto"> 
+                            <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                        </div> 
+                        <div class="col-auto">
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Save" /> 
+                        </div>  
+                        <div class="col-auto">
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="publish()" value="Publish" /> 
+                        </div>                     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Submit Data</h5>
+              <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+            </div>
+            <div class="modal-body">
+              <p class="text-700 lh-lg mb-0">Are you sure you want to submit data. Once submitted you can not change the data. </p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" type="button" onclick="submitRatings()">Yes</button>
+              <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    $( document ).ready(function() { 
+    $("#ddlModel").val('{{modelid|safe}}')
+    $('#ddlSection').val('{{sectionid|safe}}')
+});
+    function validateform(){  
+       var colDataLst=[];
+        $.ajax({
+            url: '/getICQSecQtnFinal/', 
+            data:{ ddlModel: $('#ddlModel').val()},
+           dataType: 'json',   
+            success: function (data) { 
+                console.log(data)
+                $.each(data.sections, function(key, value) {                  
+                        
+                        item = {}
+                        if(value.qtn_aid!="" && value.qtn_aid != undefined){
+                        item['qtnId']=value.qtn_aid;
+                        item['ddl_yesno_']=$('#ddl_yesno_'+value.qtn_aid).val();
+                        item['ddl_doc_']=$('#ddl_doc_'+value.qtn_aid).val();
+                        item['txt_comment_']=$('#txt_comment_'+value.qtn_aid).val();
+                        } 
+                        //console.log($('#ddl_yesno_'+value2.Question_AID).val(),$('#ddl_doc_'+value2.Question_AID).val(),$('#txt_comment_'+value2.Question_AID).val());
+                        if(Object.keys(item).length>0){
+                            //console.log('value.qtn_aid is ',value.qtn_aid,item)
+                            colDataLst.push(item); 
+                        }
+                           
+                    
+                });
+                //console.log(JSON.stringify(colDataLst))
+                $.ajax({
+                    url: '/saveICQRatingsFinal/', 
+                    type: "post",
+                    data:{colDataLst : JSON.stringify(colDataLst)  ,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        if (data.is_taken) {
+                        alert("Updated Successfully.");
+                        }
+                    }
+                }); 
+            }
+        });
+    }
+
+    function publish(){
+        $.ajax({
+                    url: '/publushICQ/',  
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        if (data.is_taken) {
+                        alert("Updated Successfully.");
+                        }
+                    }
+                }); 
+    }
+
+    function getSections(){ 
+        var $mySelect,selid ; 
+         
+        $mySelect = $('#ddlSection'); 
+       
+         
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option);
+        $.ajax({
+            url: '/getICQSections/', 
+            data:{ modelid: $('#ddlModel').val()},
+           dataType: 'json',   
+            success: function (data) { 
+                $.each(data.sections, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.section_aid,
+                        text: value.section_label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    }
+
+    function hidedata(id){ 
+        $("."+id).slideToggle()
+        if( $("#exp_"+id.split('_')[1]).attr("class").indexOf('fa-square-plus')>0){
+            $("#exp_"+id.split('_')[1]).removeClass("far fa-plus-square");
+            $("#exp_"+id.split('_')[1]).addClass("far fa-minus-square");
+        }
+        else{
+            $("#exp_"+id.split('_')[1]).removeClass("far fa-minus-square");
+        $("#exp_"+id.split('_')[1]).addClass("far fa-plus-square");
+         
+        }
+       
+    }
+
+    function gotolist()
+    {
+        window.location='{{blank}}'
+        
+    }
+</script>
+{% endblock script %}

@@ -1,0 +1,26 @@
+extends ../../layouts/LayoutTheme
+include ../../mixins/social/Profile
+include ../../mixins/social/Feed
+
+prepend styles
+	link(href=`${CWD}vendors/glightbox/glightbox.min.css`, rel='stylesheet')
+
+prepend scripts
+	script(src=`${CWD}vendors/glightbox/glightbox.min.js`) 
+
+block content
+	.pb-9
+		.row.gy-3.gx-5.gx-xxl-6
+			.col-12.order-0
+				+ProfileCard.mb-5
+			.col-lg-5.col-xl-4
+				.mb-8
+					+ProfileNavigation
+				.mb-8
+					+Photos
+				+ProfileNavigationTwo
+			.col-lg-7.col-xl-8
+				.mb-9
+					+ProfilePostList(3)
+				.text-center
+					a(href="#!").btn.btn-link.fs-0.p-0 Load more

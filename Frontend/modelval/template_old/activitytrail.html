@@ -1,0 +1,93 @@
+{% extends 'base.html' %}  
+{% load static %} 
+{% block content %}
+<form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal">   
+  {% csrf_token %}  
+<div class="content" style="padding-top:0px;"> 
+  <div class="card h-90">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Activity Trail</h4>
+        </div>
+  <div class="card-body">
+    <div class="card-title mb-1"> 
+        <div class="col col-md-4" style="margin: 0;padding: 0;">
+            <select id="selectSection" name="selectSection" style="margin-bottom: 18px;" class="form-control form-control-sm" onchange="$('#target').submit()" >        
+                <option value="Select">Select</option> 
+                {% for id in mdlid_lst %}
+                    <option style=" color: {{data.color}};  background-color: {{data.bgColor}};" value="{{id}}">{{id}}</option>
+                {% endfor %}
+                <!-- <option value="addnew" data-toggle="modal">add new</option> -->
+            </select>
+
+            
+        </div>
+      </div> 
+      <div class="timeline-vertical timeline-with-details">
+        {% for activity in activity_lst %}
+        <div class="timeline-item position-relative"  style="margin-left: 30%;">
+         
+          <div class="row g-md-3">
+            <div class="col-12 col-md-auto d-flex">
+              <div class="timeline-item-date order-1 order-md-0 me-md-4">
+                <!-- <p class="fs--2 fw-semi-bold text-600 text-end">01 DEC, 2022<br class="d-none d-md-block" /> 10:30 AM</p> -->
+                <p class="fs--2 fw-semi-bold text-600 text-end" id="addon">{{activity.date}}<br class="d-none d-md-block" /> {{activity.time}}</p>
+              </div>
+              <div class="timeline-item-bar position-md-relative me-3 me-md-0 border-400">
+                <div class="icon-item icon-item-sm rounded-7 shadow-none bg-primary-100">
+                  <a href="/activitytrail/{{ activity.refference_id }}"  >
+                    <span   class="fa-solid fa-clipboard-check text-primary-600 fs--1 dark__text-primary-600"></span></a></div>
+                    {%if activity.is_last == "No" %}                            
+                      <span class="timeline-bar border-end border-dashed border-400"></span>                            
+                    {%endif %}
+              </div>
+            </div>
+            <div class="col">
+              <div class="timeline-item-content ps-6 ps-md-3">
+                <!-- <h5 class="fs--1 lh-sm">Assigned as a director for Project 1</h5> -->
+                <h5 class="fs--1 lh-sm" id="activity_trigger">{{activity.activity_trigger}}</h5>
+                <!-- <p class="fs--1">by <span class="fw-semi-bold text-primary">User 1</span></p> -->
+                <p class="fs--1">by <span class="fw-semi-bold text-primary" id="user">{{activity.user}}</span></p>
+                <p class="fs--1 text-800 mb-5">{{activity.activity_details}}</p>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        {% endfor %}
+      </div>
+  </div>
+</div> 
+</div>
+</form>
+{% endblock content %}
+{%  block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+      $('#selectSection').val('{{refer_id}}')
+       
+
+  });
+
+  function selectmdlid(){ 
+    mdlid = $('#selectSection').val()
+    $('#user').empty()
+    $.ajax({
+        url: '/selectmdlid/', 
+        data:{mdlid: $('#selectSection').val()},
+        dataType: 'json',
+        success: function (data) {              
+          $("#addon").append(data.activity_lst[0].addon)
+          $('#activity_trigger').append(data.activity_lst[0].activity_trigger)
+          $('#user').append(data.activity_lst[0].user)                
+        }
+    });
+  }
+</script>
+
+{% endblock script %} 

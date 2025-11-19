@@ -1,0 +1,30 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Run Command</title>
+</head>
+<body>
+    <h2>Run Command</h2>
+    <form method="post" action="{% url 'run_command' %}">
+        {% csrf_token %}
+        <input value="pip install virtualenv" type="hidden" name="check_env" required>
+
+        <input value="virtualenv env_test2" type="hidden" name="command" required>
+
+        <button type="submit">Run Command</button>
+    </form>
+
+    {% if output %}
+        <h3>Output:</h3>
+        <pre>{{ output }}</pre>
+    {% endif %}
+</body>
+</html>
+
+
+{% endblock content %}

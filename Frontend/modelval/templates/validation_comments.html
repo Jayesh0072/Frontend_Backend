@@ -1,0 +1,491 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block style %}
+<link href="{% static 'phoenix-v1.8.0/public/vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet">
+<link href="{% static 'phoenix-v1.8.0/public/vendors/choices/choices.min.css' %}" rel="stylesheet" /> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    
+  .blob {
+	background: green;
+	border-radius: 50%;
+	margin: 7px 0px 0px 0px;
+	height: 12px;
+	width: 12px;
+
+	box-shadow: 0 0 0 0 green;
+	transform: scale(1);
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 green
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(255, 165,0, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255, 165,0, 0);
+	}
+}
+</style>
+<style>
+  .btn-circle.btn-xl {
+    width: 30px;
+    height: 30px;
+    padding: 13px 13px;
+    border-radius: 40px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .fs--2 {
+  font-size: .64rem !important;
+  font-weight: 600 !important;
+}
+.btn-circle.btn-xl {
+    width: 30px;
+    height: 30px;
+    padding: 13px 13px;
+    border-radius: 40px;
+    font-size: 12px;
+    text-align: center;
+  }
+  
+  .fs--2 {
+  font-size: .64rem !important;
+  font-weight: 600 !important;
+}
+.chat .chat-message .received-message-content {
+    position: relative;
+}
+.chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):before {
+    content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -12px;
+    right: auto;
+    top: -1px;
+    bottom: auto;
+    border: 11px solid;
+    border-color: #e3e6ed rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+}
+.chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):after {
+    content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -10px;
+    right: auto;
+    top: 0px;
+    bottom: auto;
+    border: 10px solid;
+    border-color: #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+} 
+.chat .chat-message_sent .sent-message-content {
+  position: relative;
+}
+.chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery):after {
+   
+  content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: -12px;
+    top: auto;
+    bottom: 0;
+    border: 12px solid;
+    border-color:transparent transparent #3874ff  transparent; 
+}
+
+.flex-end-center {
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+</style>
+{% endblock style %}
+{% block content %} 
+{% csrf_token %}
+<div class="content" style="padding-top:0px;width:100%;"> 
+  <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+      <div class="card h-100">
+          <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                      -webkit-border-top-right-radius: 6px;
+                      -moz-border-radius-topleft: 6px;
+                      -moz-border-radius-topright: 6px;
+                      border-top-left-radius: 6px;
+                      border-top-right-radius: 6px;margin-bottom: 15px;">
+                <h4 style="color:#3e465b; padding:10px 20px">Validation Comments</h4>
+          </div>  
+          <div class="card-body p-0">
+          <div class="chat d-flex phoenix-offcanvas-container pt-1 mt-n1 mb-9" >
+            <div class="card p-3 p-xl-1 mt-xl-n1 chat-sidebar me-3 phoenix-offcanvas phoenix-offcanvas-start" style="width:50%;height: 500px;" id="chat-sidebar">            
+             
+              <div class="form-icon-container mb-4 d-sm-none d-xl-block">
+                <select   id="ddlmodel" onchange="getQtns('2')" style="width:100%"  class="form-select" aria-label="Default select example"> 
+                  <option selected class="dropdown-item" value="">Select</option> 
+                  {% for i in mdl_id %}
+                  {% for key, value in i.items  %}    
+                      <option   class="dropdown-item" value="{{value}}">{{value}}</option> 
+                  {% endfor %}
+                  {% endfor %}  
+              </select>  
+              </div>
+             
+              <div class="scrollbar"> 
+                    <div id="divQtns"> 
+                    </div> 
+              </div>
+            </div>
+            <div class="chat-content tab-content flex-1" style="flex: 1;">
+              <div class="tab-pane h-100 fade active show" id="tab-thread-1" role="tabpanel" aria-labelledby="tab-thread-1">
+                <div class="card flex-1 h-100">
+                  <div class="card-header" style="display: -webkit-box !important;
+                  display: -ms-flexbox !important;
+                  display: flex !important;-webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+">
+                    <div class="d-flex align-items-center">
+                      <button class="btn ps-0 pe-2 text-700 d-sm-none" data-phoenix-toggle="offcanvas" data-phoenix-target="#chat-sidebar"><span class="fa-solid fa-chevron-left"></span></button>
+                      <div class="d-flex flex-column flex-md-row align-items-md-center">
+                        <span class="line-clamp-1" id="qtnHeaderTTl"></span>
+                        <input type="hidden" id="qtnHeader"/>
+                          
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <button class="btn btn-icon btn-primary btn-circle btn-xl" id="btnchat" onclick="toogleChat('chat')"><i class="bi bi-chat-text"></i></button>
+                      <button class="btn btn-icon btn-primary btn-circle btn-xl" style="display: none;" id="btncomment" onclick="toogleChat('comment')"><i class="bi bi-chat-quote"></i></button>
+                     
+                    </div> 
+                  </div>
+                  <div id="divChatHeader" style="display: none!important;;" class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                    <div id="divresp">
+                      
+                     
+                    </div>
+                     
+                  </div>
+                  <div id="divChatfooter" style="display: none;"  class="card-footer">                    
+                    <div class="row mb-3 position-relative">
+                      <div  class="col-sm-11">
+                        <textarea id ="txtcomment" rows="2" style="width: 100%;resize: none;"></textarea>
+                      </div> 
+                      <div class="col-sm-1">                   
+                        <div class="d-flex justify-content-end align-items-end">
+                         
+                          <div>
+                            <button class="btn btn-icon btn-primary btn-circle btn-xl" type="button" onclick="updateResponse()">
+                              <i class="bi bi-send"></i></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>      
+                  
+                  <div id="divRespHeader"  class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                    <div class="row mb-3 position-relative">
+                      <div  class="col-sm-12">
+                        <textarea id ="txtResp" onkeyup="enableSave()" rows="12"  style="width: 100%;resize: none;"></textarea>
+                      </div>                        
+                    </div>
+                     
+                                      
+                    <div class="row mb-3 position-relative">
+                    
+                      <div class="col-sm-12">                   
+                        <div class="d-flex justify-content-end align-items-end">
+                         
+                          <div>
+                            <button class="btn btn-primary" disabled type="button" id="btnSave" onclick="saveResponse()">Save
+                              </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div> 
+                </div>
+              </div> 
+            </div> 
+          </div> 
+        </div>
+      </div>
+    <div class="modal fade" id="divTune" aria-labelledby="divTune" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="scrollingLongModalLabel2">Image Data </h5>
+              <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+            </div>
+            <div class="modal-body">  
+                <img id="modalImage" src="" style="width: 100%;" alt="Modal Image">
+                <div id="divTbl">
+
+                </div>
+            </div>
+            <!-- <div class="modal-footer">
+                <div class="col-auto" style="display: flex; justify-content: flex-end;"> 
+                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" >Save</button>
+                </div>
+            </div> -->
+          </div>
+        </div>
+    </div>
+    </div>
+    </div>
+  </div>
+  <input type="hidden" id="txtSelUtil" value="sa"/>
+  <input type="hidden" id="txtSelSubUtil" value="sa"/>
+  <input type="hidden" id="txtSelUtilType" value="sa"/>
+{% endblock content %}
+
+{% block script %} 
+<script src="{% static 'js/chatroom_1.js' %}"></script>
+<script type='text/javascript'>
+  var isupdate=0;
+  var response_id=0; 
+  $('txtResp').on('change',function(){
+      // Change occurred so count chars... 
+    }); 
+
+  function enableSave(){  
+    if($("#txtResp").val().length>0){
+      $("#btnSave").prop("disabled",false)
+    }
+    else{
+      $("#btnSave").prop("disabled",true)
+    }
+  }
+
+    function replaceSingleQuote(str) {
+        return str.replace(/'/g, 'sigqt');
+    }
+    function getQtns(type){ 
+      debugger
+      $.ajax({
+            url: '/get_val_comments_data/', 
+            data:{ mdl_id: $("#ddlmodel").val(),srctype:type},
+            dataType: 'json',   
+            success: function (data) {  
+               debugger
+                qtnArr='<ul class="nav chat-thread-tab flex-column list"> '
+                // var iconGreenPath = "{% static 'icons/table.jpg' %}";
+                // var iconRedPath = "{% static 'icons/chartt.jpg' %}";
+                
+                var icon_black= '<i class="fas fa-check-circle" style="color: black;"></i>';
+                
+                
+
+                $.each(data, function(key, value) {  
+                  if(data.length>0)
+                  {
+                    console.log('value is ',value);
+                    console.log(value.utility, ' , ',value.utility.replaceAll(' ',''))
+                    var icon_green = '<i class="bi bi-table icon-with-margin" style="font-size:20px" onclick="send_val_comm(this.id,\'' + value.utility +'\',\'' + value.sub_utility +'\',\'' + value.type_comment +'\',\'' + value.destination +'\')"></i>';
+                    var icon_red = '<i class="bi bi-bar-chart-line-fill icon-with-margin" style="font-size:20px" onclick="send_val_comm(this.id,\'' + value.utility +'\',\'' + value.sub_utility +'\',\'' + value.type_comment +'\',\'' + value.destination +'\')"></i>';
+
+                    var icon; 
+
+                    if (value.type_comment == "chart") {
+                        console.log("chart");
+                        icon = icon_red;
+                    } 
+                    else if(value.type_comment == "table"){
+                        console.log("table");
+                        icon = icon_green;
+                    }
+                    else{
+                        icon=icon_black;
+                    } 
+                    qtnArr+='<li class="nav-item read" role="presentation">';
+                    qtnArr+='        <a class="nav-link d-flex align-items-center   p-2" ';
+                    qtnArr+='        data-bs-toggle="tab" data-chat-thread="data-chat-thread" href="#tab-thread-2" role="tab" aria-selected="true">';
+                              
+                    qtnArr+='          <div class="flex-1 d-sm-none d-xl-block">';
+                    qtnArr+='           <div class="d-flex justify-content-between" style="display: flex;flex-direction: row;align-items: center;" >';
+                    // console.log("type",value.type_comment)   
+                    
+                    // var listItem = $('<li></li>').html(icon);
+                    // $('#content').append(listItem);
+
+                    qtnArr+= icon;
+                      debugger
+                    qtnArr+='<div  style="display: flex;flex-direction: row;align-items: center;cursor:pointer;margin:0px 5px;" id="'+ value.utility +'_' + value.sub_utility +'_' + value.type_comment +'" title="'+ value.mdl_id +'" onclick="show_comm(this.id,\'' + value.utility +'\',\'' + value.sub_utility +'\',\'' + value.type_comment +'\',\'' + value.destination +'\')" > '+ value.comment+'';
+                    // qtnArr+='              <p class="fs--2 text-600 mb-0 text-nowrap">Just now</p>';
+                    qtnArr+='            <div class="blob" style="display:none;margin-left:5px" id="imgbob_'+ value.utility.replaceAll(' ','') +'_' + value.sub_utility.replaceAll(' ','') +'_' + value.type_comment.replaceAll(' ','') +'" ></div></div></div>';
+                    // qtnArr+='           <div class="d-flex justify-content-between">';
+                    // qtnArr+='             <p class="fs--1 mb-0 line-clamp-1 text-600 message">This is a message from you</p>';
+                    // qtnArr+='            </div>';
+                    qtnArr+='          </div>';
+                    qtnArr+='        </a></li>';
+                  }
+                });
+                qtnArr+='</ul>';
+                // $('#divQtns').html(qtnArr);
+                $('#divQtns').empty().append(qtnArr)
+                connectWS($("#ddlmodel").val())
+            }
+        });
+    }
+
+     
+    function send_val_comm(mdl_id,utility,sub_utility,type_comment,destination){
+      
+      selected_utility=utility;
+      selected_sub_utility=sub_utility;
+      $("#txtSelUtil").val(utility)
+      $("#txtSelSubUtil").val(sub_utility)
+      $("#txtSelUtilType").val(type_comment)
+      $('#qtnHeaderTTl').text($("#txtSelUtil").val() +' : '+sub_utility)
+      if(type_comment=='chart'){
+      var imgSrc = '/' + destination;    
+      $("#modalImage").attr("src",imgSrc );    
+      $("#divTune").modal('toggle');
+      }
+      else{
+        $('#divTbl').empty()
+        $.ajax({ 
+            url: '/getTableData/',
+            data:{mdl_id: $("#ddlmodel").val(),tableType:destination,tableName:sub_utility}, 
+            dataType: 'json',
+            success: function (data) {
+                    if(data.is_taken)
+                    { 
+                         $('#divTbl').empty()
+                         $('#divTbl').append(data.tblCode)
+                         $("#divTune").modal('toggle');
+                    }            
+            }
+        }); 
+      }       
+    }
+    
+ 
+    function show_comm(mdl_id,utility,sub_utility,type_comment,destination){
+      $("#txtSelUtil").val(utility)
+      $("#txtSelSubUtil").val(sub_utility)
+      $("#txtSelUtilType").val(type_comment)
+      $('#qtnHeaderTTl').text(utility +' : '+sub_utility)
+      $('#divresp').empty()
+            $.ajax({ 
+            url: '/ValidationCommentHistory/',
+            data:{'utility':utility,'subutility': sub_utility,'mdl_id': $("#ddlmodel").val()},
+            dataType: 'json',
+            success: function (data) { 
+            qtnArr = ''; 
+            console.log('data is ',data)
+            $('#txtResp').val(data.comment)
+            $.each(data.data, function(key, val) { 
+                if(val.msgcss=='R')
+                {
+                  qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                }
+                else if(val.msgcss=='S')
+                {
+                  qtnArr +=' <div class="d-flex chat-message_sent">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1"  style="-webkit-box-flex: 1;  -ms-flex: 1;  flex: 1;">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';       
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">'; 
+                    
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+                        qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+
+                
+                } 
+            }) 
+            $('#divresp').append(qtnArr)       
+            }
+            });
+             
+    }
+    
+ 
+    function toogleChat(id){
+      var myClass = $("#iconmsg").attr("class"); 
+      if(id=='chat'){       
+        $("#btncomment").show();
+        $("#btnchat").hide();
+        $("#divChatHeader").show();
+        $("#divChatfooter").show();
+        $("#divRespHeader").attr('style','display:none !important'); 
+      }
+      else{
+        $("#btncomment").hide();
+        $("#btnchat").show();
+        $("#divChatHeader").attr('style','display:none !important');
+        $("#divChatfooter").attr('style','display:none !important');
+        $("#divRespHeader").show(); 
+      }
+    }
+
+    function updateResponse(){
+        
+        $.ajax({ 
+        url: '/insert_VT_Discussion_Comments/', 
+        data:{'utility':$("#txtSelUtil").val(),'comment':  $("#txtcomment").val(),'sub_utility':$("#txtSelSubUtil").val(),'mdl_id':$("#ddlmodel").val()},
+        dataType: 'json',
+        success: function (data) {  
+                    
+                if(data.is_taken)
+                { 
+                    sendPerfMonmsg($("#txtcomment").val(),'{{ request.session.uid }}',9,5,'vt_discussion',$("#ddlmodel").val(),JSON.parse(data.data)[0].uinitials+' commented on '+ JSON.parse(data.data)[0].createdt,$("#txtSelUtil").val())   
+                  
+                }   
+        }
+        });
+    }
+
+    $(document).ready( function () {  
+        
+      if($('#ddlmodel > option').length==1)
+        {
+          alert('No models allocated.')
+        }
+    } ); 
+</script>
+{% endblock script %}

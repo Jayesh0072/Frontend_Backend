@@ -1,0 +1,573 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div style="border-right: 1px solid var(--phoenix-navbar-footer-border-color);border-bottom: 1px solid var(--phoenix-navbar-footer-border-color); position:absolute; left:0;top:62px; width:28px; height:auto; padding:5px;">
+  <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" data-bs-target="#divPane">
+     <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><span data-feather="monitor"></span></span>
+  </a>
+  <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Add Task"><span  data-feather="flag"></span></span>
+  <span class="nav-link-icon"  data-toggle="tooltip" title="Add ctiivty"><span data-feather="activity"></span></span>
+
+ </div>
+ 
+ <div id="divPane" class="modal fade"  tabindex="-1" aria-hidden="true">
+  <!-- style="border-right: 1px solid var(--phoenix-navbar-footer-border-color);border-bottom: 1px solid var(--phoenix-navbar-footer-border-color); position:absolute; left:28px; top:62px; width:200px; height:82px; padding:5px;background: var(--phoenix-navbar-vertical-bg-color);"> -->
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Items</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 px-6 py-0">
+        <div class="row gx-14" style="padding-left: 2rem;padding-bottom: 0.5rem;">
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkmodelprogress" type="checkbox" value=""  onchange="showpanes()" checked=""/>
+            <label class="form-check-label" for="chkmodelprogress">Model Progress</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkmodelprogress2" type="checkbox" value="" onchange="showpanes()"/>
+            <label class="form-check-label" for="chkmodelprogress2">Materiality/Approval Status</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkmodel" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkmodel">Models</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkupcoming" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkupcoming">Upcoming</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="chkactivity" type="checkbox" value="" onchange="showpanes()" checked="" />
+            <label class="form-check-label" for="chkactivity">Tasks</label>
+           </div>
+         
+        </div>
+      </div>
+    </div>
+  </div> 
+ 
+  
+ </div>
+<div class="content" style="padding-top:0px;">
+
+  
+    
+    <div class="row mb-3 gy-6">
+      <div class="col-12 col-xxl-2">
+        <div class="row align-items-center g-3 g-xxl-0 h-100 align-content-between">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-books text-primary-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">30</h2><span class="fs-1 fw-semi-bold text-900">Models</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Awating processing</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-users-alt text-success-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">3</h2><span class="fs-1 fw-semi-bold text-900">Upcoming</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Working hard</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-invoice text-warning-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">3</h2><span class="fs-1 fw-semi-bold text-900">Tasks</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Soon to be cleared</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-6 col-xl-3 col-xxl-12">
+            <div class="d-flex align-items-center"><span class="fs-4 lh-1 uil uil-refresh text-danger-500"></span>
+              <div class="ms-2">
+                <div class="d-flex align-items-end">
+                  <h2 class="mb-0 me-2">3</h2><span class="fs-1 fw-semi-bold text-900">Experimentations</span>
+                </div>
+                <!-- <p class="text-800 fs--1 mb-0">Fresh start</p> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+    <div id="divmodelProgress" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300">
+       
+        <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-12 col-md">
+                  <h4 class="text-900 mb-0" data-anchor="data-anchor">  Model Progress </h4>
+                </div>
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code" role="button" 
+                    aria-controls="basic-example-code" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+                <div class="collapse code-collapse collapse show" id="basic-example-code">
+                  <div class="bg-white border-300">
+                    <div class="row">
+                      <div class="col-12 col-xl-7 col-xxl-6">
+                        <div class="row g-3 mb-3">
+                          <div class="col-12 col-md-6">
+                            <h3 class="text-1100 text-nowrap">Model Status</h3>
+                            <!-- <p class="text-700 mb-md-7">Newly found and yet to be solved</p> -->
+                            <div class="d-flex align-items-center justify-content-between">
+                              <p class="mb-0 fw-bold">Status</p>
+                              <p class="mb-0 fs--1">Total count <span class="fw-bold">30</span></p>
+                            </div>
+                            <hr class="bg-200 mb-2 mt-2" />
+                            <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-info bullet-item me-2"></span>
+                              <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Validated</p>
+                              <h5 class="mb-0 text-900">16</h5>
+                            </div>
+                            <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-info-300 bullet-item me-2"></span>
+                              <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Decommissioned</p>
+                              <h5 class="mb-0 text-900">7</h5>
+                            </div>
+                            <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-warning-300 bullet-item me-2"></span>
+                              <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Governance Review</p>
+                              <h5 class="mb-0 text-900">3</h5>
+                            </div>
+                            <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-danger-300 bullet-item me-2"></span>
+                              <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">In Annual Review</p>
+                              <h5 class="mb-0 text-900">1</h5>
+                            </div>
+                            <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-success-300 bullet-item me-2"></span>
+                              <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">In Development</p>
+                              <h5 class="mb-0 text-900">2</h5>
+                            </div>
+                            <div class="d-flex align-items-center"><span class="d-inline-block bg-primary bullet-item me-2"></span>
+                              <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Legacy</p>
+                              <h5 class="mb-0 text-900">1</h5>
+                            </div>
+                            <!-- <button class="btn btn-outline-primary mt-5" >Add pane<span class="fas fa-angle-right ms-2 fs--2 text-center"></span></button> -->
+                          </div>
+                          <div class="col-12 col-md-6">
+                            <div class="position-relative mb-sm-4 mb-xl-0">
+                              <div class="echart-issue-chart" style="min-height:390px;width:100%"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12 col-xl-5 col-xxl-6">
+                        <h3>Model Risk Tier </h3> 
+                        <div class="echart-zero-burnout-chart" style="min-height:320px;width:100%"></div>
+                      </div>
+                    </div>
+                  </div>
+              </div> 
+            </div>
+          </div>
+         <!-- <div class="col-12 col-xl-7 col-xxl-6">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <h3 class="text-1100 text-nowrap">Project Progress</h3> 
+              <div class="d-flex align-items-center justify-content-between">
+                <p class="mb-0 fw-bold">Issue type </p>
+                <p class="mb-0 fs--1">Total count <span class="fw-bold">257</span></p>
+              </div>
+              <hr class="bg-200 mb-2 mt-2" />
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-info-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Product design</p>
+                <h5 class="mb-0 text-900">78</h5>
+              </div>
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-warning-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Development</p>
+                <h5 class="mb-0 text-900">63</h5>
+              </div>
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-danger-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">QA & Testing</p>
+                <h5 class="mb-0 text-900">56</h5>
+              </div>
+              <div class="d-flex align-items-center mb-1"><span class="d-inline-block bg-success-300 bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">Customer queries</p>
+                <h5 class="mb-0 text-900">36</h5>
+              </div>
+              <div class="d-flex align-items-center"><span class="d-inline-block bg-primary bullet-item me-2"></span>
+                <p class="mb-0 fw-semi-bold text-900 lh-sm flex-1">R & D</p>
+                <h5 class="mb-0 text-900">24</h5>
+              </div>
+              <button class="btn btn-outline-primary mt-5">See Details<span class="fas fa-angle-right ms-2 fs--2 text-center"></span></button>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="position-relative mb-sm-4 mb-xl-0">
+                <div class="echart-issue-chart" style="min-height:390px;width:100%"></div>
+              </div>
+            </div>
+          </div>
+        </div> --> 
+    </div>
+    <div id="divmodelProgress2" class="mx-n4 px-4 mx-lg-n6 bg-white pt-0 pb-0 border-y border-300" style="margin-top:1rem;">
+       
+      <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+          <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+            <div class="row g-3 justify-content-between align-items-center">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" data-anchor="data-anchor">  Materiality/Approval Status </h4>
+              </div>
+              <div class="col col-md-auto">
+                <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                 
+                  <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#basic-example-code2" role="button" 
+                  aria-controls="basic-example-code2" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                  <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="basic-example-code2">
+                <div class="bg-white border-300">
+                  <div class="row">
+                    <div class="col-12 col-xl-6 col-xxl-6">
+                      <h3>Materiality </h3> 
+                      <div class="echart-zero-burnout-chart2" style="min-height:320px;width:100%"></div>
+                    </div> 
+                    <div class="col-12 col-xl-6 col-xxl-6">
+                      <h3>Approval Status </h3> 
+                      <div class="echart-zero-burnout-chart3" style="min-height:320px;width:100%"></div>
+                    </div>
+                  </div>
+                </div>
+            </div> 
+          </div>
+        </div> 
+  </div>
+    <div  id="divmodels" class="row mt-3">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="card shadow-none border border-300 my-4" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor"> Models <span style="font-size: medium;">(Brief summary of all models)</span></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-projectSummary" role="button" 
+                    aria-controls="pnl-projectSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+                <div class="collapse code-collapse collapse show" id="pnl-projectSummary">
+                  <div id="projectSummary" data-list='{"valueNames":["Model_ID","Process_Name","Type","Area","Internal_Vendor","Status","Approval_Status"],"page":5,"pagination":true}'>
+                    <div class="table-responsive scrollbar" >
+                      <table class="table fs--1 mb-0 border-top border-200">
+                        <thead>
+                          <tr>
+                            <th class="white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:10%;"></th>
+                            <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Model_ID" style="width:10%;">Model ID</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Process_Name" style="width:30%;">Process Name</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Type" style="width:10%;">Type</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Area" style="width:15%;">Area</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Internal_Vendor" style="width:12%;">Internal Vendor</th>
+                            <th class="sort align-middle ps-3" scope="col" data-sort="Status" style="width:5%;">Status</th>
+                            <th class="sort align-middle text-end" scope="col" data-sort="Approval_Status" style="width:10%;">Approval Status</th>
+                          </tr>
+                        </thead>
+                        <tbody class="list" id="project-list-table-body">
+                          {% for key, val in modelinfo.items  %} 
+                            <tr class="position-static">
+                              <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4">
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                                <span class="nav-link-icon"  data-toggle="tooltip" title="Actiivty"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                              </td>
+                              <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4">
+                                
+                                <a class="text-decoration-none fw-bold fs-0" href="#">{{val.Model_ID}}</a>
+                              </td>
+                              <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                                {{val.Process_Name}}
+                              </td>
+                              <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                                {{val.Type}}
+                              </td>
+                              <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                                {{val.Area}}
+                              </td>
+                              <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                                {{val.Internal_Vendor}}
+                              </td>
+                              <td class="align-middle white-space-nowrap ps-3 Status">
+                                {{val.Status}}
+                              </td>
+                              <td class="align-middle white-space-nowrap text-end Approval_Status">
+                                {{val.Approval_Status}}
+                                </td>
+                              <!-- <td>
+                                <div class="font-sans-serif btn-reveal-trigger position-static">
+                                  <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs--2" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs--2"></span></button>
+                                  <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">Upcoming</a><a class="dropdown-item" href="#!">Tasks</a><a class="dropdown-item" href="#!">Audit Trail</a>
+                                    
+                                  </div>
+                                </div>
+                              </td> -->
+                            </tr>
+                          {% endfor %}   
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between py-3 pe-0 fs--1 border-bottom border-200">
+                      <div class="d-flex">
+                        <p class="mb-0 d-none d-sm-block me-3 fw-semi-bold text-900" data-list-info="data-list-info"></p><a class="fw-semi-bold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semi-bold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                      </div>
+                      <div class="d-flex">
+                        <button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                        <ul class="mb-0 pagination"></ul>
+                        <button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>  
+              </div>  
+        </div>
+      </div>
+    </div>
+    <div class="mx-lg-n4 mt-3" >
+      <div class="row g-3">
+        <div class="col-12 col-xl-6 col-xxl-7" id="divupcoming">
+          <div class="card todo-list h-100">
+            <div class="card-header border-bottom-0 pb-0">
+              <div class="row justify-content-between align-items-center mb-4">
+                <div class="col-auto">
+                  <h3 class="text-1100">Upcoming</h3>
+                  <!-- <p class="mb-0 text-700">Task assigned to me</p> -->
+                </div>
+                <div class="col-auto w-100 w-md-auto">
+                  <div class="row align-items-center g-0 justify-content-between">
+                    <div class="col-12 col-sm-auto">
+                      <div class="search-box w-100 mb-2 mb-sm-0" style="max-width:30rem;">
+                        <form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                          <input class="form-control search-input search" type="search" placeholder="Search Upcoming" aria-label="Search" />
+                          <span class="fas fa-search search-box-icon"></span>
+
+                        </form>
+                      </div>
+                    </div>
+                    <div class="col-auto d-flex">
+                      <p class="mb-0 ms-sm-3 fs--1 text-700 fw-bold"><span class="fas fa-filter me-1 fw-extra-bold fs--2"></span>3 Upcoming</p>
+                      <button class="btn btn-link p-0 ms-3 fs--1 text-primary fw-bold text-decoration-none"><span class="fas fa-sort me-1 fw-extra-bold fs--2"></span>Sorting</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body py-0 scrollbar to-do-list-body">
+              <div class="d-flex hover-actions-trigger py-3 border-top">
+                <input class="form-check-input form-check-input-todolist flex-shrink-0 my-1 me-2 form-check-input-undefined" type="checkbox" id="checkbox-todo-0" data-event-propagation-prevent="data-event-propagation-prevent" />
+                <div class="row justify-content-between align-items-md-center btn-reveal-trigger border-200 gx-0 flex-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  <div class="col-12 col-md-auto col-xl-12 col-xxl-auto">
+                    <div class="mb-1 mb-md-0 d-flex align-items-center lh-1">
+                      <label class="form-check-label mb-1 mb-md-0 mb-xl-1 mb-xxl-0 fs-0 me-2 line-clamp-1 text-900">Model 1 Annual Review due in 30 days
+                      </label> 
+                    </div>
+                  </div> 
+                </div>
+                <div class="d-none d-md-block d-xl-none d-xxl-block end-0 position-absolute" style="top: 23%;" data-event-propagation-prevent="data-event-propagation-prevent">
+                  <div class="hover-actions end-0" data-event-propagation-prevent="data-event-propagation-prevent">
+                    <button class="btn btn-phoenix-secondary btn-icon me-1 fs--2 text-900 px-0 me-1" data-event-propagation-prevent="data-event-propagation-prevent"><span class="fas fa-edit"></span></button>
+                    <button class="btn btn-phoenix-secondary btn-icon fs--2 text-danger px-0" data-event-propagation-prevent="data-event-propagation-prevent"><span class="fas fa-trash"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex hover-actions-trigger py-3 border-top">
+                <input class="form-check-input form-check-input-todolist flex-shrink-0 my-1 me-2 form-check-input-undefined" type="checkbox" id="checkbox-todo-1" data-event-propagation-prevent="data-event-propagation-prevent" />
+                <div class="row justify-content-between align-items-md-center btn-reveal-trigger border-200 gx-0 flex-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  <div class="col-12 col-md-auto col-xl-12 col-xxl-auto">
+                    <div class="mb-1 mb-md-0 d-flex align-items-center lh-1">
+                      <label class="form-check-label mb-1 mb-md-0 mb-xl-1 mb-xxl-0 fs-0 me-2 line-clamp-1 text-900">Model 2 MDD due in 10 days</label>
+                      <!-- <div class="badge badge-phoenix ms-auto fs--2 badge-phoenix-warning"><span class="fw-bold badge-label">URGENT</span>
+                      </div> -->
+                    </div>
+                  </div>
+                  <!-- <div class="col-12 col-md-auto col-xl-12 col-xxl-auto">
+                    <div class="d-flex lh-1 align-items-center">
+                      <button class="btn p-0 text-700 fs--2 me-2"><span class="fas fa-paperclip me-1"></span>2</button>
+                      <button class="btn p-0 text-warning fs--2 me-2"><span class="fas fa-tasks me-1"></span>3</button>
+                      <p class="text-700 fs--2 mb-md-0 me-2 me-md-3 me-xl-2 me-xxl-3 mb-0">12 Nov, 2021</p>
+                      <div class="hover-md-hide hover-xl-show hover-xxl-hide">
+                        <p class="text-700 fs--2 fw-bold mb-md-0 mb-0 ps-md-3 ps-xl-0 ps-xxl-3 border-start-md border-xl-0 border-start-xxl border-300">12:00 PM</p>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+                <div class="d-none d-md-block d-xl-none d-xxl-block end-0 position-absolute" style="top: 23%;" data-event-propagation-prevent="data-event-propagation-prevent">
+                  <div class="hover-actions end-0" data-event-propagation-prevent="data-event-propagation-prevent">
+                    <button class="btn btn-phoenix-secondary btn-icon me-1 fs--2 text-900 px-0 me-1" data-event-propagation-prevent="data-event-propagation-prevent"><span class="fas fa-edit"></span></button>
+                    <button class="btn btn-phoenix-secondary btn-icon fs--2 text-danger px-0" data-event-propagation-prevent="data-event-propagation-prevent"><span class="fas fa-trash"></span></button>
+                  </div>
+                </div>
+              </div> 
+              
+              <div class="d-flex hover-actions-trigger py-3 border-top">
+                <input class="form-check-input form-check-input-todolist flex-shrink-0 my-1 me-2 form-check-input-undefined" type="checkbox" id="checkbox-todo-4" data-event-propagation-prevent="data-event-propagation-prevent" />
+                <div class="row justify-content-between align-items-md-center btn-reveal-trigger border-200 gx-0 flex-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  <div class="col-12 col-md-auto col-xl-12 col-xxl-auto">
+                    <div class="mb-1 mb-md-0 d-flex align-items-center lh-1">
+                      <label class="form-check-label mb-1 mb-md-0 mb-xl-1 mb-xxl-0 fs-0 me-2 line-clamp-1 text-900">Model 3 MDD due in 15 days</label>
+                    </div>
+                  </div>
+                  <!-- <div class="col-12 col-md-auto col-xl-12 col-xxl-auto">
+                    <div class="d-flex lh-1 align-items-center">
+                      <p class="text-700 fs--2 mb-md-0 me-2 me-md-3 me-xl-2 me-xxl-3 mb-0">1 Nov, 2021</p>
+                      <div class="hover-md-hide hover-xl-show hover-xxl-hide">
+                        <p class="text-700 fs--2 fw-bold mb-md-0 mb-0 ps-md-3 ps-xl-0 ps-xxl-3 border-start-md border-xl-0 border-start-xxl border-300">12:00 PM</p>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+                <div class="d-none d-md-block d-xl-none d-xxl-block end-0 position-absolute" style="top: 23%;" data-event-propagation-prevent="data-event-propagation-prevent">
+                  <div class="hover-actions end-0" data-event-propagation-prevent="data-event-propagation-prevent">
+                    <button class="btn btn-phoenix-secondary btn-icon me-1 fs--2 text-900 px-0 me-1" data-event-propagation-prevent="data-event-propagation-prevent"><span class="fas fa-edit"></span></button>
+                    <button class="btn btn-phoenix-secondary btn-icon fs--2 text-danger px-0" data-event-propagation-prevent="data-event-propagation-prevent"><span class="fas fa-trash"></span></button>
+                  </div>
+                </div>
+              </div> 
+               
+            </div>
+            <div class="card-footer border-0"><a class="fw-bold fs--1 mt-4 text-decoration-none" href="#!"><span class="fas fa-plus me-1"></span>Add New Upcoming</a></div>
+          </div>
+        </div>
+        <div class="col-12 col-xl-6 col-xxl-5" id="divtask">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-title mb-1">
+                <h3 class="text-1100">Tasks</h3>
+              </div>
+              <p class="text-700 mb-4">Recents across All Tasks</p>
+              <div class="timeline-vertical timeline-with-details">
+                <div class="timeline-item position-relative">
+                  <div class="row g-md-3">
+                    <div class="col-12 col-md-auto d-flex">
+                      <div class="timeline-item-date order-1 order-md-0 me-md-4">
+                        <p class="fs--2 fw-semi-bold text-600 text-end">01 DEC, 2022<br class="d-none d-md-block" /> 10:30 AM</p>
+                      </div>
+                      <div class="timeline-item-bar position-md-relative me-3 me-md-0 border-400">
+                        <div class="icon-item icon-item-sm rounded-7 shadow-none bg-primary-100"><span class="fa-solid fa-chess text-primary-600 fs--2 dark__text-primary-300"></span></div><span class="timeline-bar border-end border-dashed border-400"></span>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="timeline-item-content ps-6 ps-md-3">
+                        <h5 class="fs--1 lh-sm">Assigned as a director for Project 1</h5>
+                        <p class="fs--1">by <span class="fw-semi-bold text-primary">User 1</span></p>
+                        <p class="fs--1 text-800 mb-5">Utilizing best practices to better leverage our assets, we must engage in black sky leadership thinking, not the usual band-aid solution.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="timeline-item position-relative">
+                  <div class="row g-md-3">
+                    <div class="col-12 col-md-auto d-flex">
+                      <div class="timeline-item-date order-1 order-md-0 me-md-4">
+                        <p class="fs--2 fw-semi-bold text-600 text-end">05 DEC, 2022<br class="d-none d-md-block" /> 12:30 AM</p>
+                      </div>
+                      <div class="timeline-item-bar position-md-relative me-3 me-md-0 border-400">
+                        <div class="icon-item icon-item-sm rounded-7 shadow-none bg-primary-100"><span class="fa-solid fa-dove text-primary-600 fs--2 dark__text-primary-300"></span></div><span class="timeline-bar border-end border-dashed border-400"></span>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="timeline-item-content ps-6 ps-md-3">
+                        <h5 class="fs--1 lh-sm">Assigned as a director for Project 1</h5>
+                        <p class="fs--1">by <span class="fw-semi-bold text-primary">User 1</span></p>
+                        <p class="fs--1 text-800 mb-5">We must repurpose with SEO optimized functionalities, instead of using those over used frictioned kumbaya.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="timeline-item position-relative">
+                  <div class="row g-md-3">
+                    <div class="col-12 col-md-auto d-flex">
+                      <div class="timeline-item-date order-1 order-md-0 me-md-4">
+                        <p class="fs--2 fw-semi-bold text-600 text-end">15 DEC, 2022<br class="d-none d-md-block" /> 2:30 AM</p>
+                      </div>
+                      <div class="timeline-item-bar position-md-relative me-3 me-md-0 border-400">
+                        <div class="icon-item icon-item-sm rounded-7 shadow-none bg-primary-100"><span class="fa-solid fa-dungeon text-primary-600 fs--2 dark__text-primary-300"></span></div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="timeline-item-content ps-6 ps-md-3">
+                        <h5 class="fs--1 lh-sm">Archived all the files for the Project 2</h5>
+                        <p class="fs--1">by <span class="fw-semi-bold text-primary">User 2</span></p>
+                        <p class="fs--1 text-800 mb-0">To get off the runway and paradigm shift, we should take brass tacks with above-the-board actionable analytics, ramp up with viral partnering, not the usual goat rodeo putting socks on an octopus.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+  </div>
+  {% endblock content %}
+  {% block script %}
+  <script type='text/javascript' >
+    $(function() {
+    console.log( "ready!" );
+    showpanes()
+    console.log('cheched is ',localStorage.getItem('chkmodelprogress'));
+});
+    function showpanes(){
+         
+        if ($('#chkmodelprogress').prop('checked')) {
+            $('#divmodelProgress').show();
+            localStorage.setItem('chkmodelprogress', 'checked');
+        } else {
+            $('#divmodelProgress').hide();
+            localStorage.setItem('chkmodelprogress', 'unchecked');
+        } 
+        
+        if ($('#chkmodel').prop('checked')) {
+            $('#divmodels').show();
+        } else {
+            $('#divmodels').hide();
+        } 
+
+        if ($('#chkupcoming').prop('checked')) {
+            $('#divupcoming').show();
+        } else {
+            $('#divupcoming').hide();
+        } 
+
+        if ($('#chkactivity').prop('checked')) {
+            $('#divtask').show();
+        } else {
+            $('#divtask').hide();
+        } 
+
+        if ($('#chkmodelprogress2').prop('checked')) {
+            $('#divmodelProgress2').show();
+        } else {
+            $('#divmodelProgress2').hide();
+        }  
+    }
+    function showDetails()
+    {
+      window.location='{{projectsDetails}}'
+    }
+  </script>
+  {%endblock script %}

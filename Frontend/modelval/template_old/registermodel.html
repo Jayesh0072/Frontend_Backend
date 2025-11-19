@@ -1,0 +1,1194 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block style %}
+<link href="{% static 'phoenix-v1.8.0/public/vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet">
+<link href="{% static 'phoenix-v1.8.0/public/vendors/choices/choices.min.css' %}" rel="stylesheet" /> 
+{% endblock style %}
+{% block content %}
+<form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+  {% csrf_token %}  
+  
+<!-- Added by Shuv Starts (for Project Details pop-up)-->
+<div class="modal fade" id="riskTiering" tabindex="-1" aria-labelledby="riskTiering" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scrollingLongModalLabel2">Model Risk Tiering </h5>
+        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+      </div>
+      <div class="modal-body p-5 px-md-6">
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item border-top border-300">
+            <h2 class="accordion-header" id="headingOne">
+              
+
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  Materiality
+              </button>
+            </h2>
+            <div class="accordion-collapse collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+              <div class="accordion-body pt-0">
+              
+                  <div class="p-4 code-to-copy">
+                   
+                              
+                      <div class="row mb-1 position-relative">
+      
+                          <label class="col-sm- col-form-label" for="txtsection"> Inputs</label>
+           
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">&gt;$100,000</div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_Input_1_yes" onclick="registerclick('Materiality','Input')" type="radio" name="rb_Input" value="3">
+          
+                              
+                              </div>  
+                          </div> 
+                      </div>              
+                           
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">&gt; $25,000 and &lt; $100,000 </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_Input_2_yes" onclick="registerclick('Materiality','Input')" type="radio" name="rb_Input" value="2">
+<!--           
+                              <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">&lt;  $25,000  </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_Input_3_yes" onclick="registerclick('Materiality','Input')" type="radio" name="rb_Input" value="1">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>  
+                      <div class="row mb-1 position-relative">
+  
+                          <label class="col-sm- col-form-label" for="txtsection">Regulatory Impact          </label>
+              
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">
+                              Are there any regulatory enforcement or formal regulatory findings (MRA, MRIA) ?</div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_RegImp_1_yes" onclick="registerclick('Materiality','RegImp')" type="radio" name="rb_RegImp" value="3">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">Are there any verbal regulatory findings or potential regulatory scrutiny ?
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_RegImp_2_yes" onclick="registerclick('Materiality','RegImp')" type="radio" name="rb_RegImp" value="2">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">Are there any regulatory repercussions ?                        
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_RegImp_3_yes" onclick="registerclick('Materiality','RegImp')" type="radio" name="rb_RegImp" value="1">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>   
+                      <div class="row mb-1 position-relative">
+  
+                          <label class="col-sm col-form-label" for="txtsection"> Reputational Impact</label>
+              
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">
+                              Are there any National press coverage or large scale customers impacted or aware of adverse reputational incident/s?
+  
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_RepImp_1_yes" onclick="registerclick('Materiality','RepImp')" type="radio" name="rb_RepImp" value="3">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">
+                              Are there many or some customers impacted or aware of incident?
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_RepImp_2_yes" onclick="registerclick('Materiality','RepImp')" type="radio" name="rb_RepImp" value="2">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">
+                              Are there any customer impact or awareness
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_RepImp_3_yes" onclick="registerclick('Materiality','RepImp')" type="radio" name="rb_RepImp" value="1">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>  
+                  </div>  
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+  
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Business Reliance
+  
+              </button>
+            </h2>
+            <div class="accordion-collapse collapse" id="collapseTwo" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+              <div class="accordion-body pt-0">
+                  <div class="p-4 code-to-copy"> 
+                      <div class="row mb-1 position-relative"> 
+                          <div class="col-sm-10">The model is used directly in business decisions
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_Rel_1_yes" onclick="registerclick('Reliance','1')" type="radio" name="rb_Rel" value="3">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>              
+                           
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">
+                            The model is used in combination with other processes and models to make business decisions 
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_Rel_2_yes" onclick="registerclick('Reliance','2')" type="radio" name="rb_Rel" value="2">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div>                                    
+                      </div>   
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">The model is used to enhance/help human decision.
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_Rel_3_yes" onclick="registerclick('Reliance','3')" type="radio" name="rb_Rel" value="1">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div> 
+                  </div>  
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+  
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Intrinsic Risk Score
+             </button>
+            </h2>
+            <div class="accordion-collapse collapse" id="collapseThree" aria-labelledby="headingThree" data-bs-parent="#accordionExample" style="">
+              <div class="accordion-body pt-0">
+                  <div class="p-4 code-to-copy"> 
+                      <div class="row mb-1 position-relative"> 
+                          <div class="col-sm-10">Is the complexity of the model    </div>
+                      </div>
+                              
+                      <div class="row mb-1 position-relative">  
+                        <div class="col-sm-10">High
+                        </div>
+                        <div class="col-sm-1">
+            
+                            <div class="form-check">
+        
+                            <input class="form-check-input" id="rb_intr_1_3_yes" onclick="registerclick('Intrinsic','1')" type="radio" name="rb_intr_1" value="3">
+        
+                            <!-- <label class="form-check-label" >Yes</label> -->
+                            </div>  
+                        </div> 
+                    </div>    
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">Medium
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_intr_1_2" onclick="registerclick('Intrinsic','1')" type="radio" name="rb_intr_1" value="2">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div> 
+                      </div>   
+                      <div class="row mb-1 position-relative"> 
+                        <div class="col-sm-10">Low
+                        </div>
+                        <div class="col-sm-1">
+            
+                            <div class="form-check">
+        
+                            <input class="form-check-input" id="rb_intr_1_1" onclick="registerclick('Intrinsic','1')" type="radio" name="rb_intr_1" value="1">
+        
+                            <!-- <label class="form-check-label" >Yes</label> -->
+                            </div>  
+                        </div> 
+                    </div>     
+                      
+                      <div class="row mb-1 position-relative"> 
+                         
+                      </div>
+                      <div class="row mb-1 position-relative"> 
+                          <div class="col-sm-10">Is the uncertainty of the input to the model  
+                          </div>
+                      </div>
+                      <div class="row mb-1 position-relative">  
+                        <div class="col-sm-10">High
+                        </div>
+                        <div class="col-sm-1">
+            
+                            <div class="form-check">
+        
+                            <input class="form-check-input" id="rb_intr_2_3_yes" onclick="registerclick('Intrinsic','1')" type="radio" name="rb_intr_2" value="3">
+        
+                            <!-- <label class="form-check-label" >Yes</label> -->
+                            </div>  
+                        </div>
+                        
+                    </div>              
+                           
+                      <div class="row mb-1 position-relative">  
+                          <div class="col-sm-10">Medium
+                          </div>
+                          <div class="col-sm-1">
+              
+                              <div class="form-check">
+          
+                              <input class="form-check-input" id="rb_intr_2_2_yes" onclick="registerclick('Intrinsic','2')" type="radio" name="rb_intr_2" value="2">
+          
+                              <!-- <label class="form-check-label" >Yes</label> -->
+                              </div>  
+                          </div>
+                           
+                      </div>   
+                      <div class="row mb-1 position-relative"> 
+                        <div class="col-sm-10">Low
+                        </div>
+                        <div class="col-sm-1">
+            
+                            <div class="form-check">
+        
+                            <input class="form-check-input" id="rb_intr_2_1_yes" onclick="registerclick('Intrinsic','2')" type="radio" name="rb_intr_2" value="1">
+        
+                            <!-- <label class="form-check-label" >Yes</label> -->
+                            </div>  
+                        </div>
+                        
+                    </div> 
+                     
+                  </div>  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <!-- <a class="nav-link" href="http://3.131.88.246:8000" target="_blank" data-bs-toggle="" aria-expanded="false">           
+          <button class="btn btn-sm btn-primary px-6">Validate Model</button>
+        </a>
+        <a class="nav-link" href="#" data-bs-toggle="" aria-expanded="false">           
+          <button class="btn btn-sm btn-primary px-6">Version History</button>
+        </a> -->
+        <button class="btn btn-outline-primary" type="button" id="btnOk" disabled data-bs-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+
+
+  <div class="content" data-bs-target="#v-pills"  data-bs-spy="scroll" style="padding-top:0px;">
+  <div class="mt-4">
+    <div class="row g-4">
+      <div class="col-12 col-xl-12 order-1 order-xl-0">
+        <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+          
+          <div class="card-body p-0">
+            
+            <div class="p-4 code-to-copy">
+              <div class="row">
+                <div class="col-sm-auto">
+                  <div class="sticky-top" style="margin-top:-72px;padding-top:72px">
+                    <div class="nav flex-column nav-pills" id="v-pills">
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-home">Overview</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-design">Model Risks</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-attributes">Relevant Personnel</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-relatedmodels">Model Dependencies</a>
+                      <a class="nav-link ps-0 ps-sm-3 text-600 fw-semi-bold" href="#v-pills-tables">Model Performance Monitoring</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-data">Model Artifacts</a>
+                      <!-- <a class="nav-link ps-0 ps-sm-3" href="#v-pills-testing">Relevant Documents</a>
+                      <a class="nav-link ps-0 ps-sm-3" href="#v-pills-impl">Relevant Dates</a>  -->
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-home">Overview</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                         
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+                          <div class="row mb-3" style="display: none;">
+
+                            <label class="col-sm-4 col-form-label"></label>
+    
+                            <div class="col-sm-2">
+    
+                                <div class="form-check">
+    
+                                <input class="form-check-input" id="rbnew" type="radio" name="rbisnewupdate" value="1" checked="">
+    
+                                <label class="form-check-label" for="rbactive">New</label>
+                                </div>  
+                            </div>
+                            <div class="col-sm-1"> 
+                                <div class="form-check">
+    
+                                <input class="form-check-input" id="rbupdate" type="radio" name="rbisnewupdate" value="0"  href="#" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal">
+                                
+                                <label class="form-check-label" for="rbupdate">Update</label>
+                                </div> 
+                            </div>
+                        </div>
+
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtDepartment">Department</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control form-control-sm" id="txtDepartment" name="txtDepartment" type="text" required placeholder="Department" value="{{dept}}" readonly>
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlFunction">Function </label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" name="ddlFunction" id="ddlFunction" >
+                                <option value="">Select function</option>
+                                {% for key, val in Mdl_Func.items  %}  
+                                  <option value="{{val.AID}}">{{val.opt}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtRegDt">Registration Date <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">    
+                              <input class="form-control" id="txtRegDt" name="txtRegDt"  type="text"  placeholder="Registration Date" value="{{regDate}}" readonly/>
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlId">Model ID</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlId" name="txtMdlId" type="text" readonly placeholder="Model ID"/>
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtPrmName">Primary Model Name <span style="color: red;">*</span></label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtPrmName" maxlength="200" name="txtPrmName" type="text"  required/>
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtSecName">Secondary Model Name</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtSecName" maxlength="200" name ="txtSecName" type="text"   />
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlSource">Model Source <span style="color: red;">*</span></label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlSource" name="ddlSource" required>
+                                <option value="">Select model source</option>                                 
+                                {% for key, val in Mdl_Src.items  %}  
+                                  <option value="{{val.Mdl_Scr_AID}}">{{val.Mdl_Src_Label}}</option>   
+                                {% endfor %}   
+                              </select>
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlType">Model Type </label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlType" name="ddlType" >
+                                <option value="">Select model type</option>
+                                {% for key, val in Mdl_Type.items  %}  
+                                  <option value="{{val.Mdl_Type_AID}}">{{val.Mdl_Type_Label}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                          </div>
+ 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlAbsct">Model Abstract </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlAbsct" maxlength="200" name="txtMdlAbsct" type="text" name="txtMdlAbsct" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlObj">Objective of Model </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlObj" maxlength="200" name="txtMdlObj" type="text" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlAppl">Application of Model </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlAppl" maxlength="200" type="text" name="txtMdlAppl" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlRiskAnls">Model Risk Analysis </label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlRiskAnls" maxlength="200" name="txtMdlRiskAnls" type="text" />
+                            </div>
+                          </div>
+   
+                          <div class="row mb-3">
+                            <label  class="col-sm-4 col-form-label"  for="ddlPrctAddr">Products Addressed </label>
+                            <div class="col-sm-8"> 
+                              <select class="form-select" id="ddlPrctAddr" name="ddlPrctAddr" >
+                                <option value="">Select products addressed </option>
+                                {% for key, val in Prd_Addr.items  %}  
+                                  <option value="{{val.Prd_Addr_AID}}">{{val.Prd_Addr_Label}}</option>   
+                                {% endfor %} 
+                              </select>                              
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <label  class="col-sm-4 col-form-label"  for="ddlUsgFreq">Usage Frequency </label>
+                            <div class="col-sm-8"> 
+                              <select class="form-select" id="ddlUsgFreq" name="ddlUsgFreq" >
+                                <option value="">Select usage frequency</option>
+                                {% for key, val in Mdl_Usage_Frq.items  %}  
+                                  <option value="{{val.Mdl_Use_Freq_AID}}">{{val.Mdl_Use_Freq_Label}}</option>   
+                                {% endfor %} 
+                              </select>
+                              
+                            </div>
+                          </div>   
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-design" style="margin-bottom: 15px;">Model Risks</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlRisks">Model Risk</label>
+                            <div class="col-sm-4">    
+                            
+                              <select class="form-select" id="txtMdlRisks" name="txtMdlRisks" disabled>
+                                <option value="">Select model risk</option>
+                                {% for key, val in Mdl_Risk.items  %}  
+                                  <option value="{{val.Mdl_Risk_AID}}">{{val.Mdl_Risk_Label}}</option>   
+                                {% endfor %} 
+                              </select>
+                              <input type="hidden" name="hdnMdlRisks" id="hdnMdlRisks"/>
+                              <!-- <input class="form-control form-control-sm" id="txtMdlRisks" name="txtMdlRisks" type="text"> -->
+                            </div>
+                            <div class="col-sm-4" >   
+                              <!-- <span class="text-danger" data-feather="alert-triangle" onclick="$('#riskTiering').modal('toggle');"></span>  -->
+                              <!-- <span class="text-100 fs-1 fab fa-penny-arcade text-danger" onclick="$('#riskTiering').modal('toggle');"></span> -->
+                              <button class="btn btn-primary px-5" type="button" onclick="$('#riskTiering').modal('toggle');">Calculate Model Risk</button>
+                            </div> 
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlIntrRisk">Intrinsic Risk</label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" id="ddlIntrRisk" name="ddlIntrRisk" disabled>
+                                <option value="">Select intrinsic risk</option>
+                                {% for key, val in Intrinsic.items  %}  
+                                  <option value="{{val.Intrinsic_AID}}">{{val.Intrinsic_Label}}</option>   
+                                {% endfor %} 
+                              </select>
+                              <input type="hidden" name="hdnIntrRisk" id="hdnIntrRisk"/>
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlReliance">Reliance</label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" id="ddlReliance" name="ddlReliance" disabled>
+                                <option value="">Select Reliance</option>
+                                {% for key, val in Reliance.items  %}  
+                                  <option value="{{val.Reliance_AID}}">{{val.Reliance_Label}}</option>   
+                                {% endfor %}
+                              </select>
+                              <input type="hidden" name="hdnReliance" id="hdnReliance" />
+                            </div>
+                          </div>
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlMateriality">Materiality</label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" id="ddlMateriality" name="ddlMateriality" disabled>
+                                <option value="">Select materiality</option>
+                                {% for key, val in Materiality.items  %}  
+                                  <option value="{{val.Materiality_AID}}">{{val.Materiality_Label}}</option>   
+                                {% endfor %}
+                              </select>
+                              <input type="hidden" name="hdnMateriality" id="hdnMateriality"/>
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtRiskMtgn">Risk Mitigation</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtRiskMtgn" maxlength="200" name="txtRiskMtgn" type="text"/>
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtFairLndg">Fair Lending</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtFairLndg" maxlength="200" name="txtFairLndg" type="text"/>
+                            </div>
+                          </div>   
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-attributes" style="margin-bottom: 15px;">Relevant Personnel</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6"  style="margin-top:5px"> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlOwner">Model Owner/s</label>
+                            <div class="col-sm-8">   
+                              <select  class="form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' name="ddlOwner" id="ddlOwner"> 
+                                <option value="">Select owner/s</option> 
+                                {% for key, val in Mdl_Owners.items  %}                                   
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlDeveloper">Model Developer/s</label>
+                            <div class="col-sm-8">    
+                              <select  class="form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' id="ddlDeveloper" name="ddlDeveloper"> 
+                                <option value="">Select Developer/s</option> 
+                                {% for key, val in Mdl_Devs.items  %}  
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlUser">User/s</label>
+                            <div class="col-sm-8">    
+                              <select  class="form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' id="ddlUser" name="ddlUser">  
+                                <option value="">Select User/s</option> 
+                                {% for key, val in Mdl_Owners.items  %}  
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtValidator">Model Validator/s</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtValidator" name="txtValidator" type="text" readonly/>
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlPrdnSupp">Production Support</label>
+                            <div class="col-sm-8">    
+                              <select  class="form-select" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' id="ddlPrdnSupp" name="ddlPrdnSupp"> 
+                                <option value="">Select Production Support</option> 
+                                {% for key, val in Mdl_Owners.items  %}  
+                                  <option value="{{val.u_aid}}">{{val.usernm}}</option>   
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>  
+
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Model Dependencies</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6">
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlUpstrmMdl">Upstream Models</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlUpstrmMdl"name="ddlUpstrmMdl">
+                                <option value="">Select upstream models</option>
+                                {% for key, val in Upstr_Model.items  %}  
+                                  <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlDwstrmMdl">Downstream Models</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlDwstrmMdl" name="ddlDwstrmMdl">
+                                <option value="">Select downstream models</option>
+                                {% for key, val in Dwstr_Model.items  %}  
+                                  <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                          </div> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+                    <h4 id="v-pills-tables" class="text-600 fw-semi-bold" style="margin-bottom: 15px;">Model Performance Monitoring</h4>
+                    <div class="row" style="display: none;">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtApproach">Approach</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control form-control-sm" id="txtApproach" name="txtApproach" type="text">
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="ddlMonrFreq">Monitoring Frequency</label>
+                            <div class="col-sm-8">    
+                              <select class="form-select" id="ddlMonrFreq" name="ddlMonrFreq">
+                                <option value="">Select monitoring frequency</option>
+                                {% for key, val in Motr_Freq.items  %}  
+                                  <option value="{{val.AID}}">{{val.opt}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMonrMtrcs">Monitoring Metrics</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMonrMtrcs" name="txtMonrMtrcs" type="text" />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtTgrEvt">Trigger Event/s</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtTgrEvt" name="txtTgrEvt" type="text" />
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtLstTgrDt">Last Trigger Event Date</label>
+                            <div class="col-sm-3">    
+                              <input class="form-control datetimepicker" id="txtLstTgrDt" readonly  name="txtLstTgrDt" type="text" placeholder="mm/dd/yyyy"    data-options='{"disableMobile":true,"dateFormat":"m/d/Y","maxDate":"{{regDate}}"}' />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtLstTgrMtgnDt">Last Trigger Event Mitigation Date</label>
+                            <div class="col-sm-3">    
+                              <input class="form-control datetimepicker" id="txtLstTgrMtgnDt" readonly name="txtLstTgrMtgnDt" type="text" placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y","maxDate":"{{regDate}}"}'  />
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtTgrEvtMtgn">Trigger Event Mitigation</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtTgrEvtMtgn" name="txtTgrEvtMtgn" type="text"  />
+                            </div>
+                          </div> 
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-data" style="margin-bottom: 15px;">Model Artifacts</h4>
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="row g-3 mb-6" style="margin-top:5px">
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMDD">Model Development</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMDD" name="txtMDD" type="file" />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtUserManual">User Manual</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtUserManual" name="txtUserManual" type="file" />
+                            </div>
+                          </div> 
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlData">Model Data</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlData" name="txtMdlData" type="file" />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtMdlCode">Model Code</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtMdlCode" name="txtMdlCode" type="file" />
+                            </div>
+                          </div> 
+                          
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtUAT">User Acceptance Testing</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtUAT" name="txtUAT" type="file" />
+                            </div>
+                          </div>  
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtTechManual">Technical Manual</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtTechManual" name="txtTechManual" type="file" />
+                            </div>
+                          </div> 
+
+                          <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label" for="txtOnboardDoc">Onboarding Documents</label>
+                            <div class="col-sm-8">    
+                              <input class="form-control" id="txtOnboardDoc" name="txtOnboardDoc" type="file" />
+                            </div>
+                          </div> 
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-testing" style="margin-bottom: 15px;">Relevant Documents</h4>
+                    <div class="row">
+                        
+                    </div>
+                  </div> -->
+                  <!-- <div style="border: 1px solid var(--phoenix-gray-200);padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+                    <h4 id="v-pills-impl" style="margin-bottom: 15px;">Relevant Dates</h4>
+                    <div class="row">
+                      
+                    </div>
+                  </div>  -->
+                  <div class="col-12 gy-6" style="margin-top: 15px;">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto">
+                        <button class="btn btn-phoenix-primary px-5" type="button" onclick="gotoList()">Cancel</button>
+                      </div>
+                      <div class="col-auto">
+                        <button class="btn btn-primary px-5 px-sm-5" type="submit">Save</button>
+                      </div>
+                      <div class="col-auto">
+                        <button class="btn btn-primary px-5 px-sm-5" id="submit" type="button" onclick="is_submit()">Submit</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+        </div>
+      </div> 
+    </div>
+  </div> 
+</div>
+
+  </div>
+
+<!-- Added by Shuv Starts (for Project Details pop-up)--> 
+<div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content overflow-hidden">
+      <div class="modal-body p-5 px-md-6">
+        <div class="card shadow-none border border-300 my-5" data-component-card="data-component-card">
+          <div class="card-header p-3 border-bottom border-300 bg-soft" >
+            <div class="row g-3 justify-content-between align-items-end">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" >Update Model Version</h4>
+                
+              </div>
+              <div class="col col-md-auto">
+                <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                  <button class="btn btn-phoenix-primary me-1 p-2" data-bs-dismiss="modal" type="button">X</button>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="p-4 code-to-copy">
+              <table class="table table1" >                
+                  <tr>
+                    <th scope="row" style="width:40%">Model</th>
+                    <td>
+                      <select class="form-select" id="ddlModelId" onchange="getModelVersion()"data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}'>
+                      
+                        <option value="">Select model</option>                                 
+                        {% for key, val in mdlinfo.items  %}  
+                          <option value="{{val.Mdl_Id}}">{{val.Prm_Name}}</option> 
+                          <option value="{{val.Mdl_Id}}">{{val.Sec_Name}}</option>  
+                        {% endfor %}   
+                      </select>
+                    </td>
+                  </tr>                 
+                  <tr>
+                    <th scope="row">Major Version</th>
+                    <td><label class="col-sm-4 col-form-label" id="lblMajorVer"></label></td>                      
+                  </tr>
+                  <tr>
+                    <th scope="row">Minor Version</th>
+                    <td><label class="col-sm-4 col-form-label" id="lblMinorVer"></label></td>
+                  </tr> 
+                 <tr>
+                  <td style="text-align: right;">
+                    <button class="btn btn-sm btn-primary px-6" id="btnUpdateMajor" onclick="updateVersion('0')">Update Major Version</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-primary px-6" id="btnUpdateMinor" onclick="updateVersion('1')">Update Minor Version</button>
+                  </td>
+                 </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+</form>
+                        {% endblock content %}
+    {% block script  %}
+    <script src="{% static 'phoenix-v1.8.0/public/vendors/jquery-3.2.1.min.js' %}"></script> 
+    <script src="{% static 'phoenix-v1.8.0/src/js/theme/flatpickr.js' %}"></script>
+    <script src="{% static 'phoenix-v1.8.0/public/vendors/choices/choices.min.js' %}"></script>
+    
+    <script type='text/javascript' >
+      function sendmsg(){
+        console.log('inside sendmsg') 
+         
+      }
+      $(document).ready(function () {
+        alert("---------")
+        
+        // $('#submit').prop('disabled', true);
+        // $('button').attr('disabled',true);
+        $('#submit').hide()
+        if('{{mdl_id}}' !=''){
+          debugger;
+          Env_Requirements_install()
+        alert('Tool registred with id {{mdl_id}}.')
+         
+        
+        $('#submit').show()
+        // $('button').attr('disabled',false); 
+        // $('#submit').prop('disabled', false);
+
+        }
+        
+  //sendNotification('test msg',3,8,1);
+
+
+});
+
+function Env_Requirements_install(){
+      debugger; 
+      $.ajax({
+            url: '/run_command/',
+            data: {command:'virtualenv env_test2',check_env:'pip install virtualenv'},
+            dataType: 'json',
+            success: function(data) {
+                debugger
+                console.log("data run command",data)
+                if (data.status == 'True'){
+                        $.ajax({
+                            url: '/install_requirements/', 
+                            data:{},
+                            dataType: 'json',
+                            success: function (data) {
+                                debugger;
+                                console.log("Data requirement",data)
+                                if(data.status == "True"){
+                                  alert("requirements installed Successfully")
+                                }
+                                else{
+                                    alert("Requirement Not Installed Properly")
+                                }
+                            }
+                        })
+                        
+                    
+                }
+                else{
+                    alert("Virtual Environment Not Created")
+                }
+                
+        
+            }
+            
+        });
+       
+    }
+
+function is_submit(){
+          debugger
+          mdl_id = '{{mdl_id}}'
+          if('{{mdl_id}}' !=''){
+            // alert("ok")
+              // alert('Tool registred with id {{mdl_id}}.')
+            $.ajax({
+            url: '/issubmit/', 
+            data:{ is_submit:1,mdl_id:mdl_id},
+            dataType: 'json',   
+            success: function (data) {                 
+              alert("submit")
+              // $('#submit').prop('disabled', true);
+              $('#submit').hide()
+        }
+      });
+
+           }
+} 
+
+function gotoList(){
+      window.location='{{getCriteria}}'
+    }
+
+function validateForm(){
+      debugger;
+      
+      if($('#txtPrmName').val().trim().length<=0){
+        alert('Please enter mandatory fields'); 
+        return false;
+      }
+      $("#ddlIntrRisk").prop('disabled',false);
+      $("#ddlReliance").prop('disabled',false);
+      $("#ddlMateriality").prop('disabled',false);
+      $("#txtMdlRisks").prop('disabled',false)  
+    }
+
+    function getModelVersion(){
+     // console.log($("#ddlModelId").val())
+      $.ajax({
+        url: '/getMdlInfoById/', 
+        data:{ mdlid:$('#ddlModelId').val()},
+        dataType: 'json',   
+        success: function (data) {                 
+            console.log(data.majorVer +','+data.minorVer)
+            $('#lblMajorVer').text(data.majorVer);
+            $('#lblMinorVer').text(data.minorVer);
+        }
+      });
+    }
+
+    function updateVersion(isminor){
+      
+      $.ajax({
+        url: '/updateMdlVersion/', 
+        data:{ mdlid:$('#ddlModelId').val(),isMinor:isminor},
+        dataType: 'json',   
+        success: function (data) {                 
+             
+            $('#txtMdlId').val(data.newMdlId);
+        }
+      });
+      $('#projectsCardViewModal').modal('toggle');
+    }
+
+    function highl(id){
+      
+      $('#'+id).addClass('active');
+    }
+    var intr_op='',rel_Opt='',mater_op='';
+    function registerclick(riskType,opt){ 
+     
+      if(riskType=='Intrinsic'){         
+        if($('input[name="rb_intr_1"]:checked').val()=='1' && $('input[name="rb_intr_2"]:checked').val() =='1'){
+          intr_op='1';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='1' && $('input[name="rb_intr_2"]:checked').val() =='2'){
+          intr_op='1';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='1' && $('input[name="rb_intr_2"]:checked').val() =='3'){
+          intr_op='2';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='2' && $('input[name="rb_intr_2"]:checked').val() =='1'){
+          intr_op='1';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='2' && $('input[name="rb_intr_2"]:checked').val() =='2'){
+          intr_op='2';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='2' && $('input[name="rb_intr_2"]:checked').val() =='3'){
+          intr_op='3';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='3' && $('input[name="rb_intr_2"]:checked').val() =='1'){
+          intr_op='2';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='3' && $('input[name="rb_intr_2"]:checked').val() =='2'){
+          intr_op='3';
+        }
+        else if($('input[name="rb_intr_1"]:checked').val()=='3' && $('input[name="rb_intr_2"]:checked').val() =='3'){
+          intr_op='3';
+        }
+        console.log('intr_op ',intr_op)
+          if(parseInt(intr_op)==3){
+            //$('#txtMdlRisks').val('3')
+            $("#ddlIntrRisk option").filter(function(index) { return $(this).text() === "High"; }).attr('selected', 'selected');
+            
+          }
+          else if(parseInt(intr_op)==2){
+            $("#ddlIntrRisk option").filter(function(index) { return $(this).text() === "Medium"; }).attr('selected', 'selected');
+          }
+          else if(parseInt(intr_op)==1){
+            $("#ddlIntrRisk option").filter(function(index) { return $(this).text() === "Low"; }).attr('selected', 'selected');
+          } 
+          $("#hdnIntrRisk").val($("#ddlIntrRisk").val())
+           
+      }  
+      else if(riskType=='Reliance'){ 
+        rel_Opt=$('input[name="rb_Rel"]:checked').val()
+        //$('#ddlReliance').val($('input[name="rb_Rel"]:checked').val())
+        console.log('rel_Opt ',rel_Opt)
+          if(parseInt(rel_Opt)==3){
+            //$('#txtMdlRisks').val('3')
+            console.log('inside high rel')
+            $("#ddlReliance option").filter(function(index) { return $(this).text() == "High"; }).attr('selected', 'selected');
+          }
+          else if(parseInt(rel_Opt)==2){
+            $("#ddlReliance option").filter(function(index) { return $(this).text() == "Medium"; }).attr('selected', 'selected');
+          }
+          else if(parseInt(rel_Opt)==1){
+            $("#ddlReliance option").filter(function(index) { return $(this).text() == "Low"; }).attr('selected', 'selected');
+          } 
+          $("#hdnReliance").val($("#ddlReliance").val())
+          
+      }
+      else if(riskType=='Materiality'){
+        var inputval=0,regimpval=0,repimpval=0;
+        if (!((typeof($('input[name="rb_Input"]:checked').val())  === "undefined" || typeof($('input[name="rb_RegImp"]:checked').val()) === "undefined" || typeof($('input[name="rb_RepImp"]:checked').val()) === "undefined"))){
+           
+          inputval=$('input[name="rb_Input"]:checked').val() ;
+          regimpval=$('input[name="rb_RegImp"]:checked').val() ;
+          repimpval=$('input[name="rb_RepImp"]:checked').val() ;
+        
+          if(parseInt(inputval)>=parseInt(regimpval) && parseInt(inputval)>=parseInt(repimpval) )
+          {
+           // $('#ddlMateriality').val(inputval)
+            mater_op=inputval
+          }
+          else  if(parseInt(inputval)<=parseInt(regimpval) && parseInt(regimpval)>=parseInt(repimpval) )
+          {
+           // $('#ddlMateriality').val(regimpval)
+            mater_op=regimpval
+          }
+          else if(parseInt(inputval)<=parseInt(repimpval) && parseInt(regimpval)<=parseInt(repimpval) )
+          {
+           // $('#ddlMateriality').val(repimpval)
+           mater_op=regimpval
+          }
+
+          if(parseInt(mater_op)==3){
+            //$('#txtMdlRisks').val('3')
+            $("#ddlMateriality option").filter(function(index) { return $(this).text() === "High"; }).attr('selected', 'selected');
+          }
+          else if(parseInt(mater_op)==2){
+            $("#ddlMateriality option").filter(function(index) { return $(this).text() === "Medium"; }).attr('selected', 'selected');
+          }
+          else if(parseInt(mater_op)==1){
+            $("#ddlMateriality option").filter(function(index) { return $(this).text() === "Low"; }).attr('selected', 'selected');
+          }
+          $("#hdnMateriality").val($("#ddlMateriality").val())
+        }
+         
+      }  
+      if( intr_op !='' && rel_Opt!='' && mater_op!=''){ 
+        //enable ok
+        console.log('inside')
+        $('#btnOk').prop('disabled',false)
+        if((parseInt(intr_op) + parseInt(rel_Opt) + parseInt(mater_op))==8 
+        ||(parseInt(intr_op) + parseInt(rel_Opt) + parseInt(mater_op))==9){
+          //$('#txtMdlRisks').val('3') 
+          $("#txtMdlRisks option").filter(function(index) { return $(this).text() === "High"; }).attr('selected', 'selected');
+        }
+        else if((parseInt(intr_op) + parseInt(rel_Opt) + parseInt(mater_op))>=4 
+        && (parseInt(intr_op) + parseInt(rel_Opt) + parseInt(mater_op)) <=7){
+          $("#txtMdlRisks option").filter(function(index) { return $(this).text() === "Medium"; }).attr('selected', 'selected');
+        }
+        else if((parseInt(intr_op) + parseInt(rel_Opt) + parseInt(mater_op))==3 ){
+          $("#txtMdlRisks option").filter(function(index) { return $(this).text() === "Low"; }).attr('selected', 'selected');
+        }
+        $("#hdnMdlRisks").val($("#txtMdlRisks").val())
+      }
+    }
+
+    
+    </script>
+    {% endblock script  %}

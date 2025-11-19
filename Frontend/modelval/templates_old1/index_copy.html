@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+ <!-- Font -->
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+ <!-- CSS Implementing Plugins -->
+ <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+ <!-- <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}"> -->
+
+ <!-- CSS Front Template -->
+
+ <link rel="preload" href="{% static 'Front/dist/assets/css/theme.min.css' %}" data-hs-appearance="default" as="style">
+ <link rel="preload" href="{% static 'Front/dist/assets/css/docs.min.css' %}" data-hs-appearance="default" as="style">
+ <link rel="preload" href="{% static 'Front/dist/assets/css/theme-dark.min.css' %}" data-hs-appearance="dark" as="style">
+ <link rel="preload" href="{% static 'Front/dist/assets/css/docs-dark.min.css' %}" data-hs-appearance="dark" as="style">
+
+
+  <!-- CSS Implementing Plugins -->
+ <!-- <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">  -->
+  <!-- <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/fullcalendar/main.min.css' %}"> -->
+  <!-- <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css' %}"> -->
+  <!-- <link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}"> -->
+
+
+{% endblock style %}
+{% block content %}  
+ <form>
+  {% csrf_token %}  
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="row align-items-end mb-3">
+          <div class="col-sm">
+            <h1 class="page-header-title">Select Dropdown</h1>
+            
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+
+        <!-- Nav -->
+        <!-- Nav -->
+        <div class="js-nav-scroller hs-nav-scroller-horizontal">
+          <span class="hs-nav-scroller-arrow-prev" style="display: none;">
+            <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+              <i class="bi-chevron-left"></i>
+            </a>
+          </span>
+
+          <span class="hs-nav-scroller-arrow-next" style="display: none;">
+            <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+              <i class="bi-chevron-right"></i>
+            </a>
+          </span>
+
+          <ul class="nav nav-tabs page-header-tabs" id="projectsTab" role="tablist">
+            <!-- <li class="nav-item">
+              <a class="nav-link active" href="./project-activity.html">Activity</a>
+            </li>  -->
+          </ul>
+        </div>
+        <!-- End Nav -->
+      </div>
+      <!-- End Page Header -->
+      <!-- Heading -->
+      <h2 id="multiple-example" class="hs-docs-heading">
+        Basic  Example <a class="anchorjs-link" href="#multiple-example" aria-label="Anchor" data-anchorjs-icon="#"></a>
+      </h2>
+      <!-- End Heading -->
+
+      <div class="row justify-content-lg-center">
+        <div class="card-title mb-1"> 
+          <div class="col col-md-4" style="margin: 0;padding: 0;">
+            <!--All Selection dropdowns-->
+          <!-- Tab Content -->
+          <div class="tab-content" id="navTabContent1">
+            <div class="tab-pane fade p-4 show active" id="nav-result1" role="tabpanel" aria-labelledby="nav-resultTab1">
+              <div style="max-width: 20rem;">
+                <!-- Select -->
+                <div class="tom-select-custom">
+                  <select class="js-select form-select" autocomplete="off" data-hs-tom-select-options='{
+                            "placeholder": "Select a person...",
+                            "hideSearch": true
+                          }'>
+                    <option value="">Select a person...</option>
+                    <option value="4">Thomas Edison</option>
+                    <option value="1">Nikola</option>
+                    <option value="3">Nikola Tesla</option>
+                    <option value="5">Arnold Schwarzenegger</option>
+                  </select>
+                </div>
+                <!-- End Select -->
+              </div>
+            </div>
+
+            
+          </div>
+          <!-- End Tab Content -->
+          <!-- Heading -->
+        <h2 id="multiple-example" class="hs-docs-heading">
+          Multiple <a class="anchorjs-link" href="#multiple-example" aria-label="Anchor" data-anchorjs-icon="#"></a>
+        </h2>
+        <!-- End Heading -->
+          <!-- Tab Content -->
+          <div class="tab-content" id="navTabContent6">
+            <div class="tab-pane fade p-6 show active" id="nav-result6" role="tabpanel" aria-labelledby="nav-resultTab6">
+              <div style="max-width: 40rem;">
+                <!-- Select -->
+                <div class="tom-select-custom tom-select-custom-with-tags">
+                  <select class="js-select form-select" autocomplete="off" multiple data-hs-tom-select-options='{
+                            "placeholder": "Select a person..."
+                          }'>
+                    <option value="">Select a person...</option>
+                    <option value="4">Thomas Edison</option>
+                    <option value="1">Nikola</option>
+                    <option value="3">Nikola Tesla</option>
+                    <option value="5">Arnold Schwarzenegger</option>
+                  </select>
+                </div>
+                <!-- End Select -->
+              </div>
+            </div>
+  
+            <div class="tab-pane fade" id="nav-html6" role="tabpanel" aria-labelledby="nav-htmlTab6">
+              <pre>
+                <code class="language-markup" data-lang="html">
+                  &lt;!-- Select --&gt;
+                  &lt;div class="tom-select-custom tom-select-custom-with-tags"&gt;
+                    &lt;select class=&quot;js-select form-select&quot; autocomplete=&quot;off&quot; multiple
+                            data-hs-tom-select-options='{
+                              "placeholder": "Select a person..."
+                            }'&gt;
+                      &lt;option value=&quot;&quot;&gt;Select a person...&lt;/option&gt;
+                      &lt;option value=&quot;4&quot;&gt;Thomas Edison&lt;/option&gt;
+                      &lt;option value=&quot;1&quot;&gt;Nikola&lt;/option&gt;
+                      &lt;option value=&quot;3&quot;&gt;Nikola Tesla&lt;/option&gt;
+                      &lt;option value=&quot;5&quot;&gt;Arnold Schwarzenegger&lt;/option&gt;
+                    &lt;/select&gt;
+                  &lt;/div&gt;
+                  &lt;!-- End Select --&gt;
+                </code>
+              </pre>
+            </div>
+          </div>
+          <!-- End Tab Content -->
+          
+          <!-- Heading -->
+          <h2 id="multiple-selection-example" class="hs-docs-heading">
+            Multiple selection <a class="anchorjs-link" href="#multiple-selection-example" aria-label="Anchor" data-anchorjs-icon="#"></a>
+          </h2>
+      <!-- End Heading -->
+      <!-- Tab Content -->
+      <div class="tab-content" id="navTabContent2">
+        <div class="tab-pane fade p-4 show active" id="nav-result2" role="tabpanel" aria-labelledby="nav-resultTab2">
+          <div style="max-width: 40rem;">
+            <!-- Select -->
+            <div class="tom-select-custom">
+              <select class="js-select form-select" autocomplete="off" multiple data-hs-tom-select-options='{
+                        "singleMultiple": true,
+                        "hideSelected": false,
+                        "placeholder": "Select user"
+                      }'>
+                <option value="">Select a person...</option>
+                <option value="4" selected>Thomas Edison</option>
+                <option value="1" selected>Nikola</option>
+                <option value="3">Nikola Tesla</option>
+                <option value="5">Arnold Schwarzenegger</option>
+              </select>
+            </div>
+            <!-- End Select -->
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-html2" role="tabpanel" aria-labelledby="nav-htmlTab2">
+          <pre>
+            <code class="language-markup" data-lang="html">
+              &lt;!-- Select --&gt;
+              &lt;div class="tom-select-custom"&gt;
+                &lt;select class=&quot;js-select form-select&quot; autocomplete=&quot;off&quot; multiple
+                        data-hs-tom-select-options='{
+                          &quot;singleMultiple&quot;: true,
+                          &quot;hideSelected&quot;: false,
+                          &quot;placeholder&quot;: &quot;Select user&quot;
+                        }'&gt;
+                   &lt;option value=&quot;&quot;&gt;Select a person...&lt;/option&gt;
+                   &lt;option value=&quot;4&quot; selected&gt;Thomas Edison&lt;/option&gt;
+                   &lt;option value=&quot;1&quot; selected&gt;Nikola&lt;/option&gt;
+                   &lt;option value=&quot;3&quot;&gt;Nikola Tesla&lt;/option&gt;
+                   &lt;option value=&quot;5&quot;&gt;Arnold Schwarzenegger&lt;/option&gt;
+                &lt;/select&gt;
+              &lt;/div&gt;
+              &lt;!-- End Select --&gt;
+            </code>
+          </pre>
+        </div>
+      </div>
+      <!-- End Tab Content -->
+      <!-- Tab Content -->
+      <div class="tab-content" id="navTabContent1">
+        <div class="tab-pane fade p-4 show active" id="nav-result1" role="tabpanel" aria-labelledby="nav-resultTab1">
+          <p>
+            <!-- <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+              Link with href
+            </a> -->
+            <button type="button" id="plus" class="btn btn-primary" data-type="minus" data-field="quant[1]" onclick="show()">
+              <span class="glyphicon glyphicon-plus"></span>+
+            </button>
+            <button type="button" id="minus" class="btn btn-primary" data-type="plus" data-field="quant[1]" onclick="hide()">
+              <span class="glyphicon glyphicon-minus"></span>-
+            </button>            
+            <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              Button with data-bs-target
+            </button> -->
+          </p>
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-html1" role="tabpanel" aria-labelledby="nav-htmlTab1">
+          <pre>
+            <code class="language-markup" data-lang="html">
+              &lt;p&gt;
+                &lt;a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"&gt;
+                  Link with href
+                &lt;/a&gt;
+                &lt;button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"&gt;
+                  Button with data-bs-target
+                &lt;/button&gt;
+              &lt;/p&gt;
+              &lt;div class="collapse" id="collapseExample"&gt;
+                &lt;div class="card card-body"&gt;
+                  Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                &lt;/div&gt;
+              &lt;/div&gt;
+            </code>
+          </pre>
+        </div>
+      </div>
+      <!-- End Tab Content -->
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+
+  <!-- ========== END MAIN CONTENT ========== -->
+
+{% endblock content %}
+{% block script %}
+  <!-- JS Global Compulsory  -->
+  <!-- JS Implementing Plugins  -->
+ <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <script src="{% static 'Front/dist/assets/vendor/hs-header/dist/hs-header.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-nav-scroller/dist/hs-nav-scroller.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/list.js/dist/list.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-go-to/dist/hs-go-to.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/prism/prism.js' %}"></script>
+
+  
+
+
+  <!-- JS Front -->
+  <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+
+
+<script>
+  $(document).ready(function() {
+      $('#selectSection').val('{{refer_id}}')
+      HSCore.components.HSTomSelect.init('.js-select')
+      // $("#plus").click(function(){
+      //   $("#collapseExample").modal()
+      // });
+  });
+
+  function show(){
+    debugger
+    $("#collapseExample").show()
+  }
+  function hide(){
+    debugger
+    $("#collapseExample").hide()
+  }
+
+  function selectmdlid(){ 
+    mdlid = $('#selectSection').val()
+    $('#user').empty()
+    $.ajax({
+        url: '/selectmdlid/', 
+        data:{mdlid: $('#selectSection').val()},
+        dataType: 'json',
+        success: function (data) {              
+          $("#addon").append(data.activity_lst[0].addon)
+          $('#activity_trigger').append(data.activity_lst[0].activity_trigger)
+          $('#user').append(data.activity_lst[0].user)                
+        }
+    });
+  }
+</script>
+
+{% endblock script %}

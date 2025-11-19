@@ -1,0 +1,161 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  color: #444444;
+}
+
+a {
+  color: #0880e8;
+}
+
+a:hover {
+  color: #2b99f8;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Raleway", sans-serif;
+}
+
+
+
+/*--------------------------------------------------------------
+# Disable aos animation delay on mobile devices
+--------------------------------------------------------------*/
+@media screen and (max-width: 768px) {
+  [data-aos-delay] {
+    transition-delay: 0 !important;
+  }
+}
+
+
+
+/*--------------------------------------------------------------
+# Sections General
+--------------------------------------------------------------*/
+section {
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.section-bg {
+  background-color: #f1f8ff;
+}
+
+.section-title {
+  text-align: center;
+  padding-bottom: 30px;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 0;
+  color: #054a85;
+}
+
+.section-title p {
+  margin-bottom: 0;
+  font-style: italic;
+}
+
+
+
+@-webkit-keyframes pulsate-btn {
+  0% {
+    transform: scale(0.6, 0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 0;
+  }
+}
+
+@keyframes pulsate-btn {
+  0% {
+    transform: scale(0.6, 0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 0;
+  }
+}
+/*--------------------------------------------------------------
+# Cta
+--------------------------------------------------------------*/
+  .responsive{
+	position:relative;
+	width:100%;
+	height:audio;
+	margin-top:40px;
+	max-width:900px;
+	left:50%;
+	margin-left:-450px;
+ }
+.section-title h1 {
+	color: #fff;
+	font-size: 44px;
+	font-weight: 600;
+	text-align:left;
+}
+.section-title h1 span {
+	color: #fff;
+	font-size: 16px;
+	font-weight: 400;
+}
+.icon-box h2{
+	color: #fff;
+	font-size: 24px;
+	font-weight: 400;
+}
+.icon-box p{
+	color: #fff;
+	font-size: 15px;
+	font-weight: 400;
+	margin-left:20px;
+	height:12px;
+}
+
+/*--------------------------------------------------------------
+# Cta
+--------------------------------------------------------------*/
+.cta {
+  background: linear-gradient(rgba(5, 74, 133, 0.8), rgba(5, 74, 133, 0.9));
+  background-size: cover;
+  padding: 35px 0;
+  height: 100vh;
+}
+
+.cta h3 {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.cta p {
+  color: #fff;
+}
+
+
+@media (max-width: 1024px) {
+  .cta {
+    background-attachment: scroll;
+  }
+}
+
+@media (min-width: 769px) {
+  .cta .cta-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
+
+
+
+
+
+

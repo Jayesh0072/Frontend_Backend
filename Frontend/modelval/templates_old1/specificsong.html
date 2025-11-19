@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="singlesong">
+        <p>Name: {{ song }}</p>
+    
+    <p><audio id="myaudio" controls="controls" preload= 'auto' autoplay="" 
+     playsinline="">
+        <source src="{{ song}}" type="audio/mpeg" />
+    </audio>
+    <input type="button"  id="btnplay" value="test" onclick="play()">
+</div>
+{% endblock content%}
+{% block script %}
+<script> 
+//         window.addEventListener("load", (event) => {
+//   console.log("page is fully loaded {{ song}}");
+//   setInterval(play(),2000);
+// });
+
+// $( document ).ready(function() { 
+//    setInterval(play(),2000);
+//    $('#btnplay').click()
+// });
+
+// function play(){
+//     console.log('button click')
+//     var source = document.getElementById('myaudio');
+     
+//     source.src =   '{{song}}';  
+
+// }
+</script>
+{% endblock script %} 

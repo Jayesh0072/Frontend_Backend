@@ -1,0 +1,8 @@
+paramName,paramValue
+criterion,[rf_search.best_params_['criterion']]
+bootstrap,[rf_search.best_params_['bootstrap']]
+min_samples_leaf,"[rf_search.best_params_['min_samples_leaf']*0.6, 
+                                    rf_search.best_params_['min_samples_leaf']*0.8, 
+                                    rf_search.best_params_['min_samples_leaf'], 
+                                    rf_search.best_params_['min_samples_leaf']*1.2, 
+                                    rf_search.best_params_['min_samples_leaf']*1.4]"

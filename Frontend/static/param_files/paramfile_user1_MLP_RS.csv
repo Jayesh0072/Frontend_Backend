@@ -1,0 +1,6 @@
+paramName,paramValue
+hidden_layer_sizes,"[max(10, int(89/10)),max(50, int(89/2)),max(100, 89)]"
+activation,"['logistic', 'tanh', 'relu']"
+solver,"['sgd', 'adam']"
+alpha,"[0.0001, 0.005, 0.001, 0.05, 0.1]"
+momentum,"list(np.arange(0.1, 1, 0.3))"

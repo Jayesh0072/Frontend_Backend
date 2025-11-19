@@ -1,0 +1,3049 @@
+{% extends 'base_dashbFL.html' %} 
+{% load static %} 
+{% block style %} 
+ 
+<link rel="stylesheet" href="{% static 'node_modules/dist/css/query-builder.default.min.css' %}"> 
+ <script src="{% static 'node_modules/dist/js/query-builder.standalone.min.js' %}" ></script> 
+  <link href="{% static 'node_modules/datepicker/bootstrap-datepicker.min.css' %}" rel="stylesheet"> 
+  <link href="{% static 'node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css' %}"  rel="stylesheet"> 
+ 
+   <style> 
+   
+   .glyphicon {
+  position: relative!important;
+  top: 1px!important;
+  display: inline-block!important;
+  font-family: 'Glyphicons Halflings'!important;
+  font-style: normal!important;
+  font-weight: 400!important;
+  line-height: 1!important;
+  -webkit-font-smoothing: antialiased!important;
+  -moz-osx-font-smoothing: grayscale!important;
+}
+.glyphicon-plus-sign:before{content:"\e081"}
+.glyphicon-sort:before {
+ content:"\e150"
+} 
+.glyphicon-remove:before{content:"\e014"}
+.glyphicon-remove-sign:before
+{content:"\e083"}
+
+.glyphicon-sort-by-alphabet:before {
+ content:"\e151"
+}
+.glyphicon-sort-by-alphabet-alt:before {
+ content:"\e152"
+}
+.glyphicon-sort-by-order:before {
+ content:"\e153"
+}
+.glyphicon-sort-by-order-alt:before {
+ content:"\e154"
+}
+.glyphicon-sort-by-attributes:before {
+ content:"\e155"
+}
+.glyphicon-sort-by-attributes-alt:before {
+ content:"\e156"
+}
+ .form-inline .form-control {
+  display: inline-block  ; 
+  width: auto !important; 
+  vertical-align: middle !important; 
+}
+.form-control {
+  display: block ;
+  width: 100%!important; 
+  height: 34px  !important; 
+  padding: 6px 12px !important; 
+  font-size: 14px !important; 
+  font-weight: normal;
+  line-height: 1.42857143 !important; 
+  color: #555!important;
+  background-color: #fff!important;
+  background-image: none!important;
+  border: 1px solid #ccc!important;
+  border-radius: 4px!important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s!important;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+}
+#builder{
+  /* width:80%; */
+  display:block;
+  margin: 0 auto;
+}
+#buttons{
+text-align:center
+}
+h1,#query{
+  text-align:center;
+  font-family:'Whitney SSM', sans-serif;
+}
+p{
+  font-family:'Whitney SSM', sans-serif;
+  color:white !important; 
+  font-size:20px; 
+}
+
+#query{
+  font-size:18px
+}
+
+.query-builder .rules-group-container{
+  /* background-color:#19A7C1; */
+background-color:transparent;
+}
+
+.query-builder .rules-group-header {
+  margin-bottom: 10px;
+} 
+
+.pull-right {
+  float: right !important;
+}
+.btn-group, .btn-group-vertical {
+  position: relative !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.rule
+.query-builder form-inline{
+    /* background-color:#19A7C1;
+     */
+     background-color:transparent;
+
+}
+.rules-list{
+    /* background-color:#19A7C1; */
+    background-color:transparent;
+
+}
+
+/* .btn-primary{
+  background-color:silver
+} */
+
+.btn{
+  font-size:13px;
+  font-family:'Whitney SSM', sans-serif;
+
+
+}
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary{
+    background-color:olvie
+}
+
+.rule-container{
+  background-color:AntiqueWhite
+}
+
+.form-control{
+    font-family:'Whitney SSM', sans-serif;
+}
+
+.btn-xs {
+  padding: 1px 5px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px!important;
+}
+
+.btn {
+  display: inline-block !important;
+  padding: 6px 12px!important;
+  margin-bottom: 0!important;
+  font-size: 14px !important;;
+  font-weight: 400 !important;;
+  line-height: 1.42857143 !important;;
+  text-align: center !important;;
+  white-space: nowrap !important;;
+  vertical-align: middle !important;;
+  -ms-touch-action: manipulation !important;;
+  touch-action: manipulation !important;;
+  cursor: pointer !important;;
+  -webkit-user-select: none !important;;
+  -moz-user-select: none !important;;
+  -ms-user-select: none !important;;
+  user-select: none !important;;
+  background-image: none !important;;
+  border: 1px solid transparent !important;;
+    border-top-color: transparent !important;;
+    border-right-color: transparent !important;;
+    border-bottom-color: transparent !important;;
+    border-left-color: transparent !important;;
+  border-radius: 4px !important;;
+}
+
+.btn btn-xs btn-success{
+  background-color: #5cb85c !important 
+}
+
+.btn-xs, .btn-group-xs > .btn {
+  padding: 1px 5px !important;;
+  font-size: 12px !important;;
+  line-height: 1.5 !important;;
+  border-radius: 3px !important;;
+    border-top-right-radius: 3px !important;;
+    border-bottom-right-radius: 3px !important;;
+}
+
+.btn-success {
+  color: #fff !important;
+  background-color: #5cb85c !important;
+  border-color: #4cae4c !important;
+}
+
+.btn-success,.btn-danger {
+  background-color: #5cb85c !important 
+}
+.btn-danger {
+  color: #fff !important;
+  background-color: #d9534f !important;
+  border-color: #d43f3a !important;
+}
+
+.btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
+  background-color: #337ab7 !important;
+  border-color: #2e6da4 !important;
+}
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  filter: alpha(opacity=65) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  opacity: .65 !important;
+}
+
+#btn-set{
+    background-color:#19A7C1 !important;
+    font-size:20px !important;
+    border: none !important;
+  padding: 1px 50px !important;
+  text-decoration: none !important;
+      -webkit-transition-duration: 0.4s !important; /* Safari */
+    transition-duration: 0.4s !important;
+  border-radius: 0 !important;
+}
+
+/* #btn-set:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#btn-reset:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#btn-get-sql:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+} */
+
+hr {
+    border: none;
+    height: 1px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #333; /* Modern Browsers */
+    width:50%
+}
+
+input{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family:'Whitney SSM', sans-serif;
+  
+}
+
+#selectDiv{
+  display:inline-block;
+}
+.tooltip {
+ position:absolute;
+ z-index:1070;
+ display:block;
+ font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ font-size:12px;
+ font-weight:400;
+ line-height:1.4;
+ visibility:visible;
+ filter:alpha(opacity=0);
+ opacity:0
+}
+.tooltip.in {
+ filter:alpha(opacity=90);
+ opacity:.9
+}
+.tooltip.top {
+ padding:5px 0;
+ margin-top:-3px
+}
+.tooltip.right {
+ padding:0 5px;
+ margin-left:3px
+}
+.tooltip.bottom {
+ padding:5px 0;
+ margin-top:3px
+}
+.tooltip.left {
+ padding:0 5px;
+ margin-left:-3px
+}
+.tooltip-inner {
+ max-width:200px!important;
+ padding:3px 8px !important;
+ color:#fff !important;
+ text-align:center!important;
+ text-decoration:none!important;
+ background-color:#000!important;
+ border-radius:4px!important;
+}
+.tooltip-arrow {
+ position:absolute !important;
+ width:0 !important;
+ height:0 !important;
+ border-color:transparent !important;
+ border-style:solid
+}
+.tooltip.top .tooltip-arrow {
+ bottom:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-left .tooltip-arrow {
+ right:5px !important;
+ bottom:0 !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-right .tooltip-arrow {
+ bottom:0 !important;
+ left:5px !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.right .tooltip-arrow {
+ top:50% !important;
+ left:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 5px 5px 0 !important;
+ border-right-color:#000
+}
+.tooltip.left .tooltip-arrow {
+ top:50% !important;
+ right:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 0 5px 5px !important;
+ border-left-color:#000
+}
+.tooltip.bottom .tooltip-arrow {
+ top:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-left .tooltip-arrow {
+ top:0 !important;
+ right:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-right .tooltip-arrow {
+ top:0 !important;
+ left:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+</style>
+<style>
+  @font-face {
+ font-family:'Glyphicons Halflings';
+ src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot" %}');
+  src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix" %}') format("embedded-opentype") ,  
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.woff" %}') format("woff") ,
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.ttf" %}') format("truetype"),
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular" %}') format("svg") 
+}
+</style>
+<style>
+
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+.row-cols-md-8 > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
+  .btn-primary-panes{
+   /* border-radius: 50%;*/
+  width: 3rem; 
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f2f3f6!important;
+  z-index: 1045;
+  /* border-radius: 1px; */
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  font-size:1.4rem;
+  }
+
+  
+  .btn-primary-panes:active {
+  background-color:  #f2f3f6!important;
+  color: red;
+}
+
+</style>
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/fixedColumns.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/dataTables.scroller.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.css' %}">
+{% endblock style %}
+{% block content %}
+<div class="navbar-nav-wrap-content-start"  style="z-index: 100; position:absolute; top:0px; width:28px; height:82px; padding:5px; background-color: transparent;position: fixed;"> 
+  <!-- <div class="border border-start-0">
+    <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" style="color:#377dff" data-bs-target="#divPane">
+       <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><i class="bi-tv fs-1" style="font-size: 1.6rem;"></i></span>
+    </a>   
+   </div> -->
+</div>
+ 
+<!-- pop-up for control class -->
+<div id="divControlClassSel"  style="width: 500px; left:50%; margin-left: -250px;" class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Control Class</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div  id="divArrCols" class="modal-body bg-100 " style="max-height: 200px;overflow-x: auto;"> 
+        
+    
+            
+      </div>
+      <div class="modal-footer">
+        <div class="col-auto"> <input type="checkbox" id="chkCtrlClsApplyAll" ></div>
+        <div class="col-auto"> <label class="form-check-label" for="formCheck11">Apply All</label> </div>
+       <div class="col-auto"> <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divControlClassSel').modal('toggle')">Cancel</button> </div> 
+       <div class="col-auto"> <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="addRow()">Add</button></div> 
+       <div class="col-auto"> <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="OptionSelected()">Save</button></div> 
+      </div>
+    </div>
+  </div>   
+</div> 
+<!--pop-up for control class -->
+
+<!-- pop-up for fliter -->
+<div id="divFilterSel"   class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content modal-xl">
+    <div class="modal-content  bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Filters</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3 position-relative"  >
+          
+          <div class="col-sm-1" style="margin-left: 10px; ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-get-mongo" value="Show"/>
+          </div>  
+          <div class="col-sm-1" style="margin-left: 10px;  ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-reset" value="Clear"/>
+          </div>      
+          <div class="col-sm-1" style="margin-left: 10px;  ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-save" value="Save"/>
+          </div>   
+        </div>
+        <div class="row mb-3 position-relative"  >
+          
+          <div class="col-sm-8" style="margin-left: 10px;width: 65%;">
+            <div id="builder" ></div>  
+          </div>
+          <div class="col-sm-4">
+            <div class="position-relative mb-sm-4 mb-xl-0">
+              <div id="charttest" style="min-height:390px;width:100%"></div>
+            </div>
+          </div>
+      </div> 
+          
+          
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divFilterSel').modal('toggle')">Cancel</button> 
+         
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for control class -->
+
+
+<div class="content" style="padding-top:0px;">   
+    <!-- Page Header -->
+    <div class="page-header">      
+      <div class="js-nav-scroller hs-nav-scroller-horizontal"> 
+
+        <ul class="nav nav-tabs page-header-tabs" id="projectsTab" role="tablist">
+          <li class="nav-item" >
+            <a class="nav-link active" id="Marketing" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Marketing" role="tab" aria-controls="Marketing" aria-selected="true">Marketing</a>
+          </li>                   
+          <li class="nav-item" style="display: {{is_DA}};">
+            <a class="nav-link" id="Underwriting" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Underwriting" role="tab" aria-controls="Underwriting" aria-selected="true">Underwriting</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" id="Pricing" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Pricing" role="tab" aria-controls="Pricing" aria-selected="true">Pricing</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" id="Redlining" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Redlining" role="tab" aria-controls="Redlining" aria-selected="true">Redlining</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" id="Steering" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Steering" role="tab" aria-controls="Steering" aria-selected="true">Steering</a>
+          </li>
+          <li class="nav-item"style="display: {{is_DA}};"> 
+            <a class="nav-link" id="MatchedPair" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#MatchedPair" role="tab" aria-controls="MatchedPair" aria-selected="true">Matched Pair</a>
+          </li>
+          <li class="nav-item"style="display: {{is_DA}};"> 
+            <a class="nav-link" id="Exceptions" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Exceptions" role="tab" aria-controls="Exceptions" aria-selected="true">Exceptions</a>
+          </li>
+          
+        </ul>
+      </div>
+      <!-- End Nav -->
+    </div>
+    <div class="tab-content" id="projectsTabContent">
+      <div class="tab-pane fade show active" id=" " role="tabpanel" aria-labelledby=" ">
+        <div class="row">
+          <div class="col-sm-2" style="width:15%"> 
+            <button id="btnSelCtrlCls"  class="btn btn-primary px-5" onclick="$('#divControlClassSel').modal('toggle')" >Set Control Class</button>
+          </div>
+          <div class="col-sm-1"> 
+            <button id="btnSelFilters"  class="btn btn-primary px-5" onclick="$('#divFilterSel').modal('toggle')" >Filters</button>
+          </div>
+          <div class="col-sm-8"> 
+             <select  class="js-select form-select" autocomplete="off" data-hs-tom-select-options='{
+              "placeholder": "Select Peer Groups...",
+              "hideSearch": true
+            }' multiple id="ddlPeer" onchange="filterPeerGrpData()">
+              <option value="">Select</option> 
+              {% for key, val in peerlei.items  %}                                   
+                <option value="'{{val.peerlei}}'">{{val.peerlei}}</option>   
+              {% endfor %}
+            </select>
+          </div>
+          
+        </div>    
+        <div class="row" style="margin-top:10px;margin-bottom: 10px;border-bottom: 1px solid black;">
+            <div class="col-sm-12" style="text-align: center;">
+              <h4><label id="lblfilterSelected"> {{filterSelected}}</label> </h4>
+            </div>
+        </div>      
+        <div class="row" style="height: 450px;overflow:scroll;">           
+          <!-- Accordion -->
+           <input id="hdnProhClsSelected" type="hidden"/>
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <div class="row"> 
+                <div class="accordion-header" style="width: 95%;padding:0px;margin:0px"  id="headingOne">
+                  <a class="accordion-button" style="padding-right: 10px" role="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Ethnicity                  
+                  </a>                 
+                </div>
+                <div style="width: 2%;display: flex;align-items: center;padding:0px;margin:0px">
+                  <i class="bi bi-gear" title="Set Control Class"  onclick="$('#divControlClassSel').modal('toggle');$('#hdnProhClsSelected').val('derived_ethnicity')"></i> 
+                </div>
+                <div style="width: 3%;display: flex;align-items: center;padding:0px;margin:0px"> 
+                  <i class="bi bi-funnel"  title="Filter"  onclick="$('#divFilterSel').modal('toggle');$('#hdnProhClsSelected').val('derived_ethnicity')"></i> 
+                </div>
+              </div>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" >
+                <div class="accordion-body">
+                  <div class="row" style="margin-top:10px">
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications Rate </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications
+                      </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications Rate</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Differene in %</h4>  
+                    </div> 
+                  </div>
+                  <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;">
+                        <canvas id="TtlAppEthnicity" style="width:150px;height: 150px;"></canvas>
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <div style="width:80%;height:80%;">
+                        <canvas id="ApprlRateEthnicity"  style="width:150px;height: 150px;"></canvas>
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;"> 
+                          <canvas id="DOREthnicity" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <div style="width:80%;height:80%;">
+                        <canvas id="DenialRateEthnicity"  style="width:150px;height: 150px;"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3"  style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <div style="width:80%;height:80%;">
+                        <canvas id="GovAppsRateEthnicity"  style="width:150px;height: 150px;"></canvas>
+                      </div>
+                    </div>                    
+                  </div>
+                  <div class="row" style="margin-top:25px">
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Application Deficit %</h4>  
+                    </div>
+                     
+                  </div>
+                  <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      
+                        <canvas id="PeerGovAppsRateEthnicity"  style="width:100%;height: 100%;"></canvas> 
+                       
+                    </div> 
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;"> 
+                          <canvas id="DOREthnicitydummy" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>                     
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header" id="headingTwo">
+                <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Race
+                </a>
+              </div>
+              <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" >
+                <div class="accordion-body">
+                  <div class="row" style="margin-top:10px"> 
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications Rate </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications
+                      </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications Rate</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Differene in %</h4>  
+                    </div> 
+                  </div>
+                  <div class="row" style="margin-bottom: 10px;"> 
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;">
+                        <canvas id="TtlAppRace" style="width:100%;height: 100%;"></canvas>
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="ApprlRateRace"  style="width:100%;height: 100%;"></canvas>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;"> 
+                          <canvas id="DORRace" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                        <canvas id="DenialRateRace"  style="width:100%;height: 100%;"></canvas> 
+                    </div>
+                    <div class="col-sm-3"  style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="GovAppsRateRace"  style="width:100%;height: 100%;"></canvas>
+                    </div>       
+                  </div>
+                  <div class="row" style="margin-top:25px">
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Application Deficit %</h4>  
+                    </div>
+                     
+                  </div>
+                  <div class="row" style="margin-bottom: 10px">                    
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="PeerGovAppsRateRace"  style="width:100%;height: 100%;"></canvas> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <div class="accordion-header" id="headingThree">
+                <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Gender/Sex
+                </a>
+              </div>
+              <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree" >
+                <div class="accordion-body">
+                  <div class="row" style="margin-top:10px"> 
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications Rate </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications
+                      </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications Rate</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Differene in %</h4>  
+                    </div> 
+                  </div>
+                  <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;">
+                        <canvas id="TtlAppSex" style="width:100%;height: 100%;"></canvas>
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="ApprlRateSex"  style="width:100%;height: 100%;"></canvas>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;"> 
+                          <canvas id="DORSex" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                        <canvas id="DenialRateSex"  style="width:100%;height: 100%;"></canvas> 
+                    </div>   
+                    <div class="col-sm-3"  style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="GovAppsRateSex"  style="width:100%;height: 100%;"></canvas>
+                    </div>                 
+                  </div>
+                  <div class="row" style="margin-top:25px">
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Application Deficit %</h4>  
+                    </div>                     
+                  </div>
+                  <div class="row" style="margin-bottom: 10px">                    
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="PeerGovAppsRateSex"  style="width:100%;height: 100%;"></canvas> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item"> 
+              <div class="accordion-header" id="headingFour">
+                <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  Age
+                </a>
+              </div>
+              <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="collapseFour" >
+                <div class="accordion-body">
+                  <div class="row" style="margin-top:10px"> 
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications Rate </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications
+                      </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications Rate</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Differene in %</h4>  
+                    </div> 
+                  </div>
+                  <div class="row" style="margin-bottom: 10px;"> 
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;">
+                        <canvas id="TtlAppApplAge" style="width:100%;height: 100%;"></canvas>
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="ApprlRateApplAge"  style="width:100%;height: 100%;"></canvas>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;"> 
+                          <canvas id="DORApplAge" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                        <canvas id="DenialRateApplAge"  style="width:100%;height: 100%;"></canvas> 
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                        <canvas id="GovAppsRateApplAge"  style="width:100%;height: 100%;"></canvas> 
+                    </div> 
+                  </div>
+                  <div class="row" style="margin-top:25px"></div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Application Deficit %</h4>  
+                    </div>                     
+                  </div>
+                  <div class="row" style="margin-bottom: 10px">                    
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="PeerGovAppsRateApplAge"  style="width:100%;height: 100%;"></canvas> 
+                    </div>
+                  </div>
+              </div>
+            </div> 
+            <div class="accordion-item"> 
+              <div class="accordion-header" id="headingFive">
+                <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                  Income Group
+                </a>
+              </div>
+              <div id="collapseFive" class="accordion-collapse collapse show" aria-labelledby="collapseFive" >
+                <div class="accordion-body">
+                  <div class="row" style="margin-top:10px"> 
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Applications Rate </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications
+                      </h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Peer Applications Rate</h4>  
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Differene in %</h4>  
+                    </div> 
+                  </div>
+                  <div class="row" style="margin-bottom: 10px;"> 
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;">
+                        <canvas id="TtlAppApplIncomeGrp" style="width:100%;height: 100%;"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="ApprlRateIncomeGrp"  style="width:100%;height: 100%;"></canvas>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;">
+                      <div style="width:80%;height:80%;"> 
+                          <canvas id="DORIncomeGrp" style="width: 100%;height: 100%"></canvas> 
+                      </div>
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                        <canvas id="DenialRateIncomeGrp"  style="width:100%;height: 100%;"></canvas> 
+                    </div>
+                    <div class="col-sm-3" style="text-align: center;width:20%">
+                      <canvas id="GovAppsRateIncomeGrp" style="width:100%;height: 100%;"></canvas>
+                    </div>
+                   
+                  </div>
+                  <div class="row" style="margin-top:25px"></div>
+                    <div class="col-sm-3" style="text-align: center;width:20%"> 
+                      <h4>Application Deficit %</h4>  
+                    </div>                     
+                  </div>
+                  <div class="row" style="margin-bottom: 10px">
+                    <div class="col-sm-3" style="text-align: center;width:20%;align-items: center;  display: flex; justify-content: center;;"> 
+                      <canvas id="PeerGovAppsRateIncomeGrp"  style="width:100%;height: 100%;"></canvas> 
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+          <!-- End Accordion applicant_age--> 
+ 
+
+        </div>
+      </div>
+        </div>
+ 
+
+    </div>
+</div>
+<!-- End Content -->
+  </div> 
+</div>
+ <!-- Modal for enlarged chart --> 
+ <div id="chartModal"   class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content  bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Chart</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3 position-relative"  >
+          <canvas id="modalChart" ></canvas>  
+          <img id="savedChartImage" src="" alt="Saved Chart">
+        </div>       
+          
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#chartModal').modal('toggle')">Cancel</button> 
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="saveChartImg()">Save</button> 
+         
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for large chart  -->
+ 
+
+
+  {% endblock content %}
+  {% block script %} 
+  
+
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+   
+
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script> 
+  
+ 
+  
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.js' %}"></script> 
+
+<script src="{% static 'node_modules/chosenjs/chosen.jquery.js' %}"></script> 
+ <script src="{% static 'node_modules/bootstrap-select-1.13.14/dist/js/bootstrap-select.js' %}"></script>  
+<script src="{% static 'node_modules/bootbox/bootbox.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-slider/dist/bootstrap-slider.min.js' %}"></script>
+<script src="{% static 'node_modules/selectize/dist/js/standalone/selectize.js' %}"></script>
+
+<script src="{% static 'node_modules/sql-parser-mistic/browser/sql-parser.js' %}"></script>
+<script src="{% static 'node_modules/interactjs/dist/interact.min.js' %}"></script>  
+ <script src="{% static 'node_modules/dist/js/newQB.js' %}" ></script> 
+<script src="{% static 'node_modules/datepicker/bootstrap-datepicker.min.js' %}" ></script> 
+<script src="{% static 'phoenix-v1.8.0/public/vendors/echarts/echarts.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+<script>
+   
+   columnsArr=[] 
+      var columns = []
+ var colum = {{querybldrcols|safe}};
+
+ $(document).ready(function(){  
+  HSCore.components.HSTomSelect.init('.js-select')
+    $.each(colum, function(key, value) {
+         
+         item={};
+         item['id']=value.dbColName;
+         item['label']=value.colName;
+         item['type']=value.dataType;
+         if(value.valueLst.length>0){
+           item['values'] = value.valueLst;
+           item['input']='select'; 
+         } 
+         columnsArr.push(item)
+       }) 
+     
+// Fix for Bootstrap Datepicker
+$('#builder').on('afterUpdateRuleValue.queryBuilder', function(e, rule) {
+ if (rule.filter.plugin === 'datepicker') {
+   rule.$el.find('.rule-value-container input').datepicker('update');
+ }
+});
+
+ $('#builder').queryBuilder({
+  
+   plugins: [
+   'sortable',
+ ],
+
+ filters:columnsArr
+});
+
+//When rules changed :
+$('#builder').on('getRules.queryBuilder.filter', function(e) {
+ //console.log(e.value);
+});
+
+
+   $('#btn-get-mongo').on('click', function() { 
+     var result = $('#builder').queryBuilder('getSQL')
+     if (!$.isEmptyObject(result)) { 
+       $("#divquery").val(result.sql)
+         $.ajax({
+           url: '/modelval/query_filter_sql/', 
+           // data:objectDataString,
+           data:{'objectDataString':result.sql},
+           dataType: 'json',   
+           success: function (data) { 
+              if(data.isvalid=='true'){ 
+               charttest(parseInt(data.all_count)-parseInt(data.filter_cnt),data.filter_cnt);
+              }
+              else
+              {
+               alert('Error while adding Function.')
+              }
+           }
+       });
+       }
+     });
+
+     $('#btn-reset').on('click', function() {
+       $('#builder').queryBuilder('reset');
+     });
+
+
+     $('#btn-get-sql').on('click', function() {       
+       var result = $('#builder').queryBuilder('getSQL')
+
+       if (!$.isEmptyObject(result)) { 
+         // console.log(JSON.stringify(result, null, 2))  
+         $("#divquery").val(result.sql)
+         $('#staticBackdropLive').modal('toggle');
+         
+       }
+       var colum = '{{col_list|safe}}';
+       var strQuery='';
+       const data = colum;
+       // const data = ["red", "blue", "green", "yellow", "purple", "orange", "black", "white", "brown"];
+       const autocomplete = document.getElementById("divquery");
+       const resultsHTML = document.getElementById("results");
+
+       autocomplete.oninput = function () {
+         let results = [];
+         const userInput = this.value;
+         resultsHTML.innerHTML = "";
+         if (userInput.length > 0) {
+           results = getResults(userInput);
+           resultsHTML.style.display = "block";
+           for (i = 0; i < results.length; i++) {
+             resultsHTML.innerHTML += "<li>" + results[i] + "</li>";
+           }
+         }
+       };
+
+       function getResults(input) {     
+         input = input.toUpperCase()
+         inputarr=input.split(' ') 
+         input=inputarr[inputarr.length-1]
+         const results = [];
+         for (i = 0; i < data.length; i++) {
+           if (input === data[i].slice(0, input.length).toUpperCase()) { 
+
+             results.push(data[i]);
+           }
+         }  
+         return results;
+       }
+
+       resultsHTML.onclick = function (event) { 
+         $("#divquery").focus();
+         inputarr=autocomplete.value.split(' ') 
+         inputarr[inputarr.length-1]= ''; 
+         const setValue = event.target.innerText;
+         
+         autocomplete.value =inputarr.join(' ')+ " '"+setValue+"'";
+         this.innerHTML = "";
+       };
+
+
+
+     });
+
+   
+     $('#btn-save').on('click', function() { 
+      var result = $('#builder').queryBuilder('getSQL')
+     if (!$.isEmptyObject(result)) { 
+       $("#divquery").val(result.sql)
+         $.ajax({
+           url: '/modelval/save_filter_sql/', 
+           // data:objectDataString,
+           data:{'objectDataString':result.sql,'utiltity':'Marketing'},
+           dataType: 'json',   
+           success: function (data) { 
+              if(data.is_taken =='true'){
+                getAIR();
+                $('#divFilterSel').modal('toggle')
+              }
+           }
+       });
+       }
+     
+     })
+
+     $('#btn-set-sql').on('click', function() { 
+       try {
+         input_val = $( "#divquery" ).val() 
+         $('#builder').queryBuilder('setRulesFromSQL', input_val);
+         $('#btn-get-mongo').click()
+       }
+       catch(err) {
+         alert("Invalid statement")
+       }
+       
+     });
+
+    // let element = document.querySelector('#collapseModelDiv'); 
+    // let bsCollapse = bootstrap.Collapse.getInstance(element); 
+    // if (bsCollapse === null) {
+    //     bsCollapse = new bootstrap.Collapse(element, {
+    //         toggle: false   // this parameter is important!
+    //     })
+    // } 
+    // bsCollapse.show(); 
+  })
+     
+      function charttest(x,y){
+      var chartDom = document.getElementById('charttest');
+  var myChart = echarts.init(chartDom);
+  var option;
+ 
+
+option = {
+  title: {
+    text: 'Total Records '+(parseInt(x)+parseInt(y)),
+     
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    show:false
+  },
+  series: [
+    { 
+      type: 'pie',
+      radius: '50%',
+      label: {
+        show: true,
+        formatter(param) {
+          // correct the percentage
+          return param.name + '  (' + param.data.value + ')';
+        }
+      },
+      data: [
+        { value: y, name: 'Matching' },
+        { value: x, name: 'Not Macthing' }, 
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+    option && myChart.setOption(option);
+    myChart.on('click', params => {   
+        var result = $('#builder').queryBuilder('getMongo'); 
+        var objectDataString = JSON.stringify(result, null, 2);
+        objectDataString='{"$and": [ {"file_id":{{file_id}}},'+objectDataString+']}';
+        //document.location.href = "/viewFiltredDataType?objectDataString=" +JSON.stringify(objectDataString);
+        $.ajax({
+            url: '/viewFiltredDataType/', 
+            data:{'objectDataString':JSON.stringify(objectDataString),segment: params.name},
+            // data:objectDataString,
+            dataType: 'json',   
+            success: function (data) {  
+               if(data.isvalid=='true'){
+                alert("successfully save")
+               }
+               else
+               {
+                alert('Error while adding Function.')
+               }
+            }
+          });
+      })
+
+    }
+ 
+    var tabSelected='Marketing' 
+    var rowIdx=1;
+    $('#divArrCols').empty()
+    addRow();
+    getAIR();
+     
+    
+    function getDistVals(id){ 
+      $('#ddlColVal_'+id.split('_')[1]).empty()
+      $.ajax({
+        url: '/modelval/getDistinct_Col_Val/', 
+        data:{'colName':$('#'+id).val(),'activity_year':'2023'},
+        dataType: 'json',   
+        success: function (data) { 
+           
+          if(Object.keys(data.arrCols).length ==1 && data.arrCols[0].distVals =="UserInput"){
+            $('#txtColVal_'+id.split('_')[1]).show()
+            $('#ddlColVal_'+id.split('_')[1]).hide()
+          }
+          else{
+            $.each(data.arrCols, function(i, obj) {             
+              $('#ddlColVal_'+id.split('_')[1])
+            .append($('<option>', { value : obj.distVals })
+            .text(obj.distVals));
+              // strRow+=' <option value="'+obj.ColumnName+'">'+obj.ColumnName+'</option>'
+            });
+            $('#txtColVal_'+id.split('_')[1]).hide()
+            $('#ddlColVal_'+id.split('_')[1]).show()
+            $('#txtColVal_'+id.split('_')[1]).val($("#ddlColVal_"+id.split('_')[1]).val());
+          }
+          
+        }
+      });
+    }
+
+
+
+    function OptionSelected(){
+      
+      updatedata=[]
+      for (var i=1;i<rowIdx;i++){ 
+        item = {}  
+          item["Col_Nm"] =$('#ddlColNm_'+i).val();
+          item["Col_Oprtr"]=$('#ddlOprtr_'+i).val()
+          item["Col_Val"] =$('#txtColVal_'+i).val();
+          updatedata.push(item); 
+      }
+      if(updatedata.length>0){
+        if($('#chkCtrlClsApplyAll').prop('checked') ==false){
+        $.ajax({
+          url: '{{updateCtrl_Class}}', 
+          data:{ datalist: JSON.stringify(updatedata),'selctedTab':tabSelected+'_'+$('#hdnProhClsSelected').val(),'applytoAll':$('#chkCtrlClsApplyAll').prop('checked')},
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){
+                alert('Saved Successfully.');
+                getAIR();
+                $('#divControlClassSel').modal('toggle');
+              }
+          }
+        }); 
+        }  
+        else if($('#chkCtrlClsApplyAll').prop('checked') ==true){
+          var prohCLs=['derived_race','derived_sex','derived_ethnicity','applicant_age','tract_to_msa_income_percentage','tract_minority_population_percent']
+          prohCLs.forEach(element => { 
+            $.ajax({
+              url: '{{updateCtrl_Class}}', 
+              data:{ datalist: JSON.stringify(updatedata),'selctedTab':tabSelected+'_'+element,'applytoAll':$('#chkCtrlClsApplyAll').prop('checked')},
+              dataType: 'json',
+              success: function (data) { 
+                  if(data.istaken=="true" && element=='tract_to_msa_income_percentage'){
+                    alert('Saved Successfully.');
+                    getAIR();
+                    $('#divControlClassSel').modal('toggle');
+                  }
+              }
+            });
+          }); 
+        }
+      }
+    }
+    
+    function getTabIdx(id){  
+      if(id=='Underwriting'){  
+        window.location='/modelval/getUnderwriting_Dashb_Varwise'
+      }
+      else if(id=='Marketing'){ 
+        window.location='{{getMarketing_Dashb_Varwise}}'
+      }
+      else if(id=='Steering'){ 
+        window.location='{{getSteering_Dashb_Varwise}}'
+      }
+      else if(id=='Pricing'){ 
+        window.location='{{getPricing_Dashb_Varwise}}'
+      }
+      else if(id=='Redlining'){ 
+        window.location='{{getRedlining_Dashb}}'
+      }
+      else if(id=='MatchedPair'){  
+        window.location='{{getMatchedPair_Dashb_Varwise}}'
+      }
+    }
+
+    function setColVal(rowIdx){
+      $('#txtColVal_'+rowIdx).val($("#ddlColVal_"+rowIdx).val());
+    }
+
+    function filterPeerGrpData()
+    { 
+      $.ajax({
+          url: '/modelval/updatePeerGroup/', 
+          data:{ peergroups:$('#ddlPeer').val(),'selctedTab':'Marketing'},
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){  
+                getAIR(); 
+              }
+          }
+        });
+    }
+    
+    function addRow(){
+      var arrList={{ctrl_cols|safe}};  
+      strRow='';
+      strRow+=' <div class="row" style="margin-top: 1rem;">';
+      strRow+='     <label class="col-sm-2 col-form-label" for="txtRegDt"> Column </label> ';
+      strRow+='     <div class="col-sm-4">     ';
+      strRow+='      <select id="ddlColNm_'+rowIdx+'" onchange="getDistVals(this.id)" class="form-select" data-choices="data-choices"> ';
+        $.each(arrList, function(i, obj) {   
+        strRow+=' <option value="'+obj.Database_Fields+'">'+obj.ColumnName+'</option>'
+      });
+
+      strRow+='       </select> ';
+      strRow+='     </div>    ';
+      strRow+='     <div class="col-sm-2">     ';
+      strRow+='      <select id="ddlOprtr_'+rowIdx+'" class="form-select" data-choices="data-choices" style="width:70px;"> ';
+      strRow+=' <option value="=" selected>=</option>'  
+      strRow+=' <option value="<>"><></option>'  
+      strRow+=' <option value=">">></option>'  
+      strRow+=' <option value=">=">>=</option>'  
+      strRow+=' <option value="<"><</option>'  
+      strRow+=' <option value="<="><=</option>'  
+      strRow+='      </select>';
+      strRow+='  </div>  ';   
+      strRow+='     <div class="col-sm-4">     ';
+      strRow+='      <select id="ddlColVal_'+rowIdx+'" onchange="setColVal('+rowIdx+')" class="form-select" data-choices="data-choices" > ';
+  
+      strRow+='      </select> <input type="text" id="txtColVal_'+rowIdx+'" class="form-control" style="display:none;"/>';
+      strRow+='  </div>  ';                        
+      strRow+='   </div> ';
+      $('#divArrCols').append(strRow)
+      rowIdx+=1;
+    }
+
+    function getAIR(){  
+      console.log('inside getair')
+     var arrRaceLbl=[];
+     var arrRaceAIR=[];
+     var arrRaceTtlAppl=[];
+     var arrEthnicityLbl=[];
+     var arrEthnicityAIR=[];
+     var arrEthnicityTtlAppl=[];
+     var arrEthnicityApprvls=[];
+     var arrEthnicityApprvls_rate=[];
+     var arrEthnicityLblApprvls=[];
+     var arrSexLbl=[];
+     var arrSexAIR=[];
+     var arrSexTtlAppl=[];
+     var arrApplAgeLbl=[];
+     var arrApplAgeAIR=[];
+     var arrApplAgeTtlAppl=[];
+     var arrIncomeGrpLblApprvls=[];
+     var arrIncomeGrpAIR=[];
+    var  arrIncomeGrpTtlAppl=[];
+    var  arrIncomeGrpTtlApplCtrlCls=[];
+     var arrRaceLblDOR=[];
+     var arrRaceDOR=[]; 
+     var arrEthnicityLblDOR=[];
+     var arrEthnicityDOR=[]; 
+     var arrSexLblDOR=[];
+     var arrSexDOR=[]; 
+     var arrApplAgeLblDOR=[];
+     var arrApplAgeDOR=[];
+      
+     var arrRaceApprvls=[];
+     var arrRaceApprvls_rate=[];
+     var arrRaceLblApprvls=[];
+
+     var arrSexApprvls=[];
+     var arrSexApprvls_rate=[];
+     var arrSexLblApprvls=[];
+
+     var arrApplAgeApprvls=[];
+     var arrApplAgeApprvls_rate=[];
+     var arrApplAgeLblApprvls=[];
+
+     var arrEthnicityDenial=[];
+     var arrEthnicityDenial_rate=[];
+     var arrEthnicityLblDenial=[];
+
+     var arrRaceDenial=[];
+     var arrRaceDenial_rate=[];
+     var arrRaceLblDenial=[];
+
+     var arrSexDenial=[];
+     var arrSexDenial_rate=[];
+     var arrSexLblDenial=[];
+
+     var arrApplAgeDenial=[];
+     var arrApplAgeDenial_rate=[];
+     var arrApplAgeLblDenial=[];
+
+     var arrEthnicityGovAppRate=[];
+     var arrRaceGovAppRate=[];
+     var arrSexGovAppRate=[]; 
+     var arrApplAgeGovAppRate=[];
+
+     var arrEthnicityPeerGovAppRate=[];
+     var arrRacePeerGovAppRate=[];
+     var arrSexPeerGovAppRate=[]; 
+     var arrApplAgePeerGovAppRate=[];
+
+     var arrIncomeGrpLblDOR=[];
+     var arrIncomeGrpDOR=[];
+     var arrIncomeGrpDORCtrlCls=[];
+     var arrIncomeGrpApprvls_rate =[];
+     var arrIncomeGrpApprvls_rateCtrlCls =[];
+     var arrIncomeGrpDenial_rate=[];
+     var arrIncomeGrpDenial_rateCtrlCls=[];
+     var arrIncomeGrpApprvls=[];
+     var arrIncomeGrpGovAppRate=[]; 
+     var arrIncomeGrpGovAppRateCtrlcls=[];
+     var arrIncomeGrpDenial=[];
+     var arrIncomeGrpPeerGovAppRate=[]
+     var arrIncomeGrpPeerGovAppRateCtrlCls=[]
+     lstColorArray=['#0dcaf0', '#fd7e14','#ffc107','#dc3545','#198754','#0d6efd','#FFFF00','#FF00FF']
+     lstprohb_cls=['derived_Ethnicity']//,'Race','Sex','Age'
+     
+    $.ajax({
+        url: '{{get_Marketing_Dashb_Data_apps_Varwise}}', 
+        data:{ 'activity_year':'2023','prohb_cls':'derived_ethnicity'},
+        dataType: 'json',   
+        success: function (data) { 
+          $.each(data.apps.apps, function(i, obj) {              
+            arrEthnicityLbl.push(obj.ClsLbl); 
+            arrEthnicityTtlAppl.push(obj.ttlappl)  ;     
+            arrEthnicityApprvls_rate.push(obj.apprvd_rate);
+            arrEthnicityLblApprvls.push(obj.ClsLbl);
+           }); 
+           let chartTtlAppEthnicity  = Chart.getChart("TtlAppEthnicity"); // <canvas> id 
+          if (chartTtlAppEthnicity != undefined) {
+            chartTtlAppEthnicity.destroy();
+          }
+           var ctxTtlAppEthnicity = document.getElementById("TtlAppEthnicity").getContext('2d');
+           var TtlAppEthnicityoptions={
+            type: 'bar',
+            data: {
+            labels:arrEthnicityLbl,
+            datasets: [{ 
+            label:'Ethnicity',
+            backgroundColor: lstColorArray,
+            data: arrEthnicityTtlAppl
+            } ],
+            },
+            options: {
+              responsive: false,
+              maintainAspectRatio:false,
+              cutout:'0%',
+              scales:{
+                        x: { 
+                        ticks: {
+                        display: false
+                        }
+                      }
+                    },
+              plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                },
+                title: {
+                  display: false, 
+                }
+              }
+              },
+            }
+            var ChartTtlAppEthnicity = new Chart(ctxTtlAppEthnicity, TtlAppEthnicityoptions);		
+            
+            document.getElementById('TtlAppEthnicity').addEventListener('click', () => {
+              showChartModal(ChartTtlAppEthnicity.data) 
+              // $('#chartModal').modal('toggle')
+
+              // Draw the enlarged chart in the modal
+              const modalCtx = document.getElementById('modalChart').getContext('2d');
+              new Chart(modalCtx,TtlAppEthnicityoptions);
+            });
+
+            let chartEthnicityApprlRate = Chart.getChart("ApprlRateEthnicity"); // <canvas> id
+          if (chartEthnicityApprlRate != undefined) {
+            chartEthnicityApprlRate.destroy();
+          }
+           var ctxEthnicityApprlRate = document.getElementById("ApprlRateEthnicity").getContext('2d');
+            chartEthnicityApprlRate = new Chart(ctxEthnicityApprlRate, {
+            type: 'bar',
+            data: {
+            labels:arrEthnicityLblApprvls,
+            datasets: [{ 
+            label:'Ethnicity',
+            backgroundColor: "#6192ee",
+            data: arrEthnicityApprvls_rate
+            } ],
+            },
+            options: {
+                  tooltips: {
+                  displayColors: true,
+                  callbacks: {
+                  mode: 'x',
+                  },
+                  },
+                  scales: {
+                  x: {
+                  stacked: true,
+                  },
+                  y: {
+                  stacked: true
+                  }
+                  },
+                  indexAxis: 'y',
+                  plugins: {
+                  legend: {
+                    position: 'top',
+                    display: false,
+                  },
+                  title: {
+                    display: false,
+                    text: 'Model Type'
+                  }
+                },
+             responsive: false,
+            }
+            });		
+            document.getElementById("ApprlRateEthnicity").onclick = function(evt){   
+                    showChartModal(chartEthnicityApprlRate.data)               
+            };
+             //approval rate ethnicity ends
+             $.each(data.peergroupapps.peergroupapps,function(i,obj){        
+            arrEthnicityDenial_rate.push(obj.conversion_rate);
+            arrEthnicityLblDenial.push(obj.ClsLbl);              
+            arrEthnicityLblDOR.push(obj.ClsLbl);
+            arrEthnicityDOR.push(obj.peerconverted); 
+           })
+           console.log('arrEthnicityDOR ',arrEthnicityDOR)
+           let chartEthnicityDOR = Chart.getChart("DOREthnicity"); // <canvas> id
+          if (chartEthnicityDOR != undefined) {
+            chartEthnicityDOR.destroy();
+          }
+           var ctxEthnicityDOR = document.getElementById("DOREthnicity").getContext('2d');
+            var ChartEthnicityDOR = new Chart(ctxEthnicityDOR, {
+            type: 'bar',
+            data: {
+            labels:arrEthnicityLblDOR,
+            datasets: [{ 
+            label:'Ethnicity',
+            backgroundColor:lstColorArray,
+            data: arrEthnicityDOR
+            } ],
+            },
+            options: {
+              responsive: true,
+          maintainAspectRatio:true,
+              cutout:'0%',
+              scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+              plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                }, 
+              }
+            }
+            });		
+            document.getElementById("DOREthnicity").onclick = function(evt){   
+                    showChartModal(ChartEthnicityDOR.data)               
+            };
+             //DOR ethnicity ends
+             let chartEthnicityDenialRate = Chart.getChart("DenialRateEthnicity"); // <canvas> id
+          if (chartEthnicityDenialRate != undefined) {
+            chartEthnicityDenialRate.destroy();
+          } 
+           var ctxEthnicityDenialRate = document.getElementById("DenialRateEthnicity").getContext('2d');
+           chartEthnicityDenialRate = new Chart(ctxEthnicityDenialRate, {
+            type: 'bar',
+            data: {
+            labels:arrEthnicityLblDenial,
+            datasets: [{ 
+            label:'Ethnicity',
+            backgroundColor: "#6192ee",
+            data: arrEthnicityDenial_rate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("DenialRateEthnicity").onclick = function(evt){   
+                    showChartModal(chartEthnicityDenialRate.data)               
+            };
+             //denial rate ethnicity ends   
+             for(var i=0;i<arrEthnicityDenial_rate.length;i++){
+          arrEthnicityGovAppRate.push(parseFloat(arrEthnicityDenial_rate[i])-parseFloat(arrEthnicityApprvls_rate[i]))
+          }
+          // arrEthnicityGovAppRate (% difference / Application %) * Applications
+             for(var i=0;i<arrEthnicityGovAppRate.length;i++){
+            //console.log( parseFloat(arrEthnicityGovAppRate[i]) +' , '+parseFloat(arrEthnicityApprvls_rate[i]) +' , '+parseFloat(arrEthnicityTtlAppl[i]))
+            arrEthnicityPeerGovAppRate.push(((parseFloat(arrEthnicityGovAppRate[i])*0.01)/(parseFloat(arrEthnicityApprvls_rate[i])*0.01))*parseFloat(arrEthnicityTtlAppl[i]))
+          }
+          let chartEthnicityGovAppRate = Chart.getChart("GovAppsRateEthnicity"); // <canvas> id
+          if (chartEthnicityGovAppRate != undefined) {
+            chartEthnicityGovAppRate.destroy();
+          }
+           var ctxEthnicityGovAppRate = document.getElementById("GovAppsRateEthnicity").getContext('2d');
+           chartEthnicityGovAppRate = new Chart(ctxEthnicityGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrEthnicityLblApprvls,
+            datasets: [{ 
+            label:'Ethnicity',
+            backgroundColor: "#6192ee",
+            data: arrEthnicityGovAppRate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("GovAppsRateEthnicity").onclick = function(evt){   
+                    showChartModal(chartEthnicityGovAppRate.data)               
+            };
+             //Gov apps rate ethnicity ends  
+          let chartEthnicityPeerGovAppRate = Chart.getChart("PeerGovAppsRateEthnicity"); // <canvas> id
+          if (chartEthnicityPeerGovAppRate != undefined) {
+            chartEthnicityPeerGovAppRate.destroy();
+          }
+           var ctxEthnicityPeerGovAppRate = document.getElementById("PeerGovAppsRateEthnicity").getContext('2d');
+           chartEthnicityPeerGovAppRate = new Chart(ctxEthnicityPeerGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrEthnicityLblApprvls,
+            datasets: [{ 
+            label:'Ethnicity',
+            backgroundColor: "#6192ee",
+            data: arrEthnicityPeerGovAppRate
+            } ],
+            },
+            options: {
+                tooltips: {
+                displayColors: true,
+                callbacks: {
+                mode: 'x',
+                },
+                },
+                scales: {
+                x: {
+                stacked: true,
+                },
+                y: {
+                stacked: true
+                }
+                },
+                indexAxis: 'y',
+                plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                },
+                title: {
+                  display: false,
+                  text: 'Model Type'
+                }
+              }
+                // responsive: true
+            }
+            });		
+            document.getElementById("PeerGovAppsRateEthnicity").onclick = function(evt){   
+                    showChartModal(chartEthnicityPeerGovAppRate.data)               
+            };
+            //Gov apps rate ethnicity ends
+        }
+      });
+ 
+     
+      $.ajax({
+        url: '{{get_Marketing_Dashb_Data_apps_Varwise}}', 
+        data:{ 'activity_year':'2023','prohb_cls':'derived_race'},
+        dataType: 'json',   
+        success: function (data) { 
+          $.each(data.apps.apps, function(i, obj) {              
+            arrRaceLbl.push(obj.ClsLbl); 
+            arrRaceTtlAppl.push(obj.ttlappl)  ;     
+            arrRaceApprvls_rate.push(obj.apprvd_rate);
+            arrRaceLblApprvls.push(obj.ClsLbl);
+           }); 
+           let chartTtlAppRace  = Chart.getChart("TtlAppRace"); // <canvas> id 
+          if (chartTtlAppRace != undefined) {
+            chartTtlAppRace.destroy();
+          }
+           var ctxTtlAppRace = document.getElementById("TtlAppRace").getContext('2d');
+           var TtlAppRaceoptions={
+            type: 'bar',
+            data: {
+            labels:arrRaceLbl,
+            datasets: [{ 
+            label:'Race',
+            backgroundColor: lstColorArray,
+            data: arrRaceTtlAppl
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            }
+            var ChartTtlAppRace = new Chart(ctxTtlAppRace, TtlAppRaceoptions);		
+            
+            document.getElementById('TtlAppRace').addEventListener('click', () => {
+              showChartModal(ChartTtlAppRace.data) 
+
+              // Draw the enlarged chart in the modal
+              const modalCtx = document.getElementById('modalChart').getContext('2d');
+              new Chart(modalCtx,TtlAppRaceoptions);
+            });
+
+            let chartRaceApprlRate = Chart.getChart("ApprlRateRace"); // <canvas> id
+          if (chartRaceApprlRate != undefined) {
+            chartRaceApprlRate.destroy();
+          }
+           var ctxRaceApprlRate = document.getElementById("ApprlRateRace").getContext('2d');
+            chartRaceApprlRate = new Chart(ctxRaceApprlRate, {
+            type: 'bar',
+            data: {
+            labels:arrRaceLblApprvls,
+            datasets: [{ 
+            label:'Race',
+            backgroundColor: "#6192ee",
+            data: arrRaceApprvls_rate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("ApprlRateRace").onclick = function(evt){   
+                    showChartModal(chartRaceApprlRate.data)               
+            };
+             //approval rate Race ends
+             $.each(data.peergroupapps.peergroupapps,function(i,obj){        
+            arrRaceDenial_rate.push(obj.conversion_rate);
+            arrRaceLblDenial.push(obj.ClsLbl);              
+            arrRaceLblDOR.push(obj.ClsLbl);
+            arrRaceDOR.push(obj.peerconverted); 
+           })
+           let chartRaceDOR = Chart.getChart("DORRace"); // <canvas> id
+          if (chartRaceDOR != undefined) {
+            chartRaceDOR.destroy();
+          }
+           var ctxRaceDOR = document.getElementById("DORRace").getContext('2d');
+            var ChartRaceDOR = new Chart(ctxRaceDOR, {
+            type: 'bar',
+            data: {
+            labels:arrRaceLblDOR,
+            datasets: [{ 
+            label:'Race',
+            backgroundColor:lstColorArray,
+            data: arrRaceDOR
+            } ],
+            },
+            options: {
+              responsive: true,
+          maintainAspectRatio:true,
+              cutout:'0%',
+              scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+              plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                }, 
+              }
+            }
+            });		
+            document.getElementById("DORRace").onclick = function(evt){   
+                    showChartModal(ChartRaceDOR.data)               
+            };
+             //DOR Race ends
+             let chartRaceDenialRate = Chart.getChart("DenialRateRace"); // <canvas> id
+          if (chartRaceDenialRate != undefined) {
+            chartRaceDenialRate.destroy();
+          } 
+           var ctxRaceDenialRate = document.getElementById("DenialRateRace").getContext('2d');
+           chartRaceDenialRate = new Chart(ctxRaceDenialRate, {
+            type: 'bar',
+            data: {
+            labels:arrRaceLblDenial,
+            datasets: [{ 
+            label:'Race',
+            backgroundColor: "#6192ee",
+            data: arrRaceDenial_rate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("DenialRateRace").onclick = function(evt){   
+                    showChartModal(chartRaceDenialRate.data)               
+            };
+             //denial rate Race ends 
+             for(var i=0;i<arrRaceDenial_rate.length;i++){
+              arrRaceGovAppRate.push(parseFloat(arrRaceDenial_rate[i])-parseFloat(arrRaceApprvls_rate[i]))
+          }  
+             for(var i=0;i<arrRaceGovAppRate.length;i++){
+            //console.log( parseFloat(arrRaceGovAppRate[i]) +' , '+parseFloat(arrRaceApprvls_rate[i]) +' , '+parseFloat(arrRaceTtlAppl[i]))
+            arrRacePeerGovAppRate.push(((parseFloat(arrRaceGovAppRate[i])*0.01)/(parseFloat(arrRaceApprvls_rate[i])*0.01))*parseFloat(arrRaceTtlAppl[i]))
+          }
+          let chartRaceGovAppRate = Chart.getChart("GovAppsRateRace"); // <canvas> id
+          if (chartRaceGovAppRate != undefined) {
+            chartRaceGovAppRate.destroy();
+          }
+           var ctxRaceGovAppRate = document.getElementById("GovAppsRateRace").getContext('2d');
+           chartRaceGovAppRate = new Chart(ctxRaceGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrRaceLblApprvls,
+            datasets: [{ 
+            label:'Race',
+            backgroundColor: "#6192ee",
+            data: arrRaceGovAppRate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("GovAppsRateRace").onclick = function(evt){   
+                    showChartModal(chartRaceGovAppRate.data)               
+            };
+             //Gov apps rate ethnicity ends  
+          let chartRacePeerGovAppRate = Chart.getChart("PeerGovAppsRateRace"); // <canvas> id
+          if (chartRacePeerGovAppRate != undefined) {
+            chartRacePeerGovAppRate.destroy();
+          }
+           var ctxRacePeerGovAppRate = document.getElementById("PeerGovAppsRateRace").getContext('2d');
+           chartRacePeerGovAppRate = new Chart(ctxRacePeerGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrRaceLblApprvls,
+            datasets: [{ 
+            label:'Race',
+            backgroundColor: "#6192ee",
+            data: arrRacePeerGovAppRate
+            } ],
+            },
+            options: {
+                tooltips: {
+                displayColors: true,
+                callbacks: {
+                mode: 'x',
+                },
+                },
+                scales: {
+                x: {
+                stacked: true,
+                },
+                y: {
+                stacked: true
+                }
+                },
+                indexAxis: 'y',
+                plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                },
+                title: {
+                  display: false,
+                  text: 'Model Type'
+                }
+              }
+                // responsive: true
+            }
+            });		
+            document.getElementById("PeerGovAppsRateRace").onclick = function(evt){   
+                    showChartModal(chartRacePeerGovAppRate.data)               
+            };
+            //Gov apps rate Race ends
+        }
+      });
+ 
+      //Race ends
+
+      $.ajax({
+        url: '{{get_Marketing_Dashb_Data_apps_Varwise}}', 
+        data:{ 'activity_year':'2023','prohb_cls':'derived_sex'},
+        dataType: 'json',   
+        success: function (data) { 
+          $.each(data.apps.apps, function(i, obj) {              
+            arrSexLbl.push(obj.ClsLbl); 
+            arrSexTtlAppl.push(obj.ttlappl)  ;     
+            arrSexApprvls_rate.push(obj.apprvd_rate);
+            arrSexLblApprvls.push(obj.ClsLbl);
+           }); 
+           let chartTtlAppSex  = Chart.getChart("TtlAppSex"); // <canvas> id 
+          if (chartTtlAppSex != undefined) {
+            chartTtlAppSex.destroy();
+          }
+           var ctxTtlAppSex = document.getElementById("TtlAppSex").getContext('2d');
+           var TtlAppSexoptions={
+            type: 'bar',
+            data: {
+            labels:arrSexLbl,
+            datasets: [{ 
+            label:'Sex',
+            backgroundColor: lstColorArray,
+            data: arrSexTtlAppl
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            }
+            var ChartTtlAppSex = new Chart(ctxTtlAppSex, TtlAppSexoptions);		
+            document.getElementById("TtlAppSex").onclick = function(evt){   
+                    showChartModal(ChartTtlAppSex.data)               
+            };
+            // document.getElementById('TtlAppSex').addEventListener('click', () => {
+            //    $('#chartModal').modal('toggle')
+
+            //   // Draw the enlarged chart in the modal
+            //   const modalCtx = document.getElementById('modalChart').getContext('2d');
+            //   new Chart(modalCtx,TtlAppSexoptions);
+            // });
+
+            let chartSexApprlRate = Chart.getChart("ApprlRateSex"); // <canvas> id
+          if (chartSexApprlRate != undefined) {
+            chartSexApprlRate.destroy();
+          }
+           var ctxSexApprlRate = document.getElementById("ApprlRateSex").getContext('2d');
+            chartSexApprlRate = new Chart(ctxSexApprlRate, {
+            type: 'bar',
+            data: {
+            labels:arrSexLblApprvls,
+            datasets: [{ 
+            label:'Sex',
+            backgroundColor: "#6192ee",
+            data: arrSexApprvls_rate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("ApprlRateSex").onclick = function(evt){   
+                    showChartModal(chartSexApprlRate.data)               
+            };
+             //approval rate Sex ends
+             $.each(data.peergroupapps.peergroupapps,function(i,obj){        
+            arrSexDenial_rate.push(obj.conversion_rate);
+            arrSexLblDenial.push(obj.ClsLbl);              
+            arrSexLblDOR.push(obj.ClsLbl);
+            arrSexDOR.push(obj.peerconverted); 
+           })
+           let chartSexDOR = Chart.getChart("DORSex"); // <canvas> id
+          if (chartSexDOR != undefined) {
+            chartSexDOR.destroy();
+          }
+           var ctxSexDOR = document.getElementById("DORSex").getContext('2d');
+            var ChartSexDOR = new Chart(ctxSexDOR, {
+            type: 'bar',
+            data: {
+            labels:arrSexLblDOR,
+            datasets: [{ 
+            label:'Sex',
+            backgroundColor:lstColorArray,
+            data: arrSexDOR
+            } ],
+            },
+            options: {
+              responsive: true,
+          maintainAspectRatio:true,
+              cutout:'0%',
+              scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+              plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                }, 
+              }
+            }
+            });		
+            document.getElementById("DORSex").onclick = function(evt){   
+                    showChartModal(ChartSexDOR.data)               
+            };
+             //DOR Sex ends
+             let chartSexDenialRate = Chart.getChart("DenialRateSex"); // <canvas> id
+          if (chartSexDenialRate != undefined) {
+            chartSexDenialRate.destroy();
+          } 
+           var ctxSexDenialRate = document.getElementById("DenialRateSex").getContext('2d');
+           chartSexDenialRate = new Chart(ctxSexDenialRate, {
+            type: 'bar',
+            data: {
+            labels:arrSexLblDenial,
+            datasets: [{ 
+            label:'Sex',
+            backgroundColor: "#6192ee",
+            data: arrSexDenial_rate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("DenialRateSex").onclick = function(evt){   
+                    showChartModal(chartSexDenialRate.data)               
+            };
+             //denial rate Sex ends   
+            for(var i=0;i<arrSexDenial_rate.length;i++){
+              arrSexGovAppRate.push(parseFloat(arrSexDenial_rate[i])-parseFloat(arrSexApprvls_rate[i]))
+            }  
+             for(var i=0;i<arrSexGovAppRate.length;i++){
+            //console.log( parseFloat(arrSexGovAppRate[i]) +' , '+parseFloat(arrSexApprvls_rate[i]) +' , '+parseFloat(arrSexTtlAppl[i]))
+            arrSexPeerGovAppRate.push(((parseFloat(arrSexGovAppRate[i])*0.01)/(parseFloat(arrSexApprvls_rate[i])*0.01))*parseFloat(arrSexTtlAppl[i]))
+          }
+          let chartSexGovAppRate = Chart.getChart("GovAppsRateSex"); // <canvas> id
+          if (chartSexGovAppRate != undefined) {
+            chartSexGovAppRate.destroy();
+          }
+           var ctxSexGovAppRate = document.getElementById("GovAppsRateSex").getContext('2d');
+           chartSexGovAppRate = new Chart(ctxSexGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrSexLblApprvls,
+            datasets: [{ 
+            label:'Sex',
+            backgroundColor: "#6192ee",
+            data: arrSexGovAppRate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("GovAppsRateSex").onclick = function(evt){   
+                    showChartModal(chartSexGovAppRate.data)               
+            };
+          let chartSexPeerGovAppRate = Chart.getChart("PeerGovAppsRateSex"); // <canvas> id
+          if (chartSexPeerGovAppRate != undefined) {
+            chartSexPeerGovAppRate.destroy();
+          }
+           var ctxSexPeerGovAppRate = document.getElementById("PeerGovAppsRateSex").getContext('2d');
+           chartSexPeerGovAppRate = new Chart(ctxSexPeerGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrSexLblApprvls,
+            datasets: [{ 
+            label:'Sex',
+            backgroundColor: "#6192ee",
+            data: arrSexPeerGovAppRate
+            } ],
+            },
+            options: {
+                tooltips: {
+                displayColors: true,
+                callbacks: {
+                mode: 'x',
+                },
+                },
+                scales: {
+                x: {
+                stacked: true,
+                },
+                y: {
+                stacked: true
+                }
+                },
+                indexAxis: 'y',
+                plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                },
+                title: {
+                  display: false,
+                  text: 'Model Type'
+                }
+              }
+                // responsive: true
+            }
+            });		
+            document.getElementById("PeerGovAppsRateSex").onclick = function(evt){   
+                    showChartModal(chartSexPeerGovAppRate.data)               
+            };
+            //Gov apps rate Sex ends
+        }
+      });
+ 
+      //Sex ends
+
+      $.ajax({
+        url: '{{get_Marketing_Dashb_Data_apps_Varwise}}', 
+        data:{ 'activity_year':'2023','prohb_cls':'applicant_age'},
+        dataType: 'json',   
+        success: function (data) { 
+          $.each(data.apps.apps, function(i, obj) {              
+            arrApplAgeLbl.push(obj.ClsLbl); 
+            arrApplAgeTtlAppl.push(obj.ttlappl)  ;     
+            arrApplAgeApprvls_rate.push(obj.apprvd_rate);
+            arrApplAgeLblApprvls.push(obj.ClsLbl);
+           }); 
+           let chartTtlAppApplAge  = Chart.getChart("TtlAppApplAge"); // <canvas> id 
+          if (chartTtlAppApplAge != undefined) {
+            chartTtlAppApplAge.destroy();
+          }
+           var ctxTtlAppApplAge = document.getElementById("TtlAppApplAge").getContext('2d');
+           var TtlAppApplAgeoptions={
+            type: 'bar',
+            data: {
+            labels:arrApplAgeLbl,
+            datasets: [{ 
+            label:'ApplAge',
+            backgroundColor: lstColorArray,
+            data: arrApplAgeTtlAppl
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            }
+            var ChartTtlAppApplAge = new Chart(ctxTtlAppApplAge, TtlAppApplAgeoptions);		
+            document.getElementById("TtlAppApplAge").onclick = function(evt){   
+                    showChartModal(ChartTtlAppApplAge.data)               
+            };
+            // document.getElementById('TtlAppApplAge').addEventListener('click', () => {
+            //    $('#chartModal').modal('toggle')
+
+            //   // Draw the enlarged chart in the modal
+            //   const modalCtx = document.getElementById('modalChart').getContext('2d');
+            //   new Chart(modalCtx,TtlAppApplAgeoptions);
+            // });
+
+            let chartApplAgeApprlRate = Chart.getChart("ApprlRateApplAge"); // <canvas> id
+          if (chartApplAgeApprlRate != undefined) {
+            chartApplAgeApprlRate.destroy();
+          }
+           var ctxApplAgeApprlRate = document.getElementById("ApprlRateApplAge").getContext('2d');
+            chartApplAgeApprlRate = new Chart(ctxApplAgeApprlRate, {
+            type: 'bar',
+            data: {
+            labels:arrApplAgeLblApprvls,
+            datasets: [{ 
+            label:'ApplAge',
+            backgroundColor: "#6192ee",
+            data: arrApplAgeApprvls_rate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("ApprlRateApplAge").onclick = function(evt){   
+                    showChartModal(chartApplAgeApprlRate.data)               
+            };
+             //approval rate ApplAge ends
+             $.each(data.peergroupapps.peergroupapps,function(i,obj){        
+            arrApplAgeDenial_rate.push(obj.conversion_rate);
+            arrApplAgeLblDenial.push(obj.ClsLbl);              
+            arrApplAgeLblDOR.push(obj.ClsLbl);
+            arrApplAgeDOR.push(obj.peerconverted); 
+           })
+           let chartApplAgeDOR = Chart.getChart("DORApplAge"); // <canvas> id
+          if (chartApplAgeDOR != undefined) {
+            chartApplAgeDOR.destroy();
+          }
+           var ctxApplAgeDOR = document.getElementById("DORApplAge").getContext('2d');
+            var ChartApplAgeDOR = new Chart(ctxApplAgeDOR, {
+            type: 'bar',
+            data: {
+            labels:arrApplAgeLblDOR,
+            datasets: [{ 
+            label:'ApplAge',
+            backgroundColor:lstColorArray,
+            data: arrApplAgeDOR
+            } ],
+            },
+            options: {
+              responsive: true,
+          maintainAspectRatio:true,
+              cutout:'0%',
+              scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+              plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                }, 
+              }
+            }
+            });		
+            document.getElementById("DORApplAge").onclick = function(evt){   
+                    showChartModal(ChartApplAgeDOR.data)               
+            };
+             //DOR ApplAge ends
+             let chartApplAgeDenialRate = Chart.getChart("DenialRateApplAge"); // <canvas> id
+          if (chartApplAgeDenialRate != undefined) {
+            chartApplAgeDenialRate.destroy();
+          } 
+           var ctxApplAgeDenialRate = document.getElementById("DenialRateApplAge").getContext('2d');
+           chartApplAgeDenialRate = new Chart(ctxApplAgeDenialRate, {
+            type: 'bar',
+            data: {
+            labels:arrApplAgeLblDenial,
+            datasets: [{ 
+            label:'ApplAge',
+            backgroundColor: "#6192ee",
+            data: arrApplAgeDenial_rate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("DenialRateApplAge").onclick = function(evt){   
+                    showChartModal(chartApplAgeDenialRate.data)               
+            };
+             //denial rate ApplAge ends   
+             
+          for(var i=0;i<arrApplAgeDenial_rate.length;i++){
+              arrApplAgeGovAppRate.push(parseFloat(arrApplAgeDenial_rate[i])-parseFloat(arrApplAgeApprvls_rate[i]))
+            }  
+            for(var i=0;i<arrApplAgeGovAppRate.length;i++){
+            //console.log( parseFloat(arrApplAgeGovAppRate[i]) +' , '+parseFloat(arrApplAgeApprvls_rate[i]) +' , '+parseFloat(arrApplAgeTtlAppl[i]))
+            arrApplAgePeerGovAppRate.push(((parseFloat(arrApplAgeGovAppRate[i])*0.01)/(parseFloat(arrApplAgeApprvls_rate[i])*0.01))*parseFloat(arrApplAgeTtlAppl[i]))
+          }
+          let chartApplAgeGovAppRate = Chart.getChart("GovAppsRateApplAge"); // <canvas> id
+          if (chartApplAgeGovAppRate != undefined) {
+            chartApplAgeGovAppRate.destroy();
+          }
+           var ctxApplAgeGovAppRate = document.getElementById("GovAppsRateApplAge").getContext('2d');
+           chartSexGovAppRate = new Chart(ctxApplAgeGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrApplAgeLblApprvls,
+            datasets: [{ 
+            label:'Sex',
+            backgroundColor: "#6192ee",
+            data: arrApplAgeGovAppRate
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: true,
+            },
+            y: {
+            stacked: true
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("GovAppsRateApplAge").onclick = function(evt){   
+                    showChartModal(chartSexGovAppRate.data)               
+            };
+          let chartApplAgePeerGovAppRate = Chart.getChart("PeerGovAppsRateApplAge"); // <canvas> id
+          if (chartApplAgePeerGovAppRate != undefined) {
+            chartApplAgePeerGovAppRate.destroy();
+          }
+           var ctxApplAgePeerGovAppRate = document.getElementById("PeerGovAppsRateApplAge").getContext('2d');
+           chartApplAgePeerGovAppRate = new Chart(ctxApplAgePeerGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrApplAgeLblApprvls,
+            datasets: [{ 
+            label:'ApplAge',
+            backgroundColor: "#6192ee",
+            data: arrApplAgePeerGovAppRate
+            } ],
+            },
+            options: {
+                tooltips: {
+                displayColors: true,
+                callbacks: {
+                mode: 'x',
+                },
+                },
+                scales: {
+                x: {
+                stacked: true,
+                },
+                y: {
+                stacked: true
+                }
+                },
+                indexAxis: 'y',
+                plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                },
+                title: {
+                  display: false,
+                  text: 'Model Type'
+                }
+              }
+                // responsive: true
+            }
+            });		
+            document.getElementById("PeerGovAppsRateApplAge").onclick = function(evt){   
+                    showChartModal(chartApplAgePeerGovAppRate.data)               
+            };
+            //Gov apps rate ApplAge ends
+        }
+      });
+ 
+      //Age ends
+
+      $.ajax({
+        url: '{{get_Marketing_Dashb_Data_apps_IncomeGrp}}', 
+        data:{ 'activity_year':'2023' },
+        dataType: 'json',   
+        success: function (data) {
+          console.log('income grp data ',data) 
+          $.each(data.apps.apps, function(i, obj) {              
+            arrIncomeGrpLblApprvls.push(obj.ClsLbl); 
+            arrIncomeGrpTtlAppl.push(obj.ttlappl)  ;     
+            arrIncomeGrpTtlApplCtrlCls.push(obj.ctrl_ttlappl)
+            arrIncomeGrpApprvls_rate.push(obj.apprvd_rate);
+            arrIncomeGrpApprvls_rateCtrlCls.push(obj.ctrl_apprvd_rate);
+            // arrIncomeGrpLblApprvls.push(obj.ClsLbl);
+           }); 
+           let chartTtlAppIncomeGrp  = Chart.getChart("TtlAppApplIncomeGrp"); // <canvas> id 
+          if (chartTtlAppIncomeGrp != undefined) {
+            chartTtlAppIncomeGrp.destroy();
+          }
+           var ctxTtlAppIncomeGrp = document.getElementById("TtlAppApplIncomeGrp").getContext('2d');
+           var TtlAppIncomeGrpoptions={
+            type: 'bar',
+            data: {
+            labels:arrIncomeGrpLblApprvls,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrIncomeGrpTtlAppl
+            },{ 
+            backgroundColor: "#6192ee",
+            data: arrIncomeGrpTtlApplCtrlCls
+            } ],
+            },
+            options: {
+          responsive: true,
+          maintainAspectRatio:true,
+          cutout:'0%',
+          scales:{
+                    x: { 
+                    ticks: {
+                    display: false
+                    }
+                  }
+                },
+          plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false, 
+            }
+          }
+        },
+            }
+            var ChartTtlAppIncomeGrp = new Chart(ctxTtlAppIncomeGrp, TtlAppIncomeGrpoptions);		
+            document.getElementById("TtlAppApplIncomeGrp").onclick = function(evt){   
+                    showChartModal(ChartTtlAppIncomeGrp.data)               
+            };
+            // document.getElementById('TtlAppApplIncomeGrp').addEventListener('click', () => {
+            //    $('#chartModal').modal('toggle')
+
+            //   // Draw the enlarged chart in the modal
+            //   const modalCtx = document.getElementById('modalChart').getContext('2d');
+            //   new Chart(modalCtx,TtlAppIncomeGrpoptions);
+            // });
+
+            let chartIncomeGrpApprlRate = Chart.getChart("ApprlRateIncomeGrp"); // <canvas> id
+          if (chartIncomeGrpApprlRate != undefined) {
+            chartIncomeGrpApprlRate.destroy();
+          }
+           var ctxIncomeGrpApprlRate = document.getElementById("ApprlRateIncomeGrp").getContext('2d');
+            chartIncomeGrpApprlRate = new Chart(ctxIncomeGrpApprlRate, {
+            type: 'bar',
+            data: {
+            labels:arrIncomeGrpLblApprvls,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrIncomeGrpApprvls_rate
+            } ,{ 
+            backgroundColor: "#6192ee",
+            data: arrIncomeGrpApprvls_rateCtrlCls
+            }],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: false,
+            },
+            y: {
+            stacked: false
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("ApprlRateIncomeGrp").onclick = function(evt){   
+                    showChartModal(chartIncomeGrpApprlRate.data)               
+            };
+             //approval rate IncomeGrp ends
+            var arrIncomeGrpLblDenial=[]
+             $.each(data.peergroupapps.peergroupapps,function(i,obj){        
+            arrIncomeGrpDenial_rate.push(obj.conversion_rate);
+            arrIncomeGrpDenial_rateCtrlCls.push(obj.ctrl_conversion_rate)
+            arrIncomeGrpLblDenial.push(obj.ClsLbl);              
+            arrIncomeGrpLblDOR.push(obj.ClsLbl);
+            arrIncomeGrpDOR.push(obj.peerconverted); 
+            arrIncomeGrpDORCtrlCls.push(obj.ctrl_peerconverted)
+           })
+           let chartIncomeGrpDOR = Chart.getChart("DORIncomeGrp"); // <canvas> id
+          if (chartIncomeGrpDOR != undefined) {
+            chartIncomeGrpDOR.destroy();
+          }
+           var ctxIncomeGrpDOR = document.getElementById("DORIncomeGrp").getContext('2d');
+            var ChartIncomeGrpDOR = new Chart(ctxIncomeGrpDOR, {
+            type: 'bar',
+            data: {
+            labels:arrIncomeGrpLblDOR,
+            datasets: [{  
+            backgroundColor:lstColorArray,
+            data: arrIncomeGrpDOR
+            } ,{
+              backgroundColor:"#6192ee",
+            data: arrIncomeGrpDORCtrlCls
+            }],
+            },
+            options: {
+              responsive: true,
+          maintainAspectRatio:true,
+              cutout:'0%',              
+              scales: {
+                        x: { 
+                        ticks: {
+                        display: false
+                        }
+                      }
+                    },
+              plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                }, 
+              }
+            }
+            });		
+            document.getElementById("DORIncomeGrp").onclick = function(evt){   
+                    showChartModal(ChartIncomeGrpDOR.data)               
+            };
+             //DOR IncomeGrp ends
+             let chartIncomeGrpDenialRate = Chart.getChart("DenialRateIncomeGrp"); // <canvas> id
+          if (chartIncomeGrpDenialRate != undefined) {
+            chartIncomeGrpDenialRate.destroy();
+          } 
+           var ctxIncomeGrpDenialRate = document.getElementById("DenialRateIncomeGrp").getContext('2d');
+           chartIncomeGrpDenialRate = new Chart(ctxIncomeGrpDenialRate, {
+            type: 'bar',
+            data: {
+            labels:arrIncomeGrpLblDenial,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrIncomeGrpDenial_rate
+            },{
+              backgroundColor: "#6192ee",
+               data:arrIncomeGrpDenial_rateCtrlCls
+            } ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: false,
+            },
+            y: {
+            stacked: false
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("DenialRateIncomeGrp").onclick = function(evt){   
+                    showChartModal(chartIncomeGrpDenialRate.data)               
+            };
+             //denial rate IncomeGrp ends 
+             for(var i=0;i<arrIncomeGrpDenial_rate.length;i++){
+            arrIncomeGrpGovAppRate.push(parseFloat(arrIncomeGrpDenial_rate[i])-parseFloat(arrIncomeGrpApprvls_rate[i]))
+            arrIncomeGrpGovAppRateCtrlcls.push(parseFloat(arrIncomeGrpDenial_rateCtrlCls[i])-parseFloat(arrIncomeGrpApprvls_rateCtrlCls[i]))
+          }
+          let chartIncomeGrpGovAppRate = Chart.getChart("GovAppsRateIncomeGrp"); // <canvas> id
+          if (chartIncomeGrpGovAppRate != undefined) {
+            chartIncomeGrpGovAppRate.destroy();
+          }
+           var ctxIncomeGrpGovAppRate = document.getElementById("GovAppsRateIncomeGrp").getContext('2d');
+           chartIncomeGrpGovAppRate = new Chart(ctxIncomeGrpGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrIncomeGrpLblApprvls,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrIncomeGrpGovAppRate
+            } ,{  
+            backgroundColor: "#6192ee",
+            data: arrIncomeGrpGovAppRateCtrlcls
+            } 
+          ],
+            },
+            options: {
+            tooltips: {
+            displayColors: true,
+            callbacks: {
+            mode: 'x',
+            },
+            },
+            scales: {
+            x: {
+            stacked: false,
+            },
+            y: {
+            stacked: false
+            }
+            },
+            indexAxis: 'y',
+            plugins: {
+            legend: {
+              position: 'top',
+              display: false,
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+            // responsive: true
+            }
+            });		
+            document.getElementById("GovAppsRateIncomeGrp").onclick = function(evt){   
+                    showChartModal(chartIncomeGrpGovAppRate.data)               
+            };
+          //Gov apps rate Income grp ends    
+             for(var i=0;i<arrIncomeGrpGovAppRate.length;i++){ 
+              //arrIncomeGrpTtlApplCtrlCls
+            arrIncomeGrpPeerGovAppRate.push(((parseFloat(arrIncomeGrpGovAppRate[i])*0.01)/(parseFloat(arrIncomeGrpApprvls_rate[i])*0.01))*parseFloat(arrIncomeGrpTtlAppl[i]))
+            arrIncomeGrpPeerGovAppRateCtrlCls.push(((parseFloat(arrIncomeGrpGovAppRateCtrlcls[i])*0.01)/(parseFloat(arrIncomeGrpApprvls_rateCtrlCls[i])*0.01))*parseFloat(arrIncomeGrpTtlApplCtrlCls[i]))
+          }
+          let chartIncomeGrpPeerGovAppRate = Chart.getChart("PeerGovAppsRateIncomeGrp"); // <canvas> id
+          if (chartIncomeGrpPeerGovAppRate != undefined) {
+            chartIncomeGrpPeerGovAppRate.destroy();
+          }
+           var ctxIncomeGrpPeerGovAppRate = document.getElementById("PeerGovAppsRateIncomeGrp").getContext('2d');
+           chartIncomeGrpPeerGovAppRate = new Chart(ctxIncomeGrpPeerGovAppRate, {
+            type: 'bar',
+            data: {
+            labels:arrIncomeGrpLblApprvls,
+            datasets: [{  
+            backgroundColor: lstColorArray,
+            data: arrIncomeGrpPeerGovAppRate
+            },{  
+            backgroundColor: "#6192ee",
+            data: arrIncomeGrpPeerGovAppRateCtrlCls
+            } ],
+            },
+            options: {
+                tooltips: {
+                displayColors: true,
+                callbacks: {
+                mode: 'x',
+                },
+                },
+                scales: {
+                x: {
+                stacked: false,
+                },
+                y: {
+                stacked: false
+                }
+                },
+                indexAxis: 'y',
+                plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                },
+                title: {
+                  display: false,
+                  text: 'Model Type'
+                }
+              }
+                // responsive: true
+            }
+            });		
+            document.getElementById("PeerGovAppsRateIncomeGrp").onclick = function(evt){   
+                    showChartModal(chartIncomeGrpPeerGovAppRate.data)               
+            };
+            //Gov apps rate IncomeGrp ends
+            
+        }
+      });
+ 
+      //IncomeGroup ends
+    }
+
+    function showChartModal(chartdata){
+      var chartModal = Chart.getChart("modalChart"); // <canvas> id
+          if (chartModal != undefined) {
+            chartModal.destroy();
+          } 
+    var chartModalCtx = document.getElementById('modalChart').getContext('2d');
+    // new Chart(modalCtx,TtlAppEthnicityoptions);
+    var chartModal = new Chart(chartModalCtx, {
+            type: 'bar',
+            data: {
+            labels:chartdata.labels,
+            datasets:chartdata.datasets,
+            },
+            options: {
+              responsive: true,
+          maintainAspectRatio:true,
+               cutout:'0%',
+scales: {
+              x: { 
+              ticks: {
+              display: true
+              }
+            }
+          },
+
+
+              plugins: {
+                legend: {
+                  position: 'top',
+                  display: false,
+                }, 
+              }
+            }
+            });	
+    $('#chartModal').modal('toggle')
+  }
+    </script>
+  {%endblock script %}

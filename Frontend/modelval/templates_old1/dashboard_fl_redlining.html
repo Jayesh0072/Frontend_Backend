@@ -1,0 +1,1967 @@
+{% extends 'base_dashbFL.html' %} 
+{% load static %} 
+{% block style %} 
+ 
+<link rel="stylesheet" href="{% static 'node_modules/dist/css/query-builder.default.min.css' %}"> 
+ <script src="{% static 'node_modules/dist/js/query-builder.standalone.min.js' %}" ></script> 
+  <link href="{% static 'node_modules/datepicker/bootstrap-datepicker.min.css' %}" rel="stylesheet"> 
+  <link href="{% static 'node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css' %}"  rel="stylesheet"> 
+ 
+   <style> 
+   
+   .glyphicon {
+  position: relative!important;
+  top: 1px!important;
+  display: inline-block!important;
+  font-family: 'Glyphicons Halflings'!important;
+  font-style: normal!important;
+  font-weight: 400!important;
+  line-height: 1!important;
+  -webkit-font-smoothing: antialiased!important;
+  -moz-osx-font-smoothing: grayscale!important;
+}
+.glyphicon-plus-sign:before{content:"\e081"}
+.glyphicon-sort:before {
+ content:"\e150"
+} 
+.glyphicon-remove:before{content:"\e014"}
+.glyphicon-remove-sign:before
+{content:"\e083"}
+
+.glyphicon-sort-by-alphabet:before {
+ content:"\e151"
+}
+.glyphicon-sort-by-alphabet-alt:before {
+ content:"\e152"
+}
+.glyphicon-sort-by-order:before {
+ content:"\e153"
+}
+.glyphicon-sort-by-order-alt:before {
+ content:"\e154"
+}
+.glyphicon-sort-by-attributes:before {
+ content:"\e155"
+}
+.glyphicon-sort-by-attributes-alt:before {
+ content:"\e156"
+}
+ .form-inline .form-control {
+  display: inline-block  ; 
+  width: auto !important; 
+  vertical-align: middle !important; 
+}
+.form-control {
+  display: block ;
+  width: 100%!important; 
+  height: 34px  !important; 
+  padding: 6px 12px !important; 
+  font-size: 14px !important; 
+  font-weight: normal;
+  line-height: 1.42857143 !important; 
+  color: #555!important;
+  background-color: #fff!important;
+  background-image: none!important;
+  border: 1px solid #ccc!important;
+  border-radius: 4px!important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075)!important;
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s!important;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s!important;
+}
+#builder{
+  /* width:80%; */
+  display:block;
+  margin: 0 auto;
+}
+#buttons{
+text-align:center
+}
+h1,#query{
+  text-align:center;
+  font-family:'Whitney SSM', sans-serif;
+}
+p{
+  font-family:'Whitney SSM', sans-serif;
+  color:white !important; 
+  font-size:20px; 
+}
+
+#query{
+  font-size:18px
+}
+
+.query-builder .rules-group-container{
+  /* background-color:#19A7C1; */
+background-color:transparent;
+}
+
+.query-builder .rules-group-header {
+  margin-bottom: 10px;
+} 
+
+.pull-right {
+  float: right !important;
+}
+.btn-group, .btn-group-vertical {
+  position: relative !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.rule
+.query-builder form-inline{
+    /* background-color:#19A7C1;
+     */
+     background-color:transparent;
+
+}
+.rules-list{
+    /* background-color:#19A7C1; */
+    background-color:transparent;
+
+}
+
+/* .btn-primary{
+  background-color:silver
+} */
+
+.btn{
+  font-size:13px;
+  font-family:'Whitney SSM', sans-serif;
+
+
+}
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary{
+    background-color:olvie
+}
+
+.rule-container{
+  background-color:AntiqueWhite
+}
+
+.form-control{
+    font-family:'Whitney SSM', sans-serif;
+}
+
+.btn-xs {
+  padding: 1px 5px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px!important;
+}
+
+.btn {
+  display: inline-block !important;
+  padding: 6px 12px!important;
+  margin-bottom: 0!important;
+  font-size: 14px !important;;
+  font-weight: 400 !important;;
+  line-height: 1.42857143 !important;;
+  text-align: center !important;;
+  white-space: nowrap !important;;
+  vertical-align: middle !important;;
+  -ms-touch-action: manipulation !important;;
+  touch-action: manipulation !important;;
+  cursor: pointer !important;;
+  -webkit-user-select: none !important;;
+  -moz-user-select: none !important;;
+  -ms-user-select: none !important;;
+  user-select: none !important;;
+  background-image: none !important;;
+  border: 1px solid transparent !important;;
+    border-top-color: transparent !important;;
+    border-right-color: transparent !important;;
+    border-bottom-color: transparent !important;;
+    border-left-color: transparent !important;;
+  border-radius: 4px !important;;
+}
+
+.btn btn-xs btn-success{
+  background-color: #5cb85c !important 
+}
+
+.btn-xs, .btn-group-xs > .btn {
+  padding: 1px 5px !important;;
+  font-size: 12px !important;;
+  line-height: 1.5 !important;;
+  border-radius: 3px !important;;
+    border-top-right-radius: 3px !important;;
+    border-bottom-right-radius: 3px !important;;
+}
+
+.btn-success {
+  color: #fff !important;
+  background-color: #5cb85c !important;
+  border-color: #4cae4c !important;
+}
+
+.btn-success,.btn-danger {
+  background-color: #5cb85c !important 
+}
+.btn-danger {
+  color: #fff !important;
+  background-color: #d9534f !important;
+  border-color: #d43f3a !important;
+}
+
+.btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
+  background-color: #337ab7 !important;
+  border-color: #2e6da4 !important;
+}
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  filter: alpha(opacity=65) !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  opacity: .65 !important;
+}
+
+#btn-set{
+    background-color:#19A7C1 !important;
+    font-size:20px !important;
+    border: none !important;
+  padding: 1px 50px !important;
+  text-decoration: none !important;
+      -webkit-transition-duration: 0.4s !important; /* Safari */
+    transition-duration: 0.4s !important;
+  border-radius: 0 !important;
+}
+
+/* #btn-set:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#btn-reset:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#btn-get-sql:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+} */
+
+hr {
+    border: none;
+    height: 1px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #333; /* Modern Browsers */
+    width:50%
+}
+
+input{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family:'Whitney SSM', sans-serif;
+  
+}
+
+#selectDiv{
+  display:inline-block;
+}
+.tooltip {
+ position:absolute;
+ z-index:1070;
+ display:block;
+ font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ font-size:12px;
+ font-weight:400;
+ line-height:1.4;
+ visibility:visible;
+ filter:alpha(opacity=0);
+ opacity:0
+}
+.tooltip.in {
+ filter:alpha(opacity=90);
+ opacity:.9
+}
+.tooltip.top {
+ padding:5px 0;
+ margin-top:-3px
+}
+.tooltip.right {
+ padding:0 5px;
+ margin-left:3px
+}
+.tooltip.bottom {
+ padding:5px 0;
+ margin-top:3px
+}
+.tooltip.left {
+ padding:0 5px;
+ margin-left:-3px
+}
+.tooltip-inner {
+ max-width:200px!important;
+ padding:3px 8px !important;
+ color:#fff !important;
+ text-align:center!important;
+ text-decoration:none!important;
+ background-color:#000!important;
+ border-radius:4px!important;
+}
+.tooltip-arrow {
+ position:absolute !important;
+ width:0 !important;
+ height:0 !important;
+ border-color:transparent !important;
+ border-style:solid
+}
+.tooltip.top .tooltip-arrow {
+ bottom:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-left .tooltip-arrow {
+ right:5px !important;
+ bottom:0 !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.top-right .tooltip-arrow {
+ bottom:0 !important;
+ left:5px !important;
+ margin-bottom:-5px !important;
+ border-width:5px 5px 0 !important;
+ border-top-color:#000
+}
+.tooltip.right .tooltip-arrow {
+ top:50% !important;
+ left:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 5px 5px 0 !important;
+ border-right-color:#000
+}
+.tooltip.left .tooltip-arrow {
+ top:50% !important;
+ right:0 !important;
+ margin-top:-5px !important;
+ border-width:5px 0 5px 5px !important;
+ border-left-color:#000
+}
+.tooltip.bottom .tooltip-arrow {
+ top:0 !important;
+ left:50% !important;
+ margin-left:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-left .tooltip-arrow {
+ top:0 !important;
+ right:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+.tooltip.bottom-right .tooltip-arrow {
+ top:0 !important;
+ left:5px !important;
+ margin-top:-5px !important;
+ border-width:0 5px 5px !important;
+ border-bottom-color:#000
+}
+</style>
+<style>
+  @font-face {
+ font-family:'Glyphicons Halflings';
+ src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot" %}');
+  src:url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix" %}') format("embedded-opentype") ,  
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.woff" %}') format("woff") ,
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.ttf" %}') format("truetype"),
+ url('{% static "node_modules/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular" %}') format("svg") 
+}
+</style>
+<style>
+
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+.row-cols-md-8 > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
+  .btn-primary-panes{
+   /* border-radius: 50%;*/
+  width: 3rem; 
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f2f3f6!important;
+  z-index: 1045;
+  /* border-radius: 1px; */
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  font-size:1.4rem;
+  }
+
+  
+  .btn-primary-panes:active {
+  background-color:  #f2f3f6!important;
+  color: red;
+}
+
+</style>
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/fixedColumns.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/dataTables.scroller.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.css' %}">
+{% endblock style %}
+{% block content %}
+<div class="navbar-nav-wrap-content-start"  style="z-index: 100; position:absolute; top:0px; width:28px; height:82px; padding:5px; background-color: transparent;position: fixed;"> 
+  <!-- <div class="border border-start-0">
+    <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" style="color:#377dff" data-bs-target="#divPane">
+       <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><i class="bi-tv fs-1" style="font-size: 1.6rem;"></i></span>
+    </a>   
+   </div> -->
+</div>
+ 
+<!-- pop-up for control class -->
+<div id="divControlClassSel"  style="width: 500px; left:50%; margin-left: -250px;" class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Control Class</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div  id="divArrCols" class="modal-body bg-100 " style="max-height: 200px;overflow-x: auto;"> 
+        
+    
+            
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divControlClassSel').modal('toggle')">Cancel</button> 
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="addRow()">Add</button>
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="OptionSelected()">Save</button>
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for control class -->
+
+<!-- pop-up for fliter -->
+<div id="divFilterSel"   class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content modal-xl">
+    <div class="modal-content  bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Filters</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3 position-relative"  >
+          
+          <div class="col-sm-1" style="margin-left: 10px; ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-get-mongo" value="Show"/>
+          </div>  
+          <div class="col-sm-1" style="margin-left: 10px;  ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-reset" value="Clear"/>
+          </div>      
+          <div class="col-sm-1" style="margin-left: 10px;  ">
+            <input type="button" style="width: 100px;" class="btn btn-primary" id="btn-save" value="Save"/>
+          </div>   
+        </div>
+        <div class="row mb-3 position-relative"  >
+          
+          <div class="col-sm-8" style="margin-left: 10px;width: 65%;">
+            <div id="builder" ></div>  
+          </div>
+          <div class="col-sm-4">
+            <div class="position-relative mb-sm-4 mb-xl-0">
+              <div id="charttest" style="min-height:390px;width:100%"></div>
+            </div>
+          </div>
+      </div> 
+          
+          
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divFilterSel').modal('toggle')">Cancel</button> 
+         
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for control class -->
+
+
+<div class="content" style="padding-top:0px;">   
+    <!-- Page Header -->
+    <div class="page-header">      
+      <div class="js-nav-scroller hs-nav-scroller-horizontal"> 
+
+        <ul class="nav nav-tabs page-header-tabs" id="projectsTab" role="tablist">
+          <li class="nav-item" style="display: {{is_DA}};">
+            <a class="nav-link" style="font-weight: bold;" id="Marketing" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Marketing" role="tab" aria-controls="Marketing" aria-selected="true">Marketing</a>
+          </li>                   
+          <li class="nav-item" style="display: {{is_DA}};">
+            <a class="nav-link" style="font-weight: bold;" id="Underwriting" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Underwriting" role="tab" aria-controls="Underwriting" aria-selected="true">Underwriting</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" style="font-weight: bold;" id="Pricing" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Pricing" role="tab" aria-controls="Pricing" aria-selected="true">Pricing</a>
+          </li>   
+          <li class="nav-item">
+            <a class="nav-link active" style="font-weight: bold;" id="Redlining" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Redlining" role="tab" aria-controls="Redlining" aria-selected="true">Redlining</a>
+          </li>   
+          <li class="nav-item"style="display: {{is_DA}};">
+            <a class="nav-link" style="font-weight: bold;" id="Steering" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Steering" role="tab" aria-controls="Steering" aria-selected="true">Steering</a>
+          </li>
+          <li class="nav-item" style="display: {{is_DA}};"> 
+            <a class="nav-link " style="font-weight: bold;" id="MatchedPair" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#MatchedPair" role="tab" aria-controls="MatchedPair" aria-selected="true">Matched Pair</a>
+          </li>
+          <li class="nav-item"style="display: {{is_DA}};"> 
+            <a class="nav-link" id="Exceptions" style="font-weight: bold;" onclick="getTabIdx(this.id)" data-bs-toggle="tab" href="#Exceptions" role="tab" aria-controls="Exceptions" aria-selected="true">Exceptions</a>
+          </li>
+        </ul>
+      </div>
+      <!-- End Nav -->
+    </div>
+    <div class="tab-content" id="projectsTabContent">
+      <div class="tab-pane fade show active" id="Redlining" role="tabpanel" aria-labelledby="Redlining">
+        <div class="row">
+          <div class="col-sm-2" style="width:15%;display: none;"> 
+            <button id="btnSelCtrlCls"  class="btn btn-primary px-5" onclick="$('#divControlClassSel').modal('toggle')" >Set Control Class</button>
+          </div>
+          <div class="col-sm-1"> 
+            <button id="btnSelFilters"  class="btn btn-primary px-5" onclick="$('#divFilterSel').modal('toggle')" >Filters</button>
+          </div>
+          <div class="col-sm-8" style="display: none"> 
+             <select  class="js-select form-select" autocomplete="off" data-hs-tom-select-options='{
+              "placeholder": "Select Peer Groups...",
+              "hideSearch": true
+            }' multiple id="ddlPeer" onchange="filterPeerGrpData()">
+              <option value="">Select</option> 
+              {% for key, val in peerlei.items  %}                                   
+                <option value="'{{val.peerlei}}'">{{val.peerlei}}</option>   
+              {% endfor %}
+            </select>
+          </div>
+          
+        </div>    
+        <div class="row" style="margin-top:10px;margin-bottom: 10px;">
+            <div class="col-sm-12" style="text-align: center;">
+              <h4><label id="lblfilterSelected"> {{filterSelected}}</label> </h4>
+            </div>
+        </div>       
+        <div class="row" style="margin-top:10px">
+          <div class="row">
+            <div class="col-sm-10">  
+              <div class="row">                
+                <div class="col-sm-1">    
+                  <div class="form-check">
+                    <input type="radio" id="chk_def" onchange="StateMarkers()" checked="checked" name="rb_Filter" value="3"> 
+                  </div>  
+                </div> 
+                <div class="col-sm-1">Default</div>   
+                <div class="col-sm-1">    
+                  <div class="form-check">
+                    <input type="radio" id="chk_eth" onchange="FilterStateMarkers('derived_ethnicity')" name="rb_Filter" style="margin-left: 10px;;"/>  
+                  </div>  
+                </div> 
+                <div class="col-sm-1">Ethnicity</div>     
+                <div class="col-sm-1">    
+                  <div class="form-check">
+                    <input type="radio" id="chk_rac" onchange="FilterStateMarkers('derived_race')" name="rb_Filter" style="margin-left: 10px;;"/>  
+                  </div>  
+                </div> 
+                <div class="col-sm-1">Race</div>    
+                <div class="col-sm-1">    
+                  <div class="form-check">
+                    <input type="radio" id="chk_gen" onchange="FilterStateMarkers('derived_sex')" name="rb_Filter" style="margin-left: 10px;;"/>  
+                  </div>  
+                </div> 
+                <div class="col-sm-1">Gender</div>    
+                <div class="col-sm-1">    
+                  <div class="form-check">
+                    <input type="radio" id="chk_age" onchange="FilterStateMarkers('applicant_age')" name="rb_Filter" style="margin-left: 10px;;"/> 
+                  </div>  
+                </div> 
+                <div class="col-sm-2">Applicant Age </div>             
+                <div class="col-sm-2">
+                  <input type="radio" id="chk_inc" onchange="FilterStateMarkers('tract_to_msa_income_percentage')" name="rb_Filter" style="margin-left: 10px;display: none;"/> <!-- Income-Group -->
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-2">  
+              <div class="row">
+                <div class="col-sm-6">
+                  <input type="button" style="float: right;" class="btn btn-primary" id="btn-reset" value="Show Legend" onclick="ShowHideLegend()"/>
+                </div>
+                <div class="col-sm-6">
+                 <input type="button" style="float: right;" class="btn btn-primary" id="btn-reset" value="Combined Bank and Peer Groups" onclick="ShowHideMap()"/>
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="row">
+            <div class="col-sm-6" >             
+              <div id="map" style="width: 100%; height: 600px; border:solid 1px #c3c3c3"></div>
+              <div class="row" style="margin-top:2px">
+                <div class="col-sm-6" >  
+                  <input type="button" style="width: 180px; float: left;" class="btn btn-primary" id="btn-reset" value="Back to SateLevel" onclick="StateMarkers()"/>
+                </div>
+                <div class="col-sm-6" style="float: right;" >
+                  <h4>Our Bank/Institution</h4>  
+                </div>
+              </div>           
+            </div>
+            <div class="col-sm-6"> 
+              <div id="map1" style="width: 100%; height: 600px;border:solid 1px #c3c3c3"></div>
+              <div class="row" style="margin-top:2px; border: solid 1px red;">
+                <div class="col-sm-6" >  
+                  <input type="button" style="width: 180px; float:right;" class="btn btn-primary" id="btn-reset2" value="Back to SateLevel Peer" onclick="StateMarkers1()"/>
+                </div>
+                <div class="col-sm-6" style="float: right;; border: solid 1px red;" >
+                  <h4>Our Peer</h4>  
+                </div>
+              </div>             
+            </div>
+            
+          </div> 
+        </div>
+      
+      </div>
+        </div>
+ 
+
+    </div>
+</div>
+<!-- End Content -->
+  </div> 
+</div>
+ <!-- Modal for enlarged chart --> 
+<div id="chartModal"   class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content modal">
+    <div class="modal-content  bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Filters</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="card-body p-0">
+        <div class="row mb-3 position-relative" style="width:400px;height: 400px;" >
+          <canvas id="modalChart" style="width:350px;height: 350px;"></canvas>  
+        </div>       
+          
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#chartModal').modal('toggle')">Cancel</button> 
+         
+      </div>
+    </div>
+  </div>   
+</div>
+<!--pop-up for large chart  -->
+ 
+<div class="modal fade" id="LegendModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="LegendModalLabel">Map Pointers Legend</h5>            
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top:2px;">
+          <div class="col-sm-6" >  
+            <label></label>
+          </div>
+          <div class="col-sm-6">
+            <img src="./assets/svg/svgs/map-icon1/map-pin-red.svg" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" onclick="ShowHideLegend()">Close</button>           
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="MergedMapModal" width="90%" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="MergedMapLabel">Combined Bank and Peer Group Map</h5>            
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top:2px;">
+          <div class="col-sm-12" >  
+            <div id="mapMerged" style="width: 100%; height: 800px; border:solid 1px #c3c3c3"></div>
+          </div>             
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" onclick="ShowHideLegend()">Close</button>           
+      </div>
+    </div>
+  </div>
+</div>
+
+  {% endblock content %}
+  {% block script %} 
+  
+
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+   
+
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script> 
+  
+ 
+  
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.js' %}"></script> 
+
+<script src="{% static 'node_modules/chosenjs/chosen.jquery.js' %}"></script> 
+ <script src="{% static 'node_modules/bootstrap-select-1.13.14/dist/js/bootstrap-select.js' %}"></script>  
+<script src="{% static 'node_modules/bootbox/bootbox.js' %}"></script>
+<script src="{% static 'node_modules/bootstrap-slider/dist/bootstrap-slider.min.js' %}"></script>
+<script src="{% static 'node_modules/selectize/dist/js/standalone/selectize.js' %}"></script>
+
+<script src="{% static 'node_modules/sql-parser-mistic/browser/sql-parser.js' %}"></script>
+<script src="{% static 'node_modules/interactjs/dist/interact.min.js' %}"></script>  
+ <script src="{% static 'node_modules/dist/js/newQB.js' %}" ></script> 
+<script src="{% static 'node_modules/datepicker/bootstrap-datepicker.min.js' %}" ></script> 
+<script src="{% static 'phoenix-v1.8.0/public/vendors/echarts/echarts.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBp5L42mktkpiyBVnEINjXJ2HYJ84KmjLI&loading=async&libraries=maps&callback=initMap"></script>
+<script>
+  
+  //var greenIcon = new LeafIcon({ iconUrl: '/static/Front/dist/assets/svg/svgs/map-pin.svg' });
+  //var greenIcon1 = new LeafIcon({ iconUrl: '/static/Front/dist/assets/svg/svgs/map-pin.svg' });
+  //var greenIcon2 = new LeafIcon({ iconUrl: '/static/map/Marker/leaf-shadow.png' });
+
+  let map;
+  var markers = [];
+  let map1;
+  var markers1 = [];
+  var markersMerged = [];
+  var SelectedFilterVal='';
+  //var bounds = new google.maps.LatLngBounds();
+  
+  var icon_black = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_red = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_green = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };  
+
+	async function initMap() {
+		const { Map } = await google.maps.importLibrary("maps");
+
+		map = new Map(document.getElementById("map"), {
+			center: { lat: 38.7182996, lng: -99.8049274 },
+			zoom: 4,
+      streetViewControl: false,
+      mapTypeControl: false,
+      mapTypeId: google.maps.MapTypeId.roadmap
+		});    
+    StateMarkers();	    
+
+		map1 = new Map(document.getElementById("map1"), {
+			center: { lat: 38.7182996, lng: -99.8049274 },
+			zoom: 4,
+      streetViewControl: false,
+      mapTypeControl: false,
+      mapTypeId: google.maps.MapTypeId.roadmap 
+		});
+    StateMarkers1();	
+
+    mapMerged = new Map(document.getElementById("mapMerged"), {
+			center: { lat: 38.7182996, lng: -99.8049274 },
+			zoom: 4,
+      streetViewControl: false,
+      mapTypeControl: false,
+      mapTypeId: google.maps.MapTypeId.roadmap
+		});
+
+	}
+
+  initMap();
+
+function StateMarkers(){
+  SelectedFilterVal='';
+  clearMarkers();
+  //clearMarkers('county');
+  //clearMarkers('branch');
+  var icon_black = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-black.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };  
+  $.ajax({
+    url: '/modelval/get_State_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'n'},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data ', data)
+      $.each(data.StateLatLong, function(i, obj) {              
+        ////console.log(obj.state +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        markers[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: icon_orange,
+            html:obj.state+' : '+obj.RowCnt,
+            animation : google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'state');    
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });         
+          countyMarkers(obj.state);         
+          //infowindow.open(map);
+        });    
+        
+        /*google.maps.event.addListener(markers[i], 'mouseover', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });     
+          infowindow.open(map);
+        });  
+        
+        google.maps.event.addListener(markers[i], 'mouseout', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });     
+          infowindow.close();
+        }); */
+
+      }); 
+
+      console.log('Bank Address: ',data)
+      $.each(data.BankBranches, function(i, objB) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objB.B_Lat, objB.B_Long);
+        markers[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_black,
+            html:objB.B_address+' : '+objB.b_city+' : '+objB.b_state+' : '+objB.b_zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); 
+    }
+  });
+  //ScalePanMap('state'); 
+}
+
+function countyMarkers(stateNm){ 
+  SelectedFilterVal='';   
+  //alert('aaaa');
+  clearMarkers('state');
+  clearMarkers('branch');
+  var icon_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-orange.svg',
+    scaledSize: new google.maps.Size(36, 36) 
+  };    
+  $.ajax({
+    url: '/modelval/get_County_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'n','State':stateNm},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data ', data)
+      $.each(data.CountyLatLong, function(i, obj) {              
+        //console.log(obj.CountyName +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        markers[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: icon_orange,            
+            html:obj.CountyName+' : '+obj.RowCnt,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'county');
+        var ismove = true;
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });          
+          infowindow.open(map);
+        });        
+      }); 
+
+      console.log('Bank Address: ',data)
+      $.each(data.BankBranches, function(i, objB) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objB.B_Lat, objB.B_Long);
+        markers[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_black,
+            html:objB.B_address+' : '+objB.b_city+' : '+objB.b_state+' : '+objB.b_zip,
+            animation:google.maps.Animation.DROP
+        });
+        //markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); 
+    },
+    error: function() { 
+      //alert('error'); 
+    } 
+  });
+  //ScalePanMap('county');
+}
+
+function StateMarkers1(){
+  //clearMarkers('state');
+  //clearMarkers('county');
+  var icon_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-orange.svg',
+    scaledSize: new google.maps.Size(36, 36) 
+  };
+  var icon_black = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-black.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_red = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-red.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_green = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-green.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };  
+  $.ajax({
+    url: '/modelval/get_State_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'y'},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data ', data)
+      $.each(data.StateLatLong, function(i, obj) {              
+        ////console.log(obj.state +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        markers1[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map1,
+            icon: icon_green,
+            //draggable : false,
+            html:obj.state+' : '+obj.RowCnt,
+            animation : google.maps.Animation.DROP
+        });
+        //markers1[i].set('category', 'state');
+        var ismove = true;
+        google.maps.event.addListener(markers1[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });
+          //google.maps.event.addListenerOnce(infowindow, 'closeclick', function(){
+          //  markers[this.id].setVisible(true);
+          //});
+          countyMarkers1(obj.state);
+          //this.setVisible(false);
+          infowindow.open(map1);
+        });
+        /*(function(marker,i){
+            google.maps.event.addListener(marker, 'click', function(){ 
+            countyMarkers(obj.state);
+            //infowindow.open(map,this);
+            }); 
+        }(markers[i],i));*/
+      }); 
+    }
+  });
+  //ScalePanMap('state');
+}
+
+function countyMarkers1(stateNm){    
+  //alert('aaaa');
+  clearMarkers('state');
+  var icon_orange = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-orange.svg',
+    scaledSize: new google.maps.Size(36, 36) 
+  };
+  var icon_black = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-black.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_red = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-red.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_green = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-green.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };  
+  $.ajax({
+    url: '/modelval/get_County_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'y','State':stateNm},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data ', data)
+      $.each(data.CountyLatLong, function(i, obj) {              
+        //console.log(obj.CountyName +',' +obj.lat +','+obj.long)
+        //var position = { position: {lat: obj.lat, lng: obj.long}, map: map };	
+        //var marker = new google.maps.Marker(position);
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        markers1[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map1,
+            icon: icon_red,
+            //draggable : false,
+            html:obj.CountyName+' : '+obj.RowCnt,
+            animation : google.maps.Animation.DROP
+        });
+        //markers1[i].set('category', 'county');
+        var ismove = true;
+        google.maps.event.addListener(markers1[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });
+          //google.maps.event.addListenerOnce(infowindow, 'closeclick', function(){
+          //  markers[this.id].setVisible(true);
+          //});
+          //countyMarkers(obj.state);
+          //this.setVisible(false);
+          infowindow.open(map1);
+        });
+        /*(function(marker,i){
+            google.maps.event.addListener(marker, 'click', function(){ 
+            //countyMarkers(obj.state);
+            //infowindow.open(map,this);
+            }); 
+        }(markers[i],i));*/
+      }); 
+    },
+    error: function() { 
+      //alert('error'); 
+    } 
+  });
+  //ScalePanMap('county');
+}
+
+function getIconName(filter_col,filterval){
+  var icon="icon_1";
+  if(filter_col=="derived_ethnicity"){
+    //Not Hispanic or Latino,Free Form Text Only,Hispanic or Latino,Joint,Ethnicity Not Available
+    if(filterval=="Not Hispanic or Latino") iconName=icon_1;
+    else if(filterval=="Free Form Text Only") iconName=icon_2;
+    else if(filterval=="Hispanic or Latino") iconName=icon_3;
+    else if(filterval=="Joint") iconName=icon_4;
+    else if(filterval=="Ethnicity Not Available") iconName=icon_5;
+  }
+  else if(filter_col=="derived_race"){
+
+  }
+  else if(filter_col=="derived_sex"){
+
+  }
+  else if(filter_col=="applicant_age "){
+
+  }
+  else if(filter_col=="tract_to_msa_income_percentage"){
+
+  }  
+  return iconName;
+}
+
+function FilterStateMarkers(paramValue){
+  SelectedFilterVal=paramValue;
+  clearMarkers();
+  //return;
+  var icon_bank = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-icon1/bank-4.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_Name = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-pin-red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_1 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-pin-red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_2 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_3 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-green_dark.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_4 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-green_light.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_5 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_6 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_7 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-blue_light.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_8 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  $.ajax({
+    url: '/modelval/get_Filter_State_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'n','filter_col':paramValue},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data ', data)
+      $.each(data.FilterStateLatLong, function(i, obj) {              
+        ////console.log(obj.state +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        //console.log(' : paramValue : ',paramValue,' : FilVal : ',obj.FilVal);
+        //icon_Name=getIconName(paramValue, obj.FilVal);
+        //console.log('icon_Name : ',icon_Name,' : paramValue : ',paramValue,' : FilVal : ',obj.FilVal);
+        if(paramValue=="derived_ethnicity"){
+          //Not Hispanic or Latino,Free Form Text Only,Hispanic or Latino,Joint,Ethnicity Not Available
+          if(obj.FilVal=="Not Hispanic or Latino") iconName=icon_1;
+          else if(obj.FilVal=="Free Form Text Only") iconName=icon_2;
+          else if(obj.FilVal=="Hispanic or Latino") iconName=icon_3;
+          else if(obj.FilVal=="Joint") iconName=icon_4;
+          else if(obj.FilVal=="Ethnicity Not Available") iconName=icon_5;
+        }
+        else if(paramValue=="derived_race"){
+          //Free Form Text Only,Black or African American,American Indian or Alaska Native,White,
+          //Native Hawaiian or Other Pacific Islander,2 or more minority races,Joint,Race Not Available,Asian
+          if(obj.FilVal=="Free Form Text Only") iconName=icon_1;
+          else if(obj.FilVal=="Black or African American") iconName=icon_2;
+          else if(obj.FilVal=="American Indian or Alaska Native,White") iconName=icon_3;
+          else if(obj.FilVal=="Native Hawaiian or Other Pacific Islander") iconName=icon_4;
+          else if(obj.FilVal=="2 or more minority races") iconName=icon_5;
+          else if(obj.FilVal=="Joint") iconName=icon_6;
+          else if(obj.FilVal=="Race Not Available") iconName=icon_7;
+          else if(obj.FilVal=="Asian") iconName=icon_8;
+        }
+        else if(paramValue=="derived_sex"){
+          //Male,Female,Joint,Sex Not Available
+          if(obj.FilVal=="Male") iconName=icon_1;
+          else if(obj.FilVal=="Female") iconName=icon_2;
+          else if(obj.FilVal=="Joint") iconName=icon_3;
+          else if(obj.FilVal=="Sex Not Available") iconName=icon_4;
+        }
+        else if(paramValue=="applicant_age "){
+          //45-54,65-74,>74,<25,55-64,8888,35-44,25-34
+          if(obj.FilVal=="45-54") iconName=icon_1;
+          else if(obj.FilVal=="65-74") iconName=icon_2;
+          else if(obj.FilVal==">74") iconName=icon_3;
+          else if(obj.FilVal=="<25") iconName=icon_4;
+          else if(obj.FilVal=="55-64") iconName=icon_5;
+          else if(obj.FilVal=="8888") iconName=icon_6;
+          else if(obj.FilVal=="35-44") iconName=icon_7;
+          else if(obj.FilVal=="25-34") iconName=icon_8;
+        }
+        else if(paramValue=="tract_to_msa_income_percentage"){
+
+        }
+        markers[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: iconName,
+            html:obj.state+' : '+obj.RowCnt,
+            animation : google.maps.Animation.DROP
+        });
+        markers[i].set('category', 'state');    
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });         
+          FilterCountyMarkers(obj.state);         
+          //infowindow.open(map);
+        });    
+        
+        /*google.maps.event.addListener(markers[i], 'mouseover', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });     
+          infowindow.open(map);
+        });  
+        
+        google.maps.event.addListener(markers[i], 'mouseout', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });     
+          infowindow.close();
+        }); */
+
+      }); 
+
+      /*console.log('Bank Address: ',data)
+      $.each(data.BankBranches, function(i, objB) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objB.B_Lat, objB.B_Long);
+        markers[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank,
+            html:objB.B_address+' : '+objB.b_city+' : '+objB.b_state+' : '+objB.b_zip,
+            animation:google.maps.Animation.DROP
+        });
+        markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); */
+    }
+  });
+  //ScalePanMap('state'); 
+}
+
+function FilterCountyMarkers(stateNm){    
+  //alert('aaaa : '+stateNm);
+  clearMarkers();
+  //return;
+  var icon_bank = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-icon1/bank-4.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_Name = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-pin-red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_1 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-pin-red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_2 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-blue.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_3 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-green_dark.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_4 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-green_light.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_5 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-orange.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_6 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-yellow.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_7 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-blue_light.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  var icon_8 = {
+    url: '/static/Front/dist/assets/svg/svgs/map-icon1/map-2-black.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  }; 
+  
+  //console.log('get_Filter_County_Lat_long');
+  $.ajax({
+    url: '/modelval/get_Filter_County_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'n','State':stateNm,'filter_col':SelectedFilterVal},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data get_Filter_County_Lat_long ', data.FilterCountyLatLong)
+      $.each(data.FilterCountyLatLong, function(i, obj) {              
+        //console.log(obj.CountyName +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        if(SelectedFilterVal=="derived_ethnicity"){
+          //Not Hispanic or Latino,Free Form Text Only,Hispanic or Latino,Joint,Ethnicity Not Available
+          if(obj.FilVal=="Not Hispanic or Latino") iconName=icon_1;
+          else if(obj.FilVal=="Free Form Text Only") iconName=icon_2;
+          else if(obj.FilVal=="Hispanic or Latino") iconName=icon_3;
+          else if(obj.FilVal=="Joint") iconName=icon_4;
+          else if(obj.FilVal=="Ethnicity Not Available") iconName=icon_5;
+        }
+        else if(SelectedFilterVal=="derived_race"){
+          //Free Form Text Only,Black or African American,American Indian or Alaska Native,White,
+          //Native Hawaiian or Other Pacific Islander,2 or more minority races,Joint,Race Not Available,Asian
+          if(obj.FilVal=="Free Form Text Only") iconName=icon_1;
+          else if(obj.FilVal=="Black or African American") iconName=icon_2;
+          else if(obj.FilVal=="American Indian or Alaska Native,White") iconName=icon_3;
+          else if(obj.FilVal=="Native Hawaiian or Other Pacific Islander") iconName=icon_4;
+          else if(obj.FilVal=="2 or more minority races") iconName=icon_5;
+          else if(obj.FilVal=="Joint") iconName=icon_6;
+          else if(obj.FilVal=="Race Not Available") iconName=icon_7;
+          else if(obj.FilVal=="Asian") iconName=icon_8;
+        }
+        else if(SelectedFilterVal=="derived_sex"){
+          //Male,Female,Joint,Sex Not Available
+          if(obj.FilVal=="Male") iconName=icon_1;
+          else if(obj.FilVal=="Female") iconName=icon_2;
+          else if(obj.FilVal=="Joint") iconName=icon_3;
+          else if(obj.FilVal=="Sex Not Available") iconName=icon_4;
+        }
+        else if(SelectedFilterVal=="applicant_age "){
+          //45-54,65-74,>74,<25,55-64,8888,35-44,25-34
+          if(obj.FilVal=="45-54") iconName=icon_1;
+          else if(obj.FilVal=="65-74") iconName=icon_2;
+          else if(obj.FilVal==">74") iconName=icon_3;
+          else if(obj.FilVal=="<25") iconName=icon_4;
+          else if(obj.FilVal=="55-64") iconName=icon_5;
+          else if(obj.FilVal=="8888") iconName=icon_6;
+          else if(obj.FilVal=="35-44") iconName=icon_7;
+          else if(obj.FilVal=="25-34") iconName=icon_8;
+        }
+        else if(SelectedFilterVal=="tract_to_msa_income_percentage"){
+
+        }
+        console.log('SelectedFilterVal : ',SelectedFilterVal,' : obj.FilVal : ',obj.FilVal,' : iconName : ',iconName);
+        markers[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: iconName,            
+            html:obj.CountyName+' : '+obj.RowCnt,
+            animation:google.maps.Animation.DROP
+        });
+        markers[i].set('category', 'county');
+        var ismove = true;
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });          
+          infowindow.open(map);
+        });        
+      }); 
+
+      console.log('Bank Address: ',data)
+      $.each(data.BankBranches, function(i, objB) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objB.B_Lat, objB.B_Long);
+        markers[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: map,
+            icon: icon_bank,
+            html:objB.B_address+' : '+objB.b_city+' : '+objB.b_state+' : '+objB.b_zip,
+            animation:google.maps.Animation.DROP
+        });
+        markers[i].set('category', 'branch');
+        
+        google.maps.event.addListener(markers[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(map);     
+        });      
+      }); 
+    },
+    error: function() { 
+      //alert('error'); 
+    } 
+  });
+  //ScalePanMap('county');
+}
+
+
+
+function clearMarkers(category='') {
+  //alert(len(category));
+  for(var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  /*for(var i = 0; i < markers.length; i++) {
+    if(category.length==0){
+      markers[i].setMap(null);
+    }
+    else{
+      if (markers[i].get('category') == category) {
+        markers[i].setMap(null);
+      }
+    }
+  }*/
+}
+
+function ScalePanMap(category){
+  var bounds = new google.maps.LatLngBounds();
+  for (var i = 0; i < markers.length; i++) {
+    if(markers[i].get('category') == category){
+      bounds.extend(markers[i]);
+    }
+  }
+  //map.fitBounds(bounds);
+  //map.panToBounds(bounds); 
+}
+
+function ShowHideLegend(){   
+    $("#LegendModal").modal('toggle')
+}
+
+function ShowHideMap(){   
+    $("#MergedMapModal").modal('toggle')
+    if($("#MergedMapModal").css("visibility") != "hidden"){      
+      MapMerged();
+    }
+}
+
+function clearMarkersMerged() {
+  //alert(len(category));
+  for(var i = 0; i < markersMerged.length; i++) {
+    markersMerged[i].setMap(null);
+  }
+}
+
+function MapMerged(){
+ 
+  clearMarkersMerged()
+  var icon_bank = {
+    url: '/static/Front/dist/assets/svg/svgs/bank-icon1/bank-4.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_black = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-black.svg',
+    scaledSize: new google.maps.Size(36, 36)
+  };
+  var icon_green = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-green.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };  
+  var icon_red = {
+    url: '/static/Front/dist/assets/svg/svgs/map-pin-red.svg', 
+    scaledSize: new google.maps.Size(36, 36)
+  };  
+  $.ajax({
+    url: '/modelval/get_State_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'y'},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data peer-y', data)
+      $.each(data.StateLatLong, function(i, obj) {              
+        console.log('get_State_Lat_long peer=y : ',obj.state +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, (obj.long * 1.001));
+        markersMerged[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: mapMerged,
+            icon: icon_red,
+            html:obj.state+' : '+obj.RowCnt,
+            animation : google.maps.Animation.DROP
+        });
+        //markersMerged[i].set('category', 'state');        
+        google.maps.event.addListener(markersMerged[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });          
+          infowindow.open(mapMerged);
+        });       
+      }); 
+    }
+  });
+
+  $.ajax({
+    url: '/modelval/get_State_Lat_long/', 
+    data:{ 'activity_year':'2023','peer':'n'},
+    dataType: 'json',   
+    success: function (data) {   
+      console.log('chart_data ', data)
+      $.each(data.StateLatLong, function(i, obj) {              
+        ////console.log(obj.state +',' +obj.lat +','+obj.long)
+        var myLatLng = new google.maps.LatLng(obj.lat, obj.long);
+        markersMerged[i] = new google.maps.Marker({
+            position: myLatLng,
+            map: mapMerged,
+            icon: icon_green,
+            html:obj.state+' : '+obj.RowCnt,
+            animation : google.maps.Animation.DROP
+        });
+        markers[i].set('category', 'state');    
+        
+        google.maps.event.addListener(markersMerged[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          });         
+          //countyMarkers(obj.state);         
+          infowindow.open(mapMerged);
+        });    
+      }); 
+
+
+      console.log('Bank Address: ',data)
+      $.each(data.BankBranches, function(i, objB) {    
+        //alert(objB.B_Lat)          
+        var myLatLngB = new google.maps.LatLng(objB.B_Lat, objB.B_Long);
+        markersMerged[i] = new google.maps.Marker({
+            position: myLatLngB,
+            map: mapMerged,
+            icon: icon_bank,
+            html:objB.B_address+' : '+objB.b_city+' : '+objB.b_state+' : '+objB.b_zip,
+            animation:google.maps.Animation.DROP
+        });        
+        
+        google.maps.event.addListener(markersMerged[i], 'click', function(){
+          var infowindow = new google.maps.InfoWindow({
+            id: this.id,
+            content:this.html,
+            position:this.getPosition()
+          }); 
+          infowindow.open(mapMerged);     
+        });      
+      }); 
+    }
+  });
+
+  
+  //ScalePanMap('state'); 
+}
+
+</script> 
+
+<script>
+   
+   columnsArr=[] 
+      var columns = []
+ var colum = {{querybldrcols|safe}};
+
+ $(document).ready(function(){  
+  HSCore.components.HSTomSelect.init('.js-select')
+    $.each(colum, function(key, value) {
+         
+         item={};
+         item['id']=value.dbColName;
+         item['label']=value.colName;
+         item['type']=value.dataType;
+         if(value.valueLst.length>0){
+           item['values'] = value.valueLst;
+           item['input']='select'; 
+         } 
+         columnsArr.push(item)
+       }) 
+     
+// Fix for Bootstrap Datepicker
+$('#builder').on('afterUpdateRuleValue.queryBuilder', function(e, rule) {
+ if (rule.filter.plugin === 'datepicker') {
+   rule.$el.find('.rule-value-container input').datepicker('update');
+ }
+});
+
+ $('#builder').queryBuilder({
+  
+   plugins: [
+   'sortable',
+ ],
+
+ filters:columnsArr
+});
+
+//When rules changed :
+$('#builder').on('getRules.queryBuilder.filter', function(e) {
+ //console.log(e.value);
+});
+
+
+   $('#btn-get-mongo').on('click', function() { 
+     var result = $('#builder').queryBuilder('getSQL')
+     if (!$.isEmptyObject(result)) { 
+       $("#divquery").val(result.sql)
+         $.ajax({
+           url: '/modelval/query_filter_sql/', 
+           // data:objectDataString,
+           data:{'objectDataString':result.sql},
+           dataType: 'json',   
+           success: function (data) { 
+              if(data.isvalid=='true'){ 
+               charttest(parseInt(data.all_count)-parseInt(data.filter_cnt),data.filter_cnt);
+              }
+              else
+              {
+               alert('Error while adding Function.')
+              }
+           }
+       });
+       }
+     });
+
+     $('#btn-reset').on('click', function() {
+       $('#builder').queryBuilder('reset');
+     });
+
+
+     $('#btn-get-sql').on('click', function() {       
+       var result = $('#builder').queryBuilder('getSQL')
+
+       if (!$.isEmptyObject(result)) { 
+         // console.log(JSON.stringify(result, null, 2))  
+         $("#divquery").val(result.sql)
+         $('#staticBackdropLive').modal('toggle');
+         
+       }
+       var colum = '{{col_list|safe}}';
+       var strQuery='';
+       const data = colum;
+       // const data = ["red", "blue", "green", "yellow", "purple", "orange", "black", "white", "brown"];
+       const autocomplete = document.getElementById("divquery");
+       const resultsHTML = document.getElementById("results");
+
+       autocomplete.oninput = function () {
+         let results = [];
+         const userInput = this.value;
+         resultsHTML.innerHTML = "";
+         if (userInput.length > 0) {
+           results = getResults(userInput);
+           resultsHTML.style.display = "block";
+           for (i = 0; i < results.length; i++) {
+             resultsHTML.innerHTML += "<li>" + results[i] + "</li>";
+           }
+         }
+       };
+
+       function getResults(input) {     
+         input = input.toUpperCase()
+         inputarr=input.split(' ') 
+         input=inputarr[inputarr.length-1]
+         const results = [];
+         for (i = 0; i < data.length; i++) {
+           if (input === data[i].slice(0, input.length).toUpperCase()) { 
+
+             results.push(data[i]);
+           }
+         }  
+         return results;
+       }
+
+       resultsHTML.onclick = function (event) { 
+         $("#divquery").focus();
+         inputarr=autocomplete.value.split(' ') 
+         inputarr[inputarr.length-1]= ''; 
+         const setValue = event.target.innerText;
+         
+         autocomplete.value =inputarr.join(' ')+ " '"+setValue+"'";
+         this.innerHTML = "";
+       };
+
+
+
+     });
+
+   
+     $('#btn-save').on('click', function() { 
+      var result = $('#builder').queryBuilder('getSQL')
+     if (!$.isEmptyObject(result)) { 
+       $("#divquery").val(result.sql)
+         $.ajax({
+           url: '/modelval/save_filter_sql/', 
+           // data:objectDataString,
+           data:{'objectDataString':result.sql,'utiltity':'Redlining'},
+           dataType: 'json',   
+           success: function (data) { 
+              if(data.is_taken =='true'){
+                getAIR();
+                $('#divFilterSel').modal('toggle')
+              }
+           }
+       });
+       }
+     
+     })
+
+     $('#btn-set-sql').on('click', function() { 
+       try {
+         input_val = $( "#divquery" ).val() 
+         $('#builder').queryBuilder('setRulesFromSQL', input_val);
+         $('#btn-get-mongo').click()
+       }
+       catch(err) {
+         alert("Invalid statement")
+       }
+       
+     });
+
+    
+  })
+     
+      function charttest(x,y){
+      var chartDom = document.getElementById('charttest');
+  var myChart = echarts.init(chartDom);
+  var option;
+ 
+
+option = {
+  title: {
+    text: 'Total Records '+(parseInt(x)+parseInt(y)),
+     
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    show:false
+  },
+  series: [
+    { 
+      type: 'pie',
+      radius: '50%',
+      label: {
+        show: true,
+        formatter(param) {
+          // correct the percentage
+          return param.name + '  (' + param.data.value + ')';
+        }
+      },
+      data: [
+        { value: y, name: 'Matching' },
+        { value: x, name: 'Not Macthing' }, 
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+    option && myChart.setOption(option);
+    myChart.on('click', params => {   
+        var result = $('#builder').queryBuilder('getMongo'); 
+        var objectDataString = JSON.stringify(result, null, 2);
+        objectDataString='{"$and": [ {"file_id":{{file_id}}},'+objectDataString+']}';
+        //document.location.href = "/viewFiltredDataType?objectDataString=" +JSON.stringify(objectDataString);
+        $.ajax({
+            url: '/viewFiltredDataType/', 
+            data:{'objectDataString':JSON.stringify(objectDataString),segment: params.name},
+            // data:objectDataString,
+            dataType: 'json',   
+            success: function (data) {  
+               if(data.isvalid=='true'){
+                alert("successfully save")
+               }
+               else
+               {
+                alert('Error while adding Function.')
+               }
+            }
+          });
+      })
+
+    }
+ 
+    var tabSelected='Redlining' 
+    var rowIdx=1;
+    $('#divArrCols').empty()
+    addRow();
+    getAIR();
+     
+    
+    function getDistVals(id){ 
+      $('#ddlColVal_'+id.split('_')[1]).empty()
+      $.ajax({
+        url: '/modelval/getDistinct_Col_Val/', 
+        data:{'colName':$('#'+id).val(),'activity_year':'2023'},
+        dataType: 'json',   
+        success: function (data) { 
+           
+          if(Object.keys(data.arrCols).length ==1 && data.arrCols[0].distVals =="UserInput"){
+            $('#txtColVal_'+id.split('_')[1]).show()
+            $('#ddlColVal_'+id.split('_')[1]).hide()
+          }
+          else{
+            $.each(data.arrCols, function(i, obj) {             
+              $('#ddlColVal_'+id.split('_')[1])
+            .append($('<option>', { value : obj.distVals })
+            .text(obj.distVals));
+              // strRow+=' <option value="'+obj.ColumnName+'">'+obj.ColumnName+'</option>'
+            });
+            $('#txtColVal_'+id.split('_')[1]).hide()
+            $('#ddlColVal_'+id.split('_')[1]).show()
+            $('#txtColVal_'+id.split('_')[1]).val($("#ddlColVal_"+id.split('_')[1]).val());
+          }
+          
+        }
+      });
+    }
+
+
+
+    function OptionSelected(){
+      
+      updatedata=[]
+      for (var i=1;i<rowIdx;i++){ 
+        item = {}  
+          item["Col_Nm"] =$('#ddlColNm_'+i).val();
+          item["Col_Oprtr"]=$('#ddlOprtr_'+i).val()
+          item["Col_Val"] =$('#txtColVal_'+i).val();
+          updatedata.push(item); 
+      }
+      if(updatedata.length>0){
+        $.ajax({
+          url: '/modelval/updateCtrl_Class/', 
+          data:{ datalist: JSON.stringify(updatedata),'selctedTab':tabSelected},
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){
+                alert('Saved Successfully.');
+                getAIR();
+                $('#divControlClassSel').modal('toggle');
+              }
+          }
+        }); 
+      }  
+    }
+    
+    function getTabIdx(id){      
+      if(id=='Underwriting'){ 
+        window.location='{{getUnderwriting_Dashb_Varwise}}'
+      }
+      else if(id=='Marketing'){ 
+        window.location='{{getMarketing_Dashb_Varwise}}'
+      }
+      else if(id=='Steering'){ 
+        window.location='{{getSteering_Dashb_Varwise}}'
+      }
+      else if(id=='Pricing'){ 
+        window.location='{{getPricing_Dashb_Varwise}}'
+      }
+      else if(id=='Redlining'){ 
+        window.location='{{getRedlining_Dashb}}'
+      }
+	  else if(id=='MatchedPair'){ 
+        window.location='{{getMatchedPair_Dashb_Varwise}}'
+      }
+    }
+
+    function setColVal(rowIdx){
+      $('#txtColVal_'+rowIdx).val($("#ddlColVal_"+rowIdx).val());
+    }
+
+    function filterPeerGrpData()
+    { 
+      $.ajax({
+          url: '/modelval/updatePeerGroup/', 
+          data:{ peergroups:$('#ddlPeer').val(),'selctedTab':'Redlining'},
+          dataType: 'json',
+          success: function (data) { 
+              if(data.istaken=="true"){  
+                getAIR(); 
+              }
+          }
+        });
+    }
+    
+    function addRow(){
+      var arrList={{ctrl_cols|safe}};  
+      strRow='';
+      strRow+=' <div class="row" style="margin-top: 1rem;">';
+      strRow+='     <label class="col-sm-2 col-form-label" for="txtRegDt"> Column </label> ';
+      strRow+='     <div class="col-sm-4">     ';
+      strRow+='      <select id="ddlColNm_'+rowIdx+'" onchange="getDistVals(this.id)" class="form-select" data-choices="data-choices"> ';
+        $.each(arrList, function(i, obj) {   
+        strRow+=' <option value="'+obj.Database_Fields+'">'+obj.ColumnName+'</option>'
+      });
+
+      strRow+='       </select> ';
+      strRow+='     </div>    ';
+      strRow+='     <div class="col-sm-2">     ';
+      strRow+='      <select id="ddlOprtr_'+rowIdx+'" class="form-select" data-choices="data-choices" style="width:70px;"> ';
+      strRow+=' <option value="=" selected>=</option>'  
+      strRow+=' <option value="<>"><></option>'  
+      strRow+=' <option value=">">></option>'  
+      strRow+=' <option value=">=">>=</option>'  
+      strRow+=' <option value="<"><</option>'  
+      strRow+=' <option value="<="><=</option>'  
+      strRow+='      </select>';
+      strRow+='  </div>  ';   
+      strRow+='     <div class="col-sm-4">     ';
+      strRow+='      <select id="ddlColVal_'+rowIdx+'" onchange="setColVal('+rowIdx+')" class="form-select" data-choices="data-choices" > ';
+  
+      strRow+='      </select> <input type="text" id="txtColVal_'+rowIdx+'" class="form-control" style="display:none;"/>';
+      strRow+='  </div>  ';                        
+      strRow+='   </div> ';
+      $('#divArrCols').append(strRow)
+      rowIdx+=1;
+    }
+
+    function getAIR(){   
+   
+        }
+    </script>
+  {%endblock script %}

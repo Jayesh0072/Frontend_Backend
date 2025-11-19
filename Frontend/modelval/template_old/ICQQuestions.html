@@ -1,0 +1,249 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block style %}
+<style> 
+     table, th, td {
+  border: 0px solid gray;
+  border-collapse: collapse;
+  padding: 0px 5px;
+  vertical-align: top;
+}
+</style>
+{% endblock style %}
+{% block content %}
+<form id="forICQQtns"  method="post" action="{{ICQQtnsFinal}}" class="row g-3">
+    {% csrf_token %}
+<div class="content" style="padding-top:0px;width:96%;margin-left: 2%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">MRM Internal Control Questionnaire</h4>
+                </div>  
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy">  
+                <div  style="height: 450px;overflow: auto; padding-left: 25px;padding-inline-start: 25px;">
+                    <div class="row mb-3 position-relative" style="width:100%"> 
+                      <table style="color:#3e465b;"> 
+                        <tbody>
+                            {% for key, val in Qtns.items  %} 
+                                 
+                                
+                                {% if  val.Sub_Sub_Section_Label != '' %}
+                                <tr class="tr_{{val.Section_AID}}"  style="display: none;"> 
+                                    <td  style="margin-left: 0px;" >       {{ val.qtnNo }} </td>
+                                    <td  style="margin-left: 0px;">   
+                                      <div class="row position-relative">                                    
+                                      
+                                        <div class="col-auto">  {{val.Sub_Sub_Section_Label}} </div>                                        
+                                        <div style='width:17px;'><i id='tggl_{{val.Section_AID}}' onclick="addNewQtn('section','{{val.Section_AID}}','{{val.Sub_Section_AID}}','{{val.Sub_Sub_Section_AID}}')" class='far fa-calendar-plus' style='cursor:pointer;' ></i></div>
+                                      </div>  
+                                    </td>
+                                </tr>                                         
+                                {% elif   val.Sub_Section_Label != '' %}
+                                <tr class="tr_{{val.Section_AID}}"  style="display: none;"> 
+                                    <td  style="margin-left: 0px;">       {{ val.qtnNo }} </td>
+                                    <td  style="margin-left: 0px;">  
+                                      <div class="row position-relative">  
+                                       
+                                      
+                                      <div class="col-auto">  {{val.Sub_Section_Label}} </div>
+                                      
+                                      <div style='width:17px;'><i id='tggl_{{val.Section_AID}}' onclick="addNewQtn('section','{{val.Section_AID}}','{{val.Sub_Section_AID}}','')" class='far fa-calendar-plus' style='cursor:pointer;' ></i></div>
+                                    </div>    
+                                  </td>
+                                </tr>
+                                {% elif   val.Section_Label != '' %}
+                                    <tr id="tr_{{val.Section_AID}}" style="height: 30px; background-color: #EDE7E6;">
+                                        <td colspan="2" style="margin-left: 0px; vertical-align: middle;">   
+                                          <div class="row position-relative">  
+                                            <div style='width:17px;'><i id='exp_{{val.Section_AID}}' class='far fa-plus-square' style='margin-right:5px;cursor:pointer;' 
+                                            onclick="hidedata('tr_{{val.Section_AID}}')"></i></div>
+                                          
+                                          <div class="col-auto"> <b>{{val.Section_Label}}</b></div>
+                                          
+                                          <div style='width:17px;'><i id='tggl_{{val.Section_AID}}' onclick="addNewQtn('section','{{val.Section_AID}}','','')" class='far fa-calendar-plus' style='cursor:pointer;' ></i></div>
+                                        </div>   
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <div style="height: 10px;"></div></td>
+                                    </tr>
+                                    <tr class="tr_{{val.Section_AID}}"  style="display: none;">
+                                        <th width="7%" style="vertical-align: top;text-align: center;" >Q #</th>
+                                        <th width="93%" style="vertical-align: top;text-align: center;" >Questions</th>
+                                       
+                                    </tr>
+                                {% endif %}                                                               
+                                
+                                {% if val.qtnsArr != "" %}
+                                <tr class="tr_{{val.Section_AID}}" style="display: none;;">      
+                                    <td style="margin-left: 5px;padding-bottom: 10px">{{ val.qtnNo }} <input type="hidden" id="hdn_{{forloop.counter}}" value="{{val.qtn_aid}}"/></td>                                     
+                                    <td style="margin-left: 5px;padding-bottom: 10px">{{val.qtnsArr}}</td>  
+                                     
+                                </tr>
+                                 {% endif %} 
+                                 {% if forloop.last %} 
+                                    <input type="hidden" value="{{forloop.counter}} " id="hdnMaxCnt"/>
+                                  {% endif %} 
+                            {% endfor %} 
+                        </tbody>
+                    </table> 
+                              <!-- {% for key, val in Qtns.items  %}   
+                                        {% if  val.Sub_Sub_Section_Label != '' %}
+                                        <div class="row position-relative"> <div style="width: 8%;margin-left: 30px;" > {{ val.qtnNo }}</div><div class="col-auto">{{val.Sub_Sub_Section_Label}}</div> <div style='width:17px;'><i id='tggl_{{val.Section_AID}}' onclick="addNewQtn('section','{{val.Section_AID}}','{{val.Sub_Section_AID}}','{{val.Sub_Sub_Section_AID}}')" class='far fa-calendar-plus' style='cursor:pointer;' ></i></div>
+                                        </div>
+                                                                            
+                                      {% elif   val.Sub_Section_Label != '' %}
+                                           <div class="row position-relative">
+                                            <div style="width: 8%;margin-left: 30px;" > {{ val.qtnNo }}</div><div class="col-auto"> {{val.Sub_Section_Label}} </div> <div style='width:17px;'><i id='tggl_{{val.Section_AID}}' onclick="addNewQtn('section','{{val.Section_AID}}','{{val.Sub_Section_AID}}','')" class='far fa-calendar-plus' style='cursor:pointer;' ></i></div>
+                                          </div> 
+                                      {% elif   val.Section_Label != '' %}
+                                        </div><div id="div_{{val.Section_AID}}" style="height: 20px;margin-bottom: 5px;overflow-x: hidden;">  
+                                           <div class="row position-relative">  
+                                            <div style='width:17px;'><i id='exp_{{val.Section_AID}}' class='far fa-plus-square' style='margin-right:5px;cursor:pointer;' 
+                                            onclick='toggleHeight("div_{{val.Section_AID}}","{{val.Section_AID}}")'></i></div>
+                                          
+                                          <div class="col-auto"> <b>{{val.Section_Label}}</b></div>
+                                          
+                                          <div style='width:17px;'><i id='tggl_{{val.Section_AID}}' onclick="addNewQtn('section','{{val.Section_AID}}','','')" class='far fa-calendar-plus' style='cursor:pointer;' ></i></div></div>  
+                                      {% endif %}  
+                                      {% if val.qtnsArr != "" %}
+                                        <div class="row position-relative">
+                                          <div style="width: 8%;margin-left: 30px;" > {{ val.qtnNo }}</div><div class="col-10">  {{val.qtnsArr}}</div>  
+                                        </div>   
+                                           
+                                      {% endif %}  
+                              {% endfor %}   -->
+                    </div>           
+                </div>
+
+                <div class="col-12 gy-6" style="margin-top: 15px;">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div> 
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="addNew()"   value="Add New"/>
+                      </div> 
+                                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">New Question</h5>
+              <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+            </div>
+            <div class="modal-body">
+               <textarea id="txtQtn" rows="2" resize="false" style="width:98%"></textarea>
+               <input type="hidden" id="hdnSelcteditem"/>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary" type="button" onclick="save()">Add</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    $( document ).ready(function() { 
+    $("#ddlModel").val('{{modelid|safe}}')
+    $('#ddlSection').val('{{sectionid|safe}}')
+});
+      
+
+    function gotolist()
+    {
+        window.location='{{blank}}'
+        
+    }
+
+    function addNew()
+    {
+        window.location='{{addICQQtns}}'
+    }
+
+    function addNewQtn(type,sec,subsec,subsubsec){
+        console.log(type,sec,subsec,subsubsec)
+        $("#hdnSelcteditem").val(type+'-'+sec+'-'+subsec+'-'+subsubsec);
+        $("#exampleModal").modal('toggle')
+    }
+
+    function save()
+    {
+        console.log($("#hdnSelcteditem").val().split('-'))
+        if($("#txtQtn").val().trim().length<1)
+      {
+          alert('Please enter question.')
+          return false
+      } 
+      console.log("addICQ_Qtns") 
+      $.ajax({
+          url: '/add_question/', 
+          data:{section:$("#hdnSelcteditem").val().split('-')[1],sub_section: $("#hdnSelcteditem").val().split('-')[2],
+          sub_sub_section:$("#hdnSelcteditem").val().split('-')[3],sub_sub_sub_section:'',question:$('#txtQtn').val()},
+         dataType: 'json',   
+          success: function (data) { 
+            console.log(data,data.is_taken==true,data.is_taken=='true')
+             if(data.is_taken==true){
+              alert('Question added successfully.')
+              $("#forICQQtns").submit();
+             }
+             else
+             {
+              alert('Error while creating user.')
+             }
+          }
+      });
+    }
+
+    function toggleHeight(id,ctrlId){ 
+    console.log(ctrlId) 
+    if ( $("#"+id).height() != 20){
+        $("#"+id).css('overflow','hidden');
+        $("#"+id).css( 'height',20);
+        $("#exp_"+ctrlId).removeClass("far fa-minus-square");
+        $("#exp_"+ctrlId).addClass("far fa-plus-square");
+        
+    }
+    else{
+        $("#"+id).css('overflow-x','hidden');  
+        $("#"+id).css( 'height','');
+        $("#exp_"+ctrlId).removeClass("far fa-plus-square");
+        $("#exp_"+ctrlId).addClass("far fa-minus-square");
+    }
+}
+
+function hidedata(id){ 
+        $("."+id).slideToggle()
+        if( $("#exp_"+id.split('_')[1]).attr("class").indexOf('fa-square-plus')>0){
+            $("#exp_"+id.split('_')[1]).removeClass("far fa-plus-square");
+            $("#exp_"+id.split('_')[1]).addClass("far fa-minus-square");
+        }
+        else{
+            $("#exp_"+id.split('_')[1]).removeClass("far fa-minus-square");
+        $("#exp_"+id.split('_')[1]).addClass("far fa-plus-square");
+         
+        }
+       
+    }
+</script>
+{% endblock script %}

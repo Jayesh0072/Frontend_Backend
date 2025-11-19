@@ -1,0 +1,1389 @@
+{% extends 'rmsebase.html' %} 
+{% url 'exportReport' as exportReport %} 
+{% url 'openFile' as openFile %} 
+{% load static %} 
+{% block style %} 
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">  -->
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet" media="all"> 
+<style>
+    .fullCircleGreen
+{
+  width: 20px;
+  height:20px;
+  bordeR: 1px solid;
+  border-radius: 50%;
+  border-color:green;
+  background-color: green;
+  margin-left: 5px;
+  }
+
+.fullCircleRed
+{
+  width: 20px;
+  height:20px;
+  bordeR: 1px solid;
+  border-radius: 50%;
+  border-color:red;
+  background-color: red;
+  margin-left: 5px;
+  }
+  
+  .blob {
+	background: orange;
+	border-radius: 50%;
+	margin: 7px 0px 0px 0px;
+	height: 15px;
+	width: 15px;
+
+	box-shadow: 0 0 0 0 rgb(228, 100, 15);
+	transform: scale(1);
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(255, 165,0, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255, 165,0, 0);
+	}
+}
+
+/* Speech bubble with a border */
+
+.bubble {
+	position: absolute;
+	background: #292b37;;
+	border: 1px solid #292b37;
+    color: white;
+    padding: 5px;
+}
+.bubble:after, .bubble:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: "";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.bubble:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-right-color: #292b37;
+	border-width: 10px;
+	margin-top: -10px;
+}
+.bubble:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-right-color: #292b37;
+	border-width:11px;
+	margin-top: -11px;
+}
+</style>
+<style>
+  
+    .fs--2 {
+      font-size: .64rem !important;
+      font-weight: 600 !important;
+    }
+    .chat .chat-message .received-message-content {
+        position: relative;
+    }
+    .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):before {
+        content: " ";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: -12px;
+        right: auto;
+        top: -1px;
+        bottom: auto;
+        border: 11px solid;
+        border-color: #e3e6ed rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    }
+    .chat .chat-message .received-message-content:not(.chat .chat-message .received-message-content.gallery):after {
+        content: " ";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: -10px;
+        right: auto;
+        top: 0px;
+        bottom: auto;
+        border: 10px solid;
+        border-color: #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    } 
+    .chat .chat-message_sent .sent-message-content {
+      position: relative;
+    }
+    .chat .chat-message_sent .sent-message-content:not(.chat .chat-message .sent-message-content.gallery):after {
+       
+      content: " ";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: auto;
+        right: -12px;
+        top: auto;
+        bottom: 0;
+        border: 12px solid;
+        border-color:transparent transparent #3874ff  transparent; 
+    }
+    
+    .flex-end-center {
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    
+     
+    .flex-1 {
+      -webkit-box-flex: 1;
+    
+      -ms-flex: 1;
+    
+      flex: 1;
+    
+    }
+      .support-chat-container {
+      display: none;
+      &.show {
+        display: block;
+      }
+    }
+    .support-chat {
+      position: fixed;
+      bottom: map-get($spacers, 7);
+      right: 0;
+      max-width: 27.87rem;
+      width: 100%;
+      transform: scale(0);
+      opacity: 0;
+      transform-origin: bottom right;
+      z-index: 1045;
+      transition: 0.3s ease-out;
+      padding-bottom: map-get($spacers, 7);
+      .support-chat-start & {
+        right: auto;
+        left: 0;
+        transform-origin: bottom left;
+      }
+      .support-chat-bottom-lg & {
+        bottom: map-get($spacers, 11);
+      }
+      @include media-breakpoint-up(sm) {
+        right: map-get($spacers, 3);
+        .support-chat-start & {
+          left: map-get($spacers, 3);
+        }
+      }
+      @include media-breakpoint-up(lg) {
+        right: map-get($spacers, 5);
+        .support-chat-start & {
+          left: map-get($spacers, 5);
+        }
+      }
+      .card {
+        box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+        .dark & {
+          box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+        }
+      }
+      .card-body {
+        height: 27rem;
+      }
+      &.show-chat {
+        transform: scale(1);
+        opacity: 1;
+      }
+      .send-btn {
+        width: 37.06px;
+        height: 37.06px;
+        border-radius: 50%;
+        color: var(--#{$prefix}primary);
+        &:hover {
+          background-color: var(--#{$prefix}gray-100);
+          color: var(--#{$prefix}primary-500);
+        }
+        &:active {
+          background-color: var(--#{$prefix}gray-200);
+          color: var(--#{$prefix}primary-500);
+        }
+      }
+    }
+    .btn-chat-close {
+        border-radius: 50%;
+        width: 3rem;
+        .btn-text,
+        .fa-circle {
+          display: none;
+        }
+        .fa-chevron-down {
+          display: block;
+        }
+      }
+    .support-chat + .btn-support-chat {
+      position: fixed;
+      bottom: map-get($spacers, 6);
+      right: map-get($spacers, 3);
+      width: 9rem;
+      height: 3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-color: var(--#{$prefix}white) !important;
+      z-index: 1045;
+      border-radius: var(--#{$prefix}border-radius-pill);
+      box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+      transition: 0.3s ease;
+      .dark & {
+        box-shadow: 0px 0px 32px 10px rgba(0, 0, 0, 0.41);
+      }
+      .support-chat-start & {
+        right: auto;
+        left: map-get($spacers, 3);
+      }
+      .support-chat-bottom-lg & {
+        bottom: map-get($spacers, 10);
+      }
+      @include media-breakpoint-up(sm) {
+        right: map-get($spacers, 5);
+        .support-chat-start & {
+          left: map-get($spacers, 5);
+        }
+      }
+      @include media-breakpoint-up(lg) {
+        right: map-get($spacers, 7);
+        .support-chat-start & {
+          left: map-get($spacers, 7);
+        }
+      }
+      &:hover {
+        background-color: var(--#{$prefix}gray-100) !important;
+      }
+      .fa-chevron-down {
+        display: none;
+      }
+      .btn-chat-close {
+        border-radius: 50%;
+        width: 3rem;
+        .btn-text,
+        .fa-circle {
+          display: none;
+        }
+        .fa-chevron-down {
+          display: block;
+        }
+      }
+    }
+    
+    
+    
+    </style>
+{% endblock style %}
+{% block content %}
+<form action="" method="POST" onsubmit="submitForm(event)">
+    {% csrf_token %}
+<div class="col-lg-2">
+       
+</div> 
+<div style="margin-left:auto;display: flex; justify-content:center;"> 
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row form-group" style="margin-bottom: 0px;">
+                    <div class="col col-md-10">
+                        Conceptual Soundness
+                    </div>
+                     <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">         
+                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                            
+                            <a href="{{ occpae42 }}" style="color:black;width:20px" id="downHelp" target="_blank">
+                                <img src='\static\images\help.png' title="Reg. Help"  style='cursor:pointer;' />
+                            </a>
+                        </div>
+                    </div>  
+                    <div class="col-12 col-md-1" style="display: flex;justify-content: flex-end;">          
+                        <div style="border:solid 0px;border-radius: 4px; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;font-size: 16px;display: flex;flex-direction: row;align-items: center;">                  
+                            <i class="bi bi-chat-right-quote"  style='cursor:pointer;' onclick="$('#divVT_Comm_Chat').modal('toggle')" ></i>
+                         </div> 
+                   </div>                
+                </div>
+            </div>
+            <div class="card-body card-block" style="padding-bottom: 0;">
+                <div class="row form-group"> 
+                    <div class="col-12 col-md-4" style="display: flex; justify-content: flex-start; margin-left:1px; margin-bottom:5px;"> 
+                        <div style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:0px;text-align:center;line-height:20px;">
+                            <img src="\static\images\addtitle.png" onclick="showTitles()" title="Add Title" style="cursor:pointer;">
+                            <!-- <a href="#" style="color:black;"> &nbsp;<i class="fa fa-text-width" style="font-size: 12px;"  onclick="showTitles()" title="Add Title"></i> </a> -->
+                        </div> 
+                        <div style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <img src="\static\images\save.png" onclick="addToReport()" title="Save" style="cursor:pointer;">
+                            <!-- <a href="#" style="color:black;"> &nbsp;<i class="fa fa-edit" style="font-size: 12px;"  onclick="addToReport()" title="Add comment"></i> </a> -->
+                        </div> 
+                        <div style="display:none;border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <img src="\static\images\addimage.png" onclick="showImages()" title="Insert Figures/Tables" style="cursor:pointer;">
+                            <!-- <a href="#"  style="color:black;" onclick="showImages()" > &nbsp;<i class="fa fa-picture-o" style="font-size: 12px;" title="Insert picture"></i> </a> -->
+                        </div>  
+                        <div style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:21px;">
+                            <img src="\static\images\equation.png" title="Equation Editor" style="cursor:pointer;">
+                        </div>  
+                        <div style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <img src="\static\images\symbol.png" title="Symbols" style="cursor:pointer;">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4"   style="display: flex; justify-content:center; margin-left:1px; margin-bottom:5px;"> 
+                      
+                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <img src='\static\images\documents.png'  title="Documents" style='cursor:pointer;' onclick="showDocs()"/>
+                        </div>   
+                        <div  style="display:none;border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <img src='\static\images\reference.png'  title="References" style='cursor:pointer;' onclick="showReferences()"/>
+                        </div>  
+                    </div>
+                    <div class="col-12 col-md-4"   style="max-width: 33%;display: flex; justify-content: flex-end; margin-left:1px; margin-bottom:5px;"> 
+                        <div style="display:none;border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <img src='\static\images\previewcomment.png' onclick="showRptPrv()" title="Preview" style='cursor:pointer;'/>
+                            <!-- <a href="#"  style="color:black;" onclick="showRptPrv()"> &nbsp;<i class="fa fa-check-square-o" style="font-size: 12px;" title="Preview"></i> </a> -->
+                        </div> 
+                        <!-- <div style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <img src='\static\images\save.png' onclick="generateReport()" title="Save" style='cursor:pointer;'/>
+                            to be commented <a href="#"  style="color:black;" onclick="generateReport()"> &nbsp;<i class="fa fa-save" style="font-size: 12px;" title="Save"></i> </a> 
+                        </div>   -->
+                        <div  style="display:none;border:solid 1px #b0acab; width: 24x;height:24px; margin-left:4px;text-align:center;line-height:20px;">
+                            <a href="{{ pdfFile }}" style="color:black;width:20px"  download id="downRpt" target="_blank"> <img src='\static\images\download.png'  title="Export to pdf" style='cursor:pointer;' /> </a>
+                        </div>
+                        <div  style="display:none;border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                            <img src='\static\images\processstatus.png' onclick="showProcess()" title="Process status"  style='cursor:pointer;'/>
+                        </div>
+                        <div  style="border:solid 1px #b0acab; width: 24px;height:24px; margin-left:4px;text-align:center;line-height:20px;">   
+                            <img src='\static\images\help.png' title="Help"  style='cursor:pointer;'/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group"> 
+                    <div class="col-12 col-md-12">
+                            <textarea id="txtComments" rows="15" style="resize: none;width: 100%;font-size: 10pt;" class="form-control form-control-sm"></textarea>
+                    </div>
+                </div>
+            </div>  
+            <div class="card-footer">
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                        <div class="col-auto">
+                            <button class="btn btn-primary px-5" type="button" onclick="goNext()">Next</button>
+                        </div>
+                    </div>  
+                </div>
+            <!-- <div class="card-footer">  
+                <div class="row" style="display: flex; justify-content: flex-end">  
+                    <button  class="btn btn-primary btn-sm" onclick="goNext()" style="margin-left: 10px;" type="button">Next</button>
+                </div>
+            </div> -->
+        </div>
+    </div>   
+</div> 
+
+<div id="divTitles" class="modal fade"    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLiveLabel">Add Title</h5>
+        
+        </div>
+        <div class="modal-body"> 
+            <div style="width:100%"> 
+                <div class="row form-group">
+                    <div class="col-12 col-md-12"> 
+                        <select id="selectSecTitle" onchange="getTitle()" class="form-control-sm form-control"> 
+                            <option value="0">Select Title</option>
+                            <option value="1">Literature Reviewast/Similar Model Reference</option>
+                            <option value="2">Consideration Of Alternative Theories</option>
+                            <option value="3">Model Assumptions</option>
+                            <option value="4">Appropriate Model (Reasoning Aligned With Business And Data)</option>
+                            <option value="5">Splitting Data</option>
+                            <option value="6">Data Sampling</option>
+                            <option value="7">Data Transformation</option>
+                            <option value="8">Standardize Features (Normalization)</option>
+                            <option value="9">Variable Selection (Quantitative & Qualitative)</option>
+                            <option value="10">Balance Data (Automated)</option>
+                            <option value="11">Different Methods/Algorithms</option>
+                            <option value="12">Tune Parameters (Random And Grid Search)</option>
+                            <option value="-1">Add New</option>  
+                </select>
+                <input type="text" style="border-color: black;display: none;" id="txtTitle"  class="form-control-sm form-control">
+                <input type="text" style="border-color: black;display: none;" id="txtTitleCnt" value="0"  class="form-control-sm form-control">
+            </div> 
+            
+                    
+                    
+                </div> 
+                
+           </div> 
+        </div>
+        <div class="modal-footer"> 
+          <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="$('#divTitles').modal('toggle')">Close</button>
+          <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="addTitles()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="divDeleteComment" title="Delete comment" style="display: none;width:70%;height: 70%;">
+    <div class="row form-group"> 
+        <div class="col-12 col-md-12">  
+            Are you sure you want to delete comment?
+        </div>
+    </div>
+</div>
+
+<div id="divReferences" title="Policies" style="display: none;width:70%;height: 70%;">
+    <div class="row form-group"> 
+        <div class="table-responsive table--no-card m-b-40">
+            <table id="policies" class="table table-borderless table-striped table-earning">
+                <thead>
+                    <tr> 
+                        <th style="padding: 10px 0px 10px 10px;">Policy</th> 
+                        <th style="padding: 10px 0px 10px 10px;">Reference</th> 
+                        <th style="padding: 10px 0px 10px 10px;">Add</th>    
+                    </tr>
+                </thead>  
+                <tbody>
+                {% for data in policiesLst %} 
+                        <tr>
+                            <!-- <td  style='display: none;'>{{data.policyIdx}}</td>    -->
+                            <td>{{data.policy}}</td>                                                                            
+                            <td>{{data.reference}}</td> 
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn_{{data.policyIdx}}" onclick="addRefer('{{data.policy}}','{{data.reference}}')">Add</button> 
+                            </td>
+                        </tr> 
+                {% endfor %}
+                </tbody>
+               </table>
+        </div>
+    </div>
+</div>
+
+ 
+    <div class="modal fade" id="divDocs" tabindex="-1" aria-labelledby="divDocs" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="scrollingLongModalLabel2">Model Documents</h5>
+              <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+            </div>
+            <div class="modal-body p-5 px-md-6">
+    <div class="row form-group"> 
+        <div class="table-responsive table--no-card m-b-40"> 
+            <table id="tbldocs" class="table table-borderless table-striped table-earning">
+                <thead>
+                    <tr> 
+                        <th style="padding: 10px 0px 10px 10px;">Document Type</th> 
+                        <th style="padding: 10px 0px 10px 10px;">Document Name</th>  
+                    </tr>
+                </thead>  
+                <tbody>
+                   
+                    {% for key, data in modelDocs.items %} 
+                        <tr> 
+                                <td>
+                                    <div style="display: flex;">
+                                        <div style="margin-right: 10px;"> {{data.Mdl_Doc_Type}}</div>   
+                                        <!-- <div class="blob" id="div_{{data.docIdx}}" title="View Comments" onclick="showdocCom(this.id,'{{data.docref}}')"></div> -->
+                                    </div>
+                                </td>     
+                            <td><a href="\static\document_files\{{selectedMdl}}\{{data.Mdl_Doc_Name}}"  target="_blank">{{data.Mdl_Doc_Name}}</a></td>                                                                                             
+                              
+                        </tr> 
+                    {% endfor %}
+                <!-- {% if modelUsage%}
+                <tr>
+                    <td>Model Usage</td>                                                                            
+                    <td><a href="{{modelUsageFile}}" target="_blank">Model Owner's Comments</a></td>                          
+                </tr> 
+                {% endif %} -->
+                </tbody>
+               </table>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+  <!-- <a class="nav-link" href="http://3.131.88.246:8000" target="_blank" data-bs-toggle="" aria-expanded="false">           
+    <button class="btn btn-sm btn-primary px-6">Validate Model</button>
+  </a>
+  <a class="nav-link" href="#" data-bs-toggle="" aria-expanded="false">           
+    <button class="btn btn-sm btn-primary px-6">Version History</button>
+  </a> -->
+  <button class="btn btn-outline-primary" type="button" id="btnOk"   data-bs-dismiss="modal">Ok</button>
+</div>
+</div>
+</div>
+</div> 
+
+<div id="divRptPrv" title="Preview comment (Double click to edit text. Right click to delete text.)" style="display: none;width:70%;height: 70%;" >
+    <div class="row form-group"> 
+        <div class="col-12 col-md-12"> 
+
+             <div id="divReportOutput" style="font-size: 12pt;border:1px solid black;width: 100%;height: 500px;white-space: pre-wrap;overflow: scroll;"></div>
+        </div>
+    </div>
+</div>
+<div id="divProcesStatus" title="Process Status" style="display: none;width:70%;height: 70%;" >
+    <div class="row form-group"> 
+        <div class="col-12 col-md-12"> 
+            <div class="table-responsive table--no-card m-b-40">
+                <table id="missingData" class="table table-borderless table-striped table-earning">
+                <thead>
+                    <tr>
+                        <th>Process</th>
+                        <th>Status</th> 
+                    </tr>
+                </thead>  
+                <tbody>      
+                    {% for data in df %}
+                    <tr> 
+                        <td>
+                            {{data.Process}}
+                        </td>
+                        <td>
+                            <!-- {{data.Status}} -->
+                            {% if data.Status == 'Done' %}
+                                <div class="fullCircleGreen"></div>
+                            {% else %}
+                                <div class="fullCircleRed"></div>                                                 
+                            {% endif %}
+                        </td>                                            
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div> 
+        </div>
+    </div>
+</div>
+<div id="divImg" title="Add image" style="display: none;width:70%">
+    <div style="width:100%"> 
+            
+        <div class="row form-group"> 
+            <div class="col-12 col-md-2" style="max-width: 10%;padding-right: 0px;"> 
+                Image <a   href="" download id="downChartRpt" target="_blank" style="display: none;color: Red; margin-left:10px"> 
+                    <i class="fa fa-external-link"  style="font-size: 12px;"></i> </a>
+            </div>
+            <div class="col-12 col-md-3"> 
+                <select  id="selectImg" class="form-control" style="height: 30px;" onchange="getImg()">        
+                    <option value="Select">Select</option> 
+                    {% for data in imgFiles %}
+                        <option  value="{{data.destination}}">{{data.chartType}} - {{data.chartImg}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12 col-md-2"> 
+                <select  id="selectImgAlign" class="form-control" style="height: 30px;">        
+                    <option value="Select">Align</option>  
+                    <option value="left">Left</option>  
+                    <option value="center">Center</option>  
+                    <option value="right">Right</option>  
+                </select>
+            </div>
+            <div class="col-12 col-md-3" style="max-width: 30%;">
+                <input type="text" style="border:1px solid black;width:100%;text-align: center;" placeholder="Image Title" value="{{imgPDFFile}}"  id="txtImgTitle"/> 
+            </div>
+            <div class="col-12 col-md-2"> 
+                <select  id="selectTitleAlign" class="form-control" style="height: 30px;">        
+                    <option value="Select">Align</option>  
+                    <option value="top">Top</option>  
+                    <option value="bottom">Bottom</option>   
+                </select>
+            </div>
+        </div>
+        <div class="row form-group"> 
+
+            <div class="col-12 col-md-2" style="max-width: 10%;"> 
+                Resize 
+            </div>
+            <div class="col-12 col-md-1"> 
+                <input type="radio" id="chk_25" value="0.25" onchange="resizeImg(25)" name="rb_resize"/> 25%  
+            </div>
+            <div class="col-12 col-md-1"> 
+                <input type="radio" id="chk_50" value="0.50" onchange="resizeImg(50)" name="rb_resize"/> 50%   
+            </div>
+            <div class="col-12 col-md-1"> 
+                <input type="radio" id="chk_75" value="0.75" onchange="resizeImg(75)" name="rb_resize"/> 75%   
+            </div>
+            <div class="col-12 col-md-2"> 
+                <input type="radio" id="chk_100" value="1" onchange="resizeImg(100)" checked="checked" name="rb_resize"/> 100%   
+            </div>
+        </div>
+        <div class="row form-group"> 
+            <div class="col-12 col-md-1"> 
+            </div>
+            <div class="col-12 col-md-10"> 
+                <img id="imgGraph" src="" style="height: 400px;width:100%"> 
+            </div> 
+        </div>
+        
+   </div> 
+</div>
+<div  title="Generating Report"  style="display: none;background-color: inherit" id="divRptProgress">
+    <div style="text-align: center;background-color: inherit">Processing request...</div>
+    <div class="progress mb-3"  >                       
+        <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="25"
+         aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>
+<input type="text" style="display: none;" id="txtreqId"/>
+<input type="text" style="display: none;" id="txtSecId"/>
+<input type="text" style="display: none;" id="txtSubSecId"/>
+
+<div class="modal fade" id="divTune" tabindex="-1" aria-labelledby="divTune" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable modal-lg"> 
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="scrollingLongModalLabel2">Comments </h5>
+         <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+         <div class="d-flex">
+           <button class="btn btn-icon btn-primary btn-circle btn-xl" id="btnchat" onclick="toogleChat('chat')"><i class="bi bi-chat-text"></i></button>
+           <button class="btn btn-icon btn-primary btn-circle btn-xl" style="display: none;" id="btncomment" onclick="toogleChat('comment')"><i class="bi bi-chat-quote"></i></button>
+          
+         </div>
+       </div>
+       <div class="modal-body p-5 px-md-6">  
+           <div class="chat-content tab-content flex-1" style="flex: 1;">
+               <div class="tab-pane h-100 fade active show" id="tab-thread-1" role="tabpanel" aria-labelledby="tab-thread-1">
+                 <div class="card flex-1 h-100"> 
+                   <div id="divChatHeader" style="display: none!important;;" class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                       <div class="row mb-3 position-relative">
+                           <div  class="col-sm-12">
+                               <div id="divresp_8" style="overflow-y: scroll;;height: 210px !important;">
+                                   
+                               
+                               </div>
+                           </div>
+                       </div>                           
+                   </div>
+                   <div id="divChatfooter" style="display: none;"  class="card-footer">                    
+                     <div class="row mb-3 position-relative">
+                       <div  class="col-sm-11">
+                         <textarea id ="txtcomment" rows="2" style="width: 100%;resize: none;"></textarea>
+                       </div> 
+                       <div class="col-sm-1">                   
+                         <div class="d-flex justify-content-end align-items-end">
+                          
+                           <div>
+                             <button class="btn btn-icon btn-primary btn-circle btn-xl" type="button" onclick="updateResponse()">
+                               <i class="bi bi-send"></i></button>
+                           </div>
+                         </div>
+                       </div>
+                     </div> 
+                   </div>      
+                   
+                   <div id="divRespHeader"  class="card-body p-3 p-sm-4 d-flex flex-column scrollbar">
+                     <div class="row mb-3 position-relative">
+                       <div  class="col-sm-12">
+                         <textarea id ="txtReportComments" onkeyup="enableSave()" rows="12"  style="width: 100%;resize: none;"></textarea>
+                       </div>                        
+                     </div>
+                      
+                                       
+                     <div class="row mb-3 position-relative">
+                     
+                       <div class="col-sm-12">                   
+                         <div class="d-flex justify-content-end align-items-end">
+                          
+                           <div>
+                             <button class="btn btn-primary" disabled type="button" id="btnSave" onclick="saveReportComment()">Save
+                               </button>
+                           </div>
+                         </div>
+                       </div>
+                     </div> 
+                   </div> 
+                 </div>
+               </div> 
+             </div>
+
+            
+       </div>
+       <!-- <div class="modal-footer">
+           <div class="col-auto" style="display: flex; justify-content: flex-end;">
+               <button type="button" class="btn btn-sm" style="margin-right: 10px;" onclick="$('#divTune').modal('toggle')" >Cancel</button> 
+           <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="saveReportComment()" >Save</button>
+           </div>
+       </div> -->
+     </div>
+   </div> 
+
+</div>  
+</form>   
+{% endblock content %}   
+{%  block script %}  
+<!-- <script src="{% static 'bootstrap_datepicker/js/bootstrap-datepicker.js' %}"></script> -->
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script src="{% static 'js/chatroom.js' %}"></script>
+ 
+<script type="text/javascript"> 
+debugger
+        connectWS('{{request.session.vt_mdl}}');
+            $('#divresp_8').empty()
+            $("#txtSelUtil").val('Conceptual Soundness')
+            $("#txtSelSubUtil").val('')
+            $("#txtSelUtilType").val('table')
+            getVT_Comm_History('divresp_8','Conceptual Soundness', '','{{request.session.vt_mdl}}') 
+            // $.ajax({ 
+            // url: '/ValidationCommentHistory/',
+            // data:{'utility':'Conceptual Soundness','subutility': '','mdl_id':'{{request.session.vt_mdl}}'},
+            // dataType: 'json',
+            // success: function (data) {
+            //   $('#txtReportComments').val(data.comment)
+            // qtnArr = '';
+            // $.each(data.data, function(key, val) { 
+            //     if(val.msgcss=='R')
+            //     {
+            //     qtnArr +=' <div class="d-flex chat-message">';
+            //     qtnArr +='         <div class="d-flex mb-2 flex-1">';
+            //         qtnArr +='           <div class="w-100 w-xxl-75">';
+            //         qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+            //             qtnArr +='               <div class="chat-message-content received me-2">';
+            //             qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+            //                 qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+            //                 qtnArr +='                 </div>';
+            //                 qtnArr +='     </div>         ';                  
+                                
+            //                 qtnArr +='  </div>';
+            //                 qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +='  </div>';
+            //     }
+            //     else if(val.msgcss=='S')
+            //     {
+
+            //     qtnArr +=' <div class="d-flex chat-message">';
+            //         qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+            //         qtnArr +=' <div class="w-100 w-xxl-75">';
+            //         qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+            //         qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                    
+            //             qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+            //             qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+            //             // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+            //             qtnArr +='</div>';
+            //             qtnArr +='</div>';
+            //         qtnArr +='   <div class="d-none d-sm-flex">';
+            //             qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+            //             qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+            //             // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+            //             qtnArr +='  </div>';
+            //             qtnArr +=' </div>';
+            //             qtnArr +=' <div class="chat-message-content me-2">';
+            //             qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+            //                 qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +='  </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' <div class="text-end">';
+            //                 qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div>';
+            //                 qtnArr +=' </div> ';
+            //     } 
+            // }) 
+            // $('#divresp_8').append(qtnArr)       
+            // }
+            // });
+    let refnum=0;  
+    window.onload=function(){ 
+        $('#txtComments').css("height",($(document).height()*0.50)+"px");
+       // document.addEventListener('contextmenu', event => event.preventDefault());
+       divId='nodiv'
+        $('.blob').click(function(e){  
+            screenY=e.pageY;
+            screenX= e.pageX;  
+            $("#divDocComments").css({top:screenY-25, left:screenX+20   , position:'absolute'});      
+           });
+        $('#tblDocs').DataTable({
+            sDom: 'lrtip',
+            "ordering": false,
+            scrollY: 280, 
+            scroller: true,
+            paging:         false,
+            info:false
+            });
+        document.getElementById('txtComments').addEventListener('keydown', function(e) {
+          if (e.key == 'Tab') {
+            e.preventDefault();
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+        
+            // set textarea value to: text before caret + tab + text after caret
+            this.value = this.value.substring(0, start) +
+              "\t" + this.value.substring(end);
+        
+            // put caret at right position again
+            this.selectionStart =
+              this.selectionEnd = start + 1;
+          }
+        });
+    };
+
+    function toogleChat(id){
+      var myClass = $("#iconmsg").attr("class"); 
+      if(id=='chat'){       
+        $("#btncomment").show();
+        $("#btnchat").hide();
+        $("#divChatHeader").show();
+        $("#divChatfooter").show();
+        $("#divRespHeader").attr('style','display:none !important'); 
+      }
+      else{
+        $("#btncomment").hide();
+        $("#btnchat").show();
+        $("#divChatHeader").attr('style','display:none !important');
+        $("#divChatfooter").attr('style','display:none !important');
+        $("#divRespHeader").show(); 
+      }
+    }
+
+    function updateResponse(){
+        
+        $.ajax({ 
+        url: '/insert_VT_Discussion_Comments/',
+        data:{'utility':'Conceptual Soundness','comment':  $("#txtcomment").val(),'sub_utility':'','mdl_id':'{{request.session.vt_mdl}}'},
+        dataType: 'json',
+        success: function (data) {  
+                    
+            if(data.is_taken)
+            { 
+                sendPerfMonmsg($("#txtcomment").val(),'{{ request.session.uid }}',9,5,'vt_discussion','{{request.session.vt_mdl}}',JSON.parse(data.data)[0].uinitials+' commented on '+ JSON.parse(data.data)[0].createdt,'Conceptual Soundness','','table')   
+                
+                
+            }   
+        }
+        });
+    }
+
+    function enableSave(){ 
+    if($("#txtReportComments").val().length>0){
+      $("#btnSave").prop("disabled",false)
+    }
+    else{
+      $("#btnSave").prop("disabled",true)
+    }
+  }
+
+  function saveReportComment()
+        { 
+        $.ajax({ 
+            url: '/save_desc_comments/',
+            data:{'utility':'Conceptual Soundness','comment':  $("#txtReportComments").val(),'type':'table','tableType':''},
+            dataType: 'json',
+            success: function (data) {
+                    if(data.is_taken)
+                    { 
+                    alert('Comment saved sucessfully.')             
+                    }   
+            }
+            });
+        } 
+    function submitForm(event){
+        event.preventDefault();
+    }
+
+
+    function showdocCom(id,ref){  
+         
+        if(id==divId){
+            $('#divDocComments').hide() 
+            divId='';
+        }
+        else{
+            divId=id;
+            $("#divDocComments").empty();
+            $("#divDocComments").append(ref);
+            $("#divDocComments").show();
+            
+        }
+       // alert(ref)
+    }
+    
+    function addRefer(pol,ref){
+        refnum=refnum+1;
+        unicodesarr={'1':'\u00b9','2':'\u00b2','3':'\u00b3','0':'\u2070','4':'\u2074','5':'\u2075','6':'\u2076','7':'\u2077','8':'\u2078','9':'\u2079' 	}
+        $.ajax({
+            url: '/addRptRef/', 
+            data:{ policy: pol,reference:ref },
+            dataType: 'json',
+            success: function (data) {
+               // alert(data)
+               if(data.is_taken){
+                refnum=data.refNo
+                if(refnum<10){
+                    $("#txtComments").val($("#txtComments").val()+unicodesarr[refnum])
+                }
+                else{
+                    val=refnum/10;
+                    remain=refnum%10;
+                    $("#txtComments").val($("#txtComments").val()+unicodesarr[val]+unicodesarr[remain]) 
+                   // $("#txtComments").val($("#txtComments").val()+'\u00b9\u2070');
+                }
+               }
+            }
+        });
+        
+            //alert((policy+ ' ,' +reference)) 
+        $("#divReferences").dialog("close");
+    }
+
+    function showDocs(){
+
+        $("#divDocs").modal('toggle');
+    //     dialog({   
+    //       width: "50%", 
+    //       modal: true,
+    //       buttons: [
+    //           {
+    //               text: "Cancel",
+    //               "class": 'btn btn-primary btn-sm',
+    //               click: function() {
+    //                   // Save code here
+    //                   $(this).dialog("close");
+    //               }
+    //           }
+    //       ],  
+    //   }); 
+  
+  }
+
+
+    function showReferences(){
+        $("#divReferences").dialog({   
+          width: "70%",   
+          modal: true,
+          buttons: [
+              {
+                  text: "Cancel",
+                  "class": 'btn btn-primary btn-sm',
+                  click: function() {
+                      // Save code here
+                      $(this).dialog("close");
+                  }
+              }
+          ],  
+      }); 
+  
+  }
+
+    function generateReport(){  
+        $("#divRptProgress").dialog({   
+            width: "70%",   
+            modal: true, 
+            height:150,
+        });
+        $.ajax({
+            url: '/generateReport/',  
+            data:{ Title:$("#txtTitle").val(),SubTitle1:$("#txtSubTitle1").val(),SubTitle2:$("#txtSubTitle2").val(),SubTitle3:$("#txtSubTitle3").val()},
+            dataType: 'json',
+            success: function (data) {              
+               if(data.is_taken){
+                    console.log(data) 
+                    $("#divReportOutput").empty();
+                    $('#divRptProgress').dialog("close");
+                   //window.location="{% url 'downloadReport' %}"
+               }
+            }
+        });
+        
+    }
+
+    function addToReport(){ 
+       // $('#downRpt').onclick = function(){ console.log('clicked')};
+       if($("#txtComments").val().trim().length>0){
+            
+            TitleCnt=$('#txtTitleCnt').val(); 
+            TitleCnt=parseInt(TitleCnt)+1; 
+            vartxtToreplace=TitleCnt+' '+$('#txtTitle').val()+"\n";
+            varComment =$("#txtComments").val().replace(vartxtToreplace,"")
+             
+            $.ajax({ 
+            url: '/saveCSData/',
+            data:{'comment': varComment,'reqId':$("#txtreqId").val(),'titleIdx':TitleCnt,'title':$('#txtTitle').val()},
+            dataType: 'json',
+            success: function (data) {
+                    if(data.is_taken)
+                    { 
+                        if($("#txtreqId").val()!=''){
+                            $("#div_"+$("#txtreqId").val()).empty();
+                            $("#div_"+$("#txtreqId").val()).append("<span>"+$("#txtComments").val()+"</span>");
+                        }
+                        else{
+                            $("#divReportOutput").append("<br><div id='div_"+ data.reqId +"' oncontextmenu='deleteComment(this.id)' ondblclick='editComment(this.id)'><span>"+$("#txtComments").val()+"</span></div>");
+                        }
+                        $("#txtComments").val('');
+                        $("#txtreqId").val('');
+                        $("#txtTitleCnt").val(data.titleIdx);
+                        alert('Comment saved successfully.')                    
+                    }   
+            }
+            });  
+        }
+        else{
+            alert('Please enter text.')
+        }
+       
+    }
+
+    function editComment(id){ 
+        $("#txtComments").val('')
+        $("#txtComments").val($("#"+id).text());
+        $("#txtreqId").val(id.split('_')[1]);
+        $("#divRptPrv").dialog("close");
+    }
+
+    function deleteComment(e)
+    {
+        $("#divDeleteComment").dialog({   
+            width: "40%",   
+            modal: true,
+            buttons:             /* Save: function() {
+                $(this).dialog("close");
+                } */ [ 
+                {
+                    text: "Yes",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() {
+                        $.ajax({ 
+                            url: '/deleteReportComment/',
+                            data:{'reqID': e.split('_')[1] },
+                            dataType: 'json',
+                            success: function (data) {
+                                    if(data.is_taken)
+                                    {
+                                        $("#"+e).empty();
+                                        alert('Comment updated successfully.')
+                                    }            
+                            }
+                        }); 
+                        
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Close",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() {
+                        // Save code here
+                        $(this).dialog("close");
+                    }
+                }
+            ],  
+        });
+        return false;
+        //return false;
+    }
+    function showRptPrv(){
+        $("#divRptPrv").dialog({   
+            width: "70%",   
+            height:650,
+            modal: true,
+            buttons:             /* Save: function() {
+                $(this).dialog("close");
+                } */ [ 
+                {
+                    text: "Close",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() {
+                        // Save code here
+                        $(this).dialog("close");
+                    }
+                }
+            ],  
+        }); 
+    }
+    
+    function showProcess(){
+        $("#divProcesStatus").dialog({   
+            width: "70%",   
+            height:650,
+            modal: true,
+            buttons:             /* Save: function() {
+                $(this).dialog("close");
+                } */ [ 
+                {
+                    text: "Close",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() {
+                        // Save code here
+                        $(this).dialog("close");
+                    }
+                }
+            ],  
+        }); 
+    }
+    
+    function showTitles(){
+        $("#divTitles").modal('toggle')
+        //   $("#divTitles").dialog({   
+        //     width: "30%",   
+        //     modal: true,
+        //     buttons:             /* Save: function() {
+        //         $(this).dialog("close");
+        //         } */ [
+        //         {
+        //             text: "Add",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() { 
+        //                 AddSection(); 
+        //                 $(this).dialog("close");
+        //             }
+        //         },
+        //         {
+        //             text: "Cancel",
+        //             "class": 'btn btn-primary btn-sm',
+        //             click: function() {
+        //                 // Save code here
+        //                 $(this).dialog("close");
+        //             }
+        //         }
+        //     ],  
+        // }); 
+    
+    }
+
+    function addTitles() { 
+                        AddSection(); 
+                        $("#divTitles").modal('toggle')
+                    }
+    function showImages()
+    {  
+        $("#divImg").dialog({   
+            width: "70%",   
+            modal: true,
+            buttons:             /* Save: function() {
+                $(this).dialog("close");
+                } */ [
+                {
+                    text: "Add",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() { 
+                        var image = $('#imgGraph');
+                        scalev=($("input[name='rb_resize']:checked").val());
+                         
+                        imgHeight=parseFloat(image.css("height"))*scalev+"px;" ;
+                        imgWidth=parseFloat(image.css("width"))*scalev +"px;"; 
+                        
+                        $.ajax({ 
+                            url: '/saveReportImage/',
+                            data:{'ImgTitle': $("#txtImgTitle").val() ,'TitleAlign':$("#selectTitleAlign").val(),'imgHeight':scalev,'imgWidth':scalev,'img':$("#selectImg").val(),'imgAlign': $("#selectImgAlign").val() },
+                            dataType: 'json',
+                            success: function (data) {
+                                    if(data.is_taken)
+                                    {
+                                        alert('Image added to comment.')
+                                        $("#divReportOutput").append("<div>");
+                                            divTitleContent="<br> <div style='margin-left:auto;display: flex; justify-content:center;'>"+ $("#txtImgTitle").val() + "</div>"
+                                            if($("#selectTitleAlign").val()=="top"){
+                                                $("#divReportOutput").append(divTitleContent);
+                                                $("#divReportOutput").append("<br> <div id='div_"+ data.reqId +"' oncontextmenu='deleteComment(this.id)' style='margin-left:auto;display: flex; justify-content:"+ $("#selectImgAlign").val() +";'><img src='\\"+ $("#selectImg").val()+"' style='height: "+ imgHeight +";width:"+imgWidth+"'> </div>");
+                                               
+                                            }
+                                            else{
+                                                $("#divReportOutput").append("<br> <div id='div_"+ data.reqId +"' oncontextmenu='deleteComment(this.id)' style='margin-left:auto;display: flex; justify-content:"+ $("#selectImgAlign").val() +";'><img src='\\"+ $("#selectImg").val()+"' style='height: "+ imgHeight +";width:"+imgWidth+"'> </div>");
+                                                $("#divReportOutput").append(divTitleContent);
+                                            }
+                                            $("#divReportOutput").append("</div>")
+                                    }            
+                            }
+                        }); 
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Cancel",
+                    "class": 'btn btn-primary btn-sm',
+                    click: function() {
+                        // Save code here
+                        $(this).dialog("close");
+                    }
+                }
+            ],  
+        }); 
+    }
+
+    function resizeImg(per){
+        //alert(per)
+        $('#imgGraph').css("transform", "scale("+ (per/100) +")");
+        $('#imgGraph').css('transform-origin','0px 0px');
+    }
+ 
+    function getImg(){
+        $("#imgGraph").attr("src","\\"+ $("#selectImg").val()); 
+        $("#downChartRpt").attr('href', "\\"+ $("#selectImg").val().replace('.png','.pdf'));
+        let jsonData="{{imgFiles|safe}}"     
+        jsonData=jsonData.replaceAll("'",'"');
+        jsonData=jsonData.replaceAll("\\","\\\\");
+        jsonData=jsonData.replaceAll('None','"-"');
+        jsonData=$.parseJSON(jsonData)
+        jsonData.forEach((element,index) => { 
+            if(element.destination==$('#selectImg').val()){
+                console.log(' index is ',index)
+            }
+          });
+
+        var index = jsonData.findIndex(obj => obj.destination==$('#selectImg').val());  
+        if(jsonData[index].comments !='-'){
+            $('#downChartRpt').show();
+        }
+        else{
+            $('#downChartRpt').hide();
+        }
+    }
+
+    function getTitle(){ 
+        $('#txtTitle').val('');
+        $('#txtSubTitle').val('');
+        $('#txtSubSubTitle').val('');
+        $('#selectSubTitle option').remove();    
+        $('#selectSubTitle').append(new Option("Select Sub Title","0"));               
+        $('#selectSubTitle').append(new Option("Add New","-1"));
+        if( $('#selectSecTitle').val()!='0'){
+           $('#txtTitle').val($('#selectSecTitle option:selected').text());
+           $.ajax({
+            url: '/getSubTitleCS/',  
+            data:{ title:$("#selectSecTitle").val(),titleTxt:$('#selectSecTitle option:selected').text()},
+            dataType: 'json',
+            success: function (data) {
+                 $("#txtTitleCnt").val(data.titleIdx); 
+                }
+            });
+        }
+        if($('#selectSecTitle').val()=='-1')
+        {
+            $('#txtTitle').val('');
+            $('#selectSecTitle').hide();
+            $('#txtTitle').show();
+        }
+   }
+   
+function getSubTitle(){ 
+    $('#txtSubTitle').val('');
+    $('#txtSubSubTitle').val('');
+    $('#selectSubSubTitle option').remove();    
+    $('#selectSubSubTitle').append(new Option("Select Sub Sub Title","0"));               
+    $('#selectSubSubTitle').append(new Option("Add New","-1"));
+    if($('#selectSubTitle').val()!='0'){
+       $('#txtSubTitle').val($('#selectSubTitle option:selected').text());
+       $('#txtTitle').val($('#selectSecTitle option:selected').text());
+           $.ajax({
+            url: '/getSubSubTitle/',  
+            data:{ title:$("#selectSubTitle").val(),titleTxt:$('#selectSecTitle option:selected').text(),subtitleTxt:$('#selectSubTitle option:selected').text()},
+            dataType: 'json',
+            success: function (data) {          
+                $('#selectSubSubTitle option').remove();    
+                $('#selectSubSubTitle').append(new Option("Select Sub Sub Title","0"));
+                for(var x in data.subsubTtl){
+                    subTitleVal=$('#selectSubTitle').val()+'.'+ (parseInt(x)+1);
+                    $('#selectSubSubTitle').append(new Option(data.subsubTtl[x],subTitleVal));
+                    
+                }
+                $("#txtSubTitleCnt").val(data.titleIdx);
+                console.log('txtSubTitleCnt ' +$("#txtSubTitleCnt").val());
+                $('#selectSubSubTitle').append(new Option("Add New","-1"));
+                }
+            });
+    }
+    if($('#selectSubTitle').val()=='-1')
+    {
+        $('#txtSubTitle').val('');
+        $('#txtSubTitle').show();
+        $('#selectSubTitle').hide();
+    }
+}
+
+function getSubSubTitle(){ 
+    $('#txtSubSubTitle').val('');
+    if($('#selectSubSubTitle').val()!='0'){
+       $('#txtSubSubTitle').val($('#selectSubSubTitle option:selected').text());
+           $.ajax({
+            url: '/getSubSubTitleIdx/',  
+            data:{ subsubtitleTxt:$('#selectSubSubTitle option:selected').text(),titleTxt:$('#selectSecTitle option:selected').text(),subtitleTxt:$('#selectSubTitle option:selected').text()},
+            dataType: 'json',
+            success: function (data) {  
+                $("#txtSubSubTitleCnt").val(data.titleIdx);
+                }
+            });
+    }
+    if($('#selectSubSubTitle').val()=='-1')
+    {
+        $('#txtSubSubTitle').val('');
+        $('#txtSubSubTitle').show();
+        $('#selectSubSubTitle').hide();
+    }
+}
+
+
+   function AddSection(){  
+       if($("#txtTitle").val().trim().length>0)
+       {
+            if($('#selectSecTitle').val()=='-1'){
+                $('#selectSecTitle option:last').remove();
+                $('#selectSecTitle').append(new Option($('#txtTitle').val(),$('select#selectSecTitle option').length));
+                $('#selectSecTitle').append(new Option("Add New","-1")); 
+                $('#selectSecTitle').val($('select#selectSecTitle option').length-2);
+                TitleCnt=$('#txtTitleCnt').val(); 
+                TitleCnt=parseInt(TitleCnt)+1;
+                if($("#txtComments").val().length>0){
+                    $("#txtComments").val($("#txtComments").val()+' \n'+TitleCnt+' '+$('#txtTitle').val()+"\n")
+                }
+                else{
+                    $("#txtComments").val($("#txtComments").val()+TitleCnt+' '+$('#txtTitle').val()+"\n")
+                }
+                $("#txtComments").focus();
+            }
+            else{   
+                    TitleCnt=$('#txtTitleCnt').val(); 
+                    TitleCnt=parseInt(TitleCnt)+1;  
+                    if($("#txtComments").val().length>0){           
+                        $("#txtComments").val($("#txtComments").val()+' \n'+TitleCnt+' '+$('#txtTitle').val()+"\n")
+                    }
+                    else{
+                        $("#txtComments").val($("#txtComments").val()+TitleCnt+' '+$('#txtTitle').val()+"\n")
+                    }
+                    $("#txtComments").focus();
+                }
+          
+       }
+   }
+
+   function goNext(){
+    window.location="{% url 'replication' %}"
+} 
+
+ </script>
+{% endblock script %} 

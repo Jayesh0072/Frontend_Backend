@@ -1,0 +1,215 @@
+ {% extends 'base.html' %} 
+{% load static %} 
+{% block style %}
+<link href="{% static 'phoenix-v1.8.0/public/vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet">
+<link href="{% static 'phoenix-v1.8.0/public/vendors/choices/choices.min.css' %}" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
+{% endblock style %}
+{% block content %} 
+{% csrf_token %}
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    
+    <div class="card h-60">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+            -webkit-border-top-right-radius: 6px;
+            -moz-border-radius-topleft: 6px;
+            -moz-border-radius-topright: 6px;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">ICQ Allocation</h4>
+        </div> 
+    <div class="card-body p-0">
+    
+        <div class="p-4 code-to-copy">
+            <div class="row" style="padding-bottom: 20px;">
+                <label class="col-sm-4 col-form-label" id='rvname' for="txtutype" >Review Name</label> 
+                <div class="col-sm-8">
+                    <select class="form-select" onchange="addnew()" id="review_name" aria-label="Default select example" data-options='{"removeItemButton":false,"placeholder":true}' required>                      
+                 
+                    {% for  key, val in review.items  %} 
+                    <option value="{{val.review_id}}">{{val.review_name}}</option>
+                    {% endfor %}  
+                    </select>
+                    <input class="form-control form-control-sm" id="txtreviewname" name="txtreviewname" type="text" required placeholder="Review Name" value="">
+                </div>
+            </div>
+                <!-- <br><br> -->
+                <label hidden="hidden" class="col-sm-2 col-form-label" for="txtutype">Model Id</label> 
+                <div hidden="hidden" class="col-sm-4">
+                    <select class="form-select" data-choices="data-choices" id="mdl_id" aria-label="Default select example"  multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' required>                      
+                    <!-- <option value=" " >Select All</option>    -->
+                    {% for val in mdl_obj  %} 
+                    <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>
+                    {% endfor %}  
+                    </select>
+                </div>
+            <div class="row" style="padding-bottom: 20px;">
+                <label class="col-sm-4 col-form-label" for="txtutype">Section</label> 
+                <div class="col-sm-8">
+                    <select class="form-select" id="ddlQtnSection" aria-label="Default select example"  multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' required>                      
+                    <!-- <option value="all">Select All</option>    -->
+                    {% for key, val in sections.items  %} 
+                    <option value="{{val.Section_AID}}">{{val.Section_Label}}</option>
+                    {% endfor %}  
+                    </select>
+                </div>
+            </div>
+               <!-- <br><br><br> -->
+            <div class="row" style="padding-bottom: 20px;">
+                <label class="col-sm-4 col-form-label" for="txtutype">User</label> 
+                <div class="col-sm-8">
+                    <select class="form-select" data-choices="data-choices" id="user" aria-label="Default select example"  multiple="multiple" data-options='{"removeItemButton":false,"placeholder":true}' required>                      
+                   
+                    {% for val in user  %} 
+                    <option value="{{val.u_aid}}">{{val.u_fname}} {{val.u_lname}} {{val.uc_aid.uc_label}}</option>
+                    {% endfor %}  
+                    </select>
+                </div>
+            </div>
+
+                <div class="row" style="padding-bottom: 20px;">
+                    <!-- <label class="col-sm-4 col-form-label" for="txtLstTgrDt">Last Date</label>
+                    <div class="col-sm-8">    
+                      <input class="form-control datetimepicker" id="txtLstTgrDt" readonly  name="txtLstTgrDt" type="text" placeholder="mm/dd/yyyy"    data-options='{"disableMobile":true,"dateFormat":"m/d/Y","maxDate":"{{regDate}}"}' />
+                    </div>
+                    <br><br><br><br> -->
+ 
+                    <div style="display: flex;flex-direction: row;justify-content: flex-end;">
+                        <input type="button" id="submit_buton"  class="btn btn-primary px-5 px-sm-5 Center" onclick="save_allocations()" value="Submit" /> 
+                    </div>
+                </div>
+
+                <label class="col-sm-2 col-form-label" for="txtutype" hidden="hidden">Sub Section</label> 
+                <div class="col-sm-4"> 
+                    <select hidden="hidden" class="form-select"id="ddlQtnSub_Section" aria-label="Default select example" multiple="multiple" required>                      
+                    
+                    </select>
+                </div>    
+            <div class="row" style="padding-bottom: 20px;">
+                <label hidden="hidden" class="col-sm-4 col-form-label" for="txtutype">Sub Sub Section</label> 
+                    
+                <div class="col-sm-8">
+                    <select hidden="hidden" class="form-select"  id="ddlQtnSub_Sub_Section" aria-label="Default select example" multiple="multiple" required>                      
+                    
+                    </select>
+                </div>
+              
+                    <label hidden="hidden" class="col-sm-2 col-form-label" for="txtutype">Sub Sub Sub Section</label> 
+                    <div class="col-sm-4">
+                    <select hidden="hidden" class="form-select" id="ddlQtn_Sub_Sub_Sub_Section"  aria-label="Default select example" multiple required>                      
+                    
+                    </select>
+                </div>
+            </div>
+            <!-- <div class="col-12 gy-6">
+                <div class="row g-3 justify-content-end">
+                  <div class="col-auto">
+                    <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="icq_rating()" value="Show" /> 
+                  </div>
+                 
+                </div>
+            </div>  -->
+            <!-- <div class="row" style="padding-bottom: 20px;">
+                <div class="row g-3 justify-content-end">
+                  <div>
+                    <input type="button" id="submit_buton"  class="btn btn-primary px-5 px-sm-5 left" onclick="save_allocations()" value="Submit" /> 
+                  </div>
+                 
+                </div>
+            </div> -->
+          
+        </div>
+    </div>
+</div>
+</div>
+    
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'jquery-3.5.1.js' %}"></script>
+<!-- Jquery JS-->
+<script src="{% static 'vendor/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'dataTables.min.js' %}"></script>
+<script type='text/javascript'>
+// $('#selectAll').click(function() {
+//     debugger;
+//     // alert('select all')
+//     // $('#ddlQtnSection option').attr("selected","selected");
+//     $("#ddlQtnSection option").each(function() {
+//         console.log('value is ',this.value)
+//     });
+//     $('#ddlQtnSection option').prop('selected',true); 
+// });  
+// $("select").on("click", function(){      
+//   if ($(this).find(":selected").text() == "Select All"){
+//     if ($(this).attr("data-select") == "false")
+//       $(this).attr("data-select", "true").find("option").prop("selected", true);
+//     else
+//       $(this).attr("data-select", "false").find("option").prop("selected", false);
+//   }
+// });
+$(document).ready(function () {
+    $("#txtreviewname").hide()
+});
+
+function addnew(){
+    var $mySelect,selid ;
+    selid=$('#review_name').val();
+    console.log("review name",selid)
+    if( selid == 'addnew'){
+        $("#review_name").hide();
+        $("#txtreviewname").show()
+    }
+}
+
+function save_allocations(){
+    rv_id = $("#review_name").val()
+    
+    if(rv_id == "addnew"){
+        rv_name = $("#txtreviewname").val()
+    }
+    else{
+        rv_name = $( "#review_name option:selected" ).text();
+    }
+    section_aid = $('#ddlQtnSection').val() 
+    users = $('#user').val()
+    end_date = $('#txtLstTgrDt').val()
+    console.log("request",rv_id,rv_name,section_aid,users,end_date)
+    $.ajax({
+            url: '/save_allocation/', 
+            data:{ rv_id: rv_id,rv_name:rv_name,section_aid:section_aid,users:users,end_date:end_date},
+            dataType: 'json',   
+            success: function (data) { 
+                debugger;
+               if(data.isvalid=='true'){
+                alert('Allocation added successfully.')
+               }
+               else
+               {
+                alert('Error while adding Function.')
+               }
+            }
+        });
+}
+
+  var selectedOPt='';
+
+  function save_ratings(){
+    console.log("save_ratings")
+    var table = document.getElementById("colData");
+   // console.log('table',table)
+    for (var i = 0; i < table.rows.length-1; i++) {
+    //iterate through rows
+        var hiden_id =$("#hdn_"+i).val();
+        console.log("hiden_id",hiden_id,$("#txt_yes_"+hiden_id).val(),$("#txt_no_"+hiden_id).val(),$("#txt_doc_yes_"+hiden_id).val(),$("#txt_doc_no_"+hiden_id).val())
+    }
+  }
+    
+ 
+  function gotolist()
+  {
+      window.location='{{blankadmin}}'
+      
+  }
+</script>
+{% endblock script %}

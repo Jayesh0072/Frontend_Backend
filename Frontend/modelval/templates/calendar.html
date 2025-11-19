@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link href="{% static 'phoenix-v1.8.0/public/vendors/fullcalendar/main.min.css' %}" rel="stylesheet">
+<link href="{% static 'phoenix-v1.8.0/public/vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet">
+<div class="content">
+    <div class="row g-0 mb-4 align-items-center">
+      <div class="col-5 col-md-6">
+        <h4 class="mb-0 text-1100 fw-bold fs-md-2"><span class="calendar-day d-block d-md-inline mb-1"></span><span class="px-3 fw-thin text-400 d-none d-md-inline">|</span><span class="calendar-date"></span></h4>
+      </div>
+      <div class="col-7 col-md-6 d-flex justify-content-end">
+        <button class="btn btn-link text-900 px-0 me-2 me-md-4"><span class="fa-solid fa-sync fs--2 me-2"></span><span class="d-none d-md-inline">Sync Now</span></button>
+        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#addEventModal"> <span class="fas fa-plus pe-2 fs--2"></span>Add new task </button>
+      </div>
+    </div>
+    <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 border-y border-200">
+      <div class="row py-3 gy-3 gx-0">
+        <div class="col-6 col-md-4 order-1 d-flex align-items-center">
+          <button class="btn btn-sm btn-phoenix-primary px-4" data-event="today">Today</button>
+        </div>
+        <div class="col-12 col-md-4 order-md-1 d-flex align-items-center justify-content-center">
+          <button class="btn icon-item icon-item-sm shadow-none text-1100 p-0" type="button" data-event="prev" title="Previous"><span class="fas fa-chevron-left"></span></button>
+          <h3 class="px-3 text-1100 fw-semi-bold calendar-title mb-0"> </h3>
+          <button class="btn icon-item icon-item-sm shadow-none text-1100 p-0" type="button" data-event="next" title="Next"><span class="fas fa-chevron-right"></span></button>
+        </div>
+        <div class="col-6 col-md-4 ms-auto order-1 d-flex justify-content-end">
+          <div>
+            <div class="btn-group btn-group-sm" role="group">
+              <button class="btn btn-phoenix-secondary" data-fc-view="dayGridMonth">Month</button>
+              <button class="btn btn-phoenix-secondary" data-fc-view="timeGridWeek">Week</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="calendar-outline mt-6 mb-9" id="appCalendar1"></div>
+    <footer class="footer position-absolute">
+      <div class="row g-0 justify-content-between align-items-center h-100">
+        <div class="col-12 col-sm-auto text-center">
+          <p class="mb-0 mt-2 mt-sm-0 text-900">Thank you for creating with Phoenix<span class="d-none d-sm-inline-block"></span><span class="d-none d-sm-inline-block mx-1">|</span><br class="d-sm-none" />2023 &copy;<a class="mx-1" href="https://themewagon.com">Themewagon</a></p>
+        </div>
+        <div class="col-12 col-sm-auto text-center">
+          <p class="mb-0 text-600">v1.8.0</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{% static 'phoenix-v1.8.0/public/vendors/dayjs/dayjs.min.js' %}"></script>
+  <script src="{% static 'phoenix-v1.8.0/public/vendors/fullcalendar/main.min.js' %}"></script>
+  <script src="{% static 'phoenix-v1.8.0/public/vendors/dayjs/dayjs.min.js' %}"></script>
+  <script src="{% static 'js/calendar.js' %}"></script>
+  <script>
+    $(document).ready( function(){
+            console.log('ready!!!')
+            appCalendar();
+    });
+            /* -------------------------------------------------------------------------- */
+  /*                                   Calendar                                 */
+
+  /* -------------------------------------------------------------------------- */
+  const renderCalendarinner = (el, option) => {
+    const { merge } = window._;
+
+    const options = merge(
+      {
+        initialView: 'dayGridMonth',
+        editable: true,
+        direction: document.querySelector('html').getAttribute('dir'),
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText: {
+          month: 'Month',
+          week: 'Week',
+          day: 'Day'
+        }
+      },
+      option
+    );
+    const calendar = new window.FullCalendar.Calendar(el, options);
+    calendar.render();
+    document
+      .querySelector('.navbar-vertical-toggle')
+      ?.addEventListener('navbar.vertical.toggle', () => calendar.updateSize());
+    return calendar;
+  };
+
+  const fullCalendarInitinner = () => {
+    const { getData } = window.phoenix.utils;
+
+    const calendars = document.querySelectorAll('[data-calendar]');
+    calendars.forEach(item => {
+      console.log(item);
+      const options = getData(item, 'calendar');
+      renderCalendar(item, options);
+    });
+  };
+
+  const fullCalendarinner = {
+    renderCalendar,
+    fullCalendarInit
+  };
+
+  const { dayjsinner } = window;
+  const currentDayinner = dayjs && dayjs().format('DD');
+  const currentMonthinner = dayjs && dayjs().format('MM');
+  const prevMonthinner = dayjs && dayjs().subtract(1, 'month').format('MM');
+  const nextMonthinner = dayjs && dayjs().add(1, 'month').format('MM');
+  const currentYearinner = dayjs && dayjs().format('YYYY');
+  const eventsinner = [
+    {
+      title: 'Boot Camp',
+      start: `${currentYear}-${currentMonth}-01 10:00:00`,
+      end: `${currentYear}-${currentMonth}-03 16:00:00`,
+      description:
+        "Boston Harbor Now in partnership with the Friends of Christopher Columbus Park, the Wharf District Council and the City of Boston is proud to announce the New Year's Eve Midnight Harbor Fireworks! This beloved nearly 40-year old tradition is made possible by the generous support of local waterfront organizations and businesses and the support of the City of Boston and the Office of Mayor Marty Walsh.",
+      className: 'text-success',
+      location:
+        'Boston Harborwalk, Christopher Columbus Park, <br /> Boston, MA 02109, United States',
+      organizer: 'Boston Harbor Now'
+    },
+    {
+      title: `Crain's New York Business `,
+      start: `${currentYear}-${currentMonth}-11`,
+      description:
+        "Crain's 2020 Hall of Fame. Sponsored Content By Crain's Content Studio. Crain's Content Studio Presents: New Jersey: Perfect for Business. Crain's Business Forum: Letitia James, New York State Attorney General. Crain's NYC Summit: Examining racial disparities during the pandemic",
+      className: 'text-primary'
+    },
+    {
+      title: 'Conference',
+      start: `${currentYear}-${currentMonth}-${currentDay}`,
+      description:
+        'The Milken Institute Global Conference gathered the best minds in the world to tackle some of its most stubborn challenges. It was a unique experience in which individuals with the power to enact change connected with experts who are reinventing health, technology, philanthropy, industry, and media.',
+      className: 'text-success',
+      // allDay: true,
+      schedules: [
+        {
+          title: 'Reporting',
+          start: `${currentYear}-${currentMonth}-${currentDay} 11:00:00`,
+          description:
+            'Time to start the conference and will briefly describe all information about the event.  ',
+          className: 'text-success '
+        },
+        {
+          title: 'Lunch',
+          start: `${currentYear}-${currentMonth}-${currentDay} 14:00:00`,
+          description: 'Lunch facility for all the attendance in the conference.',
+          className: 'text-info'
+        },
+        {
+          title: 'Contest',
+          start: `${currentYear}-${currentMonth}-${currentDay} 16:00:00`,
+          description: 'The starting of the programming contest',
+          className: 'text-success'
+        },
+        {
+          title: 'Dinner',
+          start: `${currentYear}-${currentMonth}-${currentDay} 22:00:00`,
+          description: 'Dinner facility for all the attendance in the conference',
+          className: 'text-success'
+        }
+      ]
+    },
+    {
+      title: `ICT Expo ${currentYear} - Product Release`,
+      start: `${currentYear}-${currentMonth}-16 10:00:00`,
+      description: `ICT Expo ${currentYear} is the largest private-sector exposition aimed at showcasing IT and ITES products and services in Switzerland.`,
+      end: `${currentYear}-${currentMonth}-18 16:00:00`,
+      className: 'text-warning',
+      allDay: true
+    },
+    {
+      title: 'Meeting',
+      start: `${currentYear}-${currentMonth}-07 10:00:00`,
+      description:
+        'Discuss about the upcoming projects in current year and assign all tasks to the individuals',
+      className: 'text-info'
+    },
+    {
+      title: 'Contest',
+      start: `${currentYear}-${currentMonth}-14 10:00:00`,
+      className: 'text-info',
+      description:
+        'PeaceX is an international peace and amity organisation that aims at casting a pall at the striking issues surmounting the development of peoples and is committed to impacting the lives of young people all over the world.'
+    },
+    {
+      title: 'Event With Url',
+      start: `${currentYear}-${currentMonth}-23`,
+      description:
+        'Sample example of a event with url. Click the event, will redirect to the given link.',
+      className: 'text-success',
+      url: 'http://google.com'
+    },
+    {
+      title: 'Competition',
+      start: `${currentYear}-${currentMonth}-26`,
+      description:
+        'The Future of Zambia – Top 30 Under 30 is an annual award, ranking scheme, and recognition platform for young Zambian achievers under the age of 30, who are building brands, creating jobs, changing the game, and transforming the country.',
+      className: 'text-danger'
+    },
+    {
+      title: 'Birthday Party',
+      start: `${currentYear}-${nextMonth}-05`,
+      description: 'Will celebrate birthday party with my friends and family',
+      className: 'text-primary'
+    },
+    {
+      title: 'Click for Google',
+      url: 'http://google.com/',
+      start: `${currentYear}-${prevMonth}-10`,
+      description:
+        'Applications are open for the New Media Writing Prize 2020. The New Media Writing Prize (NMWP) showcases exciting and inventive stories and poetry that integrate a variety of formats, platforms, and digital media.',
+      className: 'text-primary'
+    }
+  ];
+ 
+
+
+/*-----------------------------------------------
+  |   Calendar
+  -----------------------------------------------*/
+  function appCalendar() {
+    const Selectorsinner = {
+      ACTIVE: '.active',
+      ADD_EVENT_FORM: '#addEventForm',
+      ADD_EVENT_MODAL: '#addEventModal',
+      CALENDAR: '#appCalendar',
+      CALENDAR_TITLE: '.calendar-title',
+      CALENDAR_DAY: '.calendar-day',
+      CALENDAR_DATE: '.calendar-date',
+      DATA_CALENDAR_VIEW: '[data-fc-view]',
+      DATA_EVENT: '[data-event]',
+      DATA_VIEW_TITLE: '[data-view-title]',
+      EVENT_DETAILS_MODAL: '#eventDetailsModal',
+      EVENT_DETAILS_MODAL_CONTENT: '#eventDetailsModal .modal-content',
+      EVENT_START_DATE: '#addEventModal [name="startDate"]',
+      INPUT_TITLE: '[name="title"]'
+    };
+
+    const Eventsinner = {
+      CLICK: 'click',
+      SHOWN_BS_MODAL: 'shown.bs.modal',
+      SUBMIT: 'submit'
+    };
+
+    const DataKeysinner = {
+      EVENT: 'event',
+      FC_VIEW: 'fc-view'
+    };
+
+    const eventListinner = events.reduce(
+      (acc, val) =>
+        val.schedules ? acc.concat(val.schedules.concat(val)) : acc.concat(val),
+      []
+    );
+    // console.log(eventList);
+
+    const updateDayinner = day => {
+      const days = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday'
+      ];
+      return days[day];
+    };
+
+    const setCurrentDateinner = () => {
+      const dateObjinner = new Date();
+      const monthinner = dateObjinner.toLocaleString('en-US', { month: 'short' });
+      const dateinner = dateObjinner.getDate(); // return date number
+      const dayinner = dateObjinner.getDay(); // return week day number
+      const yearinner = dateObjinner.getFullYear();
+      const newdateinner= `${dateinner}  ${monthinner},  ${yearinner}`;
+      if (document.querySelector(Selectorsinner.CALENDAR_DAY)) {
+        document.querySelector(Selectorsinner.CALENDAR_DAY).textContent =
+          updateDayinner(dayinner);
+      }
+      if (document.querySelector(Selectorsinner.CALENDAR_DATE)) {
+        document.querySelector(Selectorsinner.CALENDAR_DATE).textContent = newdateinner;
+      }
+    };
+    setCurrentDateinner();
+
+    const updateTitleinner = currentData => {
+      const { currentViewTypeinner } = currentData;
+      // week view
+      if (currentViewTypeinner === 'timeGridWeek') {
+        const weekStartsDateinner = currentData.dateProfile.currentRange.start;
+        const startingMonthinner = weekStartsDate.toLocaleString('en-US', {
+          month: 'short'
+        });
+        const startingDateinner = weekStartsDate.getDate();
+        const weekEndDateinner = currentData.dateProfile.currentRange.end;
+
+        const endingMonthinner = weekEndDate.toLocaleString('en-US', {
+          month: 'short'
+        });
+        const endingDateinner = weekEndDate.getDate();
+
+        document.querySelector(
+          Selectorsinner.CALENDAR_TITLE
+        ).textContent = `${startingMonth} ${startingDate} - ${endingMonth} ${endingDate}`;
+      } else
+        document.querySelector(Selectorsinner.CALENDAR_TITLE).textContent =
+          currentData.viewTitle;
+    };
+
+    const appCalendarinner = document.querySelector(Selectorsinner.CALENDAR);
+    const addEventForminner = document.querySelector(Selectorsinner.ADD_EVENT_FORM);
+    const addEventModalinner = document.querySelector(Selectorsinner.ADD_EVENT_MODAL);
+    const eventDetailsModalinner = document.querySelector(
+      Selectorsinner.EVENT_DETAILS_MODAL
+    );
+
+    if (appCalendarinner) {
+      const calendarinner = fullCalendar.renderCalendar(appCalendarinner, {
+        headerToolbar: false,
+        dayMaxEvents: 3,
+        height: 800,
+        disableDragging: true,
+        editable: false,
+        stickyHeaderDates: false,
+        views: {
+          week: {
+            eventLimit: 3
+          }
+        },
+        eventTimeFormat: {
+          hour: 'numeric',
+          minute: '2-digit',
+          omitZeroMinute: true,
+          meridiem: true
+        },
+        events: eventList,
+        eventClick: info => {
+          if (info.event.url) {
+            window.open(info.event.url, '_blank');
+            info.jsEvent.preventDefault();
+          } else {
+            const templateinner = getTemplate(info.event);
+            document.querySelector(
+              Selectorsinner.EVENT_DETAILS_MODAL_CONTENT
+            ).innerHTML = template;
+            const modalinner = new window.bootstrap.Modal(eventDetailsModal);
+            modal.show();
+          }
+        },
+        dateClick(info) {
+          const modalinner = new window.bootstrap.Modal(addEventModal);
+          modal.show();
+          /* eslint-disable-next-line */
+          const flatpickrinner = document.querySelector(Selectorsinner.EVENT_START_DATE)._flatpickr;
+          flatpickr.setDate([info.dateStr]);
+        }
+      });
+
+      updateTitleinner(calendar.currentData);
+
+      document.querySelectorAll(Selectorsinner.DATA_EVENT).forEach(button => {
+        button.addEventListener(Events.CLICK, e => {
+          const elinner = e.currentTarget;
+          const typeinner = getData(elinner, DataKeys.EVENT);
+          switch (typeinner) {
+            case 'prev':
+              calendar.prev();
+              updateTitleinner(calendar.currentData);
+              console.log(calendar);
+              break;
+            case 'next':
+              calendar.next();
+              updateTitleinner(calendar.currentData);
+              break;
+            case 'today':
+              calendar.today();
+              updateTitleinner(calendar.currentData);
+              break;
+            default:
+              calendar.today();
+              updateTitleinner(calendar.currentData);
+              break;
+          }
+        });
+      });
+
+      document.querySelectorAll(Selectorsinner.DATA_CALENDAR_VIEW).forEach(link => {
+        link.addEventListener(Events.CLICK, e => {
+          e.preventDefault();
+          const elinner = e.currentTarget;
+          calendar.changeView(getData(elinner, DataKeys.FC_VIEW));
+          updateTitleinner(calendar.currentData);
+        });
+      });
+
+      if (addEventForm) {
+        addEventForm.addEventListener(Events.SUBMIT, e => {
+          e.preventDefault();
+          const { titleinner, startDateinner, endDateinner, labelinner, descriptioninner, allDayinner } =
+            e.target;
+          calendar.addEvent({
+            title: title.value,
+            start: startDate.value,
+            end: endDate.value ? endDate.value : null,
+            allDay: allDay.checked,
+            className: `text-${label.value}`,
+            description: description.value
+          });
+          e.target.reset();
+          window.bootstrap.Modal.getInstance(addEventModal).hide();
+        });
+      }
+
+      if (addEventModal) {
+        addEventModal.addEventListener(
+          Events.SHOWN_BS_MODAL,
+          ({ currentTarget }) => {
+            currentTarget.querySelector(Selectorsinner.INPUT_TITLE)?.focus();
+          }
+        );
+      }
+    }
+  };
+    
+
+  </script>
+  {% endblock content %}

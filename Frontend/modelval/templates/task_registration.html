@@ -1,0 +1,714 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block style %}
+
+<link  rel="stylesheet" href="{% static 'Front/dist/assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css'%}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/quill/dist/quill.snow.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.css' %}">
+<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+<style>
+  .modal{
+    transform: translate(5%, 5%);
+    /* width: 0.5px; */
+    /* height: 0.5px; */
+    padding-bottom: 90px;
+    /* padding-right: 10px; */
+    
+  }
+ 
+  .flatpickr-day.flatpickr-disabled {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .styled-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db; /* light gray border */
+    border-radius: 6px;        /* rounded corners */
+    font-size: 14px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.styled-input:focus {
+    border-color: #2563eb; /* blue border on focus */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+</style>
+
+{% endblock style %}
+{% block content %}
+
+
+<div class="modal fade" id="divTune" tabindex="-1" aria-labelledby="divTune" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+      <div class="modal-content">
+        
+        <!-- <div class="modal-header">
+          <h5 class="modal-title" id="scrollingLongModalLabel2">Set Tune Parameters </h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+        </div> -->
+        <div class="modal-body p-5 px-md-6">  
+    
+                <div class="col-lg-12"> 
+                   
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label" for="ddlIntrRisk">Model Id</label>
+                        <div class="col-sm-5">    
+                            <select name="model_id" id="model_id" class="form-control">
+                                {% for i in mdl_overview_obj %}
+                                <option class="dropdown-item" value="{{i.mdl_id}}">{{i.mdl_id}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>  
+  
+                    </div> 
+             
+        </div>
+        <div class="modal-footer">
+            <div class="col-auto" style="display: flex; justify-content: flex-end;"> 
+                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="generate_task_ID()()" >Select</button>
+                <button type="button" class="btn btn-primary btn-sm" style="margin-right: 10px;" onclick="closeModel()" >Cancel</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div>
+<form action="" id="target" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+  {% csrf_token %}   
+ 
+
+<!-- Description -->
+<div class="container content-space-1">
+  <div class="row">
+    <div class="col-md-4 col-lg-3 mb-3 mb-md-0">
+      <!-- Navbar -->
+      <div class="navbar-expand-md">
+        <!-- Navbar Toggle -->
+        <div class="d-grid">
+          <button type="button" class="navbar-toggler btn btn-white mb-3" data-bs-toggle="collapse" data-bs-target="#navbarVerticalNavMenuEg2" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbarVerticalNavMenuEg2">
+            <span class="d-flex justify-content-between align-items-center">
+              <span class="text-dark mb-0">Menu</span>
+
+              <span class="navbar-toggler-default">
+                <i class="bi-list"></i>
+              </span>
+
+              <span class="navbar-toggler-toggled">
+                <i class="bi-x"></i>
+              </span>
+            </span>
+          </button>
+        </div>
+        <!-- End Navbar Toggle -->
+
+        <!-- Navbar Collapse -->
+        <div id="navbarVerticalNavMenuEg2" class="collapse navbar-collapse">
+          <ul id="navbarSettingsEg2" class="js-sticky-block js-scrollspy nav nav-tabs nav-link-gray nav-vertical"
+              data-hs-sticky-block-options='{
+               "parentSelector": "#navbarVerticalNavMenuEg2",
+               "targetSelector": "#header",
+               "breakpoint": "md",
+               "startPoint": "#navbarVerticalNavMenuEg2",
+               "endPoint": "#stickyBlockEndPointEg2",
+               "stickyOffsetTop": 20
+             }'> 
+            <li class="nav-item">
+            <a class="nav-link active" href="#v-pills-home">Task Overview</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#v-pills-design">Relevant Personnel</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link"  href="#v-pills-attributes">Relevant Dependencies</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#v-pills-relatedmodels">Task Summary</a>
+            </li> 
+          </ul>
+        </div>
+        <!-- End Navbar Collapse -->
+      </div>
+      <!-- End Navbar -->
+    </div>
+    <!-- End Col -->
+
+    <div class="col-md-8 col-lg-9">
+ 
+            <div style="border: 1px solid lightgrey;padding: 10px;border-radius: 0.5rem;">
+                <h4 id="v-pills-home">Overview</h4>
+                <div class="row">
+                <div class="col-xl-12">
+                    <div class="row g-3 mb-6" style="margin-top:5px">
+                    
+                    <div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Department <span style="color: red;">*</span> 
+                            </div>
+                            <div class="coldata-12 col-md-8">
+                                <input readonly type="text" maxlength="300"  id="department" name="department"
+                                    class="form-control-sm form-control" value="{{department_obj.dept_label}}"
+                                    style="width: 100%;font-size: 12pt;margin-bottom:15px"
+                                    required/>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Originator <span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <input readonly type="text" maxlength="300" id="originator" name="originator"
+                                    class="form-control-sm form-control" value="{{originator_name}}"
+                                    style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                    required/>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Name <span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <input   type="text"  maxlength="100" id="txt_Task_Name" name="txt_Task_Name"
+                                    class="form-control-sm form-control" maxlength="100"
+                                    style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                                    required/>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Task Function <!--<span style="color: red;">*</span> -->
+                            </div>
+                            <div class="col-12 col-md-8">
+                            <select name="task_function" id="task_function" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                
+                                {% for i in task_function_obj %}
+                                <option class="dropdown-item" value="{{i.task_function_aid}}">{{i.task_function_label}}</option>
+                                {% endfor %}
+                            </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Start Date
+                                <span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                    <!-- Flatpickr -->
+                                
+                                <input type="text" name="registration_date" id="registration_date" class="form-date styled-input" style="margin-bottom:15px;width:60%;" placeholder="MM/DD/YYYY">
+                                <!-- End Flatpickr -->
+
+                            </div>
+                        </div>
+                         <div class="row form-group">
+                            <div class="col col-md-4">
+                                End Date 
+                                <span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <input type="text" name="end_date" id="end_date" class="form-date styled-input"  style="margin-bottom:15px;width:60%;" placeholder="MM/DD/YYYY">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Task Type <span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-8">
+
+                                <select required name="task_type" id="task_type" onchange="task_type_function()" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                    <!-- <option selected>Select Task</option> -->
+                                    {% for i in task_type_obj %}
+                                    <option class="dropdown-item" value="{{i.task_type_aid}}">{{i.task_type_label}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Sub Task Type <span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <select required name="sub_task_type" id="sub_task_type" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                                    
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Task Id <span style="color: red;">*</span>
+                            </div>
+                            <div class="coldata-12 col-md-8">
+                                <input  type="text" maxlength="300"  id="task_id" name="task_id"
+                                    class="form-control-sm form-control" value=""
+                                    style="font-size: 12pt;margin-bottom:15px"
+                                    readonly/>
+                            </div>
+                            <input type="hidden" id="link_id" name="link_id" value="">
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-4">
+                                Priority <span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <select required name="priority" id="priority" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+                        
+                                    {% for i in task_priority_obj %}
+                                    <option class="dropdown-item" value="{{i.task_priority_aid}}">{{i.task_priority_label}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                       
+                        <div class="row form-group" style="display: none;">
+                            <div class="col col-md-4">
+                                Completion Status <span style="color: red;">*</span>
+                            </div>
+                            <div class="coldata-12 col-md-8">
+                                <input type="number" maxlength="300"  id="txtModelNm" name="completion_status"
+                                    class="form-control-sm form-control" value=""
+                                    style="padding: 1px 5px;resize: none; width: 40%;font-size: 12pt;margin-bottom:15px"
+                                    />
+                            </div>
+                        </div>
+                        <div class="row form-group"  style="display: none;">
+                            <div class="col col-md-4">
+                                Approval Status<span style="color: red;">*</span>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <select  name="approval_status" id="approval_status" style="margin-bottom:15px;width:50%;" class="form-select" aria-label="Default select example"> 
+
+                                    {% for i in task_approval_master %}
+                                    <option class="dropdown-item" value="{{i.task_approvalstatus_aid}}">{{i.task_approvalstatus_label}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+          <div style="border: 1px solid lightgrey;padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+            <h4 id="v-pills-design" style="margin-bottom: 15px;">Relevant Personnel</h4>
+            <div class="row">
+              <div class="col-xl-12">
+                  <div class="row form-group">
+                      <input type="hidden" id="relevant_personnel" name="relevant_personnel" value="True">
+                      <div class="col col-md-4">
+                          Originator <span style="color: red;">*</span>
+                      </div>
+                      <div class="col-12 col-md-8">
+                          <input readonly type="text" maxlength="300" id="txtModelVersion" name="originator_relevant"
+                              class="form-control-sm form-control" value="{{originator_name}}"
+                              style="width: 100%;font-size: 12pt;margin-bottom:15px;"
+                              />
+                      </div>
+                  </div>
+                  <div class="row form-group">
+                      <div class="col col-md-4">
+                          Assigned to <span style="color: red;">*</span>
+                      </div>
+                      <!-- Select -->
+                  <div class="tom-select-custom tom-select-custom-with-tags col-12 col-md-8" style="margin-bottom: 2%;">
+                      <select required class="js-select form-select" autocomplete="off" multiple id="assigned_to" name="assigned_to"
+                              data-hs-tom-select-options='{
+                              "placeholder": " Assigned to"
+                              }'>
+                              {% for i in users_obj %}
+                              <option class="dropdown-item" value="{{i.u_aid}}">{{i.u_fname |add:' '| add:i.u_lname}}</option>
+                              {% endfor %}
+                      </select>
+                  </div>
+                  <!-- End Select -->
+                  </div>
+                  <div class="row form-group">
+                      <div class="col col-md-4">
+                          Approved by <span style="color: red;">*</span>
+                      </div>
+                      <div class="tom-select-custom tom-select-custom-with-tags col-12 col-md-8" style="margin-bottom: 2%;">
+                          <select required class="js-select form-select" autocomplete="off" multiple name="approved_by" id="approved_by"
+                                  data-hs-tom-select-options='{
+                                  "placeholder": " Approved by"
+                                  }'>
+                                  {% for i in users_obj %}
+                                  <option class="dropdown-item"  value="{{i.u_aid}}">{{i.u_fname |add:' '| add:i.u_lname}}</option>
+                                  {% endfor %}
+                          </select>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div style="border: 1px solid lightgrey;padding: 10px;border-radius: 0.5rem;margin-top: 15px;">
+            <h4 id="v-pills-attributes" style="margin-bottom: 15px;">Relevant Dependencies</h4>
+            <div class="row">
+              <div class="col-xl-12">
+                  <div class="row form-group">
+                      <div class="col col-md-4">
+                          Historical Dependency 
+                      </div>
+                      <div class="col-12 col-md-8">
+                          <input type="text" id="txtModelVersion" name="historical_dependency"
+                              class="form-control-sm form-control" value=""
+                              style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                              />
+                      </div>
+                  </div>
+                  <div class="row form-group">
+                      <div class="col col-md-4">
+                          Current Dependency 
+                      </div>
+                      <div class="col-12 col-md-8">
+                          <input type="text" id="txtModelVersion" name="current_dependency"
+                              class="form-control-sm form-control" value=""
+                              style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                              />
+                      </div>
+                  </div>
+                  <div class="row form-group">
+                      <div class="col col-md-4">
+                          Sub-Task Dependency  
+                      </div>
+                      <div class="col-12 col-md-8">
+                          <input type="text" id="txtModelVersion" name="sub_task_dependency"
+                              class="form-control-sm form-control" value=""
+                              style="padding: 1px 5px;resize: none; width: 100%;font-size: 12pt;margin-bottom:15px;"
+                              />
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div> 
+          <div style="border: 1px solid lightgrey;padding: 10px;margin-top: 15px;border-radius: 0.5rem;">
+            <h4 id="v-pills-relatedmodels" style="margin-bottom: 15px;">Task Summary</h4>
+            <div class="row">
+              <div class="col-xl-12">
+                  <div class="row form-group">
+                      <input type="hidden" id="task_summery_check" name="task_summery_check" value="True">
+                      <div class="col col-md-4">
+                          Task Summary  
+                      </div>
+                      <div class="col-12 col-md-8">
+                          <div class="quill-custom">
+                              <div style="min-height: 15rem;margin-bottom: 20px;" id="editor_summ"></div>
+                              <input type="hidden" name="task_summery_comments" id="task_summery_comments">
+                              
+                            </div>
+                      </div>
+                  </div>
+                  <div class="row form-group">
+                      <div class="col col-md-4">
+                          Task Requirements 
+                      </div>
+                      <div class="col-12 col-md-8">
+                          <div class="quill-custom">
+                              <div style="min-height: 15rem;margin-bottom: 20px;max-height: 150px;" id="editor_req"></div>
+                              <input type="hidden" name="task_requirements_comments" id="task_requirements_comments">
+                              
+                            </div>
+                      </div>
+                  </div> 
+              </div>
+            </div>
+          </div>
+      <!-- End Sticky End Point -->
+      <div id="stickyBlockEndPointEg2" >
+        <div class="col-12 gy-6" style="margin-top: 15px;">
+          <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <button class="btn btn-phoenix-primary px-5" type="button" onclick="abk()">Cancel</button>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary px-5 px-sm-15" type="submit">Add Task</button>
+            </div> 
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Col -->
+  </div>
+  <!-- End Row -->
+</div>
+<!-- End Description -->
+
+
+<!-- Added by Shuv Starts (for Project Details pop-up)--> 
+<div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content overflow-hidden">
+      <div class="modal-body p-5 px-md-6">
+        <div class="card shadow-none border border-300 my-5" data-component-card="data-component-card">
+          <div class="card-header p-3 border-bottom border-300 bg-soft" >
+            <div class="row g-3 justify-content-between align-items-end">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" >Update Model Version</h4>
+                
+              </div>
+              <div class="col col-md-auto">
+                <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                  <button class="btn btn-phoenix-primary me-1 p-2" data-bs-dismiss="modal" type="button">X</button>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="p-4 code-to-copy">
+              <table class="table table1" >                
+                  <tr>
+                    <th scope="row" style="width:40%">Model</th>
+                    <td>
+                      <input type="hidden" id="hdnMdlVersion"  name="hdnMdlVersion"/>
+                      <select class="form-select" id="ddlModelId" onchange="getModelVersion()"data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}'>
+                      
+                        <option value="">Select model</option>                                 
+                        {% for key, val in mdlinfo.items  %}  
+                          <option value="{{val.Mdl_Id}}">{{val.Prm_Name}}</option>  
+                        {% endfor %}   
+                      </select>
+                    </td>
+                  </tr>                 
+                  <tr>
+                    <th scope="row">Major Version</th>
+                    <td><label class="col-sm-4 col-form-label" id="lblMajorVer"></label></td>                      
+                  </tr>
+                  <tr>
+                    <th scope="row">Minor Version</th>
+                    <td><label class="col-sm-4 col-form-label" id="lblMinorVer"></label></td>
+                  </tr> 
+                 <tr>
+                  <td style="text-align: right;">
+                    <button class="btn btn-sm btn-primary px-6" id="btnUpdateMajor" type="button" onclick="updateVersion('0')">Update Major Version</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-primary px-6" id="btnUpdateMinor" type="button" onclick="updateVersion('1')">Update Minor Version</button>
+                  </td>
+                 </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Added by Shuv Ends (for Project Details pop-up)-->
+</form>
+                        {% endblock content %}
+    {% block script  %}  
+    <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  
+  
+    <!-- JS Front -->
+    <script src="{% static 'Front/dist/assets/vendor/quill/dist/quill.min.js' %}"></script>
+
+    <script src="{% static 'Front/dist/assets/vendor/hs-sticky-block/dist/hs-sticky-block.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/hs-scrollspy/dist/hs-scrollspy.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/vendor/flatpickr/dist/flatpickr.min.js' %}"></script>
+    <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+
+    
+    <script>
+    $(function(){
+    console.log("Initializing date pickers...");
+
+    var startEl = document.getElementById('registration_date');
+    var endEl   = document.getElementById('end_date');
+
+    var endPicker = endEl._flatpickr || flatpickr(endEl, {
+        dateFormat: "m/d/Y",
+        allowInput: false
+    });
+
+    var startPicker = startEl._flatpickr || flatpickr(startEl, {
+        dateFormat: "m/d/Y",
+        defaultDate: "today",
+        minDate: "today", // 🚀 disables all dates before today
+        onChange: function(selectedDates) {
+            if (!selectedDates.length) return;
+
+            var minEnd = new Date(selectedDates[0]);
+            minEnd.setDate(minEnd.getDate() + 1); // end date must be at least 1 day after start
+            endPicker.set('minDate', minEnd);
+
+            if (endPicker.selectedDates.length && endPicker.selectedDates[0] < minEnd) {
+                endPicker.clear();
+            }
+        }
+    });
+
+    var initialStart = startPicker.selectedDates[0] || new Date();
+    var initialMin = new Date(initialStart);
+    initialMin.setDate(initialMin.getDate() + 1);
+    endPicker.set('minDate', initialMin);
+
+    console.log("startPicker instance:", startEl._flatpickr ? "auto" : "manual", startPicker);
+    console.log("endPicker instance:", endEl._flatpickr ? "auto" : "manual", endPicker);
+});
+
+
+
+    </script>
+
+    <script>
+      (function() {
+        // INITIALIZATION OF STICKY BLOCKS
+        // =======================================================
+        Promise.all(Array.from(document.images)
+          .filter(img => !img.complete)
+          .map(img => new Promise(resolve => {
+            img.onload = img.onerror = resolve
+          })))
+          .then(() => {
+            new HSStickyBlock('.js-sticky-block', {
+              targetSelector: document.getElementById('header').classList.contains('navbar-fixed') ? '#header' : null
+            })
+          })
+    
+    
+        // INITIALIZATION OF SCROLLSPY
+        // =======================================================
+        new bootstrap.ScrollSpy(document.body, {
+          target: '#navbarSettingsEg2',
+          offset: 10
+        })
+    
+        new HSScrollspy('#navbarVerticalNavMenuEg2', {
+          breakpoint: 'lg'
+        })
+      })()
+    </script>
+     
+<script>
+    var toolbarOptions=[
+            ["bold", "italic", "underline", "strike", "link", "blockquote", "code",  {"list": "bullet"}]
+          ]
+ 
+    const MAX_LEN = 350;
+    var quill_req = new Quill('#editor_req', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+
+    var quill_summ = new Quill('#editor_summ', {
+        theme: 'snow',
+        modules: {
+            toolbar: toolbarOptions
+         }
+    });
+    quill_summ.on('text-change', () => {
+      const txt = quill_summ.getText().trim();
+      if (txt.length > MAX_LEN) quill_summ.deleteText(MAX_LEN, txt.length);
+    });
+    quill_req.on('text-change', () => {
+      const txt = quill_req.getText().trim();
+      if (txt.length > MAX_LEN) quill_req.deleteText(MAX_LEN, txt.length);
+    });
+</script>
+
+
+<script>
+  // var quill = new Quill('#editor_summ', { theme: 'snow' });
+  // const maxLen = 3;
+
+  // quill.on('text-change', function () {
+  //   let text = quill.getText().trim();
+
+  //   if (text.length > maxLen) {
+  //     quill.deleteText(maxLen, text.length);
+  //   }
+
+  //   document.getElementById('task_summery_comments').value = quill.root.innerHTML;
+  // });
+  function validateForm(){
+  // Approver comments
+  var editorContentInput_req = document.getElementById('task_requirements_comments');        //req comments
+  var editorContentInput_summ = document.getElementById('task_summery_comments');        //summery comments
+
+        //req comments
+        var content_req = quill_req.root.innerHTML;
+        editorContentInput_req.value = content_req;
+
+        //summery comments
+        var content_sum = quill_summ.root.innerHTML;
+        editorContentInput_summ.value = content_sum; 
+  }
+      
+    function generate_task_ID(){
+        $.ajax({ 
+        type:'GET',
+        url: "{% url 'generate_task_ID' %}",
+        data:{'model_id':$('#model_id').val(),'task_type':$('#task_type').val(),'task_Lbl':$('#task_type option:selected').text()},
+        dataType: 'json',
+        success: function (data) {   
+          document.getElementById("task_id").value=data.task_id
+          document.getElementById("link_id").value=data.model_id
+          $("#divTune").modal("hide");
+        }
+        });
+    }
+    function closeModel(){
+        $("#divTune").modal("hide");
+    } 
+    function abk(){ 
+        var url = "{% url 'getTasks' %}";
+        document.location.href = url;
+        
+    }
+    function task_type_function()
+    {  
+      $.ajax({ 
+        type:'GET',
+        url: "{% url 'get_sub_task_type' %}",
+        data:{'task_type':$('#task_type').val()},
+        dataType: 'json',
+        success: function (data) {  
+          console.log('data',data)  
+          console.log('data',typeof(data))
+
+          previous_data=$('#sub_task_type option').text()
+          console.log("previous_data",previous_data)  
+          if (previous_data){
+            console.log("if")
+            $("#sub_task_type option").remove();   
+          }
+          for (const [key, value] of Object.entries(data)) {
+            console.log('Data',`${key}`, `${value}`);
+            var option = $('<option />');
+            option.attr('value',`${key}`).text(`${value}`);
+
+            $('#sub_task_type').append(option);
+            }
+            if ($('#task_type option:selected').text() == "Model"){
+                
+                $("#divTune").modal("toggle");
+            }
+            else{
+                generate_task_ID();
+            }
+
+        //   for (i of data) {
+        //     // console.log(i); //
+        //     var option = $('<option />');
+        //     option.attr('value',i).text(i);
+
+        //     $('#sub_task_type').append(option);
+        //     }
+             
+                  
+        }
+        });
+    }
+    
+</script>
+    {% endblock script  %}

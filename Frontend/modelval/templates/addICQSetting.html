@@ -1,0 +1,109 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+    
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    
+        <div class="card h-90">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                -webkit-border-top-right-radius: 6px;
+                -moz-border-radius-topleft: 6px;
+                -moz-border-radius-topright: 6px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">ICQ Setting</h4>
+            </div> 
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="txticqname">Name <span style="color: red;">*</span></label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="txticqname" type="text" maxlength="100" required=""> 
+                    </div>
+                </div>  
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="txtdesc">Remarks</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="txtdesc" type="text" maxlength="150"> </textarea>
+                    </div>
+                </div> 
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="txtenddate">End Date</label>
+                    <div class="col-sm-8"> 
+                        <input required   name="txtenddate"   id="txtenddate"  type="datetime" class="js-flatpickr form-control flatpickr-custom" style="margin-bottom:15px;width:30%;" placeholder="mm/dd/yyyy"
+                                data-hs-flatpickr-options='{
+                                "dateFormat":"m/d/Y"
+                                }' /> 
+                    </div>
+                </div>  
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                            <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" /> 
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>   
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+<script type='text/javascript' >
+    function validateform(){ 
+        if($("#txticqname").val().trim().length<1){
+            alert('Plese enter name.');
+            return false;
+        }
+        $.ajax({
+            url: '/addICQSetting/', 
+            data:{ icqname: $("#txticqname").val(),remarks:$('#txtdesc').val(),enddate:$('#txtenddate').val()},
+            dataType: 'json',   
+            success: function (data) { 
+               if(data.isvalid=='true'){
+                alert('ICQ setting added successfully.')
+               }
+               else
+               {
+                alert('Error while adding ICQ setting.')
+               }
+            }
+        });
+    }
+
+    // function checkUsername(){ 
+    //     $.ajax({
+    //         url: '/checkValue/', 
+    //         data:{val: $("#txtdept").val(),'tbl':'dept' },
+    //        dataType: 'json',   
+    //         success: function (data) { 
+    //            if(data.cnt!='0'){
+    //             $("#txtdept").val('')
+    //             alert('Department already exists.')
+    //             $("#txtdept").focus()
+    //            }
+               
+    //         }
+    //     });
+    // }
+
+    function gotolist()
+    {
+        window.location='{{showICQSetting}}'
+        
+    }
+</script>
+{% endblock script %}

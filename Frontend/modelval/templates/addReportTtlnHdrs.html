@@ -1,0 +1,805 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %} 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        background-color: #f5f5f5;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .container {
+        margin: 0 auto;
+        padding: 20px;
+        max-height: 600px; /* Adjust height as needed */
+        overflow-y: auto;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .column {
+  float: left;
+  width: 33.33%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.column {
+  float: left;
+}
+
+.left, .right {
+  width: 25%;
+}
+
+.middle {
+  width: 50%;
+}
+table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f5f5f5;
+    }
+    .delete-btn {
+        color: black;
+        background-color: #e0edff;
+        border: none;
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+    .form-control {
+        margin-bottom: 5px;
+        margin-top: 5px;
+        width: 80%;
+    }
+    .delete-icon {
+        cursor: pointer;
+    } */
+    .add-btn {
+        margin-top: 10px;
+        padding: 10px 20px;
+        color: white;
+        border: none;
+        background-color: #377dff;
+        cursor: pointer;
+    }
+
+    .add-btn:hover {
+        background-color: #45a049;
+    } 
+</style>
+ 
+
+
+<div class="content" style="padding-top:0px;width:80%;margin-left: 10%">
+  {% csrf_token %}     
+  <div class="col-12 col-xl-12 order-1 order-xl-0">
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">Set Criteria</h4>
+                </div>
+      <div class="card-body p-0">        
+        <div class="p-4 code-to-copy">
+            <div class="row row-cols-lg-5 g-3 align-items-center"> 
+                <div class="form-floating mb-1"style="width:20%">
+
+                    <select class="form-select" onchange="enabledisableTXT()"  name="ddlSection" id="ddlSection" aria-label="Default select example" required>                      
+                     
+                       
+                        <option value="Title">Title</option>
+                        <option value="Header">Header</option>
+                        <option value="Table">Table</option>
+                         
+                    </select>
+                    <label for="floatingInput">Select section</label>
+                </div>
+                
+                <div class="form-floating mb-1" id="divTtl" style="width:50%">
+                    <input type="text" id="txt_title" class="form-control" style="width: 100%;">
+                    <label for="floatingInput">Add Title</label>
+                </div>
+ 
+                <div class="form-floating mb-1" id="divHeaderLbl" style="width:25%;display: none;">
+                    <input type="text" id="txt_label" style="width: 100%;" class="form-control">
+                    <label for="floatingInput">Add Header</label>
+                </div>
+
+                <div class="form-floating mb-1"  id="divHeaderPlcHldr" style="width:25%;display: none">
+                    <input type="text" id="txt_placeholder" style="width: 100%;"  class="form-control">
+                    <label for="floatingInput">Add Placeholder/Expected Value</label>
+                </div>
+                 
+                <div class="form-floating mb-1" id="divTblHdr1" style="width:17%;display: none;">
+                    <input type="text" id="txt_TblHdr1" style="width: 100%;" onkeydown="enableTxt2()" class="form-control">
+                    <label for="floatingInput">Add Header 1</label>
+                </div>
+
+                <div class="form-floating mb-1"  id="divTblHdr2" style="width:17%;display: none">
+                    <input type="text" id="txt_TblHdr2" style="width: 100%;" disabled  onchange="enableTxt3()" class="form-control">
+                    <label for="floatingInput">Add Header 2</label>
+                </div>
+                 
+                <div class="form-floating mb-1" id="divTblHdr3" style="width:17%;display: none;">
+                    <input type="text" id="txt_TblHdr3" style="width: 100%;" disabled  onchange="enableTxt4()" class="form-control">
+                    <label for="floatingInput">Add Header 3</label>
+                </div>
+
+                <div class="form-floating mb-1"  id="divTblHdr4" style="width:17%;display: none">
+                    <input type="text" id="txt_TblHdr4" style="width: 100%;"  disabled   class="form-control">
+                    <label for="floatingInput">Add Header 4</label>
+                </div>
+                
+
+                
+            </div>
+            
+            <div class="row " style="margin-top: 10px;"> 
+                <div class="form-floating mb-1"style="width:17%">
+
+                    <select class="form-select"  name="fontsize" id="fontsize" aria-label="Default select example" required>                      
+                     
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="26">26</option>
+                        <option value="28">28</option>
+                        <option value="30">30</option>
+                        <option value="32">32</option>
+                         
+                    </select>
+                    <label for="floatingInput">Fontsize</label>
+                </div>
+                <div class="form-floating mb-1"style="width:17%">
+
+                    <select class="form-select"  name="alignment" id="alignment" aria-label="Default select example" required>                                             
+                        <option value="left">left</option>
+                        <option value="right">right</option>
+                        <option value="center">center</option>
+                    </select>
+                    <label for="floatingInput">Alignment</label>
+                </div>
+                <div class="form-floating mb-1" style="width:17%;">
+                    <input type="color" id="fontcolor" name="fontcolor" style="width: 100%;" class="form-control">
+                    <label for="floatingInput">Font Color</label>
+                </div>
+                <!-- <div class="form-floating mb-1" style="width:17%;">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Add Fill color
+                      </label>
+                    <input class="form-check-input" type="checkbox" value="" id="chkfillcolor" onclick="ShowFillcolor()">
+                        
+                  </div> -->
+                  <div class="form-check" style="width:17%;padding-top: 20px;">
+                    <label class="form-check-label">
+                      <input type="checkbox" class="form-check-input" value="" id="chkfillcolor" onclick="ShowFillcolor()"> Add Fill Color
+                    </label>
+                  </div>
+                <div class="form-floating mb-1" id="divfillcolor" style="width:17%;">
+                    <input type="color" id="fillcolor" name="fillcolor" style="width: 100%;" class="form-control">
+                    <label for="floatingInput">Fill Color</label>
+                </div>                 
+                <div class="form-floating mb-1"  style="width:10%;">
+
+                <button class="btn btn-primary" type="button" onclick="saveCriteria()">Add</button>
+                </div>
+                <div class="mb-9" style="margin-top: 15px;">
+                    <div id="criteria" >                  
+                       
+                       
+                     
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row " style="margin-top: 10px;"> 
+                <div class="col-sm-2" style="text-align: right;">
+                    <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="ShowDataPreview()" value="Preview" /> 
+                  </div>
+                <div class="col col-md-3">
+                    <label class=" form-control-label"> </label>
+                </div>
+                <div class="col-sm-5">        
+                     <input id="txt_temp_name" class="form-control" style="width:100%" type="text"/>
+                </div>
+                <div class="col-sm-2" style="text-align: right;">
+                    <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="saveTtlnHeaders()" value="Save" /> 
+                  </div>
+                  
+            </div>  
+        </div>
+       </div>
+       </div>   
+    </div>
+</div>
+</div> 
+
+<div class="modal fade bd-example-modal-xl" id="exampleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Sections Data</h5>
+          
+          <!-- <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button> -->
+        </div>
+        <div class="modal-body">
+          <!-- <p class="text-700 lh-lg mb-0">Show added sections data </p> -->
+          <div id="divComments" style="overflow: auto;"> </div>
+
+            </div>
+        <!-- <div class="modal-footer">
+          <button class="btn btn-primary" type="button" onclick="submitRatings()">Yes</button>
+          <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">No</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block script %} 
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+<script src="{% static 'js/jquery-ui-1.13.3/jquery-3.7.1.js' %}"></script> 
+<script src="{% static 'js/jquery-ui-1.13.3/jquery-ui.js' %}"></script> 
+
+<script>
+    $(document).ready(function(){
+         $("#divfillcolor").hide()
+      }); 
+    
+    $('#criteria').sortable( {
+    handle: '.sortablejs-custom-handle', // handle's class
+    animation: 150
+});
+ 
+
+
+    var counter_str= "{{max_value}}";
+    var counter=parseInt(counter_str);
+    console.log("counter",counter)
+    counter=1;
+    // counter = 0
+    function openNextTextbox() {
+        var textboxContainer = document.getElementById("textboxContainer");
+        var textboxDiv = document.createElement("div");
+        textboxDiv.classList.add("row");
+
+
+        // Create first column element with class 'column' and textbox
+        var column1 = document.createElement("div");
+        column1.classList.add("column");
+        var newTextbox = document.createElement("input");
+        newTextbox.setAttribute("type", "text");
+        newTextbox.classList.add("form-control");
+        newTextbox.setAttribute("id", "textbox_" + counter);
+        // Add styles to the new element
+        newTextbox.style.marginLeft = "10px";
+
+        column1.appendChild(newTextbox);
+
+
+        // Create second column element with class 'column' and delete icon
+        var column2 = document.createElement("div");
+        column2.classList.add("column");
+        
+        var deleteIcon = document.createElement("i");
+        deleteIcon.classList.add("fas", "fa-trash-alt", "delete-icon"); 
+        deleteIcon.style.width = "5px";
+        deleteIcon.style.marginTop = "15px";
+
+        deleteIcon.onclick = function() {
+            var textboxToRemove = document.getElementById("textbox_" + this.dataset.counter);
+            var deleteIconToRemove = document.getElementById("deleteIcon_" + this.dataset.counter);
+            if (textboxToRemove && deleteIconToRemove) {
+                textboxContainer.removeChild(textboxDiv);
+            }
+        };
+
+        column2.appendChild(deleteIcon);
+
+        // Append columns to row
+        textboxDiv.appendChild(column1);
+        textboxDiv.appendChild(column2);
+
+        deleteIcon.setAttribute("id", "deleteIcon_" + counter);
+        deleteIcon.dataset.counter = counter;
+
+        textboxDiv.appendChild(newTextbox);
+        textboxDiv.appendChild(deleteIcon);
+
+        textboxContainer.appendChild(textboxDiv);
+
+        counter++;
+    }
+
+    function saveValues() {
+        
+        var data = {};
+        $('input[id^="textbox_"]').each(function() {
+            var id = $(this).attr('id').substring(8);
+            var value = $(this).val();
+            data[counter] = value;
+            counter++;
+        });
+
+        console.log("data",data)
+
+        tamplate_name= document.getElementById('template_name').value
+        // report_heading= document.getElementById('report_heading').value
+        // Send values via AJAX
+        $.ajax({
+            url: '/save_report/',
+            data: { labels: JSON.stringify(data) ,tamplate_name:tamplate_name},
+            dataType: 'json',
+            success: function(response) {
+                console.log("response",response.is_taken)
+                if (response.is_taken == 'update'){
+                    console.log('Values updated successfully',response);
+                    alert("Values Updated successfully ")
+                }
+                else{
+                    console.log('Values saved successfully',response);
+                    alert("Values saved successfully ")
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error saving values:', error);
+            }
+        });
+    }
+    
+    function fetchValues(){
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+        for (var i = rows.length - 1; i >= 0; i--) {
+            var row = rows[i];
+            row.parentNode.removeChild(row);
+        }
+        
+        var selectedValue = $('#method option:selected').val()
+        console.log("selectedValue",selectedValue);
+
+        $.ajax({
+            url: '/fetch_report/',
+            data: { selectedValue: selectedValue},
+            dataType: 'json',
+            success: function(response) {
+                console.log("response",response)
+                for (var key in response) {
+                if (response.hasOwnProperty(key)) {
+                    var value = response[key];
+                    console.log("Key: " + key + ", Value: " + value);
+
+                
+                    var table = document.createElement("table");
+                    var div = document.getElementById("myDiv");
+                    div.appendChild(table);
+
+                    // Create a table row and add it to the table
+                    var row = document.createElement("tr");
+                    table.appendChild(row);
+
+                    // Create table data cells with text boxes and add them to the row
+                    
+                    var cell = document.createElement("td");
+                    var newTextbox = document.createElement("input");
+                    newTextbox.setAttribute("type", "text");
+                    newTextbox.classList.add("form-control");
+                    newTextbox.setAttribute("id", "textbox_" + key);
+                    newTextbox.style.width = "45%";
+
+                    // if(value =='Model Validation Report:[model name]'){
+                    //     $("#textbox_0").hide();
+                    // }
+                    newTextbox.value = value;
+                    cell.appendChild(newTextbox);
+                    row.appendChild(cell);
+                }
+                }
+                // counter= 0
+                
+                // counter++;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error saving values:', error);
+            }
+        });
+
+    }
+    function swap_fun(){
+        console.log("swap_fun()")
+        if ($("#method").val() === "add_new") {
+            $("#method").hide();
+            $("#fetch").hide();
+            $("#template_name").show();
+            $("#save").show();
+      }
+      fetchValues();
+    } 
+
+    function changeFontSize() {
+        var fontSize = document.getElementById("fontSize").value;
+        document.getElementById("output").style.fontSize = fontSize + "px";
+    }
+    
+    function enabledisableTXT(){ 
+        $('#divTtl').hide();
+        $('#fontsize').hide();
+        $('#alignment').hide();
+        $('#divHeaderLbl').hide();
+        $('#divHeaderPlcHldr').hide();
+        $('#divTblHdr1').hide();
+        $('#divTblHdr2').hide();
+        $('#divTblHdr3').hide();
+        $('#divTblHdr4').hide();
+        if($('#ddlSection').val()=="Title")
+        { 
+            $('#divTtl').show();
+            $('#fontsize').show();
+            $('#alignment').show();
+
+        }
+        else if($('#ddlSection').val()=="Header")
+        { 
+            $('#divHeaderLbl').show();
+            $('#divHeaderPlcHldr').show();
+            $('#fontsize').show();
+            $('#alignment').show();
+        }
+        else if($('#ddlSection').val()=="Table")
+        { 
+            $('#divTblHdr1').show();
+            $('#divTblHdr2').show();
+            $('#divTblHdr3').show();
+            $('#divTblHdr4').show();
+        }
+
+    }
+
+    function ShowFillcolor(){
+        debugger
+        // chkbox = $('#chkfillcolor').checked()
+        chkbox = document.getElementById("chkfillcolor").checked;
+        if (chkbox == true){
+            $('#divfillcolor').show();
+        }
+        else{
+            $('#divfillcolor').hide();
+        }
+        
+    }
+
+    function saveCriteria(){
+        DataPreview()
+        color = $('#fillcolor').val()
+        console.log("color",color)
+        if($('#ddlSection').val()=="Title")
+        {  
+            
+            debugger
+            strHTML='<div class="row" id="div_temp_'+ counter +'"><input type="hidden" id="hdn_temp_'+ counter +'" value="'+$('#ddlSection').val()+'"/>';
+            strHTML+='<div class="col-sm-11"><i class="sortablejs-custom-handle bi-grip-horizontal list-group-icon"></i> <span id="spn_ttl_'+ counter +'" style="font-size: 24px;">'+$('#txt_title').val()+ '</span></div> <div class="col-sm-1"> <i class="bi bi-trash" style="font-size: 20px;" onclick="removeDiv(this.id)" id="deleteIcon_temp_'+ counter +'"></i></div></div>'
+            strHTML+='<input type="text" hidden name="fontsize_title" id="fontsize_title"  value="'+$('#fontsize').val()+'"/>'
+            strHTML+='<input type="text" hidden name="alignment_title" id="alignment_title"  value="'+$('#alignment').val()+'"/>'
+            strHTML+='<input type="text" hidden name="favcolor_title" id="favcolor_title"  value="'+$('#favcolor').val()+'"/>'
+            $('#criteria').append(strHTML)
+            $('#txt_title').val('')
+        }
+        else if($('#ddlSection').val()=="Header")
+        { 
+            strHTML='<div class="row" id="div_temp_'+ counter +'"><input type="hidden" id="hdn_temp_'+ counter +'" value="'+$('#ddlSection').val()+'"/>';
+            strHTML+='<div class="col-sm-11"><i class="sortablejs-custom-handle bi-grip-horizontal list-group-icon"></i> <span  id="spn_lbl_'+ counter +'">'+$('#txt_label').val()+ '</span> <span  id="spn_plchldr_'+ counter +'">'+$('#txt_placeholder').val()+ '</span></div> <div class="col-sm-1"> <i class="bi bi-trash" style="font-size: 20px;"  onclick="removeDiv(this.id)" id="deleteIcon_temp_'+ counter +'"></i></div></div>'
+            strHTML+='<input type="text" hidden name="fontsize_header" id="fontsize_header"  value="'+$('#fontsize').val()+'"/>'
+            strHTML+='<input type="text" hidden name="alignment_header" id="alignment_header"  value="'+$('#alignment').val()+'"/>'
+            strHTML+='<input type="text" hidden name="favcolor_header" id="favcolor_header"  value="'+$('#favcolor').val()+'"/>'
+            $('#criteria').append(strHTML)
+            $('#txt_label').val('')
+            $('#txt_placeholder').val('')
+        }
+        else if($('#ddlSection').val()=="Table")
+        { 
+            strHTML='<div class="row" id="div_temp_'+ counter +'"><input type="hidden" id="hdn_temp_'+ counter +'" value="'+$('#ddlSection').val()+'"/>';
+            strHTML+='<div class="col-sm-11"><i class="sortablejs-custom-handle bi-grip-horizontal list-group-icon"></i> ';
+            strHTML+='<span id="spn_tblhdr1_'+ counter +'">'+$('#txt_TblHdr1').val()+ '</span> <span id="spn_tblhdr2_'+ counter +'">'+$('#txt_TblHdr2').val()+ '</span>';
+            strHTML+=' <span id="spn_tblhdr3_'+ counter +'"> '+$('#txt_TblHdr3').val()+ '</span> <span id="spn_tblhdr4'+ counter +'"> '+$('#txt_TblHdr4').val()+ '</span></div> <div class="col-sm-1"> <i class="bi bi-trash" style="font-size: 20px;"  onclick="removeDiv(this.id)" id="deleteIcon_temp_'+ counter +'"></i></div></div>'
+            $('#criteria').append(strHTML)
+            $('#txt_label').val('')
+            $('#txt_placeholder').val('')
+        }
+        counter++;
+    }
+    function removeDiv(id){    
+        debugger;
+        alert(id.replace('deleteIcon','div'))
+        document.getElementById(id.replace('deleteIcon','div')).remove();
+        ShowDataPreview(id.replace('deleteIcon','div'))
+    }
+    function ShowDataPreview(id){
+        console.log(id)
+        debugger
+        if(id == null){
+            $("#exampleModal").modal('toggle')
+            return
+        }
+        else{
+            document.getElementById(id).remove();
+            // $("#exampleModal").modal('toggle')
+        }
+        
+    }
+    function hex2rgb(hexcolor) {
+        var hex_color = hexcolor
+            , pattern_color = "^#([A-Fa-f0-9]{6})$";
+        if (hex_color.match(pattern_color)) {
+            var hex_color = hex_color.replace("#", "")
+                , r = parseInt(hex_color.substring(0, 2), 16)
+                , g = parseInt(hex_color.substring(2, 4), 16)
+                , b = parseInt(hex_color.substring(4, 6), 16);
+            return 'rgb(' + r + ',' + g + ',' + b + ')' ;
+        }
+        else {
+            alert('Error Color Format');
+        }
+    }
+
+    function DataPreview(){
+        debugger;
+        console.log("Title",$('#ddlSection').val(),$('#txt_title').val(),$('#fontsize').val())    
+        if($('#ddlSection').val()=="Title")
+        {  
+            var fontsize=$('#fontsize').val()
+            var alignment=$('#alignment').val()
+            chkbox = document.getElementById("chkfillcolor").checked;
+            
+            if (chkbox == true){
+                var fillcolor1=$('#fillcolor').val()
+                console.log(hex2rgb(fillcolor1))
+                var fillcolor=hex2rgb(fillcolor1)
+            }
+            else{
+                var fillcolor = (255,255,255)
+            }
+            
+            var fontcolor=$('#fontcolor').val()
+            strHTML='<div class="row" id="div_temp_'+ counter +'"><input type="hidden" id="hdn_temp_'+ counter +'" value="'+$('#ddlSection').val()+'"/>';
+            strHTML+='<div class="col-sm-11" style="text-align:'+alignment+';background:'+fillcolor+';"><span id="spn_ttl_data'+ counter +'" style="font-size: '+fontsize+'px;color: '+fontcolor+';">'+$('#txt_title').val()+ '</span></div></div>'            
+
+            $('#divComments').append(strHTML)
+        }
+        else if($('#ddlSection').val()=="Header")
+        { 
+            debugger
+            var fontsize=$('#fontsize').val()
+            var alignment=$('#alignment').val()
+            var fillcolor=$('#fillcolor').val()
+            var fontcolor=$('#fontcolor').val()
+            strHTML='<div class="row" id="div_temp_'+ counter +'"><input type="hidden" id="hdn_temp_'+ counter +'" value="'+$('#ddlSection').val()+'"/>';
+            strHTML+='<div class="col-sm-11" style="text-align:'+alignment+';background:'+fillcolor+';"><span  id="spn_lbl_'+ counter +'" style="font-size: '+fontsize+'px;text-align:'+alignment+';color: '+fontcolor+';">'+$('#txt_label').val()+ '</span> <span  id="spn_plchldr_'+ counter +'">'+$('#txt_placeholder').val()+'</span></div></div>'
+            
+            $('#divComments').append(strHTML)
+        }
+        else if($('#ddlSection').val()=="Table")
+        { 
+            hdrArr=''; 
+            header_1 = $('#txt_TblHdr1').val()
+            header_2 = $('#txt_TblHdr2').val()
+            header_3 = $('#txt_TblHdr3').val()
+            header_4 = $('#txt_TblHdr4').val()
+            if(header_1.trim().length>0)
+                hdrArr+=header_1;
+            if(header_2.trim().length>0)
+                hdrArr+=','+header_2;
+            if(header_3.trim().length>0)
+                hdrArr+=','+header_3;
+            if(header_4.trim().length>0)
+                hdrArr+=','+header_4;
+            console.log("hdrArr",hdrArr)
+            arrHdr=hdrArr.split(',')
+            strTbltd = ''
+            strTbl='<table><tr>'
+                    for(i=0;i<arrHdr.length;i++)
+                    {
+                      strTbl +='<th>'+arrHdr[i].trim()+'</th>';
+				        strTbltd +='<td> </td>';
+
+                    }
+                    strTbl +='</tr><tr>';
+            strTbl +=strTbltd
+            strTbl +='</tr></table>';
+            $('#divComments').append(strTbl+"</br>")
+
+        }
+    }
+    
+    function saveTtlnHeaders(){
+        var idsInOrder = $("#criteria").sortable("toArray");
+   
+        console.log(idsInOrder);
+        var i;
+        for (i = 0; i < idsInOrder.length; ++i) {
+        console.log($('#'+idsInOrder[i].replace('div','hdn')).val()) 
+        selSec=$('#'+idsInOrder[i].replace('div','hdn')).val();
+        if(selSec=="Title")
+        {  
+             console.log('title is ',$('#spn_ttl_'+idsInOrder[i].replace('div_temp_','')).text())
+             $.ajax({
+                url: '/save_report/',
+                data: { 
+                    'title_id':idsInOrder[i].replace('div_temp_',''),
+                    'title_or_heading':'1', 
+                    'title_label':$('#spn_ttl_'+idsInOrder[i].replace('div_temp_','')).text(),
+                    'title_type':selSec,
+                    'title_placeholder':'',
+                    'title_sort_idx':i+1,
+                    'tamplate_name':$('#txt_temp_name').val(),
+                    'fontsize':$('#fontsize_title').val(),
+                    'alignment':$('#alignment_title').val(),
+                    'favcolor':$('#favcolor_title')},
+                    
+                dataType: 'json',
+                success: function(response) {
+                    console.log("response",response.is_taken)
+                    if (response.is_taken == 'update'){
+                        console.log('Values updated successfully',response);
+                        alert("Values Updated successfully ")
+                    }
+                    else{
+                        console.log('Values saved successfully',response);
+                        alert("Values saved successfully ")
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error saving values:', error);
+                }
+            });
+        }
+        else if(selSec=="Header")
+        { 
+            console.log('title is ',$('#spn_lbl_'+idsInOrder[i].replace('div_temp_','')).text(),$('#spn_plchldr_'+idsInOrder[i].replace('div_temp_','')).text()) 
+            $.ajax({
+                url: '/save_report/',
+                data: { 
+                    'title_id':idsInOrder[i].replace('div_temp_',''),
+                    'title_or_heading':'0', 
+                    'title_label':$('#spn_lbl_'+idsInOrder[i].replace('div_temp_','')).text(),
+                    'title_type':selSec,
+                    'title_placeholder':$('#spn_plchldr_'+idsInOrder[i].replace('div_temp_','')).text(),
+                    'title_sort_idx':i+1,
+                    'tamplate_name':$('#txt_temp_name').val(),
+                    'fontsize':$('#fontsize_header').val(),
+                    'alignment':$('#alignment_header').val()},
+                dataType: 'json',
+                success: function(response) {
+                    console.log("response",response.is_taken)
+                    if (response.is_taken == 'update'){
+                        console.log('Values updated successfully',response);
+                        alert("Values Updated successfully ")
+                    }
+                    else{
+                        console.log('Values saved successfully',response);
+                        alert("Values saved successfully ")
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error saving values:', error);
+                }
+            });
+        }
+        else if(selSec=="Table")
+        {       
+            hdrArr='';      
+            txt_TblHdr1=$('#spn_tblhdr1_'+idsInOrder[i].replace('div_temp_','')).text();
+            txt_TblHdr2=$('#spn_tblhdr2_'+idsInOrder[i].replace('div_temp_','')).text();
+            txt_TblHdr3=$('#spn_tblhdr3_'+idsInOrder[i].replace('div_temp_','')).text();
+            txt_TblHdr4=$('#spn_tblhdr4_'+idsInOrder[i].replace('div_temp_','')).text();
+            if(txt_TblHdr1.trim().length>0)
+                hdrArr+=txt_TblHdr1;
+            if(txt_TblHdr2.trim().length>0)
+                hdrArr+=','+txt_TblHdr2;
+            if(txt_TblHdr3.trim().length>0)
+                hdrArr+=','+txt_TblHdr3;
+            if(txt_TblHdr4.trim().length>0)
+                hdrArr+=','+txt_TblHdr4;
+            console.log('hdrArr ',hdrArr,idsInOrder[i].replace('div_temp_',''),i+1)
+            $.ajax({
+                url: '/save_report/',
+                data: { 
+                    'title_id':idsInOrder[i].replace('div_temp_',''),
+                    'title_or_heading':'0', 
+                    'title_label':hdrArr,
+                    'title_type':selSec,
+                    'title_placeholder':'',
+                    'title_sort_idx':i+1,
+                    'tamplate_name':$('#txt_temp_name').val()},
+                dataType: 'json',
+                success: function(response) {
+                    console.log("response",response.is_taken)
+                    if (response.is_taken == 'update'){
+                        console.log('Values updated successfully',response);
+                        alert("Values Updated successfully ")
+                    }
+                    else{
+                        console.log('Values saved successfully',response);
+                        alert("Values saved successfully ")
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error saving values:', error);
+                }
+            });
+        }
+        }
+    }
+
+    function enableTxt2(){
+        if($('#txt_TblHdr1').val().trim().length>0){
+            $('#txt_TblHdr2').prop('disabled',false)
+        }
+        else{
+            $('#txt_TblHdr2').prop('disabled',true)
+            $('#txt_TblHdr2').val('')
+        }
+    }
+
+    function enableTxt3(){
+        if($('#txt_TblHdr2').val().trim().length>0){
+            $('#txt_TblHdr3').prop('disabled',false)
+        }
+        else{
+            $('#txt_TblHdr3').prop('disabled',true)
+            $('#txt_TblHdr3').val('')
+        }
+    }
+
+    function enableTxt4(){
+        if($('#txt_TblHdr3').val().trim().length>0){
+            $('#txt_TblHdr4').prop('disabled',false)
+        }
+        else{
+            $('#txt_TblHdr4').prop('disabled',true)
+            $('#txt_TblHdr4').val('')
+        }
+    } 
+</script>
+{% endblock script %}

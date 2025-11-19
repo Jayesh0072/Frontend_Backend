@@ -1,0 +1,760 @@
+{% extends 'base.html' %} 
+{% load static %}  
+{% block content %} 
+    
+<div class="content" style="padding-top:0px;width:80%;margin-left: 10%"> 
+    <div class="card h-50">
+        <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                    -webkit-border-top-right-radius: 6px;
+                    -moz-border-radius-topleft: 6px;
+                    -moz-border-radius-topright: 6px;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;">
+              <h4 style="color:#3e465b; padding:10px 20px">Performance Monitoring </h4>
+            </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                
+                <ul class="nav nav-underline" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true">Model</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab-profile" role="tab" aria-controls="tab-profile" aria-selected="false" tabindex="-1">Data</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#tab-contact" role="tab" aria-controls="tab-contact" aria-selected="false" tabindex="-1">Business</a></li>
+                  </ul>
+                  <div class="tab-content mt-3" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tab-home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Model </label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlFunction" id="ddlmodel" onchange="perfmontrdatafetch()">
+                                <option value="">Select Model</option>
+                                {% for val in data  %}  
+                                  <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                       
+                            <label class="col-sm-2 col-form-label" for="ddlFunction">Frequency </label>
+                            <div class="col-sm-4">    
+                              <select class="form-select" name="ddlFunction" id="ddlFunction" >
+                                <option value="">Select Frequency</option>
+                                {% for val in freqdata  %}  
+                                  <option value="{{val.frequency_aid}}">{{val.frequency_label}}</option>   
+                                {% endfor %} 
+                              </select>
+                            </div>
+                        </div> 
+                        <div class="mb-9">
+                            <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                              
+                               
+                              <div class="table-responsive scrollbar"  style="max-height:300px;">
+                                <table id="tblModelMetric" class="table fs--1 mb-0 border-top border-200">
+                                  <thead>
+                                    <tr> 
+                                      <th class="sort white-space-nowrap align-middle ps-0" scope="col"  style="width:5%;" > <input type="checkbox" id="name1" onclick="selectall()"/> </th>
+                                      <th class="sort white-space-nowrap align-middle ps-0" scope="col"  style="width:20%;" >Model Metric</th>
+                                      <th class="sort white-space-nowrap align-middle ps-3" scope="col"  style="width:15%;">Threshold (T)</th> 
+                                      <th class="sort white-space-nowrap align-middle ps-3" scope="col"  style="width:15%;">Warning T </th>   
+                                      <th class="sort white-space-nowrap align-middle ps-3" scope="col"  style="width:15%;">Actual </th> 
+                                      <th  class="sort white-space-nowrap align-middle ps-3" scope="col"  style="width:15%;">Performance</th>                 
+                                    </tr>
+                                  </thead>
+                                  <tbody class="list">   
+                                    
+                                  </tbody>
+                                </table>
+                              </div>
+                            
+                            </div>
+                        </div>
+                        <fieldset>
+                          <div class="row mb-3">
+      
+                              <label class="col-form-label col-sm-2 pt-0">Resolution</label>
+      
+                              <div class="col-sm-2">      
+                                <div class="form-check"> 
+                                  <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1">                                  
+                                  <label class="form-check-label" for="rbactive">Override</label>
+                                </div>  
+                              </div>
+                              <div class="col-sm-3"> 
+                                <div class="form-check"> 
+                                  <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1">                                  
+                                  <label class="form-check-label" for="rbactive">Recalibrate/Update</label>
+                                </div>
+                              </div>
+                              <div class="col-sm-2"> 
+                                <div class="form-check"> 
+                                  <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1">                                  
+                                  <label class="form-check-label" for="rbactive">Replace</label>
+                                </div>
+                              </div>
+                              <div class="col-sm-2"> 
+                                <div class="form-check"> 
+                                  <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1">                                  
+                                  <label class="form-check-label" for="rbactive">Discontinue </label>
+                                </div>
+                              </div>
+                          </div>
+                      </fieldset>
+                        
+                        <div class="col-12 gy-6">
+                            <div class="row g-3 justify-content-end">
+                              <div class="col-auto"> 
+                                <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                              </div>
+                              <div class="col-auto">
+                                {% if label %}
+                                <input type="hidden" id="update_id" value="{{id}}" >
+                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                                {% else %}
+                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Submit" />
+                                {% endif %} 
+                              </div>
+                             
+                            </div>
+                        </div>
+                    </div>
+                        <!--Data Matrics-->
+                    <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
+                      <div class="row">
+                        <label class="col-sm-2 col-form-label" for="ddlFunction">Model </label>
+                        <div class="col-sm-4">
+                          <select class="form-select" name="ddlFunction" id="mdliddata" onchange="gethistorymsgdata()">
+                            <option value="">Select Model</option>
+                            <!-- <option value="M070100">M070100</option> -->
+                            {% for val in data  %}  
+                              <option value="{{val.mdl_id}}">{{val.mdl_id}}</option>   
+                            {% endfor %} 
+                          </select>
+                        </div>
+                   
+                        <label class="col-sm-2 col-form-label" for="ddlFunction">Frequency </label>
+                        
+                        <div class="col-sm-4">    
+                          <select class="form-select" name="ddlFunction" id="frequencydata" >
+                            <option value="">Select Frequency</option>
+                            {% for val in freqdata  %}  
+                              <option value="{{val.frequency_aid}}">{{val.frequency_label}}</option>   
+                            {% endfor %} 
+                          </select>
+                        </div>
+                    </div>
+                    
+                  <br>
+                  <div class="mb-9">
+                    <div id="projectSummary"  data-list='{"valueNames":["Mdl_Val_Type_AID","Mdl_Val_Type_Label"]}'>
+                        <div class="table-responsive scrollbar"  style="max-height:300px;">
+                        <table id="tblDataMetric" class="table fs--1 mb-0 border-top border-200">
+                          <thead>
+                            <tr> 
+                              <th class="sort white-space-nowrap align-middle ps-0" scope="col" style="width:5%;">
+                                <input type="checkbox" id="name3" onclick="selectalldata()"/> 
+                              </th>
+                              <th class="sort align-middle ps-3" scope="col" data-sort="Mdl_Val_Type_Label" style="width:20%;" >Data Metric</th>
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Feature</th> 
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Threshold (T)</th> 
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Warning T </th>
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Actual</th> 
+                              <th class="sort align-middle ps-3" scope="col"  style="width:20%;">Performance </th>                 
+                            </tr>
+                          </thead>
+                          <tbody class="list" id="tblDataMetric-body">                               
+                          </tbody>
+                        </table>
+                      </div>
+                    
+                    </div>
+                </div>
+                <fieldset>
+                  <div class="row mb-3">
+
+                      <label class="col-form-label col-sm-2 pt-0">Resolution</label>
+
+                      <div class="col-sm-2">      
+                        <div class="form-check"> 
+                          <input class="form-check-input" id="data_override" type="radio" name="rbactivests" value="1" onclick="enablechkbx()">                                  
+                          <label class="form-check-label" for="rbactive">Override</label>
+                        </div>  
+                      </div>
+                      <div class="col-sm-3"> 
+                        <div class="form-check"> 
+                          <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1">                                  
+                          <label class="form-check-label" for="rbactive">Recalibrate/Update</label>
+                        </div>
+                      </div>
+                      <div class="col-sm-2"> 
+                        <div class="form-check"> 
+                          <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1">                                  
+                          <label class="form-check-label" for="rbactive">Replace</label>
+                        </div>
+                      </div>
+                      <div class="col-sm-2"> 
+                        <div class="form-check"> 
+                          <input class="form-check-input" id="rbactive" type="radio" name="rbactivests" value="1">                                  
+                          <label class="form-check-label" for="rbactive">Discontinue </label>
+                        </div>
+                      </div>
+                  </div>
+              </fieldset>
+
+                  <br>
+                    <div class="row g-3 justify-content-end">
+                        <div class="col-sm-auto" style="float: right;"><a class="btn btn-phoenix-primary me-1 mb-1" onclick="datametric()"  href="#"><i class="fa-solid fa-plus me-2"></i>Data Metric</a></div>
+                        <!-- <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="modalmetric()" value="Model Metric" /> -->
+                    </div>
+                    
+                    <div class="col-12 gy-6">
+                        <div class="row g-3 justify-content-end">
+                          <!-- <div class="col-auto">
+                            
+                            <input type="button" class="btn btn-primary px-5 px-sm-5" onclick="modalmetric()" value="Model Metric" />
+                        </div> -->
+                          <div class="col-auto"> 
+                            <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                          </div>
+                          <div class="col-auto">
+                            {% if label %}
+                            <input type="hidden" id="update_id" value="{{id}}" >
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                            {% else %}
+                            <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="connect_datamatric()" value="Submit" />
+                            {% endif %} 
+                          </div>
+                         
+                        </div>
+                    
+
+                    </div>
+                  
+                  <!--Ends-->
+
+                    
+                    <div class="tab-pane fade" id="tab-contact" role="tabpanel" aria-labelledby="contact-tab">Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</div>
+                  </div>
+                
+
+                
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+<div class="support-chat-container">
+    <div class="container-fluid support-chat">
+      <div class="card bg-white">
+        <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom">
+          <h5 class="mb-0 d-flex align-items-center gap-2">Discussion Room <span class="fa-solid fa-circle text-success fs--3"></span></h5>
+          <div class="btn-reveal-trigger">
+            <button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex" type="button" id="support-chat-dropdown" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h text-900"></span></button>
+            <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a class="dropdown-item btn-support-chat" href="#!">Close</a> </div>
+          </div>
+        </div>
+        <div class="card-body chat p-0">
+          <div class="d-flex flex-column scrollbar h-100 p-3" id="divMdlPerfMontresp">
+            
+          </div>
+        </div>
+        <div class="card-footer d-flex align-items-center gap-2 border-top ps-3 pe-4 py-3">
+          <div class="d-flex align-items-center flex-1 gap-3 border rounded-pill px-4">
+            <input class="form-control outline-none border-0 flex-1 fs--1 px-0" type="text" id="txtmsg" placeholder="Write message" />
+            
+          </div>
+          <button class="btn p-0 border-0 send-btn" onclick="updateResponse()"><span class="fa-solid fa-paper-plane fs--1"></span></button>
+        </div>
+      </div>
+    </div>
+    <button class="btn p-0 border border-200 btn-support-chat btn-chat-close" >
+      <!-- <span class="fs-0 btn-text text-primary text-nowrap">Chat demo</span> -->
+      <span class="text-danger" data-feather="message-square"  style="height: 20px; width: 70px;"></span> 
+      <!-- <span class="fa-solid fa-circle text-success fs--1 ms-2"></span>
+      <span class="fa-solid fa-chevron-down text-primary fs-1"></span> -->
+    </button>
+  </div>   
+{% endblock content %}
+{% block script %}
+<script type='text/javascript' >
+    function supportChatInit(){    
+      const supportChat = document.querySelector('.support-chat');
+      const supportChatBtn = document.querySelectorAll('.btn-support-chat');
+      const supportChatcontainer = document.querySelector(
+        '.support-chat-container'
+      );
+        supportChatcontainer.classList.add('show');     
+      supportChatBtn.forEach(item => {    
+      
+        item.addEventListener('click', () => {
+          
+          supportChat.classList.toggle('show-chat');
+  
+          // supportChatBtn[supportChatBtn.length - 1].classList.toggle(
+          //   'btn-chat-close'
+          // );
+  
+          supportChatcontainer.classList.add('show');
+           
+        });
+      });
+    };
+  
+
+    $(document).ready(function(){
+          // $('#SelectBackUpUserFor').css('visibility','hidden');
+         supportChatInit();
+         $('#csvData').DataTable({
+            sDom: 'lrtip',
+            "ordering": false,
+            scrollY: 450,
+            scrollX: true,
+            scroller: true,
+            paging: false,
+            info: false
+        }); 
+      }); 
+
+      function validateFormData() {
+        var fileName = $("#myfile").val();
+
+        if (fileName) { // returns true if the string is not empty
+            // alert(fileName + " was selected");
+        } else { // no file was selected
+            alert("Please select a file.");
+            return false;
+        }
+    }
+    function goNextData() {
+        window.location = "{% url 'dataCleaning' %}"
+    } 
+
+
+    function gotolist()
+    {
+        window.location='{{showdept}}'
+        
+    }
+
+    function perfmontrdatafetch(){
+      debugger
+      // metric = $('#ddlmodel').val()
+      mdlid = $('#ddlmodel').val()
+      // alert(mdlid)
+      $.ajax({
+          url: '/PerfMontrDataFetch/', 
+          data:{mdlid:mdlid},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) { 
+            console.log("prdxn_data",data.prdxn_data)
+            strRows='';
+            $.each(data.data, function(i, item) {
+
+              strRows +=' <tr class="position-static"> ';
+                    strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                    strRows +='       <input type="checkbox" name="chk" id="chk_'+ item["mm_details"]["mm_aid"] +'" onclick="registerclick('+ item["mm_details"]["mm_aid"] +')"/> ';
+                    strRows +='      </td>';
+                    strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                    strRows +='      <div class="row"> ';
+                    strRows +='      <div class="col-sm-7">  '+item['mm_details']['mm_label'];
+                    strRows +='        </div>';
+                    strRows +='        </div>  ';                                          
+                    strRows +='        </td> ';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+                    strRows +='        <div class="row"> ';
+                    strRows +='         <div class="col-sm-12"> ';
+                    strRows +=          item["threshold"]         
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td>';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='        <div class="row"> ';
+                    strRows +='        <div class="col-sm-12"> ';
+                    strRows +=          item["warning"];
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td> ';
+                    strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='        <div class="row"> ';
+                    strRows +='        <div class="col-sm-12"> ';
+                    strRows +=         data.prdxn_data[0][item['mm_details']['mm_label']]
+                    strRows +='        </div>';
+                    strRows +='        </div>';
+                    strRows +='        </td> ';
+                    strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                    strRows +='         <div class="row" > ';
+                    strRows +='                             <div class="col-sm-12">';
+                    strRows +='                             <select class="form-select" name="ddlFunction" id="ddlFunction">';
+                    strRows +='                             <option value="">Normal</option>';
+                    strRows +='                             <option value="">Warning</option>   ';
+                    strRows +='                             <option value="">Critical</option> ';                                                   
+                    strRows +='                             </select>';
+                    strRows +='                             </div>';
+                    strRows +='                             </div>    ';
+                    strRows +='        </td>  ';                        
+                    strRows +='        </tr>  ';
+                    $('#tblModelMetric tr:last').after(strRows);
+                    strRows=''; 
+                  // console.log("item",item['mm_details'])
+                  // $("#mmlabel").text(item['mm_details']['mm_label'])
+                  // $("#threshold").text(item['threshold'])
+                  // $("#warning").text(item['warning'])
+                    });
+          }
+        });
+    }
+
+    function prdndata() {
+      debugger;
+      mdlid = $('#mdliddata').val()
+      var resp = []
+      // alert(mdlid)
+      $.ajax({
+          url: '/prdn_data/', 
+          data:{mdl_id:mdlid},
+          dataType: 'json',
+          method:'GET',
+          success: function (data) {  
+            console.log("dmdata data for actual value",data)
+            // return data;
+            resp.push(data)
+          }
+        });
+        console.log("response",resp)
+        return resp
+         
+    }
+
+
+    
+    var arrQtns2=[]
+  
+    function dregisterclick(id){
+          //console.log('id is '+id + ' , '+$('input[name="rb_'+ id +'"]:checked').val())
+          debugger;
+          console.log($('#datachk_'+id).prop('checked'),arrQtns2.indexOf(id),id)
+          var originalValue = document.getElementById('dperformancehidd_'+id).value;
+          console.log("original val",originalValue)
+          if($('#datachk_'+id).prop('checked')){
+            
+            if(arrQtns2.indexOf(id)<0){
+              console.log('inside if')
+                arrQtns2.push(id);  
+            }
+            console.log("arrQtns2",arrQtns2)
+          }
+          else{ // only splice array when item is found
+            console.log("inside else id",id)
+            $('#dperformance_'+id).val(originalValue)
+            arrQtns2.splice(arrQtns2.indexOf(id), 1); // 2nd parameter means remove one item only
+            $('#name2').prop('checked', false);
+            if(finalresult.indexOf(id)<0){
+              console.log('inside else')
+              finalresult.push(id);  
+            }
+            
+            console.log("finalresult",finalresult) 
+          }
+          
+      }
+
+    function gethistorymsgdata(){
+      debugger;
+
+      id = $("#mdliddata").val()
+      $('#divMdlPerfMontresp').empty()
+      if(id !=""){ 
+      $.ajax({
+              url: '/prdn_data/', 
+              data:{room_id: 'Perfm_'+id,mdl_id:id},
+             dataType: 'json',  
+              success: function (data) { 
+                arr=data.dmdata
+                console.log("---------------data new dmdata check",data)
+                // alert(data.Qtns)
+                if(data.actual_val.length == 0){
+                  // alert("empty")
+                  $('#button3').prop('disabled', true);
+                }
+                else{
+                  
+                  // alert("full")
+                  console.log("else")
+                  // var actual_val = prdndata()
+                  
+                  // console.log('actual_val',actual_val,)
+                  // // console.log('actual_val_1',actual_val[0])
+                  // $.each(actual_val, function(i, item) {
+                  //   console.log("check item",item)
+                  // })
+                  
+                  $.each(data.actual_val, function(i, item) {
+                  // console.log('i',i,'item',item)
+                  strRows='';
+                  strRows +=' <tr class="position-static"> ';
+                  strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                  strRows +='       <input type="checkbox" class="dataclass" name="chk" id="datachk_'+ item['metric'] +'" onclick="dregisterclick('+ item['metric'] +')" disabled/> ';
+                  strRows += '      </td>';
+                  strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                  strRows +='      <div class="row"> ';
+                  strRows +='      <div class="col-sm-3">  ';
+                  strRows +='      <label class="col-sm-2 col-form-label" id="datametricstxt_'+item['metric']+'" for="datametricstxt">'+item['dm_details']['data_label']+' </label>';
+                  strRows +='        </div>';
+                  strRows +='        <div class="col-sm-5">  ';
+                  // strRows +='        <select class="form-select" name="ddlFunction" id="txtfeature_'+ datafeature +'">';
+                  // strRows +='        <option value="percentage">Percentage</option>';
+                  // strRows +='        <option value="number">Number</option> ';                                                   
+                  // strRows +='        </select>';
+                  strRows +='        </div>';
+                  strRows +='        </div>  ';                                          
+                  strRows +='        </td> ';
+                  strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+                  strRows +='      <div class="row"> ';
+                  strRows +='      <div class="col-sm-3">  ';
+                  strRows +='      <label class="col-sm-2 col-form-label" id="datafeaturetxt_'+item['metric']+'" for="datafeaturetxt">'+item['feature']+' </label>';
+                  strRows +='        </div>';
+                  strRows +='        </div>  ';                                          
+                  strRows +='        </td> ';
+                  strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+                  strRows +='        <div class="row"> ';
+                  strRows +='         <div class="col-sm-12"> ';
+                  strRows +='        <input type="text" required  class="form-control" value='+item['threshold']+' id="dtxtthreshold_'+ item['metric'] +'"/>';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td>';
+                  strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                  strRows +='        <div class="row"> ';
+                  strRows +='        <div class="col-sm-12"> ';
+                  strRows +='          <input required  type="text"  class="form-control" value='+item['warning']+' id="dtxtWaring_'+ item['metric'] +'"/>';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td> ';
+
+                  strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                  strRows +='        <div class="row"> ';
+                  strRows +='        <div class="col-sm-12"> ';
+                  strRows +='          <input required  type="text"  class="form-control" value='+item['actual']+' id="dactual_'+ item['metric'] +'"/>';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td> ';
+
+                  strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+                  strRows +='        <div class="row"> ';
+                  strRows +='        <div class="col-sm-12"> ';
+                  // strRows +='          <input required  type="text"  class="form-control" value='+item['performance']+' id="dperformance_'+ item['performance'] +'"/>';
+                  strRows +='        <select class="form-select" name="ddlFunction" value='+item['performance']+' id="dperformance_'+ item["metric"] +'">';
+                  strRows +='        <option value="Normal">Normal</option>';
+                  strRows +='        <option value="Warning">Warning</option> ';    
+                  strRows +='        <option value="Critical">Critical</option> ';                                                   
+                  strRows +='        </select>';
+                  strRows +='        <select class="form-select" name="ddlFunction" value='+item['performance']+' id="dperformancehidd_'+item["metric"] +'" hidden>';
+                  strRows +='        <option value="Normal">Normal</option>';
+                  strRows +='        <option value="Warning">Warning</option> ';    
+                  strRows +='        <option value="Critical">Critical</option> ';                                                   
+                  strRows +='        </select>';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td> ';
+
+                  strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+                  strRows +='         <div class="row" > ';
+                  strRows +='        <div class="col-sm-12">';
+                  strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+                  strRows +='        </div>';
+                  strRows +='        </div>';
+                  strRows +='        </td>  ';                        
+                  strRows +='        </tr>  ';
+                  $('#tblDataMetric tbody').append(strRows);
+                  strRows='';
+                  
+                  arrQtns2.push(item['metric'])
+                  
+            })
+            
+                  
+            $('#button3').prop('disabled', false);
+            }
+                //************
+                qtnArr='';
+           $.each(data.data, function(key, val) { 
+            console.log("key",key,"val",val.Comment)
+            if(val.msgcss=='R')
+            {
+              qtnArr +=' <div class="d-flex chat-message">';
+              qtnArr +='         <div class="d-flex mb-2 flex-1">';
+                qtnArr +='           <div class="w-100 w-xxl-75">';
+                  qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+                    qtnArr +='               <div class="chat-message-content received me-2">';
+                      qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+                        qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +='                 </div>';
+                        qtnArr +='     </div>         ';                  
+                             
+                        qtnArr +='  </div>';
+                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+            }
+            else if(val.msgcss=='S')
+            {
+
+              qtnArr +=' <div class="d-flex chat-message">';
+                qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+                qtnArr +=' <div class="w-100 w-xxl-75">';
+                  qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+                  qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+                    qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='</div>';
+                      qtnArr +='</div>';
+                  qtnArr +='   <div class="d-none d-sm-flex">';
+                    qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+                      qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+                      // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+                      qtnArr +='  </div>';
+                      qtnArr +=' </div>';
+                    qtnArr +=' <div class="chat-message-content me-2">';
+                      qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+                        qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+                        qtnArr +=' </div>';
+                        qtnArr +='  </div>';
+                        qtnArr +=' </div>';
+                        qtnArr +=' <div class="text-end">';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div>';
+                          qtnArr +=' </div> ';
+            } 
+            
+          });
+           $('#divMdlPerfMontresp').append(qtnArr)
+           //$("#divRespHeader").attr('style','display:none !important');
+          }
+                //************
+                // sendPerfMonmsg($("#txtmsg").val(),$('#txtuid').val(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+              // }
+          });
+        }
+    }
+
+    function enablechkbx(){
+      $(".dataclass").prop('disabled', false);
+    }
+
+    function connect_datamatric(){
+      debugger;
+      mdl_id = $("#mdliddata").val()
+      // alert(mdl_id)
+      // connectWS(mdl_id)
+
+      if($('#mdliddata').val()=="") {
+        alert('Please select model.');
+        return
+      }
+      else if($('#frequencydata').val()==""){
+        alert('Please select frequency.')
+        return
+      }
+
+      else if(arrQtns2.length<1){
+        alert('Please select Data Matrics.')
+        return
+      }
+
+
+      var arrOptnsSel=[];
+      var arrOptnsNotSel=[];
+      var ele=document.getElementsByName('chk'); 
+      for(var i=0; i<ele.length; i++){  
+        if(ele[i].type=='checkbox'){ 
+          if(ele[i].checked)
+            arrOptnsSel.push(ele[i].id.replace('datachk_',''));
+          else
+            arrOptnsNotSel.push(ele[i].id.replace('datachk_',''));
+        }
+      }
+      console.log("selected",arrOptnsSel)
+      console.log("unselected",arrOptnsNotSel)
+
+
+      updateseldata=[]
+      arrOptnsSel.forEach(i => {
+          console.log("i",i)
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item['mdl_id'] = mdl_id
+          item['freq_idx'] = $('#frequencydata').val()
+          item["AID"] = i
+          // item["Percentage"] = $('#btxtper_'+i).val()
+          item['feature'] = $('#datafeaturetxt_'+i).text()
+          item['metric'] = i
+          item["Threshold"] = $('#dtxtthreshold_'+i).val()
+          item["Warning"] = $('#dtxtWaring_'+i).val()
+          item['old_value'] = $('#dperformancehidd_'+i).val()
+          item['new_value'] = $('#dperformance_'+i).val()
+          item['actual'] = $('#dactual_'+i).val()
+          updateseldata.push(item); 
+        
+        console.log("updateseldata",updateseldata)
+      }); 
+      updatenotseldata = []
+      arrOptnsNotSel.forEach(i => {
+          console.log("i",i)
+          //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
+          item = {}  
+          item['mdl_id'] = mdl_id
+          item['freq_idx'] = $('#frequencydata').val()
+          item["AID"] = i
+          // item["Percentage"] = $('#btxtper_'+i).val()
+          item['feature'] = $('#datafeaturetxt_'+i).text()
+          item['metric'] = i
+          item["Threshold"] = $('#dtxtthreshold_'+i).val()
+          item["Warning"] = $('#dtxtWaring_'+i).val()
+          item['old_value'] = $('#dperformancehidd_'+i).val()
+          item['new_value'] = $('#dperformance_'+i).val()
+          item['actual'] = $('#dactual_'+i).val()
+          updatenotseldata.push(item); 
+        
+        console.log("updatenotseldata",updatenotseldata)
+      });
+
+      if(updateseldata.length>0){
+        $.ajax({
+          url: '/Save_Data_Monitoring_Override_History/', 
+          data:{ datalist_sel: JSON.stringify(updateseldata),mdlId:$('#mdliddata').val(),frequency:$('#frequencydata').val()},
+          dataType: 'json',
+          success: function (data) {
+            console.log("success selected data",data)
+            alert(data.msg)
+          }
+        }); 
+      }
+
+      if(updatenotseldata.length>0){
+        $.ajax({
+          url: '/Save_Data_Monitoring_Final_Result/', 
+          data:{ datalist_notsel: JSON.stringify(updatenotseldata),mdlId:$('#mdliddata').val(),frequency:$('#frequencydata').val()},
+          dataType: 'json',
+          success: function (data) {
+            console.log("success not selected data",data)
+            alert("Data Saved Successfully")
+          }
+        }); 
+      }
+    
+    }
+
+
+</script>
+{% endblock script %}

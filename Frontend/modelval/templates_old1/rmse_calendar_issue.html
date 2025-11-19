@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<html lang='en'>
+<link href="{% static 'phoenix-v1.8.0/public/vendors/fullcalendar/main.min.css' %}" rel="stylesheet">
+<link href="{% static 'phoenix-v1.8.0/public/vendors/prism/prism-okaidia.css' %}" rel="stylesheet">
+<head>
+    <meta charset='utf-8' /> 
+    <link href="{% static 'phoenix-v1.8.0/public/vendors/fullcalendar/main.min.css' %}" rel="stylesheet">
+<link href="{% static 'phoenix-v1.8.0/public/vendors/prism/prism-okaidia.css' %}" rel="stylesheet">
+    <script  src="{% static 'phoenix-v1.8.0/public/vendors/dayjs/dayjs.min.js' %}"></script>
+  <script  src="{% static 'phoenix-v1.8.0/public/vendors/fullcalendar/main.min.js' %}"></script>
+  <script  src="{% static 'phoenix-v1.8.0/public/vendors/dayjs/dayjs.min.js' %}"></script>
+  <script  src="{% static 'phoenix-v1.8.0/public/vendors/prism/prism.js' %}"></script> 
+    <script>
+        var eventlist = '{{all_data_lst| safe }}';
+        eventlist = JSON.parse(eventlist)  
+        // const eventList = events.reduce(
+        //     (acc, val) =>
+        //         val.schedules ? acc.concat(val.schedules.concat(val)) : acc.concat(val),
+        //     []
+        // );
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height:$(window).height()*0.8, 
+                events:eventlist,
+                headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                eventClick: info => {
+                    console.log('event clicked ',info.event._def.title)    
+                    $.ajax({
+                        url: '/checkUserRole_Issue/', 
+                            data:{mdl_id:info.event._def.title},
+                            dataType: 'json',   
+                            success: function (data) { 
+                                console.log("data",data)
+                                if(data.role=="Assignee")
+                                    window.location= "/issue_assignee?id="+info.event._def.title;                                   
+                                else if(data.role=="Approver"){
+                                    //window.location= "task_approver?id=" +info.event._def.title;
+                                    document.location.href = "/issue_approver?id=" +info.event._def.title;
+                                }
+                                else if(data.role=="Originator")
+                                document.location.href = "/edit_issue/" +info.event._def.title;
+                            }
+                        });           
+                },
+                
+                eventMouseEnter: function(info) { 
+                    console.log(info)
+                    var tis=info.el;
+                    if(info.event.extendedProps.description.indexOf('overdue')>0 ){
+                        var popup=info.event.extendedProps.popup;
+                        var tooltip = '<div class="tooltipevent" style="top:'+($(tis).offset().top-5)+'px;left:'+($(tis).offset().left+($(tis).width())/2)+'px"><div>' +info.event.extendedProps.description   + '</div><div>' +  + '</div></div>';
+                        var $tooltip = $(tooltip).appendTo('body'); 
+                    }
+                },
+                eventMouseLeave: function(info) {
+                    console.log('eventMouseLeave');
+                    $(info.el).css('z-index', 8);
+                    $('.tooltipevent').remove();
+                },
+            });
+            calendar.render();
+        });
+
+    </script>
+</head>
+<div class="card h-100">
+    <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+				-webkit-border-top-right-radius: 6px;
+				-moz-border-radius-topleft: 6px;
+				-moz-border-radius-topright: 6px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;">
+          <h4 style="color:#3e465b; padding:10px 20px">Tasks</h4>
+        </div>
+  <div class="card-body">
+    <div class="row g-3 align-items-end mb-4">
+         
+         
+        <div class="col-sm-12" style="justify-content: right;display: flex;"><a class="btn btn-phoenix-primary me-1 mb-1" href="{{issue_registrartion}}"><i class="fa-solid fa-plus me-2"></i>Add New</a></div>
+         
+      </div> 
+    <div style="height: 100%;" id='calendar' class="fullcalendar-custom"></div>     
+ </div> 
+</div>
+
+</html>
+
+{% endblock content %}

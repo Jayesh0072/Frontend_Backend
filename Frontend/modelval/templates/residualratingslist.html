@@ -1,0 +1,329 @@
+{% extends 'base.html' %}  
+{% load static %} 
+{% block content %}
+<div class="content" style="padding-top:0px;"> 
+  <div class="content container-fluid">
+    <!-- Page Header -->
+  
+    <!-- End Page Header -->
+
+
+    <!-- Card -->
+    <div class="card mb-3 mb-lg-5">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center flex-grow-1">
+          <div class="col-md">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="card-header-title">Residual Ratings List</h4>
+
+              
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <!-- Filter -->
+            
+            <!-- End Filter -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Header -->
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <!-- <table id="datatable" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                 "columnDefs": [{
+                    "targets": [0],
+                    "orderable": false
+                  }],
+                 "order": [],
+                 "info": {
+                   "totalQty": "#datatableWithPaginationInfoTotalQty"
+                 },
+                 "search": "#datatableSearch",
+                 "entries": "#datatableEntries",
+                 "pageLength": 10,
+                 "isResponsive": false,
+                 "isShowPaging": false,
+                 "pagination": "datatablePagination"
+               }'> -->
+               <table  class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table">
+          <thead class="thead-light">
+            <tr>
+              <th>Inherent Risk Rating / <br>Control Effective Rating</th>
+              {% for i in ratings_1 %}
+                <th>{{i.ratings}}</th>
+              {% endfor %}
+              <!-- <th>Is MRM?</th>
+              <th>Edit</th> -->
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- <tr>
+                <td>
+                  Control Effective Rating
+                </td>
+            </tr> -->
+            {% for j in ratings_2 %}
+            
+            <tr class="position-static">  
+                <td>                  
+                   {{j.ratings}} 
+                </td>
+                {% for i in ratings_1 %}
+                
+                <td>
+                    <select id="residual_val_{{j.control_effectiveness_rating_aid}}_{{i.inherent_risk_rating_aid}}" name ="ddlresidual" class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" style="margin-left: -25%;border-color: grey;" autocomplete="off" data-hs-tom-select-options='{
+                            "searchInDropdown": false,
+                            "hideSearch": true,
+                            "dropdownWidth": "5rem"
+                        }' >
+                        <option value="Select" >Select</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    
+                    </select>
+                </td>
+                {% endfor %}
+                <!-- <td>
+                    {% if j == 'Partially Effective'  %}
+                        <select id="residual_val_Partially_Moderate" class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" style="margin-left: -25%;border-color: grey;" autocomplete="off" data-hs-tom-select-options='{
+                            "searchInDropdown": false,
+                            "hideSearch": true,
+                            "dropdownWidth": "5rem"
+                        }' onchange="getresidualvalue('{{j}}','Moderate')">
+                        <option value="Select" >Select</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    
+                    </select>
+                    {% else %}
+                    <select id="residual_val_{{j}}_Moderate" class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" style="margin-left: -25%;border-color: grey;" autocomplete="off" data-hs-tom-select-options='{
+                        "searchInDropdown": false,
+                        "hideSearch": true,
+                        "dropdownWidth": "5rem"
+                    }' onchange="getresidualvalue('{{j}}','Moderate')">
+                    <option value="Select" >Select</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                
+                </select>
+                {% endif %}
+                </td>
+                <td>
+                    {% if j == 'Partially Effective'  %}
+                        <select id="residual_val_Partially_Low" class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" style="margin-left: -25%;border-color: grey;" autocomplete="off" data-hs-tom-select-options='{
+                            "searchInDropdown": false,
+                            "hideSearch": true,
+                            "dropdownWidth": "5rem"
+                        }' onchange="getresidualvalue('{{j}}','Low')">
+                        <option value="Select" >Select</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    
+                    </select>
+                    {% else %}
+                    <select id="residual_val_{{j}}_Low" class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="0" data-target-table="datatable" style="margin-left: -25%;border-color: grey;" autocomplete="off" data-hs-tom-select-options='{
+                        "searchInDropdown": false,
+                        "hideSearch": true,
+                        "dropdownWidth": "5rem"
+                    }' onchange="getresidualvalue('{{j}}','Low')">
+                    <option value="Select" >Select</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                
+                </select>
+                {% endif %}
+                </td> -->
+            </tr>
+            {% endfor %}
+                         
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <input type="button"  class="btn btn-primary px-5 px-sm-5" style="margin-left: 85%;margin-bottom: 5%;" onclick="getresidualvalue()" value="Save" />
+        </div>
+
+      <!-- End Table -->
+
+      <!-- Footer -->
+      <div hidden class="card-footer">
+        <!-- Pagination -->
+        <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div  class="d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="me-2">Showing:</span>
+
+              <!-- Select -->
+              <div class="tom-select-custom">
+                <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                          "searchInDropdown": false,
+                          "hideSearch": true
+                        }'>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50" >50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <!-- End Select -->
+
+              <span class="text-secondary me-2">of</span>
+
+              <!-- Pagination Quantity -->
+              <span id="datatableWithPaginationInfoTotalQty"></span>
+            </div>
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-auto">
+            <div class="d-flex justify-content-center justify-content-sm-end">
+              <!-- Pagination -->
+              <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Footer -->
+    </div>
+    <!-- End Card -->
+
+  </div>
+</div>
+
+
+
+{% endblock content %}
+
+{%block script%} 
+
+  <!-- JS Global Compulsory  -->
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'Front/dist/assets/vendor/hs-navbar-vertical-aside/dist/hs-navbar-vertical-aside.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/hs-form-search/dist/hs-form-search.min.js' %}"></script>
+
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/moment.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/daterangepicker/daterangepicker.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/clipboard/dist/clipboard.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script> 
+
+var rating_list = []; 
+    // INITIALIZATION OF DATATABLES
+    // =======================================================
+    HSCore.components.HSDatatables.init($('#datatable'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+
+    const datatable = HSCore.components.HSDatatables.getItem(0)
+
+    document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+      item.addEventListener('change',function(e) {
+        const elVal = e.target.value,
+    targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+    targetTable = e.target.getAttribute('data-target-table');
+
+    HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+      })
+    })
+
+    var rating_list = [];
+
+    function getresidualvalue(ctrl_eff_rating_id,ctrl_eff_rating_label,inhe_rsk_rating,inhe_rsk_rating_id){
+        debugger
+        
+        // residual_val = $("#residual_val_"+ctrl_eff_rating_id+"_"+inhe_rsk_rating_id).val()  
+        // console.log("check rating",ctrl_eff_rating_id,ctrl_eff_rating_label,inhe_rsk_rating,residual_val)
+        // item = {}
+        // item['Control_effective_rating'] = ctrl_eff_rating_label
+        // item['inherent_risk_rating'] = inhe_rsk_rating
+        // item['residual_rating'] = residual_val
+
+        // rating_list.push(item)
+        
+        // console.log("rating_list",rating_list)
+        
+      var ddls=document.getElementsByName('ddlresidual')
+      console.log(ddls.length)
+      for(var i=0;i<ddls.length;i++)
+      {
+        console.log('id is ',ddls[i].id,$('#'+ddls[i].id).val())
+        a = ddls[i].id
+        b = a.split("_")
+        item = {}
+        item['ctrl_eff_rating_id'] = b[2]
+        item['inherent_rsk_rating'] = b[3]
+        item['residual_rating'] = $('#'+ddls[i].id).val()
+        rating_list.push(item)
+      }
+      console.log("rating_list",rating_list)
+      try{
+        $.each(rating_list, function(key, val) {
+            console.log("key",key,"val",val)
+            if ( val.residual_rating != 'Select' ){
+                $.ajax({
+                url: '/saveresidualrating/', 
+                data:val,
+                dataType: 'json',
+                success: function (data) {
+                    console.log("success data",data)
+                    // alert(data.msg)
+                }
+            });
+          }
+        })
+        alert("Rating saved successfully")
+      }
+      catch(error){
+        alert("Error:", error.message);
+      }
+        
+
+        
+    }
+  </script>
+    {%endblock script %}
+

@@ -1,0 +1,167 @@
+{% extends 'adminbase.html' %} 
+{% load static %}  
+{% block content %}
+<form id="formusercat" class="row g-3 needs-validation" novalidate="">
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<div class="content" style="padding-top:0px;width:50%;margin-left: 25%"> 
+    <div class="card shadow-none border border-300 my-4" data-component-card="data-component-card">
+        
+        <div class="card h-100">
+            <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+                        -webkit-border-top-right-radius: 6px;
+                        -moz-border-radius-topleft: 6px;
+                        -moz-border-radius-topright: 6px;
+                        border-top-left-radius: 6px;
+                        border-top-right-radius: 6px;">
+                  <h4 style="color:#3e465b; padding:10px 20px">Add Sub Category</h4>
+                </div>
+        <div class="card-body p-0">
+        
+            <div class="p-4 code-to-copy"> 
+                <div class="row mb-3 position-relative">
+                    <label class="col-sm-4 col-form-label" for="issuetype">Category</label>
+                    <div class="col-sm-8">  
+                          
+                        {% if category_details.category_label %}
+                        <input class="form-control" readonly value="{{category_details.category_label}}" id="dissuetype" type="text" maxlength="100" required="">
+                        <input class="form-control" {{isDisabled}} value="{{category_details.category_aid}}" id="dissuetype1" type="text" maxlength="100" required="" hidden>
+                        {% else %}
+                        <select class="form-select" id="dissuetype" aria-label="Default select example" required> 
+                        {% for type in Category %} 
+                            <option value="{{type.category_aid}}">{{type.category_label}}</option>
+                        {% endfor %} 
+                        {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtutype">Label<span style="color: red;">*</span></label>
+
+                    <div class="col-sm-8">
+
+                        <input class="form-control" value="{{sub_category_label}}" id="txtlabel" type="text" maxlength="100" required=""> 
+
+                    </div>
+                </div>  
+                <div class="row mb-3 position-relative">
+
+                    <label class="col-sm-4 col-form-label" for="txtdesc">Description</label>
+
+                    <div class="col-sm-8">
+
+                    <textarea class="form-control" id="txtdesc" type="text" maxlength="150">{{sub_category_description}} </textarea>
+                    </div>
+                </div>           
+                
+                <div class="col-12 gy-6">
+                    <div class="row g-3 justify-content-end">
+                      <div class="col-auto"> 
+                        <input type="button" class="btn btn-phoenix-primary px-5" onclick="gotolist()"   value="Cancel"/>
+                      </div>
+                      <div class="col-auto">
+                        {% if category_details.category_label %}
+                        <input type="hidden" id="update_id" value="{{id}}" >
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
+                        {% else %}
+                        <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Add" />
+                        {% endif %} 
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+</form>
+{% endblock content %}
+{% block script %}
+<!-- Added New link Js -->
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script type='text/javascript' >
+    
+    function validateform(){ 
+        var type = '{{type|safe}}'
+        var issue_type = $('#dissuetype').val()
+        console.log("issue_type")
+        console.log(issue_type)
+        if($("#txtlabel").val().trim().length<1){
+            alert('Plese enter Label.');
+            return false;
+        }
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val(); 
+        var x = new XMLHttpRequest();
+        x.open("POST","/save_sub_category/",true); 
+        x.setRequestHeader( "X-CSRFToken",csrftoken); 
+        var fd = new FormData();    
+        // fd.append("filename", file,filename);
+        // fd.append("filenm", filename);
+        fd.append("label", $("#txtlabel").val());
+        fd.append("desc", $('#txtdesc').val());
+        if (type == 'add'){
+            fd.append("issuetype", $('#dissuetype').val());
+        }
+        else{
+            fd.append("issuetype", $('#dissuetype1').val());
+        }
+        fd.append("update_id", $('#update_id').val());
+
+        x.send(fd);
+        x.onreadystatechange = function () { 
+            console.log("readyState",x.readyState,"status",x.status)
+            if (x.readyState == 4 && x.status == 200) {
+                debugger;
+                var json = JSON.parse(x.responseText);
+                console.log(json)
+                alert(json.msg)
+                    
+            }
+            
+        }
+        // $.ajax({
+        //     url: '/save_sub_issue_type/', 
+        //     data:{ update_id:$("#update_id").val(),label: $("#txtlabel").val(),desc:$('#txtdesc').val(),issuetype:$('#dissuetype').val()},
+        //     dataType: 'json',   
+        //     success: function (data) { 
+        //        if(data.isvalid=='true'){
+        //         alert('SubIssue Type added successfully.')
+        //        }
+        //        else if(data.isvalid=='update'){
+        //         alert('SubIssue Type updated successfully.')
+        //        }
+        //        else
+        //        {
+        //         alert('Error while adding SubIssue Type.')
+        //        }
+        //     }
+        // });
+    }
+
+    // function checkUsername(){ 
+    //     $.ajax({
+    //         url: '/checkValue/', 
+    //         data:{val: $("#txtlabel").val(),'tbl':'dept' },
+    //        dataType: 'json',   
+    //         success: function (data) { 
+    //            if(data.cnt!='0'){
+    //             $("#txtdept").val('')
+    //             alert('Label already exists.')
+    //             $("#txtlabel").focus()
+    //            }
+               
+    //         }
+    //     });
+    // }
+
+    function gotolist()
+    {
+        window.location='{% url 'show_sub_mdl_category' %}'
+        
+    }
+</script>
+{% endblock script %}

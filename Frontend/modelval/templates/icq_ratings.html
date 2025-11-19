@@ -1,0 +1,341 @@
+icq_ratings{% extends 'adminbase.html' %} 
+{% load static %} 
+{% block content %} 
+    {% csrf_token %}
+
+    <div class="card h-100">
+      <div class="col-auto" style="width:100%; background-color:#e0edff;height:38px;border-bottom:solid 1px #ddd; -webkit-border-top-left-radius: 6px;
+          -webkit-border-top-right-radius: 6px;
+          -moz-border-radius-topleft: 6px;
+          -moz-border-radius-topright: 6px;
+          border-top-left-radius: 6px;
+          border-top-right-radius: 6px;">
+            <h4 style="color:#3e465b; padding:10px 20px">ICQ Sections</h4>
+          </div>
+          <div class="container">
+            <div class="row mb-3" style="padding-top: 10px;" >
+               
+                <label class="col-sm-2 col-form-label" for="txtutype">Section</label> 
+                <div class="col-sm-4">
+                    <select class="form-select" onchange="getSubSection('3')"  id="ddlQtnSection" aria-label="Default select example" required>                      
+                    <option value="">Choose</option>   
+                    {% for key, val in sections.items  %} 
+                    <option value="{{val.Section_AID}}">{{val.Section_Label}}</option>
+                    {% endfor %}  
+                    </select>
+                </div>
+               
+               
+                <label class="col-sm-2 col-form-label" for="txtutype">Sub Section</label> 
+                <div class="col-sm-4"> 
+                    <select class="form-select"id="ddlQtnSub_Section" onchange="getSubSubSection('2')" aria-label="Default select example" required>                      
+                    
+                    </select>
+                </div>   
+            </div>
+            <div class="row mb-3" >
+                    <label class="col-sm-2 col-form-label" for="txtutype">Sub Sub Section</label> 
+                    
+                <div class="col-sm-4">
+                    <select class="form-select" onchange="get_Sub_Sub_sub_Section()"  id="ddlQtnSub_Sub_Section" aria-label="Default select example" required>                      
+                    
+                    </select>
+                </div>
+              
+                    <label class="col-sm-2 col-form-label" for="txtutype">Sub Sub Sub Section</label> 
+                    <div class="col-sm-4">
+                    <select class="form-select" id="ddlQtn_Sub_Sub_Sub_Section" aria-label="Default select example" required>                      
+                    
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 gy-6">
+                <div class="row g-3 justify-content-end">
+                  <div class="col-auto">
+                    <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="icq_rating()" value="Show" /> 
+                  </div>
+                 
+                </div>
+            </div> 
+            <div class="col-12" style="height: 380px;overflow: auto;">
+                <div class="table-responsive table--no-card m-b-40">
+                    <table id="colData" class="table">
+                        <thead>
+                            <tr>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row g-3 justify-content-end">
+                  <div class="col-auto">
+                    <input type="button" id="submit_buton"  class="btn btn-primary px-5 px-sm-5" onclick="save_ratings()" value="Save" /> 
+                  </div>
+                 
+                </div>
+            </div> 
+          </div>
+    </div>
+    
+{% endblock content %}
+{%  block script %}
+<script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script>  
+<script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+<script type='text/javascript' >
+  var selectedOPt='';
+
+  function save_ratings(){
+    console.log("save_ratings")
+    var table = document.getElementById("colData");
+   // console.log('table',table)
+    for (var i = 0; i < table.rows.length-1; i++) {
+    //iterate through rows
+        var hiden_id =$("#hdn_"+i).val();
+        var yes=$("#txt_yes_"+hiden_id).val();
+        var no=$("#txt_no_"+hiden_id).val();
+        var doc_yes=$("#txt_doc_yes_"+hiden_id).val();
+        var doc_no=$("#txt_doc_no_"+hiden_id).val();
+        console.log("hiden_id",hiden_id,$("#txt_yes_"+hiden_id).val(),$("#txt_no_"+hiden_id).val(),$("#txt_doc_yes_"+hiden_id).val(),$("#txt_doc_no_"+hiden_id).val())
+        $.ajax({
+          type:"GET",
+          url: '/save_ratings/', 
+          data:{question_id:hiden_id,ratings_yes:yes,rating_no:no,doc_yes:doc_yes,doc_no:doc_no},
+          dataType: 'json',   
+          success: function (data) { 
+            console.log(data,data.is_taken==true,data.is_taken=='true')
+
+            //  if(data.is_taken==true){
+            //   alert('Ratings added successfully.')
+            //  }
+            //  else
+            //  {
+            //   alert('Error while creating user.')
+            //  }
+          }
+      });
+    }
+  }
+
+  function addICQ_Qtns(){   
+      console.log("addICQ_Qtns") 
+      $.ajax({
+          url: '/add_question/', 
+          data:{section:$("#ddlQtnSection").val(),sub_section: $("#ddlQtnSub_Section").val(),sub_sub_section:$('#ddlQtnSub_Sub_Section').val(),sub_sub_sub_section:$('#ddlQtn_Sub_Sub_Sub_Section').val(),question:$('#txt_Qtn').val()},
+         dataType: 'json',   
+          success: function (data) { 
+            console.log(data,data.is_taken==true,data.is_taken=='true')
+             if(data.is_taken==true){
+              alert('Question added successfully.')
+             }
+             else
+             {
+              alert('Error while creating user.')
+             }
+          }
+      });
+  }
+
+  function icq_rating(){   
+      console.log("icq_rating")
+      $('#colData').empty(); 
+      $.ajax({
+          type:'POST',
+          url: '/icq_ratings/', 
+          data:{section:$("#ddlQtnSection").val(),sub_section: $("#ddlQtnSub_Section").val(),sub_sub_section:$('#ddlQtnSub_Sub_Section').val(),
+                    sub_sub_sub_section:$('#ddlQtn_Sub_Sub_Sub_Section').val(),question:$('#txt_Qtn').val(),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+         dataType: 'json',   
+          success: function (data) { 
+            console.log(data) 
+            var appendHeaderData1='';
+                var appendBodyData='',
+                appendHeaderData1='<thead><tr><th style="padding-top:10px;padding-bottom:10px;width:60%">Questions</th>';
+                appendHeaderData1=appendHeaderData1 + '<th style="width:10%">Yes</th>';
+                appendHeaderData1=appendHeaderData1 + '<th style="width:10%">No</th>';
+                appendHeaderData1=appendHeaderData1 + '<th style="width:10%">Document(Yes)</th>';
+                appendHeaderData1=appendHeaderData1 + '<th style="width:10%">Document(No)</th></tr></thead>';
+                appendBodyData='<tbody>'
+                var irow=0;    
+                 
+                $.each(data,function(key,val){ 
+                    console.log("key val",key,val)
+                    appendBodyData=appendBodyData+'<tr>';
+                    appendBodyData=appendBodyData+'<td>'+val+' <input type="hidden" id="hdn_'+irow +'" value="'+key+'"/></td>'; 
+                    appendBodyData=appendBodyData+'<td><input type="text" id="txt_yes_'+key+'" style="border:1px solid black;width:100px"/> </td>';   
+                    appendBodyData=appendBodyData+'<td><input type="text" id="txt_no_'+key+'" style="border:1px solid; black;width:100px"/> </td>';   
+                    appendBodyData=appendBodyData+'<td><input type="text" id="txt_doc_yes_'+key+'" style="border:1px solid black;width:100px"/> </td>';   
+                    appendBodyData=appendBodyData+'<td><input type="text" id="txt_doc_no_'+key+'" style="border:1px solid black;width:100px"/> </td>';                    
+                    appendBodyData=appendBodyData+'</tr>';   
+                    irow++;             
+                });
+                appendBodyData=appendBodyData+'</tbody>';   
+                $('#colData').append(appendHeaderData1+appendBodyData); 
+                    
+          }
+      });
+  }
+
+  
+  function getSubSection(idx){ 
+        var $mySelect,selid ;
+        console.log(idx)
+        if(idx=='1')
+        {
+          $mySelect = $('#ddlSSSub_Section'); 
+          selid=$('#ddlSSSection').val();
+        }
+        else if(idx=='2')
+        {
+          $mySelect = $('#ddlSSSSub_Section'); 
+          selid=$('#ddlSSSSection').val();
+        }
+        else if(idx=='3')
+        {
+          $mySelect = $('#ddlQtnSub_Section'); 
+          selid=$('#ddlQtnSection').val();
+        }
+        console.log('selid',selid)
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option); 
+        $.ajax({
+            url: '/getSub_Sections/', 
+            data:{ secid: selid},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log(data.subsections)
+               $.each(data.subsections, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.Sub_Section_AID,
+                        text: value.Sub_Section_Label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    } 
+
+    function getSubSubSection(idx){ 
+        var $mySelect,selid ; 
+        console.log(idx)
+        if (idx=='1'){
+          $mySelect = $('#ddlSSSSub_Sub_Section'); 
+          selid=$('#ddlSSSSub_Section').val();
+        }
+        else if(idx=='2'){
+          $mySelect = $('#ddlQtnSub_Sub_Section'); 
+          selid=$('#ddlQtnSub_Section').val();
+        }
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option); 
+        $.ajax({
+            url: '/getSub_Sub_Sections/', 
+            data:{ secid: selid},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log(data.subsections)
+               $.each(data.subsections, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.Sub_Sub_Section_AID,
+                        text: value.Sub_Sub_Section_Label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    } 
+
+    function get_Sub_Sub_sub_Section(){ 
+        var $mySelect,selid ; 
+        
+        $mySelect = $('#ddlQtn_Sub_Sub_Sub_Section'); 
+        selid=$('#ddlQtnSub_Sub_Section').val();
+  
+        $mySelect.empty();
+        var $option = $("<option/>", {
+                        value: "",
+                        text: "Choose"
+                    });
+        $mySelect.append($option); 
+        $.ajax({
+            url: '/getSub_Sub_Sub_Sections/', 
+            data:{ secid: selid},
+           dataType: 'json',   
+            success: function (data) { 
+               console.log(data.subsections)
+               $.each(data.subsections, function(key, value) { 
+                    var $option = $("<option/>", {
+                        value: value.Sub_Sub_Section_AID,
+                        text: value.Sub_Sub_Sub_Section_Label
+                    });
+                    $mySelect.append($option);
+                });
+            }
+        });
+    } 
+
+  function checkSection1(){ 
+      $.ajax({
+          url: '/checkValue/', 
+          data:{val: $("#txtSection").val(),'tbl':$('#hdnTbl').val()},
+         dataType: 'json',   
+          success: function (data) { 
+             if(data.cnt!='0'){
+              $("#txtSection").val('')
+              alert('Option already exists.')
+              $("#txtSection").focus()
+             }
+             
+          }
+      });
+  }
+
+  function getvalues(id){ 
+      $.ajax({
+          url: '/getMasterTblbyId/', 
+          data:{val: id,'tbl':$('#hdnTbl').val()},
+         dataType: 'json',   
+          success: function (data) { 
+             
+             $.each(data.tblata, function(i, obj) {
+                  //use obj.id and obj.name here, for example:
+                  
+                  if(obj.AID==id){
+                      $("#txtSection").val(obj.opt);
+                      $("#txtSection").prop('disabled',true)
+                      selectedOPt =obj.AID;
+                      $('#txtSectiondesc').val(obj.desc)
+                      if(obj.sts=='Active'){
+                          $('#rbactive').prop('checked',true)
+                      }
+                      else{
+                          $('#rbinactive').prop('checked',true)
+                      }
+                  }
+              });
+             
+          }
+      });
+  }
+
+  function gotolist()
+  {
+      window.location='{{blankadmin}}'
+      
+  }
+</script>
+{% endblock script %}

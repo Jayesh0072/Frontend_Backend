@@ -1,0 +1,2554 @@
+{% extends 'base_dashb.html' %} 
+{% load static %} 
+{% block style %}
+
+<style>
+
+  .table1 tr{
+    line-height: 2px;
+    font-size: 14px;
+}
+.row-cols-md-8 > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
+  .btn-primary-panes{
+   /* border-radius: 50%;*/
+  width: 3rem; 
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f2f3f6!important;
+  z-index: 1045;
+  /* border-radius: 1px; */
+  box-shadow: 0px 0px 32px 0px rgba(36, 40, 46, 0.12);
+  transition: 0.3s ease;
+  font-size:1.4rem;
+  }
+
+  
+  .btn-primary-panes:active {
+  background-color:  #f2f3f6!important;
+  color: red;
+}
+
+</style>
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/fixedColumns.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/datatables.net.extensions/dataTables.scroller.min.css' %}">
+<link rel="stylesheet" href="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.css' %}">
+{% endblock style %}
+{% block content %}
+<div class="navbar-nav-wrap-content-start"  style="z-index: 100; position:absolute; top:0px; width:28px; height:82px; padding:5px; background-color: transparent;position: fixed;"> 
+  <!-- <div class="border border-start-0">
+    <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" style="color:#377dff" data-bs-target="#divPane">
+       <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><i class="bi-tv fs-1" style="font-size: 1.6rem;"></i></span>
+    </a>   
+   </div> -->
+</div>
+
+ 
+ <div id="divPane" class="modal fade bd-example-modal-xl" tabindex="-1" aria-hidden="true">
+  <!-- style="border-right: 1px solid var(--phoenix-navbar-footer-border-color);border-bottom: 1px solid var(--phoenix-navbar-footer-border-color); position:absolute; left:28px; top:62px; width:200px; height:82px; padding:5px;background: var(--phoenix-navbar-vertical-bg-color);"> -->
+  <div class="modal-dialog modal-md modal-dialog-scrollable modal-lg">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Items</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 px-6 py-0"> 
+        <div class="row row-cols-1 row-cols-md-2"style="padding-left: 2rem;padding-bottom: 0.5rem;">
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkmodelprogress" type="checkbox"   unchecked="" onchange="savepanes()"/>
+            <label class="form-check-label" for="chkmodelprogress">Models</label>
+           </div>
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkvalfindngs" type="checkbox" value=""    unchecked="" onchange="savepanes()"/>
+            <label class="form-check-label" for="chkmodelprogress">Validation Findings</label>
+           </div>
+           <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkissuests" type="checkbox"  value=""     unchecked="" onchange="savepanes()"/>
+            <label class="form-check-label" for="chkmodelprogress">Issues</label>
+           </div>
+          
+            
+           <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chktasks" type="checkbox"  data-bs-toggle="collapse"   unchecked onchange="savepanes()"  />
+            <label class="form-check-label" for="chkupcoming">Tasks</label>
+           </div>         
+           <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="chkactivity" type="checkbox"    unchecked onchange="savepanes()" />
+            <label class="form-check-label" for="chkissues">Audit Trail(Latest activities)</label>
+           </div>
+         
+        </div>
+      </div>
+    </div>
+  </div> 
+ 
+  
+ </div>
+
+<!-- Added by Shuvankar dated 2024.01.01 Starts (pop-up for filter )-->
+<div id="divFilterPopup"  style="width: 500px; left:50%; margin-left: -250px;" class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Filter Criteria</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 "> 
+        <fieldset>
+          <div class="row" style="margin-top: 1rem;">
+              <label class="col-form-label col-sm-3 pt-0">Interval</label>
+              <div class="col-sm-3">
+
+                <div class="form-check"> 
+                <input class="form-check-input" id="rbWeekly" type="radio" name="rbInterval" value="Week" >  
+                 
+                <label class="form-check-label" for="rbactive">Weekly</label>
+                </div>  
+            </div>
+              <div class="col-sm-3">
+
+                  <div class="form-check"> 
+                  <input class="form-check-input" id="rbMonthly" type="radio" name="rbInterval" value="Monthly" >  
+                   
+                  <label class="form-check-label" for="rbactive">Monthly</label>
+                  </div>  
+              </div>
+              <div class="col-sm-3"> 
+                  <div class="form-check">    
+                  <input class="form-check-input"  id="rbQtr" type="radio" name="rbInterval" value="Qtr" checked="true">   
+                  <label class="form-check-label" for="rbQtr">Quaterly</label>
+                  </div> 
+              </div>
+          </div>
+      </fieldset> 
+      <div class="row" style="margin-top: 1rem;">
+        <label class="col-sm-3 col-form-label" for="txtRegDt"> Status </label>
+        <div class="col-sm-8">    
+           <select id="ddlIssueSts" class="form-select" data-choices="data-choices" multiple="multiple" placeholder="Issue status" data-options='{"removeItemButton":true,"placeholder":true}'>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Provisional Approval">Provisional Approval</option>
+            <option value="Not Approved">Not Approved</option>
+           </select>
+        </div>                         
+      </div> 
+        <div class="row" style="margin-top: 1rem;">
+          <label class="col-sm-3 col-form-label" for="txtRegDt"> Date Range </label>
+          <div class="col-sm-4">    
+            <input  id="txtDtFrom" name="txtDtFrom"  type="text" class="form-control datetimepicker" 
+            placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}' />
+          </div>
+          <div class="col-sm-4">    
+            <input  id="txtDtTo" name="txtDtTo"  type="text" class="form-control datetimepicker" 
+            placeholder="mm/dd/yyyy" data-options='{"disableMobile":true,"dateFormat":"m/d/Y"}'   />
+          </div>                         
+        </div> 
+        <!-- <div class="row mb-6">
+        </div>  -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-phoenix-primary px-5" data-dismiss="modal" onclick="$('#divFilterPopup').modal('toggle')">Cancel</button> 
+        <button type="button" class="btn btn-primary px-5 px-sm-5" onclick="OptionSelected()">Show</button>
+      </div>
+    </div>
+  </div>   
+</div>
+<!-- Added by Shuvankar dated 2024.01.01 Ends (pop-up for filter )-->
+
+
+<!-- Added by Shuvankar dated 2024.01.04 Starts (pop-up for filter for Models )-->
+<div id="divFilterMetricPopup"  style="width: 300px; left:50%; margin-left: -150px;" class="modal fade"  tabindex="-1" aria-hidden="true">  
+  <div class="modal-dialog modal-content">
+    <div class="modal-content bg-soft overflow-hidden">
+      <div class="modal-header" style="padding: 5px 10px !important;">
+        <h4 class="text-1000 fw-bolder mb-0">Select Performance</h4>
+        <button class="btn btn-phoenix-secondary btn-icon flex-shrink-0" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fa-solid fa-xmark"></span></button>
+      </div>
+      <div class="modal-body bg-100 px-6 py-0">
+        <div class="row gx-14" style="padding-left: 2rem;padding-bottom: 0.5rem;">
+          <div class="form-check" style="padding-bottom: 0.5rem;padding-top: 1rem;">
+            <input class="form-check-input" id="rbCritical" type="radio" name="rbMetricType" value="All" checked="true" onclick="MetricTypeSelected('')">                                  
+            <label class="form-check-label" for="rbCritical">All</label>
+          </div>  
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbCritical" type="radio" name="rbMetricType" value="NotDone" onclick="MetricTypeSelected('-')">                                  
+            <label class="form-check-label" for="rbCritical">Not Done</label>
+          </div>  
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbNormal" type="radio" name="rbMetricType" value="Normal" onclick="MetricTypeSelected('text-normal')">                                  
+            <label class="form-check-label" for="rbNormal">Normal</label>
+          </div>
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbWarning" type="radio" name="rbMetricType" value="Warning" onclick="MetricTypeSelected('text-warning')">                                  
+            <label class="form-check-label" for="rbWarning">Warning</label>
+          </div> 
+          <div class="form-check" style="padding-bottom: 0.5rem;">
+            <input class="form-check-input" id="rbCritical" type="radio" name="rbMetricType" value="Critical" onclick="MetricTypeSelected('text-danger')">                                  
+            <label class="form-check-label" for="rbCritical">Critical</label>
+          </div>          
+        </div>
+
+        
+      </div>
+    </div>
+  </div>   
+</div>
+<!-- Added by Shuvankar dated 2024.01.04 Ends (pop-up for filter for Models )-->
+
+<div class="content" style="padding-top:0px;">
+ 
+   <!-- Card -->
+   <!-- <div class="mb-3 mb-lg-5"> -->
+    
+
+    
+    <div class="row">
+      <div >
+        <div class="row col-sm-divider">
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-clipboard-data fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <span class="d-block fs-6"><a style="color:inherit" href="{{modelList}}">Models</a></span>
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">{{modelttl}}</h3> 
+                </div>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-clock-history fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <span class="d-block fs-6">Tools</span>
+                <div class="d--flex align-items-center">
+                  <h3 class="mb-0">{{toolCnt}}</h3>
+                </div>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-list-task fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <a style="color:inherit" href="{{getTasks}}">
+                  <span class="d-block fs-6">Tasks</span>
+                  <div class="d--flex align-items-center">
+                    <h3 class="mb-0">{{taskCnt}}</h3>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+
+          <div class="col-sm-3">
+            <!-- Stats -->
+            <div class="d-lg-flex align-items-md-center">
+              <div class="flex-shrink-0">
+                <i class="bi-binoculars fs-1 text-primary"></i>
+              </div>
+
+              <div class="flex-grow-1 ms-lg-3">
+                <span class="d-block fs-6">Program Score</span>
+                <div class="d--flex align-items-center">
+                  <h3 class="mb-0">{{icqratings}}</h3>
+                </div>
+              </div>
+            </div>
+            <!-- End Stats -->
+          </div>
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Body --> 
+    </div>  
+    <div class="row row-cols-1 row-cols-md-6" style="margin-top: 25px;">
+      <div class="col mb-3">
+        <button type="button" class="btn btn-primary-panes"   data-bs-toggle="modal" style="color:#377dff" data-bs-target="#divPane">
+           <span class="nav-link-icon"   data-toggle="tooltip" title="Add Pane"><i class="bi-tv fs-1" style="font-size: 1.6rem;"></i></span>
+        </button>   
+       </div>
+      <div class="col mb-3" id="divBtnMdlProgress" style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Models" data-bs-toggle="collapse" data-bs-target="#collapseModelDiv" aria-expanded="false" aria-controls="collapseModelDiv">
+          
+          <i class="bi-graph-up-arrow text-primary"></i>
+        </button>
+      </div>  
+      <div class="col mb-3" id="divBtnValfindings" style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Validation Findings" data-bs-toggle="collapse" data-bs-target="#collapseValFindings" aria-expanded="false" aria-controls="collapseValFindings">
+          <i class="bi-search text-primary"></i> 
+        </button>       
+      </div>
+      <div class="col mb-3" id="divBtnIssueSts"  style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Issues" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          
+          <i class="bi-ui-checks text-primary"></i>
+        </button>
+      </div>
+      
+      <div class="col mb-3" id="divBtnTasks" style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Tasks" data-bs-toggle="collapse" data-bs-target="#collapseTaskLst" aria-expanded="false" aria-controls="collapseTaskLst">
+           
+          <i class="bi-list-check  text-primary"></i>
+        </button>
+      </div>
+      
+      <div class="col mb-3" id="divBtnAudit" style="margin-bottom: 0.5rem !important;">
+        <button type="button" class="btn btn-primary-panes" title="Audit Trail (Latest activities)" data-bs-toggle="collapse" data-bs-target="#collapseAudit" aria-expanded="false" aria-controls="collapseAudit">
+         
+          <i class="bi-link-45deg  text-primary"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div id="divmodelProgress" class="row">
+      <div class="collapse card shadow-none border border-300 my-4"  style="padding:0px"   id="collapseModelDiv" data-component-card="data-component-card">
+        <div class="card-header p-4 border-bottom border-300 bg-soft" style="height: 46.5px; background-color: #f2f3f6;padding-top: 15px !important;padding-bottom: 5px !important;">
+          <div class="row g-3 justify-content-between align-items-center">
+            <div class="col-12 col-md">
+              <h4 class="text-900 mb-0" data-anchor="data-anchor"> 
+                <a  style="color:inherit"  data-bs-toggle="collapse" data-bs-target="#collapseModelDiv"  role="button"  aria-expanded="false" aria-controls="collapseModelDiv">
+                  Models</a>  </h4>
+            </div> 
+          </div>
+        </div>
+        <div class="card-body" style="padding-bottom: 0px;">
+          <div class="d-flex justify-content-end mb-5">
+            <!-- Nav -->
+            <ul class="nav nav-segment" id="expensesTabEg1" role="tablist">
+              <!-- <li class="nav-item" data-toggle="div_mdlcategory"  data-trigger="click" onclick="$('#div_mdlsummary').hide();$('#div_mdlsrc').hide();$('#div_mdlprogress').hide();$('#div_mdlcategory').show()" data-action="toggle">
+                <a class="nav-link " href="javascript:;" data-bs-toggle="tab">Category</a>
+              </li> -->
+              <li class="nav-item" data-toggle="div_mdlprogress"  data-trigger="click" onclick="$('#div_mdlsummary').hide();$('#div_mdlsrc').hide();$('#div_mdlcategory').hide();$('#div_mdlprogress').show()" data-action="toggle">
+                <a class="nav-link active" href="javascript:;" data-bs-toggle="tab">Progress</a>
+              </li>
+              <li class="nav-item" data-toggle="div_mdlsrc"  data-trigger="click"  onclick="$('#div_mdlsummary').hide();$('#div_mdlprogress').hide();$('#div_mdlcategory').hide();$('#div_mdlsrc').show()"  data-action="toggle">
+                <a class="nav-link" href="javascript:;" data-bs-toggle="tab">Source / Validation Rating</a>
+              </li>
+              <li class="nav-item" data-toggle="div_mdlsummary"  data-trigger="click"   onclick="$('#div_mdlsummary').show();$('#div_mdlprogress').hide();$('#div_mdlcategory').hide();$('#div_mdlsrc').hide()"  data-action="toggle">
+                <a class="nav-link" href="javascript:;" data-bs-toggle="tab">Summary</a>
+              </li>
+            </ul>
+            <!-- End Nav -->
+          </div>
+            <div class="collapse code-collapse collapse show">
+              <div class="bg-white border-300">
+                <div class="row">   
+                  <!-- Table -->
+                  <div id="div_mdlcategory" style="display: None;" > 
+                    
+                    <div class="code-collapse collapse show" >
+                      <div class="bg-white border-300">
+                        <div class="row">
+                          <div class="col-12 col-xl-7 col-xxl-6">
+                           
+                          </div>
+                          <div class="col-12 col-xl-5 col-xxl-6"  style="text-align: center;">
+                            <h3>Model Sub Category </h3> 
+                            <canvas id="chrtmdlsubcat" height="350" width="350"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                </div>
+                <!-- End Table -->   
+                  <!-- Table -->
+                  <div id="div_mdlprogress" > 
+                    
+                      <div class="code-collapse collapse show" >
+                        <div class="bg-white border-300">
+                          <div class="row">
+                            <div class="col-sm-4"> 
+                              <div  style="text-align: center;">
+                                <h3>Model Category </h3>                                 
+                              </div>
+                              <div style="text-align: center;justify-content: center;display: flex;">
+                                <canvas id="chartmdlcat" height="350" width="350"></canvas>
+                              </div>
+                            </div>
+                            <div class="col-sm-4"> 
+                              <div class="chartjs-custom" style="text-align: center;text-align: center;justify-content: center;display: flex;">
+                                <h3>Model Type </h3>                                 
+                              </div>
+                              <div style="text-align: center;justify-content: center;display: flex;">
+                                <canvas id="chartId" height="350" width="350"></canvas> 
+                              </div>
+                            </div>
+                            <div class="col-sm-4"  style="text-align: center;">
+                              <div class="chartjs-custom" style="text-align: center;">
+                                <h3>Model Risk Tier </h3>                                 
+                              </div>
+                              <div style="text-align: center;justify-content: center;display: flex;">
+                                <canvas id="chrtRiskTier"  height="350" width="350"></canvas>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div> 
+                  </div>
+                  <!-- End Table -->                  
+                    <!-- Table -->
+                    <div id="div_mdlsrc" style="display: None;" > 
+                      <div class="bg-white border-300">
+                        <div class="row">
+                          <div class="col-12 col-xl-6 col-xxl-6"  style="text-align: center;">
+                            <h3>Model Source </h3> 
+                            <canvas id="chrtMdlSrc" height="350" width="580"></canvas>
+                          </div> 
+                          <div class="col-12 col-xl-6 col-xxl-6"  style="text-align: center;">
+                            <h3>Validation Rating </h3> 
+                            <canvas id="chrtValidationRating" height="350" width="580"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="div_mdlsummary"  style="display: None;" > 
+                          <!-- Header -->
+                <div class="card-header">
+                  <div class="row justify-content-between align-items-center flex-grow-1">
+                    <div class="col-md">
+                      <div class="d-flex justify-content-between align-items-center"> 
+                        <!-- Datatable Info -->
+                        <div id="datatableCounterInfo" style="display: none;">
+                          <div class="d-flex align-items-center">
+                            <span class="fs-6 me-3">
+                              <span id="datatableCounter">0</span>
+                              Selected
+                            </span>
+                            <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                              <i class="tio-delete-outlined"></i> Delete
+                            </a>
+                          </div>
+                        </div>
+                        <!-- End Datatable Info -->
+                      </div>
+                    </div>
+                    <!-- End Col -->
+                    <div class="col-auto">
+                      <!-- Filter -->
+                      <div class="row align-items-sm-center">
+                        <div class="col-sm-auto">
+                          <div class="row align-items-center gx-0">
+                            <div class="col">
+                              <span class="text-secondary me-2">Model Source:</span>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="col-auto">
+                              <!-- Select -->
+                              <div class="tom-select-custom tom-select-custom-end">
+                                <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_UA" autocomplete="off" data-hs-tom-select-options='{
+                                          "searchInDropdown": false,
+                                          "hideSearch": true,
+                                          "dropdownWidth": "10rem"
+                                        }'>
+                                  <option value="null" selected>All</option>
+                                  <option value="Internal">Internal</option>
+                                  <option value="Vendor">Vendor</option>
+                                  <option value="Legacy">Legacy</option>
+                                </select>
+                              </div>
+                              <!-- End Select -->
+                            </div>
+                            <!-- End Col -->
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                        <!-- End Col -->
+
+                        <div class="col-sm-auto">
+                          <div class="row align-items-center gx-0">
+                            <div class="col">
+                              <span class="text-secondary me-2">Model Risk</span>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="col-auto">
+                              <!-- Select -->
+                              <div class="tom-select-custom tom-select-custom-end">
+                                <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="5" data-target-table="datatable_UA" autocomplete="off" data-hs-tom-select-options='{
+                                          "searchInDropdown": false,
+                                          "hideSearch": true,
+                                          "dropdownWidth": "10rem"
+                                        }'>
+                                  <option value="null" selected>All</option>
+                                  <option value="Low">Low</option>
+                                  <option value="Medium">Medium</option>
+                                  <option value="High">High</option>
+                                </select>
+                              </div>
+                              <!-- End Select -->
+                            </div>
+                            <!-- End Col -->
+                          </div>
+                          <!-- End Row -->
+                        </div>
+                        <!-- End Col -->
+
+                        <div class="col-md">
+                          <form>
+                            <!-- Search -->
+                            <div class="input-group input-group-merge input-group-flush">
+                              <div class="input-group-prepend input-group-text">
+                                <i class="bi-search"></i>
+                              </div>
+                              <input id="datatableSearch" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                            </div>
+                            <!-- End Search -->
+                          </form>
+                        </div> 
+                      </div>
+                      <!-- End Filter -->
+                    </div>
+                    <!-- End Col -->
+                  </div>
+                  <!-- End Row -->
+                </div>
+                <!-- End Header -->
+                <!-- Table -->
+                <div class="table-responsive datatable-custom">
+                  <table id="datatable_UA" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                          "columnDefs": [{
+                              "targets": [0],
+                              "orderable": false
+                            }],
+                          "order": [],
+                          "info": {
+                            "totalQty": "#datatableWithPaginationInfoTotalQty"
+                          },
+                          "search": "#datatableSearch",
+                          "entries": "#datatableEntries",
+                          "pageLength": 5,
+                          "isResponsive": false,
+                          "isShowPaging": false,
+                          "pagination": "datatablePagination"
+                        }'>
+                    <thead class="thead-light">
+                      <tr> 
+                        <th>Model ID</th>
+                        <th>Primary Model Name</th>
+                        <th>Model Source</th>
+                        <th>Model Type</th>
+                        <th>Model Risk</th>
+                      
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for key, val in modelinfo.items  %}             
+                      <tr>
+                          
+                        <td>              
+                          <a class="text-decoration-none fw-bold fs-0"  href="#"  onclick="gotoDetaile('{{val.Mdl_Id}}')"  >{{val.Mdl_Id}}</a>
+                        </td>
+                        <td>
+                          {{val.Prm_Name}}
+                        </td>
+                        <td>
+                          {{val.Mdl_Src_Label}}
+                        </td>
+                        <td>
+                          {{val.Mdl_Type_Label}}
+                        </td>
+                        <td>
+                          {%if val.Mdl_Risk_Label == "High" %}
+                              <h5><span class="badge bg-soft-danger  text-danger">High</span></h5>
+                          {%elif val.Mdl_Risk_Label == "Medium" %}
+                              <h5><span class="badge bg-soft-warning  text-warning">Medium</span></h5>
+                          {%elif val.Mdl_Risk_Label == "Low" %}
+                              <h5><span class="badge bg-soft-success text-success">Low</span></h5>
+                          {% endif %}
+                        </td> 
+                      </tr>
+                    {% endfor %}    
+                    </tbody>
+                  </table>
+                </div>
+                <!-- End Table -->
+
+                <!-- Footer -->
+                <div class="card-footer">
+                  <!-- Pagination -->
+                  <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+                    <div class="col-sm mb-2 mb-sm-0">
+                      <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+                        <span class="me-2">Showing:</span>
+
+                        <!-- Select -->
+                        <div class="tom-select-custom">
+                          <select id="datatableEntries" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                                    "searchInDropdown": false,
+                                    "hideSearch": true
+                                  }'>
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50" >50</option>
+                            <option value="100">100</option>
+                          </select>
+                        </div>
+                        <!-- End Select -->
+
+                        <span class="text-secondary me-2">of</span>
+
+                        <!-- Pagination Quantity -->
+                        <span id="datatableWithPaginationInfoTotalQty"></span>
+                      </div>
+                    </div>
+                    <!-- End Col -->
+
+                    <div class="col-sm-auto">
+                      <div class="d-flex justify-content-center justify-content-sm-end">
+                        <!-- Pagination -->
+                        <nav id="datatablePagination" aria-label="Activity pagination"></nav>
+                      </div>
+                    </div>
+                    <!-- End Col -->
+                  </div>
+                  <!-- End Pagination -->
+                </div>
+                <!-- End Footer -->
+                    </div>
+                    <!-- End Table --> 
+                </div>
+              </div>
+          </div> 
+        </div>
+      </div>   
+    </div>
+    <div id="divValfindings" class="row">
+      <div class="collapse card shadow-none border border-300 my-4" style="padding:0px"   id="collapseValFindings" data-component-card="data-component-card">   
+        <div class="card-header p-4 border-bottom border-300 bg-soft" style="height: 46.5px; background-color: #f2f3f6;padding-top: 15px !important;padding-bottom: 5px !important;">
+          <div class="row g-3 justify-content-between align-items-center">
+            <div class="col-12 col-md">
+              <h4 class="text-900 mb-0" data-anchor="data-anchor"> 
+                <a  style="color:inherit"  data-bs-toggle="collapse" data-bs-target="#collapseValFindings" aria-expanded="false"  role="button"  aria-controls="collapseValFindings">
+                  Validation Findings</a> </h4>
+            </div>
+            <div class="col col-md-auto">
+              <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" data-bs-target="#divFilterPopup">
+                <span class="text-primary" data-toggle="tooltip" title="Select Filter Criteria"><span data-feather="filter"></span></span>
+              </a>               
+            </div>
+          </div>
+        </div>     
+        <div class="card-body" style="padding-bottom: 0px;" >
+          <div class="d-flex justify-content-end mb-5">
+            <!-- Nav -->
+            <ul class="nav nav-segment" id="expensesTabEg1" role="tablist">
+              <li class="nav-item" data-toggle="chart-bar" data-datasets="thisWeek" data-trigger="click" onclick="$('#div__finsingsbyCategory').hide();$('#div_finsingsbyElemets').show()" data-action="toggle">
+                <a class="nav-link active" href="javascript:;" data-bs-toggle="tab">Validation Elements</a>
+              </li>
+              <li class="nav-item" data-toggle="chart-bar" data-datasets="lastWeek" data-trigger="click"  onclick="$('#div_finsingsbyElemets').hide();$('#div__finsingsbyCategory').show()"  data-action="toggle">
+                <a class="nav-link" href="javascript:;" data-bs-toggle="tab">Category</a>
+              </li>
+            </ul>
+            <!-- End Nav -->
+          </div>
+            <div class="collapse code-collapse collapse show"   >
+              <div class="bg-white border-300">
+                <div class="row">         <!-- Table -->
+                  <div id="div_finsingsbyElemets" class="table-responsive datatable-custom"> 
+                    <table id="datatable_finsingsbyElemets" class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                    data-hs-datatables-options='{
+                            "order": []
+                    }'>
+                      <thead class="thead-light">
+                        <tr> 
+                          <th style="width: 40%;">Validation Element</th>
+                          <th style="cursor: pointer;text-align: right;" onclick="showFindings('3','','')">High</th>
+                          <th style="cursor: pointer;text-align: right;" onclick="showFindings('2','','')">Medium</th>
+                          <th style="cursor: pointer;text-align: right;" onclick="showFindings('1','','')">Low</th>
+                          <th style="text-align: right;">Total</th>              
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {% for key, val in findingsByElements.items  %}             
+                        <tr>               
+                          
+                          <td> 
+                            {{val.Validation_Element}}
+                          </td>
+                          <td style="text-align: right;cursor: pointer;" onclick="showFindings('3','{{val.Validation_Element}}','')">
+                            {{val.High}}
+                          </td>
+                          <td style="text-align: right;cursor: pointer;" onclick="showFindings('2','{{val.Validation_Element}}','')">
+                            {{val.Medium}}
+                          </td>
+                          <td style="text-align: right;cursor: pointer;" onclick="showFindings('1','{{val.Validation_Element}}','')">
+                            {{val.Low}}
+                          </td> 
+                          <td style="text-align: right;">
+                            {{val.Total}}
+                          </td> 
+                        </tr>
+                      {% endfor %}    
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- End Table -->                  
+                    <!-- Table -->
+                    <div id="div__finsingsbyCategory" style="display: None;"  class="table-responsive datatable-custom"> 
+                      <table id="datatable_finsingsbyCategory" class="js-datatable table table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
+                      data-hs-datatables-options='{
+                              "order": []
+                      }'>
+                        <thead class="thead-light">
+                          <tr> 
+                            <th style="width: 40%;">Category</th>
+                            <th style="cursor: pointer;text-align: right;" onclick="showFindings('3','','')">High</th>
+                            <th style="cursor: pointer;text-align: right;" onclick="showFindings('2','','')">Medium</th>
+                            <th style="cursor: pointer;text-align: right;" onclick="showFindings('1','')">Low</th>
+                            <th style="text-align: right;">Total</th>              
+                          </tr>
+                        </thead>
+  
+                        <tbody>
+                          {% for key, val in findingsCntByCategory.items  %}             
+                          <tr>               
+                            
+                            <td>
+                              {{val.Validation_Category}}
+                            </td>
+                            <td style="text-align: right;" onclick="showFindings('3','','{{val.Validation_Category}}')">
+                              {{val.High}}
+                            </td>
+                            <td style="text-align: right;" onclick="showFindings('2','','{{val.Validation_Category}}')">
+                              {{val.Medium}}
+                            </td>
+                            <td style="text-align: right;" onclick="showFindings('1','','{{val.Validation_Category}}')">
+                              {{val.Low}}
+                            </td> 
+                            <td style="text-align: right;">
+                              {{val.Total}}
+                            </td> 
+                          </tr>
+                        {% endfor %}    
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- End Table --> 
+                </div>
+              </div>
+          </div> 
+        </div>
+      </div>   
+    </div>
+    
+    <!-- Added by Shuvankar Starts 2024.01.01 -->
+    <div id="divIssuestatus" class="row">
+       
+      <div class="collapse card shadow-none border border-300 my-4"  style="padding:0px"    id="collapseExample" data-component-card="data-component-card">
+          <div class="card-header p-4 border-bottom border-300 bg-soft" style="height: 46.5px; background-color: #f2f3f6;padding-top: 15px!important;padding-bottom: 5px !important;">
+            <div class="row g-3 justify-content-between align-items-center">
+              <div class="col-12 col-md">
+                <h4 class="text-900 mb-0" data-anchor="data-anchor"> 
+                  <a  style="color:inherit"  data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"  role="button"  aria-controls="collapseExample">
+                    Issues</a> </h4>
+              </div> 
+            </div>
+          </div>
+          <div class="card-body"   style="padding-bottom: 0px;">
+            <div class="d-flex justify-content-end mb-5">
+              <!-- Nav -->
+              <ul class="nav nav-segment" id="expensesTabEg1" role="tablist">
+                <li class="nav-item" data-toggle="div_issuestschart"  data-trigger="click" onclick="$('#div_issuesummary').hide();$('#div_issuestschart').show()" data-action="toggle">
+                  <a class="nav-link active" href="javascript:;" data-bs-toggle="tab">Status By Priority</a>
+                </li>
+                <li class="nav-item" data-toggle="div_issuesummary"  data-trigger="click"  onclick="$('#div_issuestschart').hide();$('#div_issuesummary').show()"  data-action="toggle">
+                  <a class="nav-link" href="javascript:;" data-bs-toggle="tab">Summary</a>
+                </li>
+              </ul>
+              <!-- End Nav -->
+            </div>
+              <div class="collapse code-collapse collapse show">
+                <div class="bg-white border-300">
+                  <div class="row">         <!-- Table -->
+                    <div id="div_issuestschart"> 
+                      <div class="bg-white border-300">
+                        <div class="col col-md-auto" style="display: flex;justify-content: end;">
+                          <a class="nav-link label-1" href="#" role="button" data-bs-toggle="modal" data-bs-target="#divFilterPopup">
+                            <span class="text-primary" data-toggle="tooltip" title="Select Filter Criteria"><i class="bi bi-funnel" style="font-size: 1.2rem;"></i></span>
+                          </a>               
+                        </div>
+                        <div class="row"> 
+                          <div class="col-12 col-xl-12 col-xxl-12"> 
+                            <canvas id="stackedChartID" height="350" width="580"></canvas>                        
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Table -->                  
+                      <!-- Table -->
+                      <div id="div_issuesummary" style="display: None;" > 
+                          <!-- Header -->
+                          <div class="card-header">
+                            <div class="row justify-content-between align-items-center flex-grow-1">
+                              <div class="col-md">
+                                <div class="d-flex justify-content-between align-items-center"> 
+                                  <!-- Datatable Info -->
+                                  <div id="datatableCounterInfo" style="display: none;">
+                                    <div class="d-flex align-items-center">
+                                      <span class="fs-6 me-3">
+                                        <span id="datatableCounter">0</span>
+                                        Selected
+                                      </span>
+                                      <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                                        <i class="tio-delete-outlined"></i> Delete
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <!-- End Datatable Info -->
+                                </div>
+                              </div>
+                              <!-- End Col -->
+                              <div class="col-auto">
+                                <!-- Filter -->
+                                <div class="row align-items-sm-center">
+                                  <div class="col-sm-auto">
+                                    <div class="row align-items-center gx-0">
+                                      <div class="col">
+                                        <span class="text-secondary me-2">Approval Status:</span>
+                                      </div>
+                                      <!-- End Col -->
+
+                                      <div class="col-auto">
+                                        <!-- Select -->
+                                        <div class="tom-select-custom tom-select-custom-end">
+                                          <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="4" data-target-table="datatable_Issue" autocomplete="off" data-hs-tom-select-options='{
+                                                    "searchInDropdown": false,
+                                                    "hideSearch": true,
+                                                    "dropdownWidth": "10rem"
+                                                  }'>
+                                            <option value="null" selected>All</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Approved">Approved</option>
+                                            <option value="Provisional Approval">Provisional Approval</option>
+                                            <option value="Not Approved">Not Approved</option>
+                                          </select>
+                                        </div>
+                                        <!-- End Select -->
+                                      </div>
+                                      <!-- End Col -->
+                                    </div>
+                                    <!-- End Row -->
+                                  </div>
+                                  <!-- End Col -->
+
+                                  <div class="col-sm-auto">
+                                    <div class="row align-items-center gx-0">
+                                      <div class="col">
+                                        <span class="text-secondary me-2">Priority :</span>
+                                      </div>
+                                      <!-- End Col -->
+
+                                      <div class="col-auto">
+                                        <!-- Select -->
+                                        <div class="tom-select-custom tom-select-custom-end">
+                                          <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_Issue" autocomplete="off" data-hs-tom-select-options='{
+                                                    "searchInDropdown": false,
+                                                    "hideSearch": true,
+                                                    "dropdownWidth": "10rem"
+                                                  }'>
+                                            <option value="null" selected>All</option>
+                                            <option value="Low">Low</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="High">High</option>
+                                          </select>
+                                        </div>
+                                        <!-- End Select -->
+                                      </div>
+                                      <!-- End Col -->
+                                    </div>
+                                    <!-- End Row -->
+                                  </div>
+                                  <!-- End Col -->
+
+                                  <div class="col-md">
+                                    <form>
+                                      <!-- Search -->
+                                      <div class="input-group input-group-merge input-group-flush">
+                                        <div class="input-group-prepend input-group-text">
+                                          <i class="bi-search"></i>
+                                        </div>
+                                        <input id="datatableSearch_Issue" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                                      </div>
+                                      <!-- End Search -->
+                                    </form>
+                                  </div> 
+                                </div>
+                                <!-- End Filter -->
+                              </div>
+                              <!-- End Col -->
+                            </div>
+                            <!-- End Row -->
+                          </div>
+                          <!-- End Header -->
+
+                          <!-- Table -->
+                          <div class="table-responsive datatable-custom">
+                            <table id="datatable_Issue" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+                                    "columnDefs": [{
+                                        "targets": [0],
+                                        "orderable": false
+                                      }],
+                                    "order": [],
+                                    "info": {
+                                      "totalQty": "#datatableWithPaginationInfoTotalQty_Issue"
+                                    },
+                                    "search": "#datatableSearch_Issue",
+                                    "entries": "#datatableEntries_Issue",
+                                    "pageLength": 5,
+                                    "isResponsive": false,
+                                    "isShowPaging": false,
+                                    "pagination": "datatablePagination_Issue"
+                                  }'>
+                                  <thead>
+                                    <tr>
+                                      <th class="white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;"></th>
+                                      <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="Issue_ID" style="width:8%;">Issue ID</th>                         
+                                      <th class="sort align-middle ps-3" scope="col" data-sort="Task_Priority_Label" style="width:30%;">Priority</th>
+                                      <th class="sort align-middle ps-3" scope="col" data-sort="Task_ApprovalStatus_Label" style="width:10%;">Approval Status</th>
+                                      <th class="sort align-middle ps-3" scope="col" data-sort="Task_Function_Label" style="width:15%;">Task Function</th>
+                                      <th class="sort align-middle ps-3" scope="col" data-sort="Task_Type_label" style="width:12%;">Task Type</th>
+                                      <th class="sort align-middle ps-3" scope="col" data-sort="Completion_Status" style="width:9%;">Completion Status</th>
+                                      <th class="sort align-middle text-end" scope="col" data-sort="end_dt" style="width:10%;">End Date</th>
+                                    </tr>
+                                  </thead>  
+                                  <tbody class="list" id="project-list-table-body">
+                                    {% for key, val in issueList.items  %}             
+                                      <tr class="position-static">
+                                        <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                                          <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                                          <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+                                        </td>
+                                        <td class="align-middle time white-space-nowrap ps-0 Issue_ID py-4">
+                                          
+                                          <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectIssues('{{val.Issue_ID}}','{{val.U_Role}}')" >{{val.Issue_ID}}</a>
+                                        </td> 
+                                        <td class="align-middle white-space-nowrap Process_Name ps-3 py-4">
+                                           
+                                          {%if val.Issue_Priority_Label == "High" %}
+                                            <h5><span class="badge bg-soft-danger text-danger"  style="font-size: inherit;">High</span></h5>
+                                          {%elif val.Issue_Priority_Label == "Medium" %}
+                                              <h5><span class="badge bg-soft-warning  text-warning"  style="font-size: inherit;">Medium</span></h5>
+                                          {%elif val.Issue_Priority_Label == "Low" %}
+                                              <h5><span class="badge bg-soft-success  text-success" style="font-size: inherit;">Low</span></h5>
+                                          {% endif %}
+                                        </td>
+                                        <td class="align-middle white-space-nowrap Type ps-3 py-4">
+                                          {{val.Issue_ApprovalStatus_Label}} 
+                                        </td>
+                                        <td class="align-middle white-space-nowrap Area ps-3 py-4">
+                                          {{val.Issue_Function_Label}}
+                                        </td>
+                                        <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4">
+                                        {{val.Issue_Type_label}}
+                                        </td>
+                                        <td class="align-middle white-space-nowrap ps-3 Status"> 
+                                        {{val.Completion_Status}}
+                                        </td>
+                                        <td class="align-middle white-space-nowrap text-end Approval_Status">                                
+                                        {{val.end_dt}}
+                                        </td> 
+                                      </tr>
+                                    {% endfor %}   
+                                  </tbody>
+                                </table>
+                          </div>
+                          <!-- End Table -->
+
+                          <!-- Footer -->
+                          <div class="card-footer">
+                            <!-- Pagination -->
+                            <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+                              <div class="col-sm mb-2 mb-sm-0">
+                                <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+                                  <span class="me-2">Showing:</span>
+
+                                  <!-- Select -->
+                                  <div class="tom-select-custom">
+                                    <select id="datatableEntries_Issue" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                                              "searchInDropdown": false,
+                                              "hideSearch": true
+                                            }'>
+                                      <option value="5" selected>5</option>
+                                      <option value="10">10</option>
+                                      <option value="25">25</option>
+                                      <option value="50" >50</option>
+                                      <option value="100">100</option>
+                                    </select>
+                                  </div>
+                                  <!-- End Select -->
+
+                                  <span class="text-secondary me-2">of</span>
+
+                                  <!-- Pagination Quantity -->
+                                  <span id="datatableWithPaginationInfoTotalQty_Issue"></span>
+                                </div>
+                              </div>
+                              <!-- End Col -->
+
+                              <div class="col-sm-auto">
+                                <div class="d-flex justify-content-center justify-content-sm-end">
+                                  <!-- Pagination -->
+                                  <nav id="datatablePagination_Issue" aria-label="Activity pagination"></nav>
+                                </div>
+                              </div>
+                              <!-- End Col -->
+                            </div>
+                            <!-- End Pagination -->
+                          </div>
+                          <!-- End Footer -->
+                      </div>
+                      <!-- End Table --> 
+                  </div>
+                </div>
+            </div> 
+             
+          </div>
+        </div>        
+    </div>
+    <!-- Added by Shuvankar Ends 2024.01.01 -->
+
+   
+    <div  id="divTasks"  class="row">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="collapse card shadow-none border border-300 my-4"  style="padding:0px"   id="collapseTaskLst" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="background-color: #f2f3f6;padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor">
+                    <a style="color:inherit"  data-bs-toggle="collapse" href="#collapseTaskLst" role="button" aria-expanded="false" aria-controls="collapseTaskLst">
+                     Tasks <span style="font-size: medium;">(Brief summary of all tasks)</span></a></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-tasksSummary" role="button" 
+                    aria-controls="pnl-tasksSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;">
+              <div class="collapse code-collapse collapse show" id="pnl-projectSummary">
+                 <!-- Header -->
+    <div class="card-header">
+      <div class="row justify-content-between align-items-center flex-grow-1">
+        <div class="col-md">
+          <div class="d-flex justify-content-between align-items-center"> 
+            <!-- Datatable Info -->
+            <div id="datatableCounterInfo" style="display: none;">
+              <div class="d-flex align-items-center">
+                <span class="fs-6 me-3">
+                  <span id="datatableCounter">0</span>
+                  Selected
+                </span>
+                <a class="btn btn-outline-danger btn-sm" href="javascript:;">
+                  <i class="tio-delete-outlined"></i> Delete
+                </a>
+              </div>
+            </div>
+            <!-- End Datatable Info -->
+          </div>
+        </div>
+        <!-- End Col -->
+        <div class="col-auto">
+          <!-- Filter -->
+          <div class="row align-items-sm-center">
+            <div class="col-sm-auto">
+              <div class="row align-items-center gx-0">
+                <div class="col">
+                  <span class="text-secondary me-2">Approval Status:</span>
+                </div>
+                <!-- End Col -->
+
+                <div class="col-auto">
+                  <!-- Select -->
+                  <div class="tom-select-custom tom-select-custom-end">
+                    <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="3" data-target-table="datatable_Task" autocomplete="off" data-hs-tom-select-options='{
+                              "searchInDropdown": false,
+                              "hideSearch": true,
+                              "dropdownWidth": "10rem"
+                            }'>
+                      <option value="null" selected>All</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Provisional Approval">Provisional Approval</option>
+                      <option value="Not Approved">Not Approved</option>
+                    </select>
+                  </div>
+                  <!-- End Select -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Col -->
+
+            <div class="col-sm-auto">
+              <div class="row align-items-center gx-0">
+                <div class="col">
+                  <span class="text-secondary me-2">Priority :</span>
+                </div>
+                <!-- End Col -->
+
+                <div class="col-auto">
+                  <!-- Select -->
+                  <div class="tom-select-custom tom-select-custom-end">
+                    <select class="js-select js-datatable-filter form-select form-select-sm form-select-borderless" data-target-column-index="2" data-target-table="datatable_Task" autocomplete="off" data-hs-tom-select-options='{
+                              "searchInDropdown": false,
+                              "hideSearch": true,
+                              "dropdownWidth": "10rem"
+                            }'>
+                      <option value="null" selected>All</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                  <!-- End Select -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Col -->
+
+            <div class="col-md">
+              <form>
+                <!-- Search -->
+                <div class="input-group input-group-merge input-group-flush">
+                  <div class="input-group-prepend input-group-text">
+                    <i class="bi-search"></i>
+                  </div>
+                  <input id="datatableSearch_Task" type="search" class="form-control" placeholder="Search" aria-label="Search">
+                </div>
+                <!-- End Search -->
+              </form>
+            </div> 
+
+            <div class="col-auto">
+             
+            </div>
+          </div>
+          <!-- End Filter -->
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Header -->
+
+    <!-- Table -->
+    <div class="table-responsive datatable-custom">
+      <table id="datatable_Task" class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table" data-hs-datatables-options='{
+               "columnDefs": [{
+                  "targets": [0],
+                  "orderable": false
+                }],
+               "order": [],
+               "info": {
+                 "totalQty": "#datatableWithPaginationInfoTotalQty_Task"
+               },
+               "search": "#datatableSearch_Task",
+               "entries": "#datatableEntries_Task",
+               "pageLength": 5,
+               "isResponsive": false,
+               "isShowPaging": false,
+               "pagination": "datatablePagination_Task"
+             }'>
+        <thead class="thead-light">
+          <tr>
+            <th></th>
+            <th>Task ID</th>                         
+            <th>Priority</th>
+            <th>Approval Status</th>
+            <th>Originator</th>
+            <th>Assignee</th>
+            <th>Approver</th>           
+            <th>Task Function</th>
+            <th>Task Type</th>
+            <th>Completion Status</th>
+            <th>End Date</th>
+          </tr>
+        </thead>  
+        <tbody class="list" id="project-list-table-body">
+          {% for key, val in taskLst.items  %}             
+            <tr class="position-static">
+              <td >
+                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="{{val.Upcoming}}" data-feather="calendar"></span></span>
+                <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="{{val.Task}}"  data-feather="flag"></span></span>
+                <span class="nav-link-icon"  data-toggle="tooltip" title="Activity"><span  class="{{val.Activity}}"  data-feather="activity"></span></span>
+              </td>
+              <td >
+                
+                <a class="text-decoration-none fw-bold fs-0" href="#!" onclick="redirectTasks('{{val.Task_ID}}','{{val.U_Role}}')" >{{val.Task_ID}}</a>
+              </td>            
+              <td>
+                
+                {%if val.Task_Priority_Label == "High" %}
+                  <h5><span class="badge bg-soft-danger text-danger">High</span></h5>
+                {%elif val.Task_Priority_Label == "Medium" %}
+                    <h5><span class="badge badge-soft-warning text-warning">Medium</span></h5>
+                {%elif val.Task_Priority_Label == "Low" %}
+                    <h5><span class="badge badge-soft-success text-success">Low</span></h5>
+                {% endif %}
+              </td>
+              <td>
+                {{val.Task_ApprovalStatus_Label}} 
+              </td>
+              <td style="text-wrap: wrap;">                      
+                {{val.originators}}</a>
+              </td>
+              <td style="text-wrap: wrap;">                      
+                {{val.Assignees}}</a>
+              </td>
+              <td style="text-wrap: wrap;">                      
+                {{val.Approvers}}</a>
+              </td>
+              <td >
+                {{val.Task_Function_Label}}
+              </td>
+              <td>
+               {{val.Task_Type_label}}
+              </td>
+              <td> 
+              {{val.Completion_Status}}
+              </td>
+              <td>                                
+               {{val.end_dt}}
+              </td> 
+            </tr>
+          {% endfor %}   
+        </tbody>
+      </table>
+    </div>
+    <!-- End Table -->
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <!-- Pagination -->
+      <div class="row justify-content-center justify-content-sm-between align-items-sm-center">
+        <div class="col-sm mb-2 mb-sm-0">
+          <div class="d-flex justify-content-center justify-content-sm-start align-items-center">
+            <span class="me-2">Showing:</span>
+
+            <!-- Select -->
+            <div class="tom-select-custom">
+              <select id="datatableEntries_Task" class="js-select form-select form-select-borderless w-auto" autocomplete="off" data-hs-tom-select-options='{
+                        "searchInDropdown": false,
+                        "hideSearch": true
+                      }'>
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50" >50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            <!-- End Select -->
+
+            <span class="text-secondary me-2">of</span>
+
+            <!-- Pagination Quantity -->
+            <span id="datatableWithPaginationInfoTotalQty_Task"></span>
+          </div>
+        </div>
+        <!-- End Col -->
+
+        <div class="col-sm-auto">
+          <div class="d-flex justify-content-center justify-content-sm-end">
+            <!-- Pagination -->
+            <nav id="datatablePagination_Task" aria-label="Activity pagination"></nav>
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Pagination -->
+    </div>
+    <!-- End Footer -->
+              </div>
+          </div> 
+              </div>  
+        </div>
+      </div>
+    </div>  
+    <div  id="divAudit"  class="row">
+      <div class="col-12">
+        <div class="mx-n4 px-4 mx-lg-n6 bg-white pt-6 bord
+        er-top border-300" style="padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;">
+          <div class="collapse card shadow-none border border-300 my-4" id="collapseAudit"  style="padding:0px" style="margin-top: 0.0rem !important;" data-component-card="data-component-card">
+            <div class="card-header p-4 border-bottom border-300 bg-soft" style="background-color: #f2f3f6;padding-top: 5px !important;padding-bottom: 5px !important;">
+              <div class="row g-3 justify-content-between align-items-center">
+                <div class="col-2 col-md">
+                  <h4 data-anchor="data-anchor">
+                    <a style="color:inherit"  data-bs-toggle="collapse" href="#collapseAudit" role="button" aria-expanded="false" aria-controls="collapseAudit">
+                     Audit Trail <span style="font-size: medium;">(Latest activities)</span></a></h4>
+                 </div>
+                 
+                <div class="col col-md-auto">
+                  <nav class="nav nav-underline justify-content-end doc-tab-nav align-items-center" role="tablist">
+                   
+                    <a class="btn btn-sm btn-phoenix-primary code-btn ms-2"  style="width: 5px;border: none;" data-bs-toggle="collapse" href="#pnl-auditSummary" role="button" 
+                    aria-controls="pnl-auditSummary" aria-expanded="false"> <span class="me-2" data-feather="plus-square"></span> </a>
+                    <a class="btn btn-sm btn-phoenix-primary preview-btn ms-2" style="width: 5px;border: none;"><span class="me-2" data-feather="minus-square"></span></a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding-bottom: 0px;" >
+              <div class="collapse code-collapse collapse show" id="pnl-auditSummary">
+                <div class="timeline-vertical timeline-with-details">
+                  {% for activity in activity_lst %}
+                  <ul class="step">
+                    <!-- Step Item -->
+                    <li class="step-item">
+                      <div class="step-content-wrapper">
+                        <span class="step-icon step-icon-pseudo step-icon-soft-dark"></span>
+                      
+                        <div class="step-content">
+                          <h5 class="step-title">   
+                            <a class="text-dark" href="#" style="pointer:default"  onclick="viewAll('{{ activity.refference_id }}','{{activity.activity_details}}')" >{{activity.activity_trigger}}/{{activity.activity_details}}</a>
+                          </h5>
+
+                          <p class="fs-5 mb-1">{{activity.user}} <a class="text-uppercase" href="#"><i class="bi-journal-bookmark-fill"></i></a><span class="badge bg-soft-success text-success rounded-pill"><span class="legend-indicator bg-success"></span></span></p>
+
+                          <span class="text-muted small text-uppercase">{{activity.date}}  {{activity.time}}</span>
+                        </div>
+                      </div>
+                    </li>
+                    <!-- Step Item -->
+                    
+                  </ul>
+                  {% endfor %}
+
+                </div>
+              </div>
+            </div>
+            <!---->
+              </div>  
+        </div>
+      </div>
+    </div> 
+   
+  <!-- </div> -->
+
+  <div class="modal fade" id="divActivityDetails" tabindex="-1" aria-labelledby="divActivityDetails" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scrollingLongModalLabel2">Activity Details</h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+        </div>
+        <div class="modal-body p-5 px-md-6">
+          <p id="txtActivityDetails"></p>
+          <input type="hidden" id="hdnactivityid"/>
+        </div>
+        <div class="modal-footer"> 
+          <button class="btn btn-outline-primary" type="button" onclick="viewAll()">View All</button>
+          <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="divDocs" tabindex="-1" aria-labelledby="divDocs" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable"> 
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scrollingLongModalLabel2">Model Documents</h5>
+          <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1"></span></button>
+        </div>
+        <div class="modal-body p-5 px-md-6">
+      <div class="row form-group"> 
+    <div class="table-responsive table--no-card m-b-40"> 
+        <table id="tbldocs" class="table table-borderless table-striped table-earning">
+            <thead>
+                <tr> 
+                    <th style="padding: 10px 0px 10px 10px;">Document Type</th> 
+                    <th style="padding: 10px 0px 10px 10px;">Document Name</th>  
+                </tr>
+            </thead>  
+            <tbody>
+               
+                {% for key, data in modelDocs.items %} 
+                    <tr> 
+                            <td>
+                                <div style="display: flex;">
+                                    <div style="margin-right: 10px;">{{data.Mdl_Doc_Type}}</div>   
+                                    <!-- <div class="blob" id="div_{{data.docIdx}}" title="View Comments" onclick="showdocCom(this.id,'{{data.docref}}')"></div> -->
+                                </div>
+                            </td>     
+                        <td><a href="\static\document_files\{{selectedMdl}}\{{data.Mdl_Doc_Name}}"  target="_blank">{{data.Mdl_Doc_Name}}</a></td>                                                                                             
+                          
+                    </tr> 
+                {% endfor %} 
+            </tbody>
+           </table>
+    </div>
+</div>
+</div>
+<div class="modal-footer"> 
+<button class="btn btn-outline-primary" type="button" id="btnOk"  data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div> 
+
+  {% endblock content %}
+  {% block script %} 
+  <script src="{% static 'Front/dist/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery/dist/jquery.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/jquery-migrate/dist/jquery-migrate.min.js' %}"></script>  
+   
+  <script src="{% static 'Front/dist/assets/vendor/chart.js/dist/Chart.min.js' %}"></script> 
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js' %}"></script>
+  <script src="{% static 'Front/dist/assets/vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script> 
+  
+ 
+  
+  <script src="{% static 'Front/dist/assets/vendor/datatables.net.extensions/select/select.min.js' %}"></script> 
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'Front/dist/assets/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/js/theme.min.js' %}"></script> 
+ <script src="{% static 'Front/dist/assets/vendor/hs-table-sticky-header/src/hs.table-sticky-header.js' %}"></script>
+
+<script>
+  $(document).on('ready', function () {  
+      var pt='{{showOverdueModal|safe}}'
+      if(pt==1){
+       showModalps()
+      } 
+    // INITIALIZATION OF STICKY HEADER
+    
+
+    // INITIALIZATION OF STICKY HEADER
+    // =======================================================
+    new HSTableStickyHeader('.js-sticky-header', {
+      offsetTop: "60px"
+    }).init();
+  })();
+</script>
+<!--<script src="{% static 'Front/dist/assets/js/hs.theme-appearance-charts.js' %}"></script> -->
+  <script type='text/javascript' > 
+    var mdlType=[] 
+    console.log( "ready!" );
+    showpanes() 
+   
+    //charttest();
+     // Executes when the HTML document is loaded and the DOM is ready
+    var riskcnt= {{mdlRiskCnt|safe}};
+   
+    var modeltypes={{modeltypes|safe}}; 
+     
+    var mdlSrc={{srcCnt|safe}}; 
+    
+    var riskcntarr=[]
+    var riskcolor=[]
+    shoenewchart(riskcnt)
+    function showpanes(){ 
+      let element = document.querySelector('#collapseModelDiv'); 
+          let bsCollapse = bootstrap.Collapse.getInstance(element); 
+          if (bsCollapse === null) {
+              bsCollapse = new bootstrap.Collapse(element, {
+                  toggle: false   // this parameter is important!
+              })
+          }
+        if (localStorage.getItem('chkmodelprogress')=='checked') {          
+          bsCollapse.show(); 
+          $('#divBtnMdlProgress').show();
+          $('#divmodelProgress').show();
+          $('#chkmodelprogress').prop('checked',true)
+        } else {           
+          bsCollapse.hide();
+          $('#divmodelProgress').hide();
+          $('#divBtnMdlProgress').hide();
+          $('#chkmodelprogress').prop('checked',false)
+        }  
+
+       
+ 
+
+        let collapseTaskList = document.querySelector('#collapseTaskLst'); 
+        let bscollapseTaskList = bootstrap.Collapse.getInstance(collapseTaskList); 
+        if (bscollapseTaskList === null) {
+          bscollapseTaskList = new bootstrap.Collapse(collapseTaskList, {
+                toggle: false   // this parameter is important!
+            })
+        }
+        if (localStorage.getItem('chktasks')=='checked') { 
+          $('#divBtnTasks').show()
+          $('#divTasks').show() 
+          bscollapseTaskList.show(); 
+          $('#chktasks').prop('checked',true)
+        } else {  
+          $('#divTasks').hide()      
+          $('#divBtnTasks').hide()    
+          bscollapseTaskList.hide();
+          $('#chktasks').prop('checked',false)
+        }  
+        
+        
+
+        let collapseAudit = document.querySelector('#collapseAudit'); 
+        let bscollapseAudit = bootstrap.Collapse.getInstance(collapseAudit); 
+        if (bscollapseAudit === null) {
+          bscollapseAudit = new bootstrap.Collapse(collapseAudit, {
+                toggle: false   // this parameter is important!
+            })
+        }
+        if (localStorage.getItem('chkactivity')=='checked') {   
+          $('#divBtnAudit').show()
+          $('#divAudit').show()   
+          bscollapseAudit.show();
+          $('#chkactivity').prop('checked',true)
+        } else {          
+          $('#divAudit').hide()  
+          $('#divBtnAudit').hide()  
+          bscollapseAudit.hide();
+          $('#chkactivity').prop('checked',false)
+        }  
+
+        
+        let collapseValFindings = document.querySelector('#collapseValFindings'); 
+        let bscollapseValFindings = bootstrap.Collapse.getInstance(collapseValFindings); 
+        if (bscollapseValFindings === null) {
+          bscollapseValFindings = new bootstrap.Collapse(collapseValFindings, {
+                toggle: false   // this parameter is important!
+            })
+        }
+        if (localStorage.getItem('chkvalfindngs')=='checked') {      
+           bscollapseValFindings.show(); 
+          $("#divValfindings").show()
+          $("#divBtnValfindings").show()
+          $('#chkvalfindngs').prop('checked',true)
+        } else {           
+           bscollapseValFindings.hide();
+          $("#divValfindings").hide()
+          $("#divBtnValfindings").hide()
+          $('#chkvalfindngs').prop('checked',false)
+        }  
+        
+        let collapseExample = document.querySelector('#collapseExample'); 
+        let bscollapseExample= bootstrap.Collapse.getInstance(collapseExample); 
+        if (bscollapseExample === null) {
+          bscollapseExample = new bootstrap.Collapse(collapseExample, {
+                toggle: false   // this parameter is important!
+            })
+        }
+        if (localStorage.getItem('chkissuests')=='checked') {   
+             
+          $("#divBtnIssueSts").show(); 
+          $("#divIssuestatus").show(); 
+          bscollapseExample.show()
+          $('#chkissuests').prop('checked',true)
+        } else {     
+          $("#divBtnIssueSts").hide();       
+          $("#divIssuestatus").hide(); 
+          bscollapseExample.hide()
+          $('#chkissuests').prop('checked',false)
+        }  
+         
+    }
+
+    function savepanes(){          
+        if ($('#chkmodelprogress').prop('checked')) {           
+            localStorage.setItem('chkmodelprogress', 'checked');
+        } else {
+            localStorage.setItem('chkmodelprogress', 'unchecked');
+        }  
+
+      
+        if ($('#chkvalfindngs').prop('checked')) { 
+            localStorage.setItem('chkvalfindngs', 'checked');
+        } else {
+          localStorage.setItem('chkvalfindngs','unchecked');
+        } 
+
+        if ($('#chkissuests').prop('checked')) { 
+            localStorage.setItem('chkissuests', 'checked');
+        } else {
+          localStorage.setItem('chkissuests','unchecked');
+        } 
+
+       
+
+        if ($('#chktasks').prop('checked')) {
+          localStorage.setItem('chktasks', 'checked');
+        } else {
+          localStorage.setItem('chktasks', 'unchecked');
+        } 
+
+        if ($('#chkactivity').prop('checked')) {
+          localStorage.setItem('chkactivity', 'checked');
+        } else {
+          localStorage.setItem('chkactivity', 'unchecked');
+        } 
+  
+        showpanes();
+    }
+
+    function showDetails()
+    {
+      window.location='{{projectsDetails}}'
+    }
+    function showModala(id){
+      $('#lblpublishDate').text('')
+      $('#lblDept').text('');
+      $('#lblFunc').text('');
+      $('#lblRegDate').text('');
+      $('#lblMdlId').text('');
+      $('#lblPrmNm').text('');
+      $('#lblSecNm').text('');
+      $('#lblMdlSrc').text('');
+      $('#lblMdlType').text('');
+      $('#lblMdlAbsct').text('');
+      $('#lblMdlObj').text('');
+      $('#lblApplMdl').text('');
+      $('#lblMdlRiskAnlz').text('');
+      $('#lblPrdAddr').text('');
+      $('#lblSsageFreq').text('');
+      //risk tab starts
+      $('#lblMdlRisk').text('');
+      $('#lblIntrRisk').text('');
+      $('#lblReliance').text('');
+      $('#lblMateriality').text('');
+      $('#lblRiskMiti').text('');
+      $('#lblFairLendg').text('');
+      $('#lblDevlopers').text('');
+      $('#lblUsers').text('');
+      $('#lblPrdnSupp').text('');
+      
+      //relevant users ends
+      //dependencies starts
+      $('#lblupstr').text('');
+      $('#lbldwstr').text('');
+      $('#lblApproach').text('');
+                $('#lblMonFreq').text('');
+                $('#lblMonMtrc').text('');
+                $('#lblTriggerEve').text('');
+                $('#lblLastTgrDt').text('');
+                $('#lblMitgDt').text('');
+                $('#lblMitiEv').text(''); 
+      $.ajax({
+            url: '/getMdlDetailsById/', 
+            data:{ mdlId: id},
+           dataType: 'json',   
+            success: function (data) { 
+               if(data.istaken=='true'){
+               // $('#tblMaster tr:last').after('<tr><td>'+$("#txtopt").val()+'</td><td>'+$("#txtdesc").val()+'</td></tr>');
+               $('#projectsCardViewModal').modal('toggle');
+               //console.log(data.mdldata[0].Mdl_Src_Label,',' +' id is '+data.mdldata.Mdl_Id)
+                            
+               if(data.isvrpublished!='no'){
+                $('#lblpublishDate').text(data.isvrpublished);
+               $("#hrefReport").attr("href", "/static/media/ValidationReport_"+id+".pdf")
+               $('#lblVRReportlink').text("ValidationReport_"+id+".pdf");
+               $("#trpubldate").show();
+                $("#trrptlink").show();
+               }
+               else  {
+                $("#trpubldate").hide();
+                $("#trrptlink").hide();
+               }
+               $('#lblDept').text(data.mdldata[0].Dept_Label);
+               $('#lblFunc').text(data.mdldata[0].Mdl_Fncn_Label);
+               $('#lblRegDate').text(data.mdldata[0].regdate);
+               $('#lblMdlId').text(data.mdldata[0].Mdl_Id);
+               $('#lblPrmNm').text(data.mdldata[0].Prm_Name);
+               $('#lblSecNm').text(data.mdldata[0].Sec_Name);
+               $('#lblMdlSrc').text(data.mdldata[0].Mdl_Src_Label);
+               $('#lblMdlType').text(data.mdldata[0].Mdl_Type_Label);
+               $('#lblMdlAbsct').text(data.mdldata[0].Mdl_Absct);
+               $('#lblMdlObj').text(data.mdldata[0].Mdl_objective);
+               $('#lblApplMdl').text(data.mdldata[0].Mdl_Appl);
+               $('#lblMdlRiskAnlz').text(data.mdldata[0].Mdl_Risk_Ansl);
+               $('#lblPrdAddr').text(data.mdldata[0].Prd_Addr_Label);
+               $('#lblSsageFreq').text(data.mdldata[0].Mdl_Use_Freq_Label);
+               //risk tab starts
+               $('#lblMdlRisk').text(data.mdldata[0].Mdl_Risk_Label);
+               $('#lblIntrRisk').text(data.mdldata[0].Intrinsic_Label);
+               $('#lblReliance').text(data.mdldata[0].Reliance_Label);
+               $('#lblMateriality').text(data.mdldata[0].Materiality_Label);
+               $('#lblRiskMiti').text(data.mdldata[0].Risk_Mtgn);
+               $('#lblFairLendg').text(data.mdldata[0].Fair_Lndg);
+               
+               
+               $('#lblOwner').text('');
+               $('#lblDevlopers').text('');
+               $('#lblUsers').text('');
+               $('#lblPrdnSupp').text('');
+
+               $('#lblOwner').text(data.Owner);
+               $('#lblDevlopers').text(data.Developer);
+               $('#lblUsers').text(data.User);
+               $('#lblPrdnSupp').text(data.PrdnSupport);
+               
+               //relevant users ends
+               //dependencies starts
+               $('#lblupstr').text('');
+               $('#lbldwstr').text('');
+               if(Object.keys(data.dependencies).length>0){
+                $('#lblupstr').text(data.dependencies[0].Mdl_Dwstream_Label);
+                $('#lbldwstr').text(data.dependencies[0].Mdl_Upstream_Label);
+               }
+               //dependencies ends
+
+               //perfomance monitoring start
+               $('#lblApproach').text('');
+                $('#lblMonFreq').text('');
+                $('#lblMonMtrc').text('');
+                $('#lblTriggerEve').text('');
+                $('#lblLastTgrDt').text('');
+                $('#lblMitgDt').text('');
+                $('#lblMitiEv').text(''); 
+               if(Object.keys(data.PerformMon).length>0){
+                $('#lblApproach').text(data.PerformMon[0].Approach);
+                $('#lblMonFreq').text(data.PerformMon[0].Mdl_Montr_Freq_Label);
+                $('#lblMonMtrc').text(data.PerformMon[0].Monr_Mtrcs);
+                $('#lblTriggerEve').text(data.PerformMon[0].Tgr_Evt);
+                $('#lblLastTgrDt').text(data.PerformMon[0].Lst_Tgr_Dt);
+                $('#lblMitgDt').text(data.PerformMon[0].Lst_Tgr_Mtgn_Dt);
+                $('#lblMitiEv').text(data.PerformMon[0].Tgr_Evt_Mtgn); 
+               }
+               //perfomance monitoring ends
+
+               }
+               else
+               {
+                 
+               }
+            }
+        });
+      
+    }
+   
+
+    function redirectTasks(id,role){ 
+      $.ajax({
+          url: '/checkUserRole/', 
+          data:{mdl_id:id},
+          dataType: 'json',   
+          success: function (data) { 
+              console.log(data)
+              if(data.role=="Assignee")
+                  window.location= "/task_assignee?id="+id;                                   
+              else if(data.role=="Approver"){
+                  document.location.href = "/task_approver?id=" +id;
+              }
+              else if(data.role=="Originator"){
+                  document.location.href = "/edit_task/" +id;
+              }
+              else{
+                  document.location.href = "/task_approver_data?id=" +id;
+              }
+              
+              
+          }
+      });  
+    }
+
+    function redirectIssues(id,role){
+      $.ajax({
+                        url: '/checkUserRole_Issue/', 
+                        data:{mdl_id:id},
+                        dataType: 'json',   
+                        success: function (data) { 
+                            console.log(data)
+                            if(data.role=="Assignee")
+                                window.location= "/issue_assignee?id="+id;                                   
+                            else if(data.role=="Approver"){
+                                document.location.href = "/issue_approver?id=" +id;
+                            }
+                            else if(data.role=="Originator"){
+                                document.location.href = "/edit_issue/" +id;
+                            }
+                            else{
+                                document.location.href = "/issue_approver_data?id=" +id;
+                            }
+                            
+                        }
+                    }); 
+    }
+
+    function activitytrail(refference_id,activityDetails){
+      $('#txtActivityDetails').text(activityDetails)
+      $('#hdnactivityid').val(refference_id);
+$("#divActivityDetails").modal('toggle')
+//document.location.href = "/activitytrail?selectSection=" +refference_id;
+
+}
+
+function viewAll(id)
+{
+  $('#hdnactivityid').val(id);
+  document.location.href = "/activitytrail?selectSection=" + $('#hdnactivityid').val();
+}
+
+function showDocs(id){
+  $('#tbldocs').find('tbody').empty(); 
+    $.ajax({
+      url: '/getMdlDocs/', 
+      data:{ mdl_id: id},
+      dataType: 'json',   
+      success: function (data) { 
+        $.each(data.docs, function(key, val) {  
+          myRow='<tr> <td><div style="display: flex;"> <div style="margin-right: 10px;">'+val.Mdl_Doc_Type+'</div> </div> </td>  <td><a href="\\static\\document_files\\'+data.mdl_id+'\\'+val.Mdl_Doc_Name +'"  target="_blank">'+val.Mdl_Doc_Name +'</a></td>  </tr> '
+          $('#tbldocs').find('tbody').append(myRow);
+        });
+      $("#divDocs").modal('toggle')
+      }
+    });
+    }
+    var paramIntervalVal='Monthly';
+    function OptionSelected(){ 
+      paramIntervalVal =$('input[name="rbInterval"]:checked').val()
+      var stackprioritydata=[];
+      var chartlbl=[];
+      $.ajax({
+        url: '/getIssuesByQtrOrMonth/', 
+        data:{'ptype':paramIntervalVal,'frdate':$('#txtDtFrom').val(),'todt':$('#txtDtTo').val(),'sts':$('#ddlIssueSts').val()},
+        dataType: 'json',   
+        success: function (data) {    
+        if(data.issuePriority.length>0){
+            stackprioritydata=data.issuePriority;
+          chartlbl=data.chartSeries;
+          $('#issueSTacked').show()
+          console.log(chartlbl,stackprioritydata)
+          let chartStatus = Chart.getChart("stackedChartID"); // <canvas> id
+          if (chartStatus != undefined) {
+            chartStatus.destroy();
+          }
+//
+          const canvasFiltred = document.getElementById('stackedChartID');
+          const ctxFiltred = canvasFiltred.getContext('2d');
+          const chartFiltred = new Chart(ctxFiltred, {
+            type: 'bar', 
+                      data: { 
+                          labels: chartlbl, 
+                          datasets: [{ 
+                              label: 'High',       
+                              backgroundColor: "#dc3545", 
+                              data: stackprioritydata[0], 
+                          }, { 
+                              label:  'Medium',    
+                              backgroundColor: "#ffc107", 
+                              data: stackprioritydata[1], 
+                          }, { 
+                              label:    'Low',
+                              backgroundColor: "#198754", 
+                              data: stackprioritydata[2]
+                          }], 
+                      },  
+            
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+                        scales: { 
+                              x: { 
+                                  stacked: true, 
+                              }, 
+                              y: { 
+                                  stacked: true 
+                              } 
+                          } 
+            }
+          });
+
+              // Make sure to attach `onclick` to the canvas, **not** the chart instance
+              canvasFiltred.onclick = (evt) => {
+                  const resFiltred = chartFiltred.getElementsAtEventForMode(
+                    evt,
+                    'nearest',
+                    { intersect: true },
+                    true
+                  );
+                  // If didn't click on a bar, `res` will be an empty array
+                  if (resFiltred.length === 0) {
+                    return;
+                  }
+                  // Alerts "You clicked on A" if you click the "A" chart 
+                  console.log("ty=" +'Qtr'+"&colnm="+ chartFiltred.data.labels[resFiltred[0].index]+"&chartnm="+chartFiltred.data.datasets[resFiltred[0].datasetIndex].label)
+                  document.location.href = "/issueLst?ty=" +paramIntervalVal+"&colnm="+ chartFiltred.data.labels[resFiltred[0].index]+"&chartnm="+chartFiltred.data.datasets[resFiltred[0].datasetIndex].label;
+                }; 
+        }  
+        else {
+          stackprioritydata=[[''],[''],['']];
+          chartlbl=['','',''];
+          //$('#issueSTacked').hide();
+          $("#divFilterPopup").modal('toggle');
+          alert('No data.')
+         // return;
+        }         
+       
+       
+        $("#divFilterPopup").modal('toggle')
+        }
+    });
+  }
+
+  function updateChart(chart, userOptions, getDefaultOptions) {
+      const themeController = document.body;
+      // Merge user options with lodash
+      const { merge } = window._;
+      chart.setOption(merge(getDefaultOptions(), userOptions));
+      
+      themeController.addEventListener(
+        'clickControl',
+        ({ detail: { control } }) => {
+          if (control === 'phoenixTheme') {
+            chart.setOption(window._.merge(getDefaultOptions(), userOptions));
+          }
+        }
+      );
+
+      chart.on('click', params => {  
+        //console.log(params.seriesType + ',' + params.seriesName + ','+params.name)
+      
+
+        // Construct the full URL with "id"
+        document.location.href = "/issueLst?ty=" +paramIntervalVal+"&colnm="+params.name+"&chartnm="+params.seriesName;
+      })
+  }
+// -------------------end config.js--------------------
+
+
+
+function MetricTypeSelected(optn){ 
+      //var v1=$('radio[name="rbInterval"]').val();  
+      //console.log('Before call to API',paramIntervalVal,',',$('#txtDtFrom').val(),',',$('#txtDtTo').val())
+      $('#project-list-table-body-model').empty();
+      $.ajax({
+        url: '/getModelListByUSerid/', 
+        data:{'optntype':optn},
+        dataType: 'json',   
+        success: function (data) {  
+          console.log('ModelListFiltered data ',data.modelinfo);
+          strRows='';
+            $.each(data.modelinfo, function(i, item) {
+              console.log(item)
+              strRows +=' <tr class="position-static"> ';
+              strRows +='         <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4"> ';
+              //strRows +='             <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><span  class="'+item["Upcoming"]+'" data-feather="calendar"></span></span> ';
+
+              strRows+='<span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Upcoming"><svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>';
+              strRows+='<span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag '+item["mdl_perf"]+'"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></span>';
+
+              //strRows +='             <span class="nav-link-icon" style="padding-right: 5px;" data-toggle="tooltip" title="Task"><span  class="'+item["mdl_perf"]+'"  data-feather="flag"></span></span> ';
+              strRows +='             <img src="\\static\\images\\documents.png"  title="Documents" style="cursor:pointer;" onclick="showDocs('+item["Mdl_Id"]+')"/> ';
+              strRows +='           </td> ';
+              strRows +='           <td class="align-middle time white-space-nowrap ps-0 Model_ID py-4"> ';
+              strRows +='             <a class="text-decoration-none fw-bold fs-0" href="#" onclick="showModala('+item["Mdl_Id"]+')" >'+item["Mdl_Id"]+'</a> ';
+              strRows +=' </td> ';
+              strRows +=' <td class="align-middle white-space-nowrap Process_Name ps-3 py-4"> '+item["Prm_Name"] 
+              strRows +='  </td> ';
+              strRows +='  <td class="align-middle white-space-nowrap Type ps-3 py-4"> '+item["Mdl_Src_Label"] 
+              strRows +='  </td> ';
+              strRows +=' <td class="align-middle white-space-nowrap Area ps-3 py-4">'+item["Mdl_Type_Label"]            
+              strRows +='  </td> ';
+              strRows +='  <td class="align-middle white-space-nowrap Internal_Vendor ps-3 py-4"> ';
+              if (item["Mdl_Risk_Label"] == "High" )
+              strRows +='      <h5><span class="badge badge-phoenix badge-phoenix-danger">High</span></h5> ';
+              else if (item["Mdl_Risk_Label"] == "Medium")
+              strRows +='       <h5><span class="badge badge-phoenix badge-phoenix-warning">Medium</span></h5> ';
+              else if( item["Mdl_Risk_Label"] == "Low" )
+              strRows +='       <h5><span class="badge badge-phoenix badge-phoenix-success">Low</span></h5> ';
+              strRows +='  </td> ';
+              strRows +='                 </tr> ';
+              $('#project-list-table tbody').append(strRows);
+              strRows='';
+            });
+            $("#divFilterMetricPopup").modal('toggle')
+          }
+      });
+}
+
+function shoenewchart(riskcnt){ 
+ 
+      var modeltypes={{modeltypes|safe}}; 
+      console.log("modeltypes",modeltypes)
+      var modelcategory={{mdl_cat|safe}}; 
+      console.log("modelcategory",modelcategory)
+      mdlType=[]        
+    crtcolor=[]
+    crtlbl=[]
+    arrarrvalrating=[]
+    mdlcat=[]
+    mdlcatcrtcolor=[]
+    mdlcatcrtlbl=[]
+    mdlcatcrtlblid=[]
+    $.each(modeltypes, function(i, obj) { 
+      mdlType.push(obj.cnt);
+      crtcolor.push(obj.color);
+      crtlbl.push(obj.Mdl_Type_Label)
+    });
+    console.log("crtlbl",crtlbl),
+    console.log("mdlType",mdlType)
+    console.log("mdlcat",mdlcat)
+    console.log("mdlcatcrtlbl",mdlcatcrtlbl)
+    console.log("riskcntarr",riskcntarr)
+    $.each(modelcategory, function(i, obj) { 
+      mdlcat.push(obj.cnt);
+      mdlcatcrtcolor.push(obj.color);
+      mdlcatcrtlbl.push(obj.Mdl_Type_Label)
+      mdlcatcrtlblid.push(obj.Mdl_Category)
+    });
+
+
+    $.each(riskcnt, function(i, obj) {  
+      riskcntarr.push(obj.value); 
+      riskcolor.push(obj.itemStyle.color);
+    });
+    var arrvalrating={{arrvalrating|safe}};
+    $.each(arrvalrating, function(i, obj) { 
+      arrarrvalrating.push(obj.value); 
+    });
+     
+      let chartmdltype = Chart.getChart("chartId");
+    if (chartmdltype != undefined) {
+        chartmdltype.destroy();
+    }
+
+    var chrt = document.getElementById("chartId").getContext("2d");
+    var chartId = new Chart(chrt, {
+        type: 'doughnut',
+        data: {
+            labels: crtlbl,
+            datasets: [{ 
+                data: mdlType,
+                backgroundColor: crtcolor,
+                hoverOffset: 5
+            }],
+        },
+        options: {
+            responsive: false,
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: false,
+                    text: 'Model Type'
+                },
+                datalabels: {
+                    color: '#fff',   // white text
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    formatter: function(value, ctx) {
+                    return value;           // show raw value
+                    }
+                }
+            },
+            animation: {
+                onComplete: function() {
+                    var canvas = document.getElementById("chartId");
+                    var chartImage = canvas.toDataURL("image/png");
+
+                    $.ajax({
+                        url: "/save_chart/",
+                        type: "POST",
+                        data: {
+                            "csrfmiddlewaretoken": "{{ csrf_token }}",
+                            "imageData": chartImage,
+                            "filename": "model_type_chart.png"
+                        },
+                        success: function(response) {
+                            console.log("Model Type chart saved:", response.filepath);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error saving chart:", error);
+                        }
+                    });
+                }
+            }
+        },
+        plugins: [ChartDataLabels]   // activate plugin
+    });
+ 
+      document.getElementById("chartId").onclick = function(evt){
+    var activePoints = chartId.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true)
+        console.log('activePoints ',activePoints,activePoints[0].index,crtlbl[activePoints[0].index])  
+        document.location.href = "/modelList?ty=pie&colnm="+crtlbl[activePoints[0].index]+"&chartnm=Model Risk Tier";
+   
+};
+       
+let chartmdlcat = Chart.getChart("chartmdlcat"); // <canvas> id 
+      if (chartmdlcat != undefined) {
+        chartmdlcat.destroy();
+      }
+var mdlcatchart = document.getElementById("chartmdlcat").getContext("2d");
+      var mdlcatchartId = new Chart(mdlcatchart, {
+         type: 'doughnut',
+         data: {
+            labels:mdlcatcrtlbl,
+            datasets: [{ 
+            data:mdlcat,
+            backgroundColor: mdlcatcrtcolor,
+            hoverOffset: 5
+            }],
+         },
+         options: {
+          responsive: false,
+          cutout:'60%',
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: false,
+              text: 'Model Type'
+            }
+          }
+        },
+      }); 
+      document.getElementById("chartmdlcat").onclick = function(evt){
+    var activePoints = mdlcatchartId.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true) 
+        document.location.href = "/modelList?ty=pie&colnm="+mdlcatcrtlbl[activePoints[0].index]+"&chartnm=Model Category";
+   
+}; 
+ 
+
+      datasetsbubble=[]
+      x=5
+      y=5  
+      
+
+    
+    colorarr=['#0dcaf0', '#fd7e14','#ffc107','#dc3545','#198754','#0d6efd']
+    lblarr= ['Internal', 'Legacy','Vendor']
+    $.each(mdlSrc, function(i, obj) {       
+      item = {}  
+      item['label'] =lblarr[i];
+      item['color'] = colorarr[i];
+      item['data'] =[{"x": x, "y": x, "r": obj.value}];
+      item['backgroundColor'] =colorarr[i];
+      item['borderColor'] =  "transparent";
+      item['radius'] = obj.value;
+      datasetsbubble.push(item)
+      x+=20;
+      y+=2
+    });  
+    var chrtMdlSrc = document.getElementById("chrtMdlSrc").getContext("2d");
+    var chartIdMdlSrc = new Chart(chrtMdlSrc, {
+         type: 'bubble',
+         data: {
+            labels: crtlbl,
+            datasets:  datasetsbubble,
+         },
+         options: {
+          
+         responsive: false,
+         plugins: {
+              tooltips: {
+                  callbacks: {
+                      label: (context)=> {
+                          console.log('datat is ',context) 
+                      }
+                  }
+              }
+            },
+         "scales": {
+                      "y": {
+                        "grid": {
+                          "display": false,
+                          "drawBorder": false
+                        },
+                        "ticks": {
+                          "display": false,
+                          "beginAtZero": true
+                        },
+                        "max": 500
+                      },
+                      "x": {
+                       "grid": {
+                          "display": false,
+                          "drawBorder": false
+                        },
+                        "ticks": {
+                          "display": false,
+                          "max": 100,
+                          "beginAtZero": true
+                        }
+                      }
+                    }
+          },
+          
+      });
+
+      var chrtRiskTier = document.getElementById("chrtRiskTier");
+      const ctxRiskTier  = chrtRiskTier.getContext('2d');
+      const chartIdchrtRiskTier = new Chart(ctxRiskTier, {
+          type: 'bar',
+          data: {
+              labels: ['High', 'Medium', 'Low', 'None'],
+              datasets: [{ 
+                  data: riskcntarr,
+                  backgroundColor: riskcolor,
+                  hoverOffset: 5
+              }],
+          },
+          options: {
+              responsive: true,  
+              plugins: {
+                  legend: {
+                      display: false,
+                  },
+                  datalabels: {
+                    color: '#fff',   // white text
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    formatter: function(value, ctx) {
+                    return value;           // show raw value
+                    }
+                }
+              },
+              animation: {
+                  onComplete: function() {
+                      // convert chart to Base64 PNG
+                      var canvas = document.getElementById("chrtRiskTier");
+                      var chartImage = canvas.toDataURL("image/png");
+
+                      // send AJAX to Django backend
+                      $.ajax({
+                          url: "/save_chart/",
+                          type: "POST",
+                          data: {
+                              "csrfmiddlewaretoken": "{{ csrf_token }}", // Django CSRF
+                              "imageData": chartImage,
+                              "filename": "risk_tier_chart.png" // optional: custom filename
+                          },
+                          success: function(response) {
+                              console.log("Risk Tier chart saved:", response.filepath);
+                          },
+                          error: function(xhr, status, error) {
+                              console.error("Error saving Risk Tier chart:", error);
+                          }
+                      });
+                  }
+              }
+          },
+          plugins: [ChartDataLabels]   // activate plugin
+      });
+      chrtRiskTier.onclick = (evt) => { 
+        const res = chartIdchrtRiskTier.getElementsAtEventForMode(
+    evt,
+    'nearest',
+    { intersect: true },
+    true
+  ); 
+  // If didn't click on a bar, `res` will be an empty array
+  if (res.length === 0) {
+    return;
+  } 
+  // Alerts "You clicked on A" if you click the "A" chart 
+  document.location.href = "/modelList?ty=bar&colnm="+chartIdchrtRiskTier.data.labels[res[0].index]+"&chartnm=Model Risk Tier";
+      };
+
+      var chrtValidationRating = document.getElementById("chrtValidationRating");
+      const ctxValidationRating = chrtValidationRating.getContext('2d');
+      const chartIdchrtValidationRating = new Chart(ctxValidationRating, {
+         type: 'bar',
+         data: {
+            labels:['Fail', 'Needs Improvement','Satisfactory',  'None'],
+            datasets: [{ 
+            data:arrarrvalrating,
+            backgroundColor: ['red','yellow','green','gray'],
+            hoverOffset: 5
+            }],
+         },
+         options: {
+          responsive: true,  
+          plugins: {
+            legend: {
+              display: false,
+            },
+          }
+        },
+      }); 
+
+      chrtValidationRating.onclick = (evt) => {
+        console.log('bar clicked')
+        const res = chartIdchrtValidationRating.getElementsAtEventForMode(
+    evt,
+    'nearest',
+    { intersect: true },
+    true
+  ); 
+  // If didn't click on a bar, `res` will be an empty array
+  if (res.length === 0) {
+    return;
+  }
+  // Alerts "You clicked on A" if you click the "A" chart 
+  document.location.href = "/modelList?ty=bar&colnm="+chartIdchrtValidationRating.data.labels[res[0].index]+"&chartnm=Validation Rating";
+      };
+
+      var stackprioritydata='{{issuePriority|safe}}';
+      console.log('stackprioritydata ',stackprioritydata,typeof(stackprioritydata))
+      stackprioritydata = stackprioritydata.replace(/'/g, '"') //replacing all ' with "
+      stackprioritydata = JSON.parse(stackprioritydata)
+      console.log(stackprioritydata)
+        $.each(stackprioritydata, function(i, obj) {  
+      });
+      var chartlbl=({{chartSeries|safe}});  
+      const canvas = document.getElementById('stackedChartID');
+      const ctx = canvas.getContext('2d');
+      const chart = new Chart(ctx, {
+          type: 'bar', 
+          data: { 
+              labels: chartlbl, 
+              datasets: [{ 
+                  label: 'High',       
+                  backgroundColor: "#dc3545", 
+                  data: stackprioritydata[0], 
+              }, { 
+                  label:  'Medium',    
+                  backgroundColor: "#ffc107", 
+                  data: stackprioritydata[1], 
+              }, { 
+                  label: 'Low',
+                  backgroundColor: "#198754", 
+                  data: stackprioritydata[2]
+              }], 
+          },  
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                  legend: {
+                      position: "top",
+                  }
+              },
+              scales: { 
+                  x: { stacked: true }, 
+                  y: { stacked: true } 
+              },
+              datalabels: {
+                    color: '#fff',   // white text
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    formatter: function(value, ctx) {
+                    return value;           // show raw value
+                    }
+              },
+              animation: {
+              onComplete: function() {
+                  // convert chart to Base64 PNG
+                  var canvas = document.getElementById("stackedChartID");
+                  var chartImage = canvas.toDataURL("image/png");
+                  console.log("--------------------chartImage",chartImage.substring(0, 50));
+                  // send AJAX to Django backend
+                  $.ajax({
+                      url: "/save_chart/",
+                      type: "POST",
+                      data: {
+                          "csrfmiddlewaretoken": "{{ csrf_token }}", // Django CSRF
+                          "imageData": chartImage,
+                          "filename": "stacked_issues_chart.png" // custom filename
+                      },
+                      success: function(response) {
+                          console.log("Stacked Issues chart saved:", response.filepath);
+                      },
+                      error: function(xhr, status, error) {
+                          console.error("Error saving stacked issues chart:", error);
+                      }
+                  });
+              }
+          }
+          },
+          plugins: [ChartDataLabels]   // activate plugin
+      });
+
+  // Make sure to attach `onclick` to the canvas, **not** the chart instance
+  canvas.onclick = (evt) => {
+      const res = chart.getElementsAtEventForMode(
+        evt,
+        'nearest',
+        { intersect: true },
+        true
+      );
+      // If didn't click on a bar, `res` will be an empty array
+      if (res.length === 0) {
+        return;
+      }
+      // Alerts "You clicked on A" if you click the "A" chart
+      console.log('You clicked on ' ,res, chart.data.labels[res[0].index], res[0].datasetIndex, chart.data.datasets[res[0].datasetIndex].label);
+      console.log("ty=" +'Qtr'+"&colnm="+ chart.data.labels[res[0].index]+"&chartnm="+chart.data.datasets[res[0].datasetIndex].label)
+      document.location.href = "/issueLst?ty=" +'Qtr'+"&colnm="+ chart.data.labels[res[0].index]+"&chartnm="+chart.data.datasets[res[0].datasetIndex].label;
+    }; 
+}
+  
+  </script>
+  <script> 
+
+    // INITIALIZATION OF DATATABLES
+    // =======================================================
+    HSCore.components.HSDatatables.init($('#datatable_UA'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    }); 
+
+    document.querySelectorAll('.js-datatable-filter').forEach(function (item) {
+      item.addEventListener('change',function(e) {
+        const elVal = e.target.value,
+    targetColumnIndex = e.target.getAttribute('data-target-column-index'),
+    targetTable = e.target.getAttribute('data-target-table');
+
+    HSCore.components.HSDatatables.getItem(targetTable).column(targetColumnIndex).search(elVal !== 'null' ? elVal : '').draw()
+      })
+    }) 
+    
+    HSCore.components.HSDatatables.init($('#datatable_Task'), {
+      dom: 'Bfrtip',
+        buttons: [
+          {
+            extend: 'copy',
+            className: 'd-none'
+          },
+          {
+            extend: 'excel',
+            className: 'd-none'
+          },
+          {
+            extend: 'csv',
+            className: 'd-none'
+          },
+          {
+            extend: 'pdf',
+            className: 'd-none'
+          },
+          {
+            extend: 'print',
+            className: 'd-none'
+          },
+        ],
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    }); 
+    
+
+    const datatable = HSCore.components.HSDatatables.getItem('datatable_Task')
+
+$('#export-copy').click(function() {
+  datatable.button('.buttons-copy').trigger()
+});
+
+$('#export-excel').click(function() {
+  datatable.button('.buttons-excel').trigger()
+});
+
+$('#export-csv').click(function() {
+  datatable.button('.buttons-csv').trigger()
+});
+
+$('#export-pdf').click(function() {
+  datatable.button('.buttons-pdf').trigger()
+});
+
+$('#export-print').click(function() {
+  datatable.button('.buttons-print').trigger()
+});
+    HSCore.components.HSDatatables.init($('#datatable_Issue'), {
+      select: {
+        style: 'multi',
+        selector: 'td:first-child input[type="checkbox"]',
+        classMap: {
+          checkAll: '#datatableCheckAll',
+          counter: '#datatableCounter',
+          counterInfo: '#datatableCounterInfo'
+        }
+      },
+      language: {
+        zeroRecords: `<div class="text-center p-4">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="default">
+              <img class="mb-3" src="{% static 'Front/dist/assets/svg/illustrations-light/oc-error.svg' %}" alt="Image Description" style="width: 10rem;" data-hs-theme-appearance="dark">
+            <p class="mb-0">No data to show</p>
+            </div>`
+      }
+    });
+
+    function showFindings(val,element,category){ 
+      document.location.href = "/getModelsByValFindingsPriority?valPriority=" +val+"&element_txt="+element+"&category_txt="+category;
+    }
+    
+    function gotoDetaile(id){ 
+  document.location.href = "/modelList?mdlId=" +id;
+  }
+    </script>
+  {%endblock script %}

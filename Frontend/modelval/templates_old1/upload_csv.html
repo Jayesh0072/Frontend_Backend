@@ -1,0 +1,119 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Upload and Display</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSV Data</h1>
+
+    <!-- Form for uploading a CSV file -->
+    <h2>Upload a CSV File</h2>
+    <form id="uploadForm">
+        <label for="myfile">Choose CSV file:</label>
+        <input type="file" id="myfile" accept=".csv" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <!-- Table for displaying the CSV data -->
+    <table id="csvTable" style="display:none;">
+        <thead id="tableHeader"></thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var formData = new FormData();
+            var fileInput = document.getElementById('myfile');
+            formData.append('myfile', fileInput.files[0]);
+
+            fetch('/api/csv/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('File uploaded successfully');
+                loadCsvData();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to upload file');
+            });
+        });
+
+        function loadCsvData() {
+            fetch('/api/csv/')
+            .then(response => response.json())
+            .then(data => {
+                displayCsvData(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function displayCsvData(data) {
+            var tableHeader = document.getElementById('tableHeader');
+            var tableBody = document.getElementById('tableBody');
+            var csvTable = document.getElementById('csvTable');
+
+            // Clear existing table data
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            if (data.length > 0) {
+                // Create table headers
+                var headerRow = document.createElement('tr');
+                Object.keys(data[0]).forEach(key => {
+                    var th = document.createElement('th');
+                    th.textContent = key;
+                    headerRow.appendChild(th);
+                });
+                tableHeader.appendChild(headerRow);
+
+                // Create table rows
+                data.forEach(row => {
+                    var tr = document.createElement('tr');
+                    Object.values(row).forEach(value => {
+                        var td = document.createElement('td');
+                        td.textContent = value;
+                        tr.appendChild(td);
+                    });
+                    tableBody.appendChild(tr);
+                });
+
+                csvTable.style.display = 'table';
+            } else {
+                alert('No data available');
+                csvTable.style.display = 'none';
+            }
+        }
+
+        // Load the CSV data when the page loads
+        loadCsvData();
+    </script>
+</body>
+</html>

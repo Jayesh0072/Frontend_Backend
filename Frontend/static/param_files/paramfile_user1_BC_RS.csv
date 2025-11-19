@@ -1,0 +1,7 @@
+paramName,paramValue
+n_estimators,"np.linspace(10, round(1.5*89), 5).astype(int)"
+max_samples," np.linspace(10, round(1.5*89), 5).astype(int)"
+max_features," np.linspace(10, round(1.5*89), 5).astype(int)"
+bootstrap,"[True, False]"
+bootstrap_features,"[True, False]"
+oob_score,"[True, False]"
