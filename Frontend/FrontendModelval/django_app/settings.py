@@ -91,34 +91,34 @@ ASGI_APPLICATION = 'django_app.asgi.application'
 #     }
 # }
 
-# DATABASES = {
-#      'default':{
-#         'ENGINE':'mssql',                    # Must be "mssql"
-#         'NAME':'RMSE',                       # DB name "test"
-#         "USER": "sa",
-#         "PASSWORD": "Ajit@123",
-#         'HOST':'LENOVOARUN\SQL2022', # <server>\<instance>
-#         'PORT':'',                           # Keep it blank
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#         },
-#     }
-#  }
-
-#jayesh DB
 DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'HOST': 'HCSPLJAYESH\SQLEXPRESS',
-        'PORT': '',
-        'NAME': 'RMSE',
-        'USER': 'sa',
-        'PASSWORD': 'sqlAdmin@2023',
-        'OPTIONS': { 
+     'default':{
+        'ENGINE':'mssql',                    # Must be "mssql"
+        'NAME':'prope_db',                       # DB name "test"
+        "USER": "sa",
+        "PASSWORD": "Ajit@123",
+        'HOST':'LENOVOARUN\SQL2022', # <server>\<instance>
+        'PORT':'',                           # Keep it blank
+        'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
         },
     }
-}
+ }
+
+# #jayesh DB
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'HOST': 'HCSPLJAYESH\SQLEXPRESS',
+#         'PORT': '',
+#         'NAME': 'RMSE',
+#         'USER': 'sa',
+#         'PASSWORD': 'sqlAdmin@2023',
+#         'OPTIONS': { 
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#         },
+#     }
+# }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache" 
 
@@ -171,6 +171,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',

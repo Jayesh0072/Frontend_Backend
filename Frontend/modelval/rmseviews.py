@@ -701,6 +701,7 @@ def validateUser(request):
                 data = response.json()
                 return Response(data, template_name='login.html')
         except Exception as e:
+            print("check error is",e)
             return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     except Exception as e:

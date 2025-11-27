@@ -97,34 +97,36 @@ REST_FRAMEWORK = {
 #     }
 # }
 
-# DATABASES = {
-#     'default':{
-#         'ENGINE':'mssql',                    # Must be "mssql"
-#         'NAME':'RMSE',                       # DB name "test"
-#         "USER": "sa",
-#         "PASSWORD": "sqlAdm_18",
-#         'HOST':'DESKTOP-NH98228\HCSPL18', # <server>\<instance>
-#         'PORT':'',                           # Keep it blank
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#         },
-#     }
-# }
 
-#Jayesh Database
 DATABASES = {
     'default':{
         'ENGINE':'mssql',                    # Must be "mssql"
-        'NAME':'RMSE',                       # DB name "test"
+        'NAME':'prope_db',                       # DB name "test"
         "USER": "sa",
-        "PASSWORD": "sqlAdmin@2023",
-        'HOST':'HCSPLJAYESH\SQLEXPRESS', # <server>\<instance>
+        "PASSWORD": "Ajit@123",
+        'HOST':'LENOVOARUN\SQL2022', # <server>\<instance>
         'PORT':'',                           # Keep it blank
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
         },
     }
 }
+
+
+# #Jayesh Database
+# DATABASES = {
+#     'default':{
+#         'ENGINE':'mssql',                    # Must be "mssql"
+#         'NAME':'RMSE',                       # DB name "test"
+#         "USER": "sa",
+#         "PASSWORD": "sqlAdmin@2023",
+#         'HOST':'HCSPLJAYESH\SQLEXPRESS', # <server>\<instance>
+#         'PORT':'',                           # Keep it blank
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#         },
+#     }
+# }
 
 
 
