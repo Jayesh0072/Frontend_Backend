@@ -39,6 +39,7 @@ def getAPIURL():
 
 
 def dashboard(request):
+    print("check dashboard")
     try:  
         api_url=getAPIURL()+"save_comments_mdl_overview/"       
         data_to_save={ 
@@ -58,6 +59,8 @@ def dashboard(request):
         #Get_User_Deatils 
         uc = request.session['utype']
         dept = request.session['dept']
+        print("uc----------",uc)
+        print("dept--------",dept)
         api_url = getAPIURL()+'Get_User_Deatils/' 
         header = {
         "Content-Type":"application/json",

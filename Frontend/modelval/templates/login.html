@@ -192,11 +192,11 @@
             data:{ u_name: $("#uname").val(),u_password: $("#pwd").val() },
             dataType: 'json',
             success: function (data) {   
-               if(data.isvalid=='true' && data.utype!='11'){
+               if(data.isvalid=='true' && data.utype!='1'){
                 alert('inside if')
                 window.location='{{dashboard}}?ps='+data.pending_tasks
                }
-               else if(data.isvalid=='true' && data.utype=='11'){
+               else if(data.isvalid=='true' && data.utype=='1'){
               alert('inside else if')  
                 window.location='{{blankadmin}}'
                }

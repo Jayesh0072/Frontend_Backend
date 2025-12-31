@@ -12,10 +12,10 @@ import pandas as pd
 # database = 'RMSE'
 
 user = 'sa'
-password = 'sqlAdm@2023'
-host = 'LAPTOP-H38D1CC4\SQLEXPRESS'
+password = 'Ajit@123'
+host = 'LENOVOARUN\SQL2022'
 port = 1433
-database = 'RMSE_Latest'
+database = 'prope_db'
 
 class dbops:
     

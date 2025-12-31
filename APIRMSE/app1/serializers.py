@@ -66,9 +66,9 @@ class UserSerializer(serializers.ModelSerializer):
         )
     u_password = serializers.CharField(write_only=True,max_length=8)
 
-    def create(self, validated_data):
-        validated_data['u_password'] = make_password(validated_data['u_password'],"mysalt123")
-        return super(UserSerializer, self).create(validated_data)
+    # def create(self, validated_data):
+    #     validated_data['u_password'] = make_password(validated_data['u_password'],"mysalt123")
+    #     return super(UserSerializer, self).create(validated_data)
 
     
     class Meta:
@@ -168,8 +168,8 @@ class UserLoginSerializer(serializers.ModelSerializer):
         except Users.DoesNotExist:
             raise ValidationError("Invalid username or password.")
 
-        if not check_password(u_password, user.u_password):
-            raise ValidationError("Invalid username or password.")
+        # if not check_password(u_password, user.u_password):
+        #     raise ValidationError("Invalid username or password.")
 
         user.if_logged = True
         token, created = Token.objects.get_or_create(user=user)

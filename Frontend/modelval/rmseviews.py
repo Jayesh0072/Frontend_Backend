@@ -26,10 +26,10 @@ import pyodbc
 from pymongo import MongoClient
 # DEFINE THE DATABASE CREDENTIALS
 user = 'sa'
-password = 'sqlAdm_18'
-host = 'DESKTOP-NH98228\HCSPL18'
+password = 'Ajit@123'
+host = 'LENOVOARUN\SQL2022'
 port = 1433
-database = 'RMSE'
+database = 'prope_db'
 import environ
 env = environ.Env()
 # reading .env file
@@ -636,7 +636,7 @@ def userAddedBy(request):
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def validateUser(request):
-    print("login api---------------------",) 
+    print("login api---------------------1",) 
     try: 
         api_url=getAPIURL()
         uname =request.GET.get('u_name', 'False') 
@@ -2502,7 +2502,7 @@ def updateDeptuseraccess(request):
 
 def getscalar(strQ :str):
     try:
-        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-NH98228\HCSPL18;DATABASE=RMSE;UID=sa;PWD=sqlAdm_18')
+        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=LENOVOARUN\SQL2022;DATABASE=prope_db;UID=sa;PWD=Ajit@123')
 
         # Create a cursor from the connection
         cursor = cnxn.cursor()
@@ -2518,7 +2518,7 @@ def insertRow(strQ :str):
     try:
         # Specifying the ODBC driver, server name, database, etc. directly
        
-        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-NH98228\HCSPL18;DATABASE=RMSE;UID=sa;PWD=sqlAdm_18')
+        cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=LENOVOARUN\SQL2022;DATABASE=prope_db;UID=sa;PWD=Ajit@123')
 
         # Create a cursor from the connection
         cursor = cnxn.cursor()

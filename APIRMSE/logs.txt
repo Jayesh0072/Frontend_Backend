@@ -1,1 +1,1 @@
-'int' object is not iterable
+'NoneType' object has no attribute 'to_json'

@@ -226,7 +226,8 @@ class RegisterModel:
                 strQ+="  and mdl_perf is null" 
             elif criteriatype!='':
                 strQ+=" and  mdl_perf='"+criteriatype+"'"
-            strQ+=" order by reg_data.adddate desc" 
+            strQ+=" order by reg_data.adddate desc"
+        print("strq dahsboard----------------------",strQ) 
         tableResult =self.objdbops.getTable(strQ) 
         mdldata= tableResult.to_json(orient='index')
         del tableResult

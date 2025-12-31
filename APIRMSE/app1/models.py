@@ -3128,6 +3128,22 @@ class IcqSectionDiscussion(models.Model):
 
 
 
+class Emailsettings(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    senderaddress = models.CharField(db_column='SenderAddress', max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
+    senderpassword = models.CharField(db_column='SenderPassword', max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
+    smtpserver = models.CharField(db_column='SmtpServer', max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
+    port = models.IntegerField(db_column='Port')  # Field name made lowercase.
+    createdat = models.DateTimeField(db_column='CreatedAt', blank=True, null=True)  # Field name made lowercase.
+    updatedat = models.DateTimeField(db_column='UpdatedAt', blank=True, null=True)  # Field name made lowercase.
+ 
+    class Meta:
+        managed = False
+        db_table = 'EmailSettings'
+
+
+
+
 
 
 

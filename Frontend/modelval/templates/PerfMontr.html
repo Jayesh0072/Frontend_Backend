@@ -755,7 +755,7 @@ transition: 0.3s ease;">
       $('#tblModelMetric-body').empty(); 
       mdlid = $('#ddlmodel').val()
       $.ajax({
-          url: '/PerfMontrDataFetch/', 
+          url: '/modelval/PerfMontrDataFetch/', 
           data:{mdlid:mdlid},
           dataType: 'json',
           method:'GET',
@@ -1382,7 +1382,7 @@ var chrtRiskTier = document.getElementById("chrtRiskTier");
       console.log("modelmatrics",modelmatrics)
       var arrMM=['PSI','KLDivergence','JSDivergence','HellingerDistance','HypothesisTest']
       $.ajax({
-          url: '/ModelMatricsData/', 
+          url: '/modelval/ModelMatricsData/', 
           data:{mdlid:mdlid,modelmatrics:modelmatrics,datatype:datatype},
           dataType: 'json',    
           method:'GET',
@@ -1765,7 +1765,7 @@ var chrtRiskTier = document.getElementById("chrtRiskTier");
   mdlid = $('#ddlmodel').val()
   // alert(mdlid)
   $.ajax({
-      url: '/mmlabeltoexcel/', 
+      url: '/modelval/mmlabeltoexcel/', 
       data:{mdlid:mdlid,datatype:"Model"},
       dataType: 'json',
       method:'GET',

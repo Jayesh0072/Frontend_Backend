@@ -182,6 +182,7 @@ class GetHistoryMsg(APIView):
             strQ1+=" and mmd.sub_category_aid=mdl.sub_category"
             strQ1+=" left join Performance_Monitoring_Setup_temp perf  on perf.mdl_id=mdl.mdl_id"
             strQ1+="  and perf.Metric=mmd.MM_AID where  Mdl.department=mmd.dept_aid and mdl.Mdl_Id='"+request.data['mdl_id']+"'"
+            # strQ1+="  and perf.Metric=mmd.MM_AID where  Mdl.department=mmd.dept_aid and mdl.Mdl_Id='M470100'"
             # strQ1+="and perf.Metric=mmd.MM_AID where mdl.Mdl_Id='"+request.data['mdl_id']+"'"
             # and Mdl.department=mmd.dept_aid 
             print("mdl overview query category-----------------------------------",strQ1)
@@ -196,7 +197,8 @@ class GetHistoryMsg(APIView):
             strQ1+=" mmm.BM_AID=mmd.BM_AID inner join Mdl_OverView mdl  on mmd.category_aid=mdl.category"
             strQ1+=" and mmd.sub_category_aid=mdl.sub_category"
             strQ1+=" left join Buss_KPI_Monitoring_Setup_temp perf  on perf.mdl_id=mdl.mdl_id"
-            strQ1+=" and perf.Metric=mmd.BM_AID where mdl.Mdl_Id='"+request.data['mdl_id']+"' and Mdl.department=mmd.dept_aid order by  mdl.Mdl_Id"
+            # strQ1+=" and perf.Metric=mmd.BM_AID where mdl.Mdl_Id='"+request.data['mdl_id']+"' and Mdl.department=mmd.dept_aid order by  mdl.Mdl_Id"
+            strQ1+=" and perf.Metric=mmd.BM_AID where mdl.Mdl_Id='M300100' and Mdl.department=mmd.dept_aid order by  mdl.Mdl_Id"
             # strQ1+="and perf.Metric=mmd.MM_AID where mdl.Mdl_Id='"+request.data['mdl_id']+"'"
             print("mdl overview query category buss-----------------------------------",strQ1)
             tableResult1=  self.objdbops.getTable(strQ1) 
@@ -1420,7 +1422,7 @@ class DataMetricAPI(APIView):
     permission_classes=[IsAuthenticated]
     def post(self,request):
         print("request data for data",request.data)
-        if DataMonitoringSetupTemp.objects.filter(mdl_id = request.data['mdl_id'],metric = request.data['metric'],feature = request.data['feature']):
+        if DataMonitoringSetupTemp.objects.filter(mdl_id = request.data['mdl_id'],metric = request.data['Metric'],feature = request.data['feature']):
             print("inside if")
             datamontrsetuptmp = DataMonitoringSetupTemp.objects.filter(mdl_id = request.data['mdl_id'],metric = request.data['metric'],feature = request.data['feature']).update(mo_approval = 1,frequency = request.data['frequency'],threshold = request.data['threshold'],warning = request.data['warning'])
             return Response({'data':datamontrsetuptmp,'msg':'Data Matrics is Updated Successufully'},status=status.HTTP_201_CREATED)
@@ -1428,7 +1430,7 @@ class DataMetricAPI(APIView):
             serializer = DataMonitoringSetupTempSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                datametric=DataMetricMaster.objects.get(data_aid=request.data['metric'])
+                datametric=DataMetricMaster.objects.get(data_aid=request.data['Metric'])
                 mrmheadId=objmaster.getMRMHead()
 
                 notification_trigger= "Model  "+ request.data['mdl_id'] +" Data Matric Saved "+datametric.data_label
@@ -2034,8 +2036,8 @@ class ApproveBusinessMatricsData(APIView):
                 ,[Added_by]\
                 ,[Added_On] )\
                 SELECT [Mdl_Id] \
-                ,[Feature]\
                 ,[Metric] \
+                ,[Feature]\
                 ,[Threshold]\
                 ,[Warning]\
                 ,[Frequency] \

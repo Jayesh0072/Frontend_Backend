@@ -142,7 +142,7 @@
                     -moz-border-radius-topright: 6px;
                     border-top-left-radius: 6px;
                     border-top-right-radius: 6px;">
-              <h4 style="color:#3e465b; padding:10px 20px">Performance Monitoring Setup </h4>
+              <h4 style="color:#3e465b; padding:10px 20px">Performance Monitoring Setup MRM </h4>
             </div>
         <div class="card-body p-0">
         
@@ -278,7 +278,7 @@
                                 <input type="hidden" id="update_id" value="{{id}}" >
                                 <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="validateform()" value="Update" /> 
                                 {% else %}
-                                <input type="button"  class="btn btn-primary px-5 px-sm-5" onclick="connect()" value="Submit" />
+                                <input type="button" id="modelsubmit"  class="btn btn-primary px-5 px-sm-5" onclick="connect()" value="Submit" />
                                 {% endif %} 
                               </div>
                              
@@ -789,7 +789,7 @@ transition: 0.3s ease;">
       mm_label = $("#txtmetric").val()
       mm_description = $('#description').val()
       $.ajax({
-              url: '/modelval/savemdlmetrics/', 
+              url: '/savemdlmetrics/', 
               data:{mm_label: mm_label,mm_description:mm_description},
              dataType: 'json',  
             
@@ -804,7 +804,7 @@ transition: 0.3s ease;">
       bm_label = $("#txtbusmetric").val()
       bm_description = $('#busdescription').val()
       $.ajax({
-              url: '/modelval/savebusmetrics/', 
+              url: '/savebusmetrics/', 
               data:{bm_label: bm_label,bm_description:bm_description},
              dataType: 'json',  
             
@@ -826,7 +826,7 @@ transition: 0.3s ease;">
         id = $("#mdlid").val()
         room_id = 'Perfm_'+id
         $.ajax({
-              url: '/modelval/addperfromancediscussion/', 
+              url: '/addperfromancediscussion/', 
               data:{room_id: room_id,comment:$("#txtmsg").val()},
              dataType: 'json',  
              method:'POST', 
@@ -902,6 +902,30 @@ transition: 0.3s ease;">
       
     }
 
+      function selectalldata(){ 
+      var yes = document.getElementById("name3");  
+      console.log("yes",yes.checked)
+      // alert("select all")
+      // var check = false;
+      if (yes.checked == true){
+        var ele=document.getElementsByName('chk');
+        console.log("ele",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+            ele[i].click(); 
+          }
+      }
+      else{
+        var ele=document.getElementsByName('chk');
+        console.log("ele----------",ele)
+        for(var i=0; i<ele.length; i++){  
+          if(ele[i].type=='checkbox')  
+              ele[i].checked=false;  
+          }
+      }
+      
+    }
+
 
     function selectallbus(){ 
       var yes = document.getElementById("name2");  
@@ -927,30 +951,7 @@ transition: 0.3s ease;">
       
     }
 
-
-    function selectalldata(){ 
-      var yes = document.getElementById("name3");  
-      console.log("yes",yes.checked)
-      // alert("select all")
-      // var check = false;
-      if (yes.checked == true){
-        var ele=document.getElementsByName('chk');
-        console.log("ele",ele)
-        for(var i=0; i<ele.length; i++){  
-          if(ele[i].type=='checkbox')  
-            ele[i].click(); 
-          }
-      }
-      else{
-        var ele=document.getElementsByName('chk');
-        console.log("ele----------",ele)
-        for(var i=0; i<ele.length; i++){  
-          if(ele[i].type=='checkbox')  
-              ele[i].checked=false;  
-          }
-      }
-      
-    }
+    
     
     function connect_bus(){ 
       debugger
@@ -1000,10 +1001,24 @@ transition: 0.3s ease;">
           data:{ datalist: JSON.stringify(updatedata),mdlId:$('#busmdlid').val(),frequency:$('#busfrequency').val()},
           dataType: 'json',
           success: function (data) { 
-            if(data.istaken=="true"){
-              alert('Business Matrics Saved successfully')
-            }
-            
+              if(data.istaken=="true"){ 
+                alert('Business Matrics Saved successfully')              
+              }
+              else{
+                alert("Something went wrong")
+              }
+              // if(data.istaken=="true"){ 
+              //   // $.each(data.assignTaskLst, function(i, obj) { 
+              //   //   var select_users = $('#ddlUsers option:selected').toArray().map(item => item.text).join();
+              //   //   $('#txt_task_'+obj.AID).text(obj.task_id)
+              //   //   $('#lbl_'+obj.AID).text(select_users)
+              //   // });
+              //   alert('Business Matrics Saved successfully')
+                
+              // }
+              // else{
+              //   alert("Something went wrong")
+          //}
           }
         }); 
       } 
@@ -1040,7 +1055,7 @@ transition: 0.3s ease;">
         //console.log($('#chk_'+i).prop('checked'),',',$('#hdn_'+i).val(),', ',$('input[name="rb_'+ i +'"]:checked').val() );
         item = {}  
         item["AID"] = i
-        item["Percentage"] = $('#txtperf_'+i).val()
+        item["Percentage"] = $('#txtper_'+i).val()
         item["Threshold"] = $('#txtthreshold_'+i).val()
         item["Warning"] = $('#txtWaring_'+i).val()
         updatedata.push(item); 
@@ -1099,7 +1114,7 @@ transition: 0.3s ease;">
       mdlid = $('#mdlid').val()
       // alert(mdlid)
       $.ajax({
-          url: '/modelval/UpdateModelMatricsData/', 
+          url: '/modelval/ApproveModelMatricsData/', 
           data:{mdl_id:$('#mdlid').val()},
           dataType: 'json',
           method:'GET',
@@ -1108,6 +1123,7 @@ transition: 0.3s ease;">
             $("#signoffmodal").modal('toggle')
             alert(data.msg)
             clearInputs()
+            $('#button1').prop('disabled', true);
             
           }
         });
@@ -1117,7 +1133,7 @@ transition: 0.3s ease;">
       mdlid = $('#busmdlid').val()
       // alert(mdlid)
       $.ajax({
-          url: '/modelval/UpdatebusinessMatricsDatabus/', 
+          url: '/modelval/ApproveBusinessMatricsData/', 
           data:{mdl_id:$('#busmdlid').val()},
           dataType: 'json',
           method:'GET',
@@ -1130,11 +1146,12 @@ transition: 0.3s ease;">
         });
     }
 
+
     function datashowModal() { 
       mdlid = $('#mdliddata').val()
       // alert(mdlid)
       $.ajax({
-          url: '/modelval/UpdateDataMatricsData/', 
+          url: '/ApproveDataMatricsData/', 
           data:{mdl_id:mdlid},
           dataType: 'json',
           method:'GET',
@@ -1142,60 +1159,226 @@ transition: 0.3s ease;">
             console.log("data",data)
             $("#datasignoffmodal").modal('toggle')
             alert(data.msg)
-            clearInputs() 
+            clearInputs()
+            $('#button3').prop('disabled', true);
+            
           }
         });
-    } 
+    }
 
-    function gethistorymsg(){ 
-      debugger;
-      id  = $("#mdlid").val()
-      $('#tblModelMetric1 tbody').empty()
-      $('#divMdlPerfMontresp').empty()
+
+    // function gethistorymsg(){ 
+    //   debugger;
+    //   id  = $("#mdlid").val()
+    //   $('#tblModelMetric1 tbody').empty()
+    //   $('#divMdlPerfMontresp').empty()
+    //   if(id !=""){ 
+    //     $('input[type="text"]').val(''); 
+    //     $('input[name="txtmodel"]').val(''); 
+    //     $('input[type="checkbox"]').prop("checked",false)
+    //   $.ajax({
+    //           url: '/gethistorymsg/', 
+    //           data:{room_id: 'Perfm_'+id,mdl_id:id},
+    //           dataType: 'json',  
+    //           success: function (data) { 
+    //             arr=data.mmdata
+    //             console.log('data ',data.mdl_category_data)
+    //             // console.log("---------------data new",data.mmdata)
+    //             // alert(data.Qtns)
+                
+    //             if(data.mmdata.length == 0){
+    //               // alert("empty")
+    //               $('#button1').prop('disabled', true);
+    //             }
+    //             //else{
+
+                  
+    //               // alert("full")
+    //               // console.log("---------------data new",data.mdl_category_data)
+    //               // $.each(data.mdl_category_data, function(i, item) {
+    //               // $('#txtper_'+item['metric']).val('sdsd')
+    //               // $('#txtthreshold_'+item['metric']).val(item['threshold'])
+    //               // $('#txtWaring_'+item['metric']).val(item['warning'])
+    //               // }) 
+    //               console.log("else",data.mdl_category_data)
+    //               $.each(data.mdl_category_data, function(i, item) {
+    //                console.log("mdl_category_data",item)
+    //                if (item['Frequency'] != null){
+    //                 $('#frequency').val(item['Frequency'])
+    //                }
+                  
+    //               strRows='';
+    //               strRows +=' <tr class="position-static"> ';
+    //               strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+    //               strRows +='       <input type="checkbox" name="chk" id="chk_'+ item['mm_aid'] +'" onclick="registerclick('+ item['mm_aid'] +')"/> ';
+    //               strRows += '      </td>';
+    //               strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4" style="text-align: center;">';
+    //               strRows +='      <div class="row"> ';
+    //               strRows +='      <div class="col-sm-12">  ';
+    //               strRows +='      <label class="col-sm-12 col-form-label" id="datametricstxt_'+item['mm_aid']+'" for="datametricstxt">'+item['MM_Label']+' </label>';
+    //               strRows +='        </div>';
+                  
+    //               strRows +='        </div>  ';                                              
+    //               strRows +='        </td> ';
+    //               strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4">';
+    //               strRows +='      <div class="row"> ';
+    //               strRows +='      <div class="col-sm-12">  ';
+    //                 strRows +='        <div>  ';
+    //               strRows +='        <select class="form-select" name="ddlFunction"  value='+item['Metric_Value_Type']+'  id="txtperf_'+ item['mm_aid'] +'">';
+    //               strRows +='        <option value="percentage">Percentage</option>';
+    //               strRows +='        <option value="number">Number</option> ';                                                   
+    //               strRows +='        </select>';
+    //               strRows +='        </div>';  
+    //               strRows +='        </div>';
+    //               strRows +='        </div>  ';                                          
+    //               strRows +='        </td> ';
+    //               strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
+    //               strRows +='        <div class="row"> ';
+    //               strRows +='         <div class="col-sm-12"> ';
+    //               strRows +='        <input type="text" required  class="form-control" value="'+item['Threshold']+'" id="txtthreshold_'+ item['mm_aid'] +'"/>';
+    //               strRows +='        </div>';
+    //               strRows +='        </div>';
+    //               strRows +='        </td>';
+    //               strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
+    //               strRows +='        <div class="row"> ';
+    //               strRows +='        <div class="col-sm-12"> ';
+    //               strRows +='          <input required  type="text"  class="form-control" value="'+item['Warning']+'" id="txtWaring_'+ item['mm_aid'] +'"/>';
+    //               strRows +='        </div>';
+    //               strRows +='        </div>';
+    //               strRows +='        </td> ';
+    //               // strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
+    //               // strRows +='         <div class="row" > ';
+    //               // strRows +='        <div class="col-sm-12">';
+    //               // strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
+    //               // strRows +='        </div>';
+    //               // strRows +='        </div>';
+    //               // strRows +='        </td>  ';                        
+    //               strRows +='        </tr>  ';
+    //               // $('#tblModelMetric1 tbody').empty()
+    //               // console.log("strrows------------",strRows)
+    //               $('#tblModelMetric1 tbody').append(strRows);
+    //               // strRows=''
+    //                 // if (item['Metric'] =! NULL){
+    //                 //   arrQtns.push(item['Metric'])
+    //                 // }
+    //               // arrQtns.push(item['Metric'])
+    //               })
+                  
+                  
+    //               $('#button1').prop('disabled', false);
+    //             //}
+    //             //************
+    //             qtnArr='';
+    //        $.each(data.data, function(key, val) { 
+    //         console.log("key",key,"val",val.Comment)
+    //         if(val.msgcss=='R')
+    //         {
+    //           qtnArr +=' <div class="d-flex chat-message">';
+    //           qtnArr +='         <div class="d-flex mb-2 flex-1">';
+    //             qtnArr +='           <div class="w-100 w-xxl-75">';
+    //               qtnArr +='             <div class="d-flex hover-actions-trigger">';                     
+    //                 qtnArr +='               <div class="chat-message-content received me-2">';
+    //                   qtnArr +='                 <div class="mb-1 received-message-content border rounded-2 p-3">';
+    //                     qtnArr +='                    <p class="mb-0">'+val.Comment+'</p>';
+    //                     qtnArr +='                 </div>';
+    //                     qtnArr +='     </div>         ';                  
+                             
+    //                     qtnArr +='  </div>';
+    //                     qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +='  </div>';
+    //         }
+    //         else if(val.msgcss=='S')
+    //         {
+
+    //           qtnArr +=' <div class="d-flex chat-message">';
+    //             qtnArr +=' <div class="d-flex mb-2 justify-content-end flex-1">';
+    //             qtnArr +=' <div class="w-100 w-xxl-75">';
+    //               qtnArr +=' <div class="d-flex flex-end-center hover-actions-trigger">';
+    //               qtnArr +=' <div class="d-sm-none hover-actions align-self-center me-2 start-0">';                 
+                  
+    //                 qtnArr +='<div class="bg-white rounded-pill d-flex align-items-center border border-300 px-2 actions">';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-reply text-primary"></span></button>';
+    //                   qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-pen-to-square text-primary"></span></button>';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-trash text-primary"></span></button>';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-share text-primary"></span></button>';
+    //                   // qtnArr +='<button class="btn p-2" type="button"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+    //                   qtnArr +='</div>';
+    //                   qtnArr +='</div>';
+    //               qtnArr +='   <div class="d-none d-sm-flex">';
+    //                 qtnArr +=' <div class="hover-actions position-relative align-self-center">';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-reply text-primary"></span></button>';
+    //                   qtnArr +=' <button class="btn p-2 fs--2" onclick="getCommentforEdit(' + val.Response_id +')" ><span class="fa-solid fa-pen-to-square text-primary" ></span></button>';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-share text-primary"></span></button>';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-trash text-primary"></span></button>';
+    //                   // qtnArr +=' <button class="btn p-2 fs--2"><span class="fa-solid fa-face-smile text-primary"></span></button>';
+    //                   qtnArr +='  </div>';
+    //                   qtnArr +=' </div>';
+    //                 qtnArr +=' <div class="chat-message-content me-2">';
+    //                   qtnArr +='  <div class="mb-1 sent-message-content light bg-primary rounded-2 p-3 text-white">';
+    //                     qtnArr +=' <p class="mb-0">'+val.Comment+'</p>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +='  </div>';
+    //                     qtnArr +=' </div>';
+    //                     qtnArr +=' <div class="text-end">';
+    //                       qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+    //                       qtnArr +=' </div>';
+    //                       qtnArr +=' </div>';
+    //                       qtnArr +=' </div>';
+    //                       qtnArr +=' </div> ';
+    //         } 
+            
+    //       });
+    //        $('#divMdlPerfMontresp').append(qtnArr)
+    //        //$("#divRespHeader").attr('style','display:none !important');
+    //       }
+    //             //************
+    //             // sendPerfMonmsg($("#txtmsg").val(),$('#txtuid').val(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
+    //           // }
+    //       });
+    //     }
+    //     connectWS(id)
+    // } 
+
+    function gethistorymsg(){
+      debugger
+      var strRows='';
+      $('#button1').prop('disabled', true);
+      id = $("#mdlid").val()
+      $('#divMdlPerfMontresp').empty()  
+      $('#tblModelMetric-body').empty(); 
+      $('#tblModelMetric1 tbody').html('');
       if(id !=""){ 
         $('input[type="text"]').val(''); 
-        $('input[name="txtmodel"]').val(''); 
         $('input[type="checkbox"]').prop("checked",false)
       $.ajax({
-              url: '/modelval/gethistorymsg/', 
+              url: '/modelval/getMdlDataForMRM/', 
               data:{room_id: 'Perfm_'+id,mdl_id:id},
-              dataType: 'json',  
-              success: function (data) { 
-                arr=data.mmdata
-                console.log('data ',data.mdl_category_data)
-                // console.log("---------------data new",data.mmdata)
-                // alert(data.Qtns)
-                
-                if(data.mmdata.length == 0){
-                  // alert("empty")
-                  $('#button1').prop('disabled', true);
-                }
-                //else{
-
-                  
-                  // alert("full")
-                  // console.log("---------------data new",data.mdl_category_data)
-                  // $.each(data.mdl_category_data, function(i, item) {
-                  // $('#txtper_'+item['metric']).val('sdsd')
-                  // $('#txtthreshold_'+item['metric']).val(item['threshold'])
-                  // $('#txtWaring_'+item['metric']).val(item['warning'])
-                  // }) 
-                  console.log("else",data.mdl_category_data)
-                  $.each(data.mdl_category_data, function(i, item) {
-                   console.log("mdl_category_data",item)
+             dataType: 'json',  
+              success: function (data) {  
+                console.log("New data check-------",data) 
+                $('#tblModelMetric-body').empty(); 
+                arr=data.mmdata  
+                  const MO_Approval = []
+                  $.each(data.mdlcatdata, function(i, item) {
+                  // console.log("mdl_category_data-------",item)
+                  strRows='';
                    if (item['Frequency'] != null){
                     $('#frequency').val(item['Frequency'])
-                   }
+                  }
+
                   
-                  strRows='';
+                  MO_Approval.push(item.MO_Approval) 
+                
                   strRows +=' <tr class="position-static"> ';
-                  strRows +='        <td class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4">'
+                  strRows +='        <td  style="text-align: center;margin-left:17%" class="align-middle time white-space-nowrap ps-0 Mdl_Val_Type_AID py-4 " >'
                   strRows +='       <input type="checkbox" name="chk" id="chk_'+ item['mm_aid'] +'" onclick="registerclick('+ item['mm_aid'] +')"/> ';
                   strRows += '      </td>';
                   strRows +='      <td class="align-middle white-space-nowrap Mdl_Val_Type_Label ps-3 py-4" style="text-align: center;">';
                   strRows +='      <div class="row"> ';
                   strRows +='      <div class="col-sm-12">  ';
-                  strRows +='      <label class="col-sm-12 col-form-label" id="datametricstxt_'+item['mm_aid']+'" for="datametricstxt">'+item['MM_Label']+' </label>';
+                  strRows +='      <label  style="text-align: center;" class="col-sm-12 col-form-label" id="datametricstxt_'+item['mm_aid']+'" for="datametricstxt">'+item['MM_Label']+' </label>';
                   strRows +='        </div>';
                   
                   strRows +='        </div>  ';                                              
@@ -1204,18 +1387,18 @@ transition: 0.3s ease;">
                   strRows +='      <div class="row"> ';
                   strRows +='      <div class="col-sm-12">  ';
                     strRows +='        <div>  ';
-                  strRows +='        <select class="form-select" name="ddlFunction"  value='+item['Metric_Value_Type']+'  id="txtperf_'+ item['mm_aid'] +'">';
+                  strRows +='        <select class="form-select" name="ddlFunction" id="txtper_'+ item['mm_aid'] +'">';
                   strRows +='        <option value="percentage">Percentage</option>';
                   strRows +='        <option value="number">Number</option> ';                                                   
                   strRows +='        </select>';
-                  strRows +='        </div>';  
+                  strRows +='        </div>';
                   strRows +='        </div>';
                   strRows +='        </div>  ';                                          
                   strRows +='        </td> ';
                   strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
                   strRows +='        <div class="row"> ';
                   strRows +='         <div class="col-sm-12"> ';
-                  strRows +='        <input type="text" required  class="form-control" onchange="checkValue('+ item['mm_aid'] +')"  value="'+item['Threshold']+'" id="txtthreshold_'+ item['mm_aid'] +'"/>';
+                  strRows +='        <input type="text" required  class="form-control" value="'+item['Threshold']+'" onchange="checkValue('+ item['mm_aid'] +')" id="txtthreshold_'+ item['mm_aid'] +'"/>';
                   strRows +='        </div>';
                   strRows +='        </div>';
                   strRows +='        </td>';
@@ -1225,32 +1408,25 @@ transition: 0.3s ease;">
                   strRows +='          <input required  type="text"  class="form-control" onchange="checkValue('+ item['mm_aid'] +')" value="'+item['Warning']+'" id="txtWaring_'+ item['mm_aid'] +'"/>';
                   strRows +='        </div>';
                   strRows +='        </div>';
-                  strRows +='        </td> ';
-                  // strRows +='        <td  class="align-middle white-space-nowrap ps-0  py-4">';
-                  // strRows +='         <div class="row" > ';
-                  // strRows +='        <div class="col-sm-12">';
-                  // strRows +='        <span class="text-danger" data-feather="trash-2"  style="height: 20px; width: 70px;"></span> ';
-                  // strRows +='        </div>';
-                  // strRows +='        </div>';
-                  // strRows +='        </td>  ';                        
-                  strRows +='        </tr>  ';
-                  // $('#tblModelMetric1 tbody').empty()
-                  // console.log("strrows------------",strRows)
+                  strRows +='        </td> ';                       
+                  strRows +='        </tr>  '; 
                   $('#tblModelMetric1 tbody').append(strRows);
-                  // strRows=''
-                    // if (item['Metric'] =! NULL){
-                    //   arrQtns.push(item['Metric'])
-                    // }
-                  // arrQtns.push(item['Metric'])
-                  })
-                  
-                  
+                  console.log('strRows ',strRows)
+                  }) 
+                  // const max = Math.max(...MO_Approval); 
+                  // if(max==1){
+                  // $('#button1').prop('disabled', false);
+                  // $('#modelsubmit').prop('disabled',true);
+                  // }
+                  // else{
+                  //   $('#button1').prop('disabled', true);
+                  //   $('#modelsubmit').prop('disabled', false);
+                  // }
                   $('#button1').prop('disabled', false);
-                //}
+              
                 //************
                 qtnArr='';
-           $.each(data.data, function(key, val) { 
-            console.log("key",key,"val",val.Comment)
+           $.each(data.data, function(key, val) {  
             if(val.msgcss=='R')
             {
               qtnArr +=' <div class="d-flex chat-message">';
@@ -1264,7 +1440,7 @@ transition: 0.3s ease;">
                         qtnArr +='     </div>         ';                  
                              
                         qtnArr +='  </div>';
-                        qtnArr +='   <p class="mb-0 fs--2 text-600 fw-semi-bold ">'+val.uinitials +' commented on '+val.createdt+'</p>';
+                        qtnArr +='   <p class="mb-0 fs--2" style="font-size: .64rem !important;font-size: .64rem !important">'+val.uinitials +' commented on '+val.createdt+'</p>';
                         qtnArr +=' </div>';
                         qtnArr +=' </div>';
                         qtnArr +='  </div>';
@@ -1302,7 +1478,7 @@ transition: 0.3s ease;">
                         qtnArr +='  </div>';
                         qtnArr +=' </div>';
                         qtnArr +=' <div class="text-end">';
-                          qtnArr +=' <p class="mb-0 fs--2 text-600 fw-semi-bold">'+val.uinitials +' commented on '+val.createdt+' </p>';
+                          qtnArr +=' <p class="mb-0 fs--2 text-600" style="font-size: .64rem !important;font-size: .64rem !important">'+val.uinitials +' commented on '+val.createdt+' </p>';
                           qtnArr +=' </div>';
                           qtnArr +=' </div>';
                           qtnArr +=' </div>';
@@ -1310,16 +1486,18 @@ transition: 0.3s ease;">
             } 
             
           });
-           $('#divMdlPerfMontresp').append(qtnArr)
-           //$("#divRespHeader").attr('style','display:none !important');
-          }
-                //************
-                // sendPerfMonmsg($("#txtmsg").val(),$('#txtuid').val(),9,5,'msg',id, data[0].uinitials+' commented on '+data[0].createdt)
-              // }
-          });
+           $('#divMdlPerfMontresp').append(qtnArr) 
+           connectWS(id)
+           $('#divMdlPerfMontresp').animate({
+            scrollTop: $('#divMdlPerfMontresp').get(0).scrollHeight
+        }, 200);
+          } 
+          
+        });
+         
+          
         }
-        connectWS(id)
-    } 
+    }
 
     function gethistorymsgbus(){
       debugger;
@@ -1328,10 +1506,11 @@ transition: 0.3s ease;">
       $('#divMdlPerfMontresp').empty()
       if(id !=""){ 
       $.ajax({
-              url: '/modelval/gethistorymsgbus/', 
+              url: '/gethistorymsgbus/', 
               data:{room_id: 'Perfm_'+id,mdl_id:id},
              dataType: 'json',  
               success: function (data) { 
+                debugger
                 arr=data.bmdata
                 console.log("---------------data new",data.bmdata)
                 // alert(data.Qtns)
@@ -1382,14 +1561,14 @@ transition: 0.3s ease;">
                   strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4"> ';
                   strRows +='        <div class="row"> ';
                   strRows +='         <div class="col-sm-12"> ';
-                  strRows +='        <input type="text" required  class="form-control" onchange="bcheckValue('+ item['bm_aid'] +')"  value="'+item['Threshold']+'" id="btxtthreshold_'+ item['bm_aid'] +'"/>';
+                  strRows +='        <input type="text" required  class="form-control"onchange="bcheckValue('+ item['bm_aid'] +')" value="'+item['Threshold']+'" id="btxtthreshold_'+ item['bm_aid'] +'"/>';
                   strRows +='        </div>';
                   strRows +='        </div>';
                   strRows +='        </td>';
                   strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
                   strRows +='        <div class="row"> ';
                   strRows +='        <div class="col-sm-12"> ';
-                  strRows +='          <input required  type="text"  class="form-control" onchange="bcheckValue('+ item['bm_aid'] +')"  value="'+item['Warning']+'" id="btxtWaring_'+ item['bm_aid'] +'"/>';
+                  strRows +='          <input required  type="text"  class="form-control" onchange="bcheckValue('+ item['bm_aid'] +')" value="'+item['Warning']+'" id="btxtWaring_'+ item['bm_aid'] +'"/>';
                   strRows +='        </div>';
                   strRows +='        </div>';
                   strRows +='        </td> ';
@@ -1486,7 +1665,7 @@ transition: 0.3s ease;">
     function selectfeature(){
       id = $("#mdliddata").val()
       $.ajax({
-          url: '/modelval/datamatricsfeature/', 
+          url: '/modelval/datamatricsfeatureMRM/', 
           data:{mdl_id:$('#mdliddata').val()},
           dataType: 'json',
           method:'GET',
@@ -1494,11 +1673,6 @@ transition: 0.3s ease;">
             console.log("data new",data)
             // $("#signoffmodal").modal('toggle')
             // alert(data.msg)
-            if (data.data.length == 0 ){
-              alert("file or data is not available")
-              $("#mdliddata").val("Select Model")
-              // return false
-            }
             var selectElement = $('#datafeature');
             $.each(data.data, function(index, option) {
             console.log("check value",option);
@@ -1515,7 +1689,7 @@ function selectdtype(){
       //debugger;
       dtype = $('#datafeature').val()
       $.ajax({
-          url: '/modelval/selectdataMetric/', 
+          url: '/selectdataMetric/', 
           data:{data_types:dtype},
           dataType: 'json',
           method:'GET',
@@ -1545,7 +1719,7 @@ function fetchrow(){
       console.log('datamatrics',datametrics,'datafeature',datafeature)
 
       $.ajax({
-          url: '/modelval/SaveTempFeatureMatricData/', 
+          url: '/SaveTempFeatureMatricData/', 
           data:{mdl_id:mdl_id,feature:datafeatureText,data_matric:datametricsText},
           dataType: 'json',
           method:'GET',
@@ -1634,7 +1808,7 @@ function gethistorymsgdata(){
       $('#divMdlPerfMontresp').empty()
       if(id !=""){ 
       $.ajax({
-              url: '/modelval/gethistorymsgdata/', 
+              url: '/gethistorymsgdata/', 
               data:{room_id: 'Perfm_'+id,mdl_id:id},
              dataType: 'json',  
               success: function (data) { 
@@ -1685,7 +1859,7 @@ function gethistorymsgdata(){
                   strRows +='        <td class="align-middle white-space-nowrap ps-0  py-4">';
                   strRows +='        <div class="row"> ';
                   strRows +='        <div class="col-sm-12"> ';
-                  strRows +='          <input required  type="text"  class="form-control" value='+item['warning']+' onchange="dcheckValue('+ item['metric'] +')" id="dtxtWaring_'+ item['metric'] +'"/>';
+                  strRows +='          <input required  type="text"  class="form-control" value='+item['warning']+' onchange="dcheckValue('+ item['metric'] +')"  id="dtxtWaring_'+ item['metric'] +'"/>';
                   strRows +='        </div>';
                   strRows +='        </div>';
                   strRows +='        </td> ';
@@ -1818,15 +1992,16 @@ function connect_datamatric(){
         console.log("updatedata",updatedata)
       }); 
       if(updatedata.length>0){
-        $.ajax({    
-          url: '/modelval/savedatamatrics/', 
+        $.ajax({
+          
+          url: '/savedatamatrics/', 
           data:{ datalist: JSON.stringify(updatedata),mdlId:$('#mdliddata').val(),frequency:$('#frequencydata').val()},
           dataType: 'json',
           success: function (data) {
             debugger
-            console.log("success data-------01",data)
+            console.log("success data",data)
             alert(data.msg)
-          }  
+          }
         }); 
       }
     }
@@ -1839,12 +2014,10 @@ function clearInputs() {
 }
 
 function checkValue(id){
-  type = $("#txtperf_"+id).val()
+  type = $("#txtper_"+id).val()
   if(type == 'percentage'){
     threshold = $("#txtthreshold_"+id).val()
     warning = $("#txtWaring_"+id).val()
-    total = Number(threshold) + Number(warning)
-    console.log("total",total)
     if(threshold > 100){
       debugger
       alert("Please add value less than 100 ")
@@ -1863,12 +2036,6 @@ function checkValue(id){
       $("#txtWaring_"+id).val('')
       return false
     }
-
-    if( total > 100  ){
-    alert("Please add proper value to get total 100")
-      $("#txtWaring_"+id).val('')
-      return false
-    }
   }
 }
 
@@ -1877,7 +2044,6 @@ function bcheckValue(id){
   if(type == 'percentage'){
     threshold = $("#btxtthreshold_"+id).val()
     warning = $("#btxtWaring_"+id).val()
-    total = Number(threshold) + Number(warning)
     if(threshold > 100){
       debugger
       alert("Please add value less than 100 ")
@@ -1896,11 +2062,6 @@ function bcheckValue(id){
       $("#btxtWaring_"+id).val('')
       return false
     }
-    else if( total > 100  ){
-    alert("Please add proper value to get 100")
-      $("#btxtWaring_"+id).val('')
-      return false
-    }
   }
 }
 
@@ -1908,14 +2069,8 @@ function dcheckValue(id){
   debugger
   threshold = $("#dtxtthreshold_"+id).val()
   warning = $("#dtxtWaring_"+id).val()
-  total = Number(threshold) + Number(warning)
   if(warning > threshold){
       alert("Please add value less than Threshold")
-      $("#dtxtWaring_"+id).val('')
-      return false
-    }
-  else if( total > 100  ){
-    alert("Please add proper value to get 100")
       $("#dtxtWaring_"+id).val('')
       return false
     }

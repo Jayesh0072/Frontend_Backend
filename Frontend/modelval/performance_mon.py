@@ -19,6 +19,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, status,serializers
 from .RegModel.registermodel import RegisterModel as Register 
+import datetime
+from datetime import date
 
 from .Adm_Utils.Masters import MasterTbls
 from .DAL.dboperations import dbops
@@ -80,7 +82,8 @@ def PerfMontrSetupMRM(request):
         }
         responseget = requests.get(third_party_api_url, data= json.dumps(data_to_get),headers=header)
         data=json.loads(responseget.content)
-        return render(request, 'PerfMontrSetup_MRM.html',{'data':data['mdlids'],'freqdata':data['frequency'],'ModelMatrics':data['mdlmetric'],'BusinessMetric':data['bussmetric'],'data_mdlids':data['data_mdlids']})
+        print("check data pm-----",data)
+        return render(request, 'PerfMontrSetup_MRM.html',{'data':data['mdlids'],'freqdata':data['frequency'],'ModelMatrics':data['mdlmetric'],'BusinessMetric':data['businessmetric'],'data_mdlids':data['data_mdlids']})
      
     except Exception as e:
         print('adduser is ',e)
@@ -497,7 +500,8 @@ def SaveTempFeatureMatricData(request):
         if data_matric == 'Null':
             columndata = df[feature].isnull().sum()
             print("isnull column",columndata/len(df[feature])*100)
-            percentage = columndata/len(df[feature])*100
+            # percentage = columndata/len(df[feature])*100
+            percentage = (columndata / len(df[feature]) * 100) if len(df[feature]) != 0 else 0
         elif data_matric == 'Mean':
             columndata = df[feature].mean()
             print("columndata mean",columndata)
@@ -1462,31 +1466,32 @@ def Perf_monitoring_file_upload(request):
         
         arrMetricType=[]
         frequency=""
-
-        for i in data['mmdata']:
-            print("label check",i['mm_details']['mm_label'])
-            dict1={}
-            metrictype='normal'
-            iVal=exclfile[i['mm_details']['mm_label']].iloc[0]
-            iThresholdVal=i['threshold']
-            iWarningVal=i['warning']
-            sType=i['metric_value_type']
-            iActualWarningVal=0.0
-            iTotalWarningVal=0.0
-            frequency=i['frequency']
-            
-            if sType == "percentage":
-                iActualWarningVal=(iWarningVal*.01)
-                iThresholdVal=iThresholdVal*0.01
-                iVal=iVal*0.01
-            iTotalWarningVal=iThresholdVal+iActualWarningVal
-            if iVal > iTotalWarningVal:
-                metrictype="Critical"
-            elif iVal<=iThresholdVal:
-                metrictype="Normal"
-            elif iVal<=iTotalWarningVal and iVal > iThresholdVal:
-                metrictype="Warning" 
-        
+        try:
+            for i in data['mmdata']:
+                print("label check",i['mm_details']['mm_label'])
+                dict1={}
+                metrictype='normal'
+                iVal=exclfile[i['mm_details']['mm_label']].iloc[0]
+                iThresholdVal=i['threshold']
+                iWarningVal=i['warning']
+                sType=i['metric_value_type']
+                iActualWarningVal=0.0
+                iTotalWarningVal=0.0
+                frequency=i['frequency']
+                
+                if sType == "percentage":
+                    iActualWarningVal=(iWarningVal*.01)
+                    iThresholdVal=iThresholdVal*0.01
+                    iVal=iVal*0.01
+                iTotalWarningVal=iThresholdVal+iActualWarningVal
+                if iVal > iTotalWarningVal:
+                    metrictype="Critical"
+                elif iVal<=iThresholdVal:
+                    metrictype="Normal"
+                elif iVal<=iTotalWarningVal and iVal > iThresholdVal:
+                    metrictype="Warning" 
+        except Exception as e:
+            print("check error is---",e,e.__traceback__)   
         print("metrictype",metrictype)
 
         third_party_api_url = getAPIURL()+'perfMonitoring_email_send/'
@@ -1879,7 +1884,9 @@ def Perf_monitoring_file_upload_bus(request):
         print("columns are not same")
         return JsonResponse({"isvalid":"false"})
 
+user_name = "user1"
 
+ 
 # def home2(request):
 #     print("in home2")
 #     try:
@@ -2004,6 +2011,36 @@ def Perf_monitoring_file_upload_bus(request):
 #         print('traceback is ', traceback.print_exc())
 #         return render(request, 'error.html')
 
+cluster=MongoClient('localhost',27017,connect=False)
+ 
+db=cluster["ModelValidation"]
+collection_prdn_file_info=db['Prdn_File_Info']
+collection_prdn_src_data=db['Prdn_Src_Data']
+
+
+
+
+def find_max_prdn_file_id(mdlid=""):
+   
+    print("find_max_prdn_file_id",mdlid)
+    if mdlid=="":
+        print("if")
+        src_file_obj = collection_prdn_file_info.find()
+    else:
+        print("else")
+        src_file_obj = collection_prdn_file_info.find({'Mdl_Id':mdlid})
+    df =  pd.DataFrame(list(src_file_obj))
+    print("df",df)
+    print("length",len(df))
+    if len(df)>0:
+        file_id=df['file_id'].max()
+    else:
+        file_id=1 #changed by nilesh on 11.4.23
+    print('file_id' ,file_id)
+    return file_id
+
+
+
 def home2(request):
     print("in home2----------------------------")
     try:
@@ -2053,7 +2090,7 @@ def home2(request):
                     keys_data=list()
                     keys_data.append(list(i.keys()))    ##column name
             Freq_Idx=1
-            uploaded_on=datetime.datetime.now()  ##uploaded on data
+            uploaded_on=datetime.now()  ##uploaded on data
             file_info_data={'Mdl_Id':mdlId,'Freq_Idx':Freq_Idx,'file_id':int(file_id),'file_columns':keys_data,'file_name':file_name,'uploaded_by':"User","uploaded_on":uploaded_on}
                 
             if file_id==int(0):  
@@ -2636,13 +2673,17 @@ def find_src_data(mdlid,accessToken):
     except Exception as e:
         print("Error EE",e)
     BASE_DIR = Path(__file__).resolve().parent.parent 
-    destination_path = os.path.join(BASE_DIR, 'static\\document_files\\'+mdlid+'\\')
-    savefile_name = destination_path + resp_data['data'][0]['mdl_doc_name']
-    # destination_path = str(BASE_DIR)+'/static/document_files/'+ mdlid + '/' +resp_data['data'][0]['mdl_doc_name']+'.xlsx'
-    print("file----------",savefile_name) 
-    # df = pd.read_excel(savefile_name)
-    df = pd.read_csv(savefile_name)
-    print("df",df)
+    try:
+        destination_path = os.path.join(BASE_DIR, 'static\\document_files\\'+mdlid+'\\')
+        savefile_name = destination_path + resp_data['data'][0]['mdl_doc_name']
+        # destination_path = str(BASE_DIR)+'/static/document_files/'+ mdlid + '/' +resp_data['data'][0]['mdl_doc_name']+'.xlsx'
+        print("file----------",savefile_name) 
+        # df = pd.read_excel(savefile_name)
+        df = pd.read_excel(savefile_name)
+        print("df",df)
+    except Exception as e:
+        print("file error is---------",e)
+        df = pd.DataFrame()
     # print("df----------",df.columns.to_list())
     # cols = df.columns.to_list()
     return df 

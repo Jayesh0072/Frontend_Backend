@@ -901,7 +901,7 @@
       mdlid = $('#ddlmodel').val()
       // alert(mdlid)
       $.ajax({
-          url: '/mmlabeltoexcel/', 
+          url: '/modelval/mmlabeltoexcel/', 
           data:{mdlid:mdlid,datatype:"Model"},
           dataType: 'json',
           method:'GET',
@@ -938,7 +938,7 @@
       mdlid = $('#ddlmodelbus').val()
       // alert(mdlid)
       $.ajax({
-          url: '/mmlabeltoexcelforbus/', 
+          url: '/modelval/mmlabeltoexcelforbus/', 
           data:{mdlid:mdlid},
           dataType: 'json',
           method:'GET',
@@ -964,7 +964,7 @@
         
         // console.log("file is",fileInput)
         var x = new XMLHttpRequest();
-        x.open("POST","/Perf_monitoring_file_upload/",true); 
+        x.open("POST","/modelval/Perf_monitoring_file_upload/",true); 
         var formData = new FormData();
         formData.append("csrfmiddlewaretoken", csrfToken);
 
@@ -1003,7 +1003,7 @@
         var Historical = document.getElementById('historical_bus').checked
         // console.log("file is",fileInput)
         var x = new XMLHttpRequest();
-        x.open("POST","/Perf_monitoring_file_upload_bus/",true); 
+        x.open("POST","/modelval/Perf_monitoring_file_upload_bus/",true); 
         var formData = new FormData();
         formData.append("csrfmiddlewaretoken", csrfToken);
 
@@ -1043,7 +1043,7 @@
         var Historical = document.getElementById('historical').checked
         // console.log("file is",fileInput)
         var x = new XMLHttpRequest();
-        x.open("POST","/home2/",true); 
+        x.open("POST","/modelval/home2/",true); 
         var formData = new FormData();
         formData.append("csrfmiddlewaretoken", csrfToken);
 

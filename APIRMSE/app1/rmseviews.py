@@ -4660,7 +4660,7 @@ class getMaxFreqSeq_Buss(APIView):
         strQ+="        when 3 then case when Month(getdate()) = Month(max(freq_val)) then '0' else '1' end "
         strQ+="        when 4 then case when Month(getdate()) = Month(max(freq_val)) then '0' else '1' end else 'New'  end  'addorupdate', case ("
         strQ+="        SELECT   distinct Frequency   FROM  Buss_KPI_Monitoring_Setup where mdl_id='"+request.data['mdl_id']+"')"
-        strQ+="        when 1 then case when  getdate() =  max(freq_val) then  max(isnull(freq_idx,0)) else  max(isnull(freq_idx,0))+1 end   when 2 then case when DATEPART(WEEK,getdate()) = DATEPART(WEEK, max(freq_val)) then max(isnull(freq_idx,0)) else  max(isnull(freq_idx,0)) +1 end "
+        strQ+="        when 1 then case when  getdate() =  max(freq_val) then  max(isnull(freq_idx,0)) else  isnull(max(isnull(freq_idx,0)),0)+1 end   when 2 then case when DATEPART(WEEK,getdate()) = DATEPART(WEEK, max(freq_val)) then max(isnull(freq_idx,0)) else  max(isnull(freq_idx,0)) +1 end "
         strQ+="        when 3 then case when Month(getdate()) = Month(max(freq_val)) then  max(isnull(freq_idx,0)) else  max(isnull(freq_idx,0))+1 end  when 4 then case when Month(getdate()) = Month(max(freq_val)) then  max(isnull(freq_idx,0)) else   max(isnull(freq_idx,0))+1 end "
         strQ+="        else 1 end 'freqidx'  from Buss_KPI_Monitoring_Final_Result" 
         print("sql query",strQ)       
@@ -8415,6 +8415,8 @@ class checkPendingTasks(APIView):
             and format(end_date,'yyyy-MM-dd')< format(getdate(),'yyyy-MM-dd') \
             and U_id=" + str(request.data['uid']) +" and (U_Type='Assignee' or U_Type='Approver')"
         tableResult=  self.objdbops.getscalar(strQ)
+        print("strQ---------",strQ)
+        print("tableResult----------",tableResult)
         if tableResult>0 :
             tableResult=1
         else:
