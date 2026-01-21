@@ -324,15 +324,61 @@ def getBusinessDataForMRM(request):
         return JsonResponse({'message': 'Failed to connect .', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# def datamatricsfeatureMRM(request):
+#     try:  
+#         mdlid =request.GET.get('mdl_id', 'False')
+#         print("mdlid",mdlid)
+        
+#         file_id=find_max_file_id(mdlid)
+        
+#         dataset = ''
+#         df=find_src_data(file_id,dataset) 
+#         gridtypes = []
+#         dttypes = dict(df.dtypes)
+#         print("dttypes new",dttypes) 
+#         irow=0
+        
+#         for key,val in dttypes.items():
+#             print('key',key,'val',val)
+#             dictcols={}
+#             dictcols['colName']= key
+#             if df[key].dtypes=="int64" or df[key].dtypes=="float64":   
+#                 dictcols['type']='int'
+#             elif df[key].dtypes=="object":
+#                 dictcols['type']='object'
+#             else:
+#                 dictcols['type']='object'
+        
+#             irow+=1
+#             gridtypes.append(dictcols)
+            
+#         print("gridtypes",gridtypes)
+
+#         ## Delete Code ##
+#         third_party_api_url = getAPIURL()+'SaveTempFeatureMatricSelection/'
+#         header = {
+#         "Content-Type":"application/json",
+#         'Authorization': 'Token '+request.session['accessToken']
+#         }
+
+#         data_to_delete = {
+#             'mdl_id':mdlid
+#         }
+#         responsedelete = requests.delete(third_party_api_url, data= json.dumps(data_to_delete),headers=header)
+
+#         return JsonResponse({'data':gridtypes})
+#     except Exception as e:
+#         print('adduser is ',e)
+#         print('adduser traceback is ', traceback.print_exc())
+
+
+
 def datamatricsfeatureMRM(request):
     try:  
         mdlid =request.GET.get('mdl_id', 'False')
-        print("mdlid",mdlid)
-        
-        file_id=find_max_file_id(mdlid)
-        
-        dataset = ''
-        df=find_src_data(file_id,dataset) 
+        print("mdlid",mdlid)     
+        df=find_src_data(mdlid,request.session['accessToken']) 
+        print("df",df)
         gridtypes = []
         dttypes = dict(df.dtypes)
         print("dttypes new",dttypes) 
@@ -370,6 +416,10 @@ def datamatricsfeatureMRM(request):
     except Exception as e:
         print('adduser is ',e)
         print('adduser traceback is ', traceback.print_exc())
+
+
+
+
 
 
 def selectdataMetric(request):
@@ -2728,7 +2778,7 @@ def datamatricsfeature(request):
         print("gridtypes",gridtypes)
 
         ## Delete Code ##
-        third_party_api_url = getAPIURL()+'SaveTempFeatureMatricSelection/'
+        third_party_api_url =  getAPIURL()+'SaveTempFeatureMatricSelection/'
         header = {
         "Content-Type":"application/json",
         'Authorization': 'Token '+request.session['accessToken']

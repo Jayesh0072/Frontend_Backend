@@ -1663,6 +1663,7 @@ transition: 0.3s ease;">
 
 
     function selectfeature(){
+      debugger
       id = $("#mdliddata").val()
       $.ajax({
           url: '/modelval/datamatricsfeatureMRM/', 
@@ -1689,7 +1690,7 @@ function selectdtype(){
       //debugger;
       dtype = $('#datafeature').val()
       $.ajax({
-          url: '/selectdataMetric/', 
+          url: '/modelval/selectdataMetric/', 
           data:{data_types:dtype},
           dataType: 'json',
           method:'GET',
@@ -1719,7 +1720,7 @@ function fetchrow(){
       console.log('datamatrics',datametrics,'datafeature',datafeature)
 
       $.ajax({
-          url: '/SaveTempFeatureMatricData/', 
+          url: '/modelval/SaveTempFeatureMatricData/', 
           data:{mdl_id:mdl_id,feature:datafeatureText,data_matric:datametricsText},
           dataType: 'json',
           method:'GET',
@@ -1808,7 +1809,7 @@ function gethistorymsgdata(){
       $('#divMdlPerfMontresp').empty()
       if(id !=""){ 
       $.ajax({
-              url: '/gethistorymsgdata/', 
+              url: '/modelval/gethistorymsgdata/', 
               data:{room_id: 'Perfm_'+id,mdl_id:id},
              dataType: 'json',  
               success: function (data) { 
@@ -1994,7 +1995,7 @@ function connect_datamatric(){
       if(updatedata.length>0){
         $.ajax({
           
-          url: '/savedatamatrics/', 
+          url: '/modelval/savedatamatrics/', 
           data:{ datalist: JSON.stringify(updatedata),mdlId:$('#mdliddata').val(),frequency:$('#frequencydata').val()},
           dataType: 'json',
           success: function (data) {

@@ -197,8 +197,8 @@ class GetHistoryMsg(APIView):
             strQ1+=" mmm.BM_AID=mmd.BM_AID inner join Mdl_OverView mdl  on mmd.category_aid=mdl.category"
             strQ1+=" and mmd.sub_category_aid=mdl.sub_category"
             strQ1+=" left join Buss_KPI_Monitoring_Setup_temp perf  on perf.mdl_id=mdl.mdl_id"
-            # strQ1+=" and perf.Metric=mmd.BM_AID where mdl.Mdl_Id='"+request.data['mdl_id']+"' and Mdl.department=mmd.dept_aid order by  mdl.Mdl_Id"
-            strQ1+=" and perf.Metric=mmd.BM_AID where mdl.Mdl_Id='M300100' and Mdl.department=mmd.dept_aid order by  mdl.Mdl_Id"
+            strQ1+=" and perf.Metric=mmd.BM_AID where mdl.Mdl_Id='"+request.data['mdl_id']+"' and Mdl.department=mmd.dept_aid order by  mdl.Mdl_Id"
+            # strQ1+=" and perf.Metric=mmd.BM_AID where mdl.Mdl_Id='M300100' and Mdl.department=mmd.dept_aid order by  mdl.Mdl_Id"
             # strQ1+="and perf.Metric=mmd.MM_AID where mdl.Mdl_Id='"+request.data['mdl_id']+"'"
             print("mdl overview query category buss-----------------------------------",strQ1)
             tableResult1=  self.objdbops.getTable(strQ1) 

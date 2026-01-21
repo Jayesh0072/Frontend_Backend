@@ -1,1 +1,1 @@
-'modelinfo'
+'str' object has no attribute 'items'
